@@ -1,30 +1,32 @@
-import Vue from 'vue'
 import Cookies from 'js-cookie'
 import { getToken } from '@/utils/auth'
 import DataRecord from '@adempiere/grpc-data-client'
 import { HOST_GRPC_DATA } from './constants'
 
-// global instances in Vue from Record Data connection
-Vue.prototype.$DataRecord = new DataRecord(
-  HOST_GRPC_DATA,
-  getToken(),
-  Cookies.get('lang') || 'en_US'
-)
-
-export var connectionDataRecord = Vue.prototype.$DataRecord
+// Get Instance for connection
+function Instance() {
+  return new DataRecord(
+    HOST_GRPC_DATA,
+    getToken(),
+    Cookies.get('lang') || 'en_US'
+  )
+}
 
 export function getObject(table, uuid = false) {
-  return connectionDataRecord.requestObject(table, uuid)
+  return Instance.call(this).requestObject(table, uuid)
+  // return connectionDataRecord.requestObject(table, uuid)
 }
 
 export function getCriteria(table) {
-  return connectionDataRecord.getCriteria(table)
+  return Instance.call(this).getCriteria(table)
+  // return connectionDataRecord.getCriteria(table)
 }
 
 export function getObjectListFromCriteria(table, criteria) {
-  const criteriaForList = connectionDataRecord.getCriteria(table)
+  const criteriaForList = Instance.call(this).getCriteria(table)
+  // const criteriaForList = connectionDataRecord.getCriteria(table)
   criteriaForList.setWhereclause(criteria)
-  return connectionDataRecord.requestObjectListFromCriteria(criteriaForList)
+  return Instance.call(this).requestObjectListFromCriteria(criteriaForList)
 }
 
 // Request a process
@@ -50,12 +52,12 @@ export function getObjectListFromCriteria(table, criteria) {
 //   }]
 // ]
 export function runProcess(process) {
-  var processRequest = connectionDataRecord.getProcessRequest()
+  var processRequest = Instance.call(this).getProcessRequest()
   //  Fill Request process
   processRequest.setUuid(process.uuid)
   processRequest.setTableid(process.tableId)
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
   //  Run Process
-  return connectionDataRecord.requestProcess(processRequest)
+  return Instance.call(this).requestProcess(processRequest)
 }

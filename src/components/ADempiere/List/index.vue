@@ -25,9 +25,7 @@ export default {
     },
     valueModel: {
       type: [Object, Array, String, Number],
-      default: function() {
-        return {}
-      }
+      default: () => ({})
     }
   }
 }

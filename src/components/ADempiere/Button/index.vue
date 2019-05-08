@@ -1,19 +1,14 @@
 <template>
   <el-input
     v-model="value"
-    :pattern="pattern"
-    :minlength="metadata.MinLength"
-    :maxlength="metadata.MaxLength"
     :type="typeInput"
-    :placeholder="placeholder"
-    @blur="validateInput"
     @change="handleChange"
   />
 </template>
 
 <script>
 export default {
-  name: 'NumberBase',
+  name: 'Button',
   props: {
     metadata: {
       type: Object,
@@ -23,31 +18,19 @@ export default {
       type: Boolean,
       default: false
     },
-    pattern: {
-      type: String,
-      default: undefined
-    },
     typeInput: {
       type: String,
-      default: 'number'
-    },
-    placeholder: {
-      type: String,
-      default: 'Please input'
-    },
-    validateInput: {
-      type: Function,
-      default: () => undefined
+      default: 'hidden'
     },
     valueModel: {
-      type: Number,
-      default: NaN
+      type: [String, Number, Boolean, Array],
+      default: ''
     }
   },
   data() {
     return {
-      value: this.metadata.defaultValue,
-      showControls: true
+      value: '',
+      isReadOnly: false
     }
   },
   watch: {
@@ -75,12 +58,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .el-input-number--medium, .el-input-number {
-    width: 100% !important;
-  }
-  .el-input-number .el-input__inner{
-    text-align: right;
-  }
-</style>
