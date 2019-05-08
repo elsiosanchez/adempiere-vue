@@ -1,0 +1,612 @@
+<template>
+  <div class="wrapper">
+    <el-form
+      v-if="$store.state.app.device==='desktop'"
+      v-model="dataRecords"
+      :label-position="labelPosition"
+      label-width="200px"
+    >
+      <template v-if="typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'">
+        <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
+          <div
+            v-if="checkInGroup(firstGroup.groupFinal)
+              && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
+              || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
+            :style="determinateGroup(firstGroup.groupFinal, 'style')"
+            class="card"
+          >
+            <el-card
+              :header="determinateGroup(firstGroup.groupFinal, 'header')"
+              shadow="hover"
+            >
+              <el-row :gutter="gutterRow">
+                <template v-for="(subItem, subKey) in firstGroup.metadataFields">
+                  <field
+                    :key="subKey"
+                    :parent-uuid="parentUuid"
+                    :container-uuid="containerUuid"
+                    :metadata-field="subItem"
+                    :load-record="loadRecord"
+                    :recorddata-fields="dataRecords[subItem.columnName]"
+                    :span="checkNextField(firstGroup.metadataFields, subKey)"
+                    :panel-type="panelType"
+                  />
+                </template>
+              </el-row>
+            </el-card>
+          </div>
+        </div>
+      </template>
+      <div class="cards">
+        <template v-for="(item, key) in fieldGroups">
+          <el-row :key="key">
+            <el-col :key="key" :span="24">
+              <div
+                v-if="checkInGroup(item.groupFinal)
+                  && (group.groupType == 'T' && group.groupName == item.groupFinal)
+                  || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                :key="key"
+                :style="determinateGroup(item.groupFinal, 'style')"
+                class="card"
+              >
+                <el-card
+                  :header="determinateGroup(item.groupFinal, 'header')"
+                  shadow="hover"
+                >
+                  <el-row :gutter="gutterRow">
+                    <template v-for="(subItem, subKey) in item.metadataFields">
+                      <field
+                        :key="subKey"
+                        :parent-uuid="parentUuid"
+                        :container-uuid="containerUuid"
+                        :metadata-field="subItem"
+                        :load-record="loadRecord"
+                        :recorddata-fields="dataRecords[subItem.columnName]"
+                        :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
+                        :panel-type="panelType"
+                      />
+                    </template>
+                  </el-row>
+                </el-card>
+              </div>
+            </el-col>
+          </el-row>
+        </template>
+      </div>
+    </el-form>
+    <el-form v-else v-model="dataRecords" :label-position="labelPosition" label-width="200px">
+      <template v-if="typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'">
+        <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
+          <div
+            v-if="checkInGroup(firstGroup.groupFinal)
+              && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
+              || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
+            :style="determinateGroup(firstGroup.groupFinal, 'style')"
+            class="card"
+          >
+            <el-card
+              :header="determinateGroup(firstGroup.groupFinal, 'header')"
+              shadow="hover"
+            >
+              <el-row :gutter="gutterRow">
+                <template v-for="(subItem, subKey) in firstGroup.metadataFields">
+                  <field
+                    :key="subKey"
+                    :parent-uuid="parentUuid"
+                    :container-uuid="containerUuid"
+                    :metadata-field="subItem"
+                    :load-record="loadRecord"
+                    :recorddata-fields="dataRecords[subItem.columnName]"
+                    :span="checkNextField(firstGroup.metadataFields, subKey)"
+                    :panel-type="panelType"
+                  />
+                </template>
+              </el-row>
+            </el-card>
+          </div>
+        </div>
+      </template>
+      <div class="cards-not-group">
+        <template v-for="(item, key) in fieldGroups">
+          <div
+            v-if="checkInGroup(item.groupFinal)
+              && (group.groupType == 'T' && group.groupName == item.groupFinal)
+              || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+            :key="key"
+            :style="determinateGroup(item.groupFinal, 'style')"
+            class="card"
+          >
+            <el-card
+              :header="determinateGroup(item.groupFinal, 'header')"
+              shadow="hover"
+            >
+              <el-row :gutter="gutterRow">
+                <template v-for="(subItem, subKey) in item.metadataFields">
+                  <field
+                    :key="subKey"
+                    :parent-uuid="parentUuid"
+                    :container-uuid="containerUuid"
+                    :metadata-field="subItem"
+                    :load-record="loadRecord"
+                    :recorddata-fields="dataRecords[subItem.columnName]"
+                    :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
+                    :panel-type="panelType"
+                  />
+                </template>
+              </el-row>
+            </el-card>
+          </div>
+        </template>
+      </div>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import Field from '@/components/ADempiere/Field'
+import SizeField from '@/components/ADempiere/Field/fieldSize'
+import { convertValueFromGRPC } from '@/utils/ADempiere'
+
+export default {
+  name: 'Panel',
+  components: {
+    Field
+  },
+  props: {
+    parentUuid: {
+      type: String,
+      default: ''
+    },
+    containerUuid: {
+      type: String,
+      required: true
+    },
+    metadata: {
+      type: Object,
+      default: () => {}
+    },
+    tableName: {
+      type: String,
+      default: ''
+    },
+    parentsTab: {
+      type: Boolean,
+      default: true
+    },
+    group: {
+      type: Object,
+      default: () =>
+        ({
+          groupType: '',
+          groupName: ''
+        })
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
+    panelType: {
+      type: String,
+      default: 'window'
+    }
+  },
+  data() {
+    return {
+      fieldList: [],
+      dataRecords: {},
+      labelPosition: 'top',
+      lineNumber: 1,
+      gutterRow: 0,
+      sizesFields: SizeField,
+      minSizeColumns: 3,
+      preSizeColumns: 12,
+      maxSizeColumns: 24,
+      loadPanel: false,
+      loadRecord: false,
+      uuidRecord: this.$route.params.uuidRecord,
+      fieldGroups: [],
+      firstGroup: {},
+      size: 0,
+      groupsView: 0
+    }
+  },
+  watch: {
+    containerUuid: () => {
+      this.generatePanel(this.metadata.fieldList)
+    }
+  },
+  created() {
+    // get tab with uuid
+    this.getPanel()
+  },
+  methods: {
+    convertValueFromGRPC,
+    reloadContextMenu() {
+      this.$store.dispatch('reloadContextMenu', {
+        containerUuid: this.containerUuid
+      })
+    },
+    determinateGroup(group, type) {
+      if (type === 'header') {
+        if (group !== '') {
+          return group
+        }
+        return undefined
+      } else if (type === 'class' || type === 'style') {
+        var style = {}
+        if (this.groupsView === 1) {
+          style['column-count'] = 1
+        }
+        if (this.groupsView === 2) {
+          style['column-count'] = 1
+        }
+        if (group === '' && this.groupsView > 2) {
+          style['column-count'] = 1
+        }
+        if (this.$store.state.app.device === 'mobile') {
+          style['column-count'] = 1
+        }
+        return style
+      }
+    },
+    /**
+     * Get the tab object with all its attributes as well as the fields it contains
+     */
+    getPanel() {
+      var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+      if (typeof fieldList === 'undefined' || fieldList.length === 0) {
+        this.$store.dispatch('getPanelAndFields', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          type: this.panelType.trim()
+        }).then(response => {
+          this.generatePanel(response.fieldList)
+        }).catch(err => {
+          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        })
+      } else {
+        this.generatePanel(fieldList)
+      }
+    },
+    generatePanel(fieldList) {
+      this.fieldList = fieldList
+      this.fieldGroups = this.sortAndGroup(fieldList)
+      this.firstGroup = this.fieldGroups[0]
+      this.fieldGroups.shift()
+      this.size = this.firstGroup.metadataFields.length
+      this.loadPanel = true
+      if (this.isEdit && this.panelType === 'window') {
+        this.getData(this.tableName)
+      }
+      this.reloadContextMenu()
+    },
+    notifyPanelChange() {
+      this.$store.dispatch('notifyPanelChange', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
+      })
+    },
+    /**
+     * @param  {string} table Table name in BD
+     * @param  {string} uuidRecord Universal Unique Identifier Record
+     */
+    getData(table = '', uuidRecord = null) {
+      if (table === null || table === '') {
+        this.$message({
+          message: 'Error getting data records',
+          type: 'error',
+          showClose: true
+        })
+        console.warn('DataRecord Panel - Error: Table Name is not defined ')
+        return
+      }
+      // if (this.loadRecord === false) {
+      this.$DataRecord.requestObject(table, uuidRecord)
+        .then(valueObject => {
+          var map = valueObject.getValuesMap()
+          var newValue = {}
+          for (let i = 0; i < this.fieldList.length; i++) {
+            var columnName = this.fieldList[i].columnName
+            var valueResult = map.get(columnName)
+            var tempValue = null
+            if (valueResult) {
+              tempValue = this.convertValueFromGRPC(valueResult)
+            }
+
+            newValue[columnName] = tempValue
+
+            this.$store.dispatch('setContext', {
+              uuidContainer: this.parentUuid,
+              uuidSubContainer: this.containerUuid,
+              columnName: columnName,
+              value: tempValue
+            })
+            // console.log(columnName + " relations:" + fieldRelations)
+          }
+          this.dataRecords = newValue
+          this.loadRecord = true
+          this.$message({
+            message: 'Get data records success from panel',
+            type: 'success',
+            showClose: true
+          })
+        })
+        .catch(err => {
+          this.$message({
+            message: 'Error getting data records',
+            type: 'error',
+            showClose: true
+          })
+          console.warn('DataRecord Panel - Error ' + err.code + ': ' + err.message)
+        })
+      // }
+    },
+    /**
+     * [checkInGroup description]
+     * @param  {string | integer} groupFinal [description]
+     * @return {bool} if in group field.
+     */
+    checkInGroup(groupFinal) {
+      if (typeof groupFinal === 'undefined' ||
+        groupFinal === '') {
+        return false
+      } else {
+        return true
+      }
+    },
+    /**
+     * Account the field width according to which it establishes the component,
+     * taking maximum by default when it has no field group and the minimum when
+     * it has a field group
+     * @param  {object} field Attributes of the field
+     * @param  {integer} [quantityFields=0] number of active fields that exist in the group
+     * @return {integer} size that the field will have
+     */
+    countWidthField(group, quantityFields = 0, field) {
+      var inGroup = false
+
+      if (this.$store.state.app.device === 'mobile') {
+        quantityFields = 1
+      }
+      if (group !== '') {
+        inGroup = true
+      }
+      if (quantityFields === 1) {
+        return 24
+      } else if (quantityFields === 2) {
+        return 12
+      }
+      for (var i = 0; i < this.sizesFields.length; i++) {
+        if (this.sizesFields[i].types.indexOf(field.displayType) !== -1) {
+          if (inGroup) {
+            return this.sizesFields[i].sizeInGroup.max
+          } else {
+            return this.sizesFields[i].sizeNotGroup.max
+          }
+        }
+      }
+      if (inGroup) {
+        return 12
+      } else {
+        return 24
+      }
+    },
+    /**
+     * Order the fields, then assign the groups to each field, and finally group
+     * in an array according to each field group
+     * @param  {array} arrFields
+     * @return {array} arrFields
+     */
+    sortAndGroup(arrFields) {
+      return this.groupFields(
+        this.assignedGroup(
+          this.sortFields(arrFields)
+        )
+      )
+    },
+    /**
+     * Sorts the column components according to the value that is obtained from
+     * the array that contains the JSON objects in the data.SortNo property
+     * @param  {array} arr
+     * @return {array} order by arr.data.SortNo
+     */
+    sortFields(arr, orderBy = 'sequence', type = 'asc') {
+      if (this.panelType === 'browser') {
+        orderBy = 'seqNoGrid'
+      }
+      arr.sort((itemA, itemB) => {
+        return itemA[orderBy] - itemB[orderBy]
+        // return itemA[orderBy] > itemB[orderBy]
+      })
+      if (type.toLowerCase() === 'desc') {
+        return arr.reverse()
+      }
+      return arr
+    },
+    /**
+     * [assignedGroup description]
+     * @param  {array} arr [description]
+     * @return {array} arrGroup [description]
+     */
+    assignedGroup(arr) {
+      if (typeof arr[0] === 'undefined') {
+        return arr
+      }
+
+      var firstChangeGroup = false
+      let currentGroup = ''
+      let typeGroup = ''
+      if (arr[0].fieldGroup.name === '' ||
+        arr[0].fieldGroup.name === null) {
+        currentGroup = ''
+        typeGroup = ''
+      }
+
+      for (let i = 0; i < arr.length; i++) {
+        // change the first field group, change the band
+        if (!firstChangeGroup) {
+          if (typeof arr[i].fieldGroup.name !== 'undefined' &&
+            arr[i].fieldGroup.name !== null &&
+            arr[i].fieldGroup.name !== '' &&
+            currentGroup !== arr[i].fieldGroup.name &&
+            arr[i].isDisplayed) {
+            firstChangeGroup = true
+          }
+        }
+        //  if you change the field group for the first time and it is different
+        //  from 0, updates the field group, since it is another field group and
+        //  assigns the following field items to the current field group whose
+        //  field group is '' or null
+        if (firstChangeGroup) {
+          if (typeof arr[i].fieldGroup.name !== 'undefined' &&
+            arr[i].fieldGroup.name !== null &&
+            arr[i].fieldGroup.name !== '') {
+            currentGroup = arr[i].fieldGroup.name
+            typeGroup = arr[i].fieldGroup.fieldGroupType
+          }
+        }
+
+        arr[i].GroupAssigned = currentGroup
+        arr[i].TypeGroup = typeGroup
+        // console.log(arr[i].columnName)
+        // arr[i].ValueModel = this.assignedValueModel(arr[i].columnName)
+      }
+      return arr
+    },
+    /**
+     * Group the arrangement into groups of columns that they contain, it must
+     * be grouped after having the order
+     * @param {array} array
+     * @return {array} res
+     */
+    groupFields(arr) {
+      if (typeof arr === 'undefined') {
+        return
+      }
+
+      // reduce, create array with number GroupAssigned element comun
+      var res = arr.reduce(
+        function(res, currentValue) {
+          if (res.indexOf(currentValue.GroupAssigned) === -1) {
+            res.push(currentValue.GroupAssigned)
+          }
+          return res
+        }, []
+      )
+        .map(function(_group) {
+          return {
+            groupFinal: _group,
+            metadataFields: arr.filter(function(_el) {
+              return _el.GroupAssigned === _group
+            })
+              .map(function(_el) {
+                return _el
+              })
+          }
+        })
+
+      // count and add the field numbers according to your group
+      for (const i in res) {
+        let count = 0
+        const typeG = res[i].metadataFields[0].TypeGroup
+
+        res[i].numberFields = res[i].metadataFields.length
+        res[i].typeGroup = typeG
+        res[i].numberFields = res[i].metadataFields.length
+        for (let j = 0; j < res[i].metadataFields.length; j++) {
+          if (res[i].metadataFields[j].isDisplayed) {
+            count = count + 1
+          }
+        }
+
+        if ((this.group.groupType === 'T' && this.group.groupName === res[i].groupFinal) ||
+          (this.group.groupType !== 'T' && res[i].typeGroup !== 'T')) {
+          this.groupsView = this.groupsView + 1
+        }
+        // else if (res[i].groupFinal === String(0)) {
+        //   res[i].groupFinal = ''
+        //   res[i].typeGroup = ''
+        // }
+        res[i].activeFields = count
+      }
+
+      return res
+    },
+    checkNextField(item, position) {
+      if (position + 1 < item.length) {
+        if (item[position].displayType === 20 && item[position + 1].displayType === 20) {
+          // console.log(item[position + 1].columnName)
+          var span = 6
+        } else {
+          span = this.countWidthField(
+            item[position].groupFinal, item[position].activeFields, item[position]
+          )
+        }
+      }
+      return span
+    }
+  }
+}
+</script>
+
+<style scoped>
+  .box {
+    width: 400px;
+  }
+
+  .top {
+    text-align: center;
+  }
+
+  .bottom {
+    clear: both;
+    text-align: center;
+  }
+
+  .left {
+    float: left;
+    width: 110px;
+  }
+
+  .right {
+    float: right;
+    width: 110px;
+  }
+
+  .item {
+    margin: 4px;
+  }
+
+  .left .el-tooltip__popper,
+  .right .el-tooltip__popper {
+    padding: 8px 10px;
+  }
+
+  .el-button {
+    width: 110px;
+  }
+</style>
+<style>
+  .cards {
+    column-count: 2;  /*numbers of columns */
+    column-gap: 1em;
+    margin-top: 10px;
+  }
+
+  .cards-not-group {
+    column-count: 1; /* numbers of columns */
+    column-gap: 1em;
+    margin-top: 10px;
+  }
+
+  .card {
+    padding: 10px;
+    margin: 0 0 1em;
+    width: 100%;
+    cursor: pointer;
+    transition: all 100ms ease-in-out;
+    display: inline-block;
+    perspective: 1000;
+    backface-visibility: hidden;
+  }
+</style>

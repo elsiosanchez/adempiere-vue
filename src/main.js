@@ -18,7 +18,8 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
-
+import '@/api/ADempiere' // conextions from Dicctionary, Data, and Authentication
+import '@/utils/ADempiere/env.js' // context variable from ADempiere
 /**
  * If you don't want to use mock-server
  * you want to use mockjs for request interception
