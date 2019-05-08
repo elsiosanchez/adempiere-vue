@@ -1,28 +1,38 @@
 <template>
-  <div v-if="device==='mobile'" class="container-submenu">
-    <el-menu :default-active="activeIndex" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
+  <div v-if="device==='mobile'" class="container-submenu-mobile">
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
       <el-submenu class="el-menu-item" index="1">
-        <template slot="title"><svg-icon icon-class="list" /></template>
-        <el-submenu :disabled="isDisabled" index="1-1">
-          <template slot="title">Processes</template>
-          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
-            {{ process.name }}
-          </el-menu-item>
+        <template slot="title"><i class="el-icon-more" /></template>
+        <el-submenu v-if="relations.length > 0" class="el-menu-item" index="1-1">
+          <template slot="title">Relations</template>
+          <el-scrollbar wrap-class="scroll">
+            <el-menu-item v-for="(relation, index) in relations" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
+              {{ relation.meta.title }}
+            </el-menu-item>
+          </el-scrollbar>
         </el-submenu>
-        <el-submenu index="1-2">
+        <el-menu-item v-else disabled index="1-1">Relations</el-menu-item>
+        <el-submenu class="el-menu-item" index="1-2">
           <template slot="title">Actions</template>
-          <el-menu-item index="1-2-1">
-            <router-link :to="openNew" append>
-              New
-            </router-link>
+          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
+            {{ action.name }}
           </el-menu-item>
         </el-submenu>
+        <el-menu-item index="1-3">References</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
   <div v-else class="container-submenu">
-    <el-menu :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
-      <el-menu-item index="1">Menu</el-menu-item>
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
+      <el-submenu v-if="relations.length > 0" class="el-menu-item" index="1">
+        <template slot="title">Relations</template>
+        <el-scrollbar wrap-class="scroll">
+          <el-menu-item v-for="(relation, index) in relations" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
+            {{ relation.meta.title }}
+          </el-menu-item>
+        </el-scrollbar>
+      </el-submenu>
+      <el-menu-item v-else disabled index="1">Relations</el-menu-item>
       <el-submenu class="el-menu-item" index="2">
         <template slot="title">Actions</template>
         <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
@@ -48,13 +58,21 @@ export default {
   },
   data() {
     return {
-      activeIndex: '1',
-      relations: [],
-      actions: this.$store.getters.getActions(this.$route.meta.uuid),
+      relations: this.$store.getters.getRelations(this.$route.meta.parentUuid),
+      actions: [],
       references: []
     }
   },
   computed: {
+    activeMenu() {
+      const route = this.$route
+      const { meta, path } = route
+      // if set path, the sidebar will highlight the path you set
+      if (meta.activeMenu) {
+        return meta.activeMenu
+      }
+      return path
+    },
     sidebar() {
       return this.$store.state.app.sidebar
     },
@@ -68,12 +86,6 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
-    },
-    isDisabled() {
-      if (this.processesList.length > 0) {
-        return false
-      }
-      return true
     },
     isReport() {
       if (this.report === true) {
@@ -93,7 +105,7 @@ export default {
           .then(response => {
             this.$emit('showModal', response)
           }).catch(err => {
-            console.warn('ContextMenu: Dictionary Process (State ) - Error ' + err.code + ': ' + err.message)
+            console.warn('ContextMenu: Dictionary Process (State) - Error ' + err.code + ': ' + err.message)
           })
       } else {
         this.$emit('showModal', processData)
@@ -102,8 +114,8 @@ export default {
     subscribeChanges() {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'reloadContextMenu') {
-          // this.processesList = mutation.payload
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
+          this.relations = this.$store.getters.getRelations(this.$route.meta.parentUuid)
         }
       })
     },
@@ -111,18 +123,28 @@ export default {
       if (action.type === 'action') {
         this.$store.dispatch(action.action, {
           action: action,
-          route: this.$route.meta,
-          type: this.$route.meta.type
+          containerUuid: this.$route.meta.uuid
         })
-      } else if (action.type === 'process') {
+      } else if (action.type === 'P') {
         this.showModal(action)
       }
+    },
+    handleClick(item) {
+      this.$router.push({ name: item.name })
     }
   }
 }
 </script>
 
 <style>
+  .container-submenu-mobile{
+    position: relative;
+    z-index: 1;
+    height: 39px !important;
+    width: 39px !important;
+    float: right;
+  }
+
   .container-submenu{
     position: relative;
     z-index: 1;
@@ -157,5 +179,13 @@ export default {
 
   .el-menu--popup-right-start > .el-menu-item{
     min-width: 150px;
+  }
+
+  .scroll {
+    max-height: 200px;
+  }
+
+  .el-icon-more {
+    transform: rotate(90deg);
   }
 </style>

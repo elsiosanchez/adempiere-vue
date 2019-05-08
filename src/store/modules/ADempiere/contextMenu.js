@@ -64,8 +64,8 @@ const contextMenu = {
       }
       return menu
     },
-    getRelations: (state, rootState) => (containerUuid) => {
-      var menu = rootState.addRouters.find(
+    getRelations: (state, getters, rootState) => (containerUuid) => {
+      var menu = rootState.permission.addRoutes.find(
         item => item.name === containerUuid
       )
       if (menu === undefined) {
