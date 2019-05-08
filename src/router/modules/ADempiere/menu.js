@@ -34,8 +34,8 @@ export function loadMainMenu() {
 // Get Only Child
 function getChildFromAction(menu) {
   const action = menu.getAction()
-  var actionName = convertAction(action)
-  var routeIdentifier = actionName + '/' + menu.getReferenceuuid()
+  var actionParameters = convertAction(action)
+  var routeIdentifier = actionParameters.name + '/' + menu.getReferenceuuid()
   let selectedComponent
   if (action === 'W') {
     selectedComponent = () => import('@/components/ADempiere/Window/window')
@@ -44,18 +44,20 @@ function getChildFromAction(menu) {
   } else if (action === 'P' || action === 'R') {
     selectedComponent = () => import('@/components/ADempiere/Process')
   } else {
-    routeIdentifier = actionName + '/' + menu.getUuid()
+    routeIdentifier = actionParameters.name + '/' + menu.getUuid()
   }
   var option = {
     path: routeIdentifier,
     component: selectedComponent,
     name: menu.getReferenceuuid(),
+    hidden: actionParameters.hidden,
+    alwaysShow: false,
     meta: {
       title: menu.getName(),
       uuid: menu.getReferenceuuid(),
-      type: action,
+      type: actionParameters.name,
       parentUuid: menu.getParentuuid(),
-      icon: 'chart',
+      icon: actionParameters.icon,
       noCache: false
     }
   }
@@ -64,6 +66,8 @@ function getChildFromAction(menu) {
 
 // Convert menu item from server to Route
 function getRouteFromMenuItem(menu) {
+  const action = menu.getAction()
+  var actionParameters = convertAction(action)
   var optionMenu = []
   optionMenu = {
     path: '/' + menu.getUuid().replace(/ /g, ''),
@@ -71,7 +75,8 @@ function getRouteFromMenuItem(menu) {
     name: menu.getUuid(),
     meta: {
       title: menu.getName(),
-      icon: 'chart',
+      type: actionParameters.name,
+      icon: actionParameters.icon,
       noCache: true
     },
     children: []
@@ -81,35 +86,48 @@ function getRouteFromMenuItem(menu) {
 
 // Convert action to action name for route
 function convertAction(action) {
-  var actionName = ''
+  var actionParameters = {
+    name: '',
+    icon: '',
+    hidden: false
+  }
   switch (action) {
     case 'B':
-      actionName = 'workbech'
+      actionParameters.name = 'workbech'
       break
     case 'F':
-      actionName = 'workflow'
+      actionParameters.name = 'workflow'
+      actionParameters.icon = 'example'
       break
     case 'P':
-      actionName = 'process'
+      actionParameters.name = 'process'
+      actionParameters.icon = 'component'
       break
     case 'R':
-      actionName = 'report'
+      actionParameters.name = 'report'
+      actionParameters.icon = 'skill'
       break
     case 'S':
-      actionName = 'browser'
+      actionParameters.name = 'browser'
+      actionParameters.icon = 'search'
       break
     case 'T':
-      actionName = 'task'
+      actionParameters.name = 'task'
       break
     case 'W':
-      actionName = 'window'
+      actionParameters.name = 'window'
+      actionParameters.icon = 'tab'
       break
     case 'X':
-      actionName = 'form'
+      actionParameters.name = 'form'
+      actionParameters.icon = 'form'
+
       break
     default:
-      actionName = 'summary'
+      actionParameters.name = 'summary'
+      actionParameters.icon = 'nested'
+      actionParameters.hidden = true
       break
   }
-  return actionName
+  return actionParameters
 }
