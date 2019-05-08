@@ -34,8 +34,8 @@ export function loadMainMenu() {
 // Get Only Child
 function getChildFromAction(menu) {
   const action = menu.getAction()
-  var actionParameters = convertAction(action)
-  var routeIdentifier = actionParameters.name + '/' + menu.getReferenceuuid()
+  var actionAttributes = convertAction(action)
+  var routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid()
   let selectedComponent
   if (action === 'W') {
     selectedComponent = () => import('@/components/ADempiere/Window/window')
@@ -44,20 +44,20 @@ function getChildFromAction(menu) {
   } else if (action === 'P' || action === 'R') {
     selectedComponent = () => import('@/components/ADempiere/Process')
   } else {
-    routeIdentifier = actionParameters.name + '/' + menu.getUuid()
+    routeIdentifier = actionAttributes.name + '/' + menu.getUuid()
   }
   var option = {
     path: routeIdentifier,
     component: selectedComponent,
     name: menu.getReferenceuuid(),
-    hidden: actionParameters.hidden,
+    hidden: actionAttributes.hidden,
     alwaysShow: false,
     meta: {
       title: menu.getName(),
       uuid: menu.getReferenceuuid(),
-      type: actionParameters.name,
+      type: actionAttributes.name,
       parentUuid: menu.getParentuuid(),
-      icon: actionParameters.icon,
+      icon: actionAttributes.icon,
       noCache: false
     }
   }
@@ -67,7 +67,7 @@ function getChildFromAction(menu) {
 // Convert menu item from server to Route
 function getRouteFromMenuItem(menu) {
   const action = menu.getAction()
-  var actionParameters = convertAction(action)
+  var actionAttributes = convertAction(action)
   var optionMenu = []
   optionMenu = {
     path: '/' + menu.getUuid().replace(/ /g, ''),
@@ -75,8 +75,8 @@ function getRouteFromMenuItem(menu) {
     name: menu.getUuid(),
     meta: {
       title: menu.getName(),
-      type: actionParameters.name,
-      icon: actionParameters.icon,
+      type: actionAttributes.name,
+      icon: actionAttributes.icon,
       noCache: true
     },
     children: []
@@ -86,48 +86,48 @@ function getRouteFromMenuItem(menu) {
 
 // Convert action to action name for route
 function convertAction(action) {
-  var actionParameters = {
+  var actionAttributes = {
     name: '',
     icon: '',
     hidden: false
   }
   switch (action) {
     case 'B':
-      actionParameters.name = 'workbech'
+      actionAttributes.name = 'workbech'
       break
     case 'F':
-      actionParameters.name = 'workflow'
-      actionParameters.icon = 'example'
+      actionAttributes.name = 'workflow'
+      actionAttributes.icon = 'example'
       break
     case 'P':
-      actionParameters.name = 'process'
-      actionParameters.icon = 'component'
+      actionAttributes.name = 'process'
+      actionAttributes.icon = 'component'
       break
     case 'R':
-      actionParameters.name = 'report'
-      actionParameters.icon = 'skill'
+      actionAttributes.name = 'report'
+      actionAttributes.icon = 'skill'
       break
     case 'S':
-      actionParameters.name = 'browser'
-      actionParameters.icon = 'search'
+      actionAttributes.name = 'browser'
+      actionAttributes.icon = 'search'
       break
     case 'T':
-      actionParameters.name = 'task'
+      actionAttributes.name = 'task'
       break
     case 'W':
-      actionParameters.name = 'window'
-      actionParameters.icon = 'tab'
+      actionAttributes.name = 'window'
+      actionAttributes.icon = 'tab'
       break
     case 'X':
-      actionParameters.name = 'form'
-      actionParameters.icon = 'form'
+      actionAttributes.name = 'form'
+      actionAttributes.icon = 'form'
 
       break
     default:
-      actionParameters.name = 'summary'
-      actionParameters.icon = 'nested'
-      actionParameters.hidden = true
+      actionAttributes.name = 'summary'
+      actionAttributes.icon = 'nested'
+      actionAttributes.hidden = true
       break
   }
-  return actionParameters
+  return actionAttributes
 }

@@ -125,14 +125,12 @@ export default {
           action: action,
           containerUuid: this.$route.meta.uuid
         })
-      } else if (action.type === 'process' || action.type === 'P') {
+      } else if (action.type === 'P') {
         this.showModal(action)
       }
     },
     handleClick(item) {
-      if (item.meta.type === 'window' || item.meta.type === 'browser' || item.meta.type === 'report' || item.meta.type === 'process') {
-        this.$router.push({ name: item.name })
-      }
+      this.$router.push({ name: item.name })
     }
   }
 }
