@@ -102,19 +102,13 @@ export default {
     subscribeChanges() {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'reloadContextMenu') {
-          this.processesList = mutation.payload
+          // this.processesList = mutation.payload
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
         }
       })
     },
     runAction(action) {
       if (action.type === 'action') {
-        this.$message({
-          message: 'Processing',
-          type: 'info',
-          showClose: true
-        })
-        this.$store.dispatch('addProcessExecution', this.$route.meta.uuid)
         this.$store.dispatch(action.action, {
           action: action,
           route: this.$route.meta,

@@ -2,8 +2,7 @@ import { runProcess } from '@/api/ADempiere/data'
 
 const processControl = {
   state: {
-    process: [],
-    processExecution: []
+    process: []
   },
   mutations: {
     addStartedProcess(state, payload) {
@@ -11,9 +10,6 @@ const processControl = {
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
-    },
-    addProcessExecution(state, payload) {
-      state.processExecution.push(payload)
     }
   },
   actions: {
@@ -22,6 +18,7 @@ const processControl = {
       var processToRun = {
         uuid: payload.action.uuid
       }
+      console.log(payload)
       commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
@@ -32,28 +29,14 @@ const processControl = {
           console.log(error)
         })
       console.log('TODO: Run here a server process: ' + payload.containerUuid)
-    },
-    addProcessExecution: ({ commit }, objectParams) => {
-      commit('addProcessExecution', objectParams)
     }
   },
-
   getters: {
     getRunningProcess: (state) => (processUuid) => {
       var process = state.process.find(
         item => item.uuid === processUuid
       )
       return process
-    },
-    getProcessExecution: (state, rootGetters, rootState) => {
-      var processList = []
-      state.processExecution.map((item) => {
-        var itemProcess = rootGetters.getProcess(item)
-        if (typeof itemProcess !== undefined) {
-          processList.push(itemProcess)
-        }
-      })
-      return processList
     }
   }
 }
