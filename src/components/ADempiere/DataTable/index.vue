@@ -1,5 +1,5 @@
 <template>
-  <el-form v-model="dataRecords" :label-position="labelPosition" label-width="200px">
+  <el-form v-model="tableData" :label-position="labelPosition" label-width="200px">
     <div v-show="searchable" :class="{'show':show}" align="right" class="search-detail">
       <svg-icon class-name="search-icon" icon-class="search" @click="click" />
       <el-input
@@ -54,8 +54,6 @@
 
 <script>
 import Field from '@/components/ADempiere/Field'
-import { convertValueFromGRPC } from '@/utils/ADempiere'
-import { getObjectListFromCriteria } from '@/api/ADempiere/data'
 
 export default {
   name: 'DataTable',
@@ -73,7 +71,7 @@ export default {
     },
     label: {
       type: String,
-      default: 'a'
+      default: ''
     },
     tableName: {
       type: String,
@@ -86,12 +84,6 @@ export default {
     table: {
       type: String,
       default: 'Option'
-    },
-    editar: {
-      type: [String, Number, Boolean],
-      default: function() {
-        return {}
-      }
     },
     parentTab: {
       type: Boolean,
@@ -109,7 +101,6 @@ export default {
       fieldList: [],
       fieldSequence: [],
       getRecords: false,
-      dataRecords: {},
       edit: false,
       labelPosition: 'top',
       minSizeColumns: 3,
@@ -140,8 +131,6 @@ export default {
     this.getTab()
   },
   methods: {
-    convertValueFromGRPC,
-    getObjectListFromCriteria,
     /**
      * Action table buttons edit and delete records
      */
@@ -206,7 +195,7 @@ export default {
             this.generatePanel(response.fieldList)
           })
           .catch(err => {
-            console.warn('Dictionay Panel - Error ' + err.code + ': ' + err.message)
+            console.warn('Dictionay DataTable - Error ' + err.code + ': ' + err.message)
             this.isLoaded = false
           })
       } else {
@@ -221,28 +210,6 @@ export default {
         this.getData(this.tableName)
       }
     },
-    getDataList() {
-      var table = this.metadata.columnName.replace('_ID', '')
-      this.getObjectListFromCriteria(table, "IsActive = 'Y'")
-        .then(response => {
-          const recordList = response.getRecordsList()
-
-          for (var i = 0; i < recordList.length; i++) {
-            const values = recordList[i]
-            const map = values.getValuesMap()
-            const value = this.convertValueFromGRPC(map.get('Value'))
-            const name = this.convertValueFromGRPC(map.get('Name'))
-
-            this.options.push({
-              label: name,
-              key: value
-            })
-          }
-        })
-        .catch(err => {
-          console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-        })
-    },
     /**
      * @param  {string} table Table name in BD
      */
@@ -256,30 +223,33 @@ export default {
         console.warn('DataRecord PanelDetail - Error: Table Name is not defined ')
         return
       }
-      var criteriaForList = this.$DataRecord.getCriteria(table)
-      criteriaForList.setWhereclause("IsActive = 'Y'")
-      this.$DataRecord.requestObjectListFromCriteria(criteriaForList)
-        .then(valueObject => {
-          // const recordList = valueObject.getRecordsList()
-          for (var j = 0; j < valueObject.getRecordsList().length; j++) {
-            var newValue = {}
-            var values = valueObject.getRecordsList()[j]
-            const map = values.getValuesMap()
+      var criteria = "IsActive = 'Y'"
 
-            for (var i = 0; i < this.fieldList.length; i++) {
-              var columnName = this.fieldList[i].columnName
-              var tempValue = ''
-              tempValue = this.convertValueFromGRPC(map.get(columnName))
+      this.$store.dispatch('getObjectListFromCriteria', {
+        table: table,
+        criteria: criteria
+      })
+        .then(response => {
+          this.tableData = response
+          this.getRecords = true
 
-              newValue[columnName] = tempValue
-            }
-            this.dataRecords = newValue
-            this.getRecords = true
-            this.tableData.push(newValue)
-            // var   campos =[ 1,2,3]
-            // console.log(campos.includes(2))
-            this.$set(newValue, 'edit', false)
-          }
+          // for (var j = 0; j < valueObject.getRecordsList().length; j++) {
+          //   var newValue = {}
+          //   var values = valueObject.getRecordsList()[j]
+          //   const map = values.getValuesMap()
+
+          //   for (var i = 0; i < this.fieldList.length; i++) {
+          //     var columnName = this.fieldList[i].columnName
+          //     var tempValue = ''
+          //     tempValue = this.convertValueFromGRPC(map.get(columnName))
+
+          //   }
+          //   this.tableData.push(newValue)
+          //   // var   campos =[ 1,2,3]
+          //   // console.log(campos.includes(2))
+          //     newValue[columnName] = tempValue
+          //   this.$set(newValue, 'edit', false)
+          // }
         })
         .catch(err => console.log('Error Panel detail: ' + err.message))
     },

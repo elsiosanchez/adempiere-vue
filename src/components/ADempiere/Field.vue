@@ -55,9 +55,7 @@ export default {
     },
     recorddataFields: {
       type: [Number, String, Boolean, Array, Object],
-      default: function() {
-        return {}
-      }
+      default: undefined
     },
     positionTab: {
       type: Number,

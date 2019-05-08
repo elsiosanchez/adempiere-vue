@@ -18,9 +18,6 @@
 </template>
 
 <script>
-import { convertValueFromGRPC } from '@/utils/ADempiere'
-import { getObjectListFromCriteria } from '@/api/ADempiere/data'
-
 export default {
   name: 'SelectBase',
   props: {
@@ -30,9 +27,7 @@ export default {
     },
     valueModel: {
       type: [Object, Array, String, Number],
-      default: function() {
-        return {}
-      }
+      default: () => ({})
     }
   },
   data() {
@@ -59,25 +54,16 @@ export default {
     })
   },
   methods: {
-    convertValueFromGRPC,
-    getObjectListFromCriteria,
     getDataList() {
       var table = this.metadata.columnName.replace('_ID', '')
-      this.getObjectListFromCriteria(table, "IsActive = 'Y'")
+      var criteria = "IsActive = 'Y'"
+
+      this.$store.dispatch('getObjectListFromCriteria', {
+        table: table,
+        criteria: criteria
+      })
         .then(response => {
-          const recordList = response.getRecordsList()
-
-          for (var i = 0; i < recordList.length; i++) {
-            const values = recordList[i]
-            const map = values.getValuesMap()
-            const value = this.convertValueFromGRPC(map.get('Value'))
-            const name = this.convertValueFromGRPC(map.get('Name'))
-
-            this.options.push({
-              label: name,
-              key: value
-            })
-          }
+          this.options = response
         })
         .catch(err => {
           console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
