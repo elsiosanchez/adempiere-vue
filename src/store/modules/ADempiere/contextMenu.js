@@ -64,7 +64,7 @@ const contextMenu = {
       }
       return menu
     },
-    getRelations: (state, getters, rootState, rootGetters) => (containerUuid) => {
+    getRelations: (state, getters, rootState) => (containerUuid) => {
       var menu = rootState.permission.addRoutes.find(
         item => item.name === containerUuid
       )
@@ -80,7 +80,6 @@ const contextMenu = {
       if (menu === undefined) {
         return menu
       }
-      console.log(menu.actions)
       return menu.actions
     },
     getReferences: (state) => (containerUuid) => {
