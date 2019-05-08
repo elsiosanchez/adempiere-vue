@@ -145,7 +145,6 @@
 <script>
 import Field from '@/components/ADempiere/Field'
 import SizeField from '@/components/ADempiere/Field/fieldSize'
-import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 export default {
   name: 'Panel',
@@ -175,11 +174,10 @@ export default {
     },
     group: {
       type: Object,
-      default: () =>
-        ({
-          groupType: '',
-          groupName: ''
-        })
+      default: () => ({
+        groupType: '',
+        groupName: ''
+      })
     },
     isEdit: {
       type: Boolean,
@@ -220,7 +218,6 @@ export default {
     this.getPanel()
   },
   methods: {
-    convertValueFromGRPC,
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.containerUuid
@@ -301,35 +298,14 @@ export default {
         return
       }
       // if (this.loadRecord === false) {
-      this.$DataRecord.requestObject(table, uuidRecord)
-        .then(valueObject => {
-          var map = valueObject.getValuesMap()
-          var newValue = {}
-          for (let i = 0; i < this.fieldList.length; i++) {
-            var columnName = this.fieldList[i].columnName
-            var valueResult = map.get(columnName)
-            var tempValue = null
-            if (valueResult) {
-              tempValue = this.convertValueFromGRPC(valueResult)
-            }
-
-            newValue[columnName] = tempValue
-
-            this.$store.dispatch('setContext', {
-              uuidContainer: this.parentUuid,
-              uuidSubContainer: this.containerUuid,
-              columnName: columnName,
-              value: tempValue
-            })
-            // console.log(columnName + " relations:" + fieldRelations)
-          }
-          this.dataRecords = newValue
-          this.loadRecord = true
-          this.$message({
-            message: 'Get data records success from panel',
-            type: 'success',
-            showClose: true
-          })
+      this.$store.dispatch('requestObject', {
+        table: table,
+        recordUuid: uuidRecord,
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
+      })
+        .then(response => {
+          this.dataRecords = response
         })
         .catch(err => {
           this.$message({
@@ -442,14 +418,14 @@ export default {
         typeGroup = ''
       }
 
-      for (let i = 0; i < arr.length; i++) {
+      arr.forEach(fieldElement => {
         // change the first field group, change the band
         if (!firstChangeGroup) {
-          if (typeof arr[i].fieldGroup.name !== 'undefined' &&
-            arr[i].fieldGroup.name !== null &&
-            arr[i].fieldGroup.name !== '' &&
-            currentGroup !== arr[i].fieldGroup.name &&
-            arr[i].isDisplayed) {
+          if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
+            fieldElement.fieldGroup.name !== null &&
+            fieldElement.fieldGroup.name !== '' &&
+            currentGroup !== fieldElement.fieldGroup.name &&
+            fieldElement.isDisplayed) {
             firstChangeGroup = true
           }
         }
@@ -458,19 +434,18 @@ export default {
         //  assigns the following field items to the current field group whose
         //  field group is '' or null
         if (firstChangeGroup) {
-          if (typeof arr[i].fieldGroup.name !== 'undefined' &&
-            arr[i].fieldGroup.name !== null &&
-            arr[i].fieldGroup.name !== '') {
-            currentGroup = arr[i].fieldGroup.name
-            typeGroup = arr[i].fieldGroup.fieldGroupType
+          if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
+            fieldElement.fieldGroup.name !== null &&
+            fieldElement.fieldGroup.name !== '') {
+            currentGroup = fieldElement.fieldGroup.name
+            typeGroup = fieldElement.fieldGroup.fieldGroupType
           }
         }
 
-        arr[i].GroupAssigned = currentGroup
-        arr[i].TypeGroup = typeGroup
-        // console.log(arr[i].columnName)
-        // arr[i].ValueModel = this.assignedValueModel(arr[i].columnName)
-      }
+        fieldElement.GroupAssigned = currentGroup
+        fieldElement.TypeGroup = typeGroup
+      })
+
       return arr
     },
     /**
@@ -506,28 +481,25 @@ export default {
         })
 
       // count and add the field numbers according to your group
-      for (const i in res) {
+      for (const key in res) {
         let count = 0
-        const typeG = res[i].metadataFields[0].TypeGroup
+        const typeG = res[key].metadataFields[0].TypeGroup
 
-        res[i].numberFields = res[i].metadataFields.length
-        res[i].typeGroup = typeG
-        res[i].numberFields = res[i].metadataFields.length
-        for (let j = 0; j < res[i].metadataFields.length; j++) {
-          if (res[i].metadataFields[j].isDisplayed) {
-            count = count + 1
+        res[key].numberFields = res[key].metadataFields.length
+        res[key].typeGroup = typeG
+        res[key].numberFields = res[key].metadataFields.length
+
+        res[key].metadataFields.forEach(element => {
+          if (element.isDisplayed) {
+            count++
           }
-        }
+        })
 
-        if ((this.group.groupType === 'T' && this.group.groupName === res[i].groupFinal) ||
-          (this.group.groupType !== 'T' && res[i].typeGroup !== 'T')) {
+        if ((this.group.groupType === 'T' && this.group.groupName === res[key].groupFinal) ||
+          (this.group.groupType !== 'T' && res[key].typeGroup !== 'T')) {
           this.groupsView = this.groupsView + 1
         }
-        // else if (res[i].groupFinal === String(0)) {
-        //   res[i].groupFinal = ''
-        //   res[i].typeGroup = ''
-        // }
-        res[i].activeFields = count
+        res[key].activeFields = count
       }
 
       return res
