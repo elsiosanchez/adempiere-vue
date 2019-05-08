@@ -24,7 +24,7 @@ export default {
     },
     valueModel: {
       type: Number,
-      default: NaN
+      default: 0
     }
   }
 }

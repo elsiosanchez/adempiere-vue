@@ -7,7 +7,7 @@
 // - Smart Browser: Can have a search panel, table panel and process panel
 // import { evaluator } from '@/utils/ADempiere/evaluator.js'
 import Vue from 'vue'
-import store from '@/store'
+
 const panel = {
   state: {
     panel: []
@@ -43,7 +43,7 @@ const panel = {
     addFields({ commit }, payload) {
       commit('addFields', payload)
     },
-    notifyPanelChange({ commit, state, getters, dispatch }, payload) {
+    notifyPanelChange({ state, dispatch }, payload) {
       state.panel
         .find(item => item.uuid === payload.containerUuid).fieldList
         .filter(field => field.dependentFieldsList !== undefined)
@@ -116,16 +116,16 @@ const panel = {
         })
       })
     },
-    getPanelAndFields({ commit }, payload) {
+    getPanelAndFields({ dispatch }, payload) {
       if (payload.type === 'process' || payload.type === 'report') {
-        return store.dispatch('getProcessFromServer', payload.containerUuid)
+        return dispatch('getProcessFromServer', payload.containerUuid)
           .then(response => {
             if (response) {
               return response
             }
           })
       } else if (payload.type === 'window') {
-        return store.dispatch('getTabAndFieldFromServer', {
+        return dispatch('getTabAndFieldFromServer', {
           parentUuid: payload.parentUuid,
           containerUuid: payload.containerUuid
         }).then(response => {
@@ -134,7 +134,7 @@ const panel = {
           }
         })
       } else if (payload.type === 'window') {
-        return store.dispatch('getBrowserFromServer', payload.containerUuid)
+        return dispatch('getBrowserFromServer', payload.containerUuid)
           .then(response => {
             if (response) {
               return response
