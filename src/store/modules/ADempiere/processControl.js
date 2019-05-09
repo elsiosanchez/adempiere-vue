@@ -2,6 +2,8 @@ import { runProcess } from '@/api/ADempiere/data'
 
 const processControl = {
   state: {
+    visibleDialog: false,
+    metadata: {},
     process: []
   },
   mutations: {
@@ -10,6 +12,14 @@ const processControl = {
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
+    },
+    setShowDialog(state, payload) {
+      state.visibleDialog = true
+      state.metadata = payload
+    },
+    setCloseDialog(state, payload) {
+      state.visibleDialog = false
+      state.metadata = payload
     }
   },
   actions: {
@@ -29,6 +39,13 @@ const processControl = {
           console.log(error)
         })
       console.log('TODO: Run here a server process: ' + payload.containerUuid)
+    },
+    setShowDialog({ commit }, process) {
+      if (typeof process === 'undefined') {
+        commit('setCloseDialog')
+      } else {
+        commit('setShowDialog', process)
+      }
     }
   },
   getters: {
