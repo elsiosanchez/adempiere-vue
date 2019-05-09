@@ -35,8 +35,8 @@ const browser = {
 
             //  Get dependent fields
             fieldsList.filter(field => field.parentFieldsList && field.isActive)
-              .forEach(function(field, index, list) {
-                field.parentFieldsList.forEach(function(parentColumnName) {
+              .forEach((field, index, list) => {
+                field.parentFieldsList.forEach((parentColumnName) => {
                   var parentField = list.find((parentField) => {
                     return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
                   })
