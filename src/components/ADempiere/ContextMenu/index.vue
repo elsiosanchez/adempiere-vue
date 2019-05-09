@@ -38,6 +38,8 @@
         <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
           {{ action.name }}
         </el-menu-item>
+        <el-menu-item index="2-1" @click="generateReport('pdf')">{{ 'Generate as PDF' }}</el-menu-item>
+        <el-menu-item index="2-2" @click="generateReport('html')">{{ 'Generate as HTML' }}</el-menu-item>
       </el-submenu>
       <el-menu-item index="3">References</el-menu-item>
     </el-menu>
@@ -46,7 +48,6 @@
 
 <script>
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
-
 export default {
   name: 'Submenu',
   mixins: [ResizeMixin],
@@ -131,6 +132,9 @@ export default {
     },
     handleClick(item) {
       this.$router.push({ name: item.name })
+    },
+    generateReport(type) {
+      this.$store.state.contextMenu.reportFormat = type
     }
   }
 }
