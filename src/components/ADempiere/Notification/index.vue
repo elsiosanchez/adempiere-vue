@@ -9,12 +9,9 @@
         Proccess
       </h3>
       <table>
-        <tr v-for="(item,index) in processesExeccution" :key="index">
+        <tr v-for="(item,index) in processesExecution" :key="index">
           <td>
             {{ item.name }}
-          </td>
-          <td>
-            <el-progress :percentage="0" :width="100" />
           </td>
           <td>
             <!-- <el-button
@@ -36,7 +33,7 @@ export default {
       message: '',
       dialogVisible: false,
       actions: this.$store.getters.getActions(this.$route.meta.uuid),
-      getProcessExecution: ''
+      getRunningProcess: ''
     }
   },
   computed: {
@@ -46,8 +43,8 @@ export default {
       }
       return true
     },
-    processesExeccution() {
-      return this.$store.getters.getProcessExecution
+    processesExecution() {
+      return this.$store.getters.getRunningProcess
     },
     isReport() {
       if (this.report === true) {

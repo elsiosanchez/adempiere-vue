@@ -121,12 +121,6 @@ export default {
     },
     runAction(action) {
       if (action.type === 'action') {
-        this.$message({
-          message: 'Processing',
-          type: 'info',
-          showClose: true
-        })
-        this.$store.dispatch('addProcessExecution', this.$route.meta.uuid)
         this.$store.dispatch(action.action, {
           action: action,
           containerUuid: this.$route.meta.uuid
