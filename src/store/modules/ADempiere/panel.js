@@ -47,7 +47,7 @@ const panel = {
       state.panel
         .find(item => item.uuid === payload.containerUuid).fieldList
         .filter(field => field.dependentFieldsList !== undefined)
-        .forEach(function(actionField) {
+        .forEach((actionField) => {
           dispatch('notifyFieldChange', {
             parentUuid: payload.parentUuid,
             containerUuid: payload.containerUuid,
@@ -66,11 +66,11 @@ const panel = {
         .find(item => item.uuid === payload.containerUuid).fieldList
       var field = fieldList.find(field => field.columnName === payload.columnName)
       //  Change Dependents
-      var dependents = fieldList.filter(function(item) {
+      var dependents = fieldList.filter((item) => {
         return field.dependentFieldsList.includes(item.columnName)
       })
       //  Iterate for change logic
-      dependents.forEach(function(dependent) {
+      dependents.forEach((dependent) => {
         //  Display Logic
         var isDisplayedFromLogic = false
         var isMandatoryFromLogic = false

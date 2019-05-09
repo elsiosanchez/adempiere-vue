@@ -77,18 +77,6 @@ export default {
       type: String,
       default: ''
     },
-    positionTab: {
-      type: Number,
-      default: 0
-    },
-    table: {
-      type: String,
-      default: 'Option'
-    },
-    parentTab: {
-      type: Boolean,
-      default: true
-    },
     // Show section from search in data
     searchable: {
       type: Boolean,
@@ -160,11 +148,11 @@ export default {
     filterResult() {
       var tab = this.tableData.filter((data) => {
         if (!this.search) {
-          for (const prop in data) {
-            if (String(data[prop]).includes(String(this.search))) {
+          Object.keys(data).forEach(key => {
+            if (String(data[key]).includes(String(this.search))) {
               return true
             }
-          }
+          })
         }
       })
       return tab

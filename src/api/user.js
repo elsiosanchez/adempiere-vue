@@ -3,7 +3,10 @@ import { HOST_GRPC_AUTHENTICATION } from '@/api/ADempiere/constants'
 
 // Instance for connection
 function Instance() {
-  return new Access(HOST_GRPC_AUTHENTICATION, 'Version Epale')
+  return new Access(
+    HOST_GRPC_AUTHENTICATION,
+    'Version Epale'
+  )
 }
 
 // Get User Info from session Uuid or token
