@@ -14,14 +14,14 @@ export function loadMainMenu() {
         hidden: true
       },
       {
-        path: '/Notification',
+        path: '/ProcessActivite',
         component: Layout,
         children: [
           {
             path: 'index',
-            component: () => import('@/components/ADempiere/Notification'),
-            name: 'Notification',
-            meta: { title: 'Notification', icon: 'documentation', noCache: true }
+            component: () => import('@/components/ADempiere/ProcessActivite'),
+            name: 'ProcessActivite',
+            meta: { title: 'ProcessActivite', icon: 'documentation', noCache: true }
           }
         ]
       }

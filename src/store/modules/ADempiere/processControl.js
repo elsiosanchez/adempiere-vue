@@ -18,7 +18,6 @@ const processControl = {
       var processToRun = {
         uuid: payload.action.uuid
       }
-      console.log(payload)
       commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
