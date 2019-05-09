@@ -14,10 +14,10 @@ export function loadMainMenu() {
         hidden: true
       }
     ]
-    menu.getChildsList().forEach(function(menu) {
+    menu.getChildsList().forEach((menu) => {
       const optionMenu = getRouteFromMenuItem(menu)
       if (menu.getIssummary()) {
-        menu.getChildsList().forEach(function(menu) {
+        menu.getChildsList().forEach((menu) => {
           optionMenu.children.push(getChildFromAction(menu))
         })
       } else {
