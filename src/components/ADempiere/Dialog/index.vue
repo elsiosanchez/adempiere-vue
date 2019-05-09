@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="metadata.name" :visible.sync="visible" :show-close="false" :width="width+'%'">
+  <el-dialog :title="metadata.name" :visible="visibleDialog" :show-close="false" :width="width+'%'">
     {{ metadata.description }}
     <panel
       :parent-uuid="parentUuid"
@@ -39,7 +39,6 @@ export default {
   data() {
     return {
       processMetadata: {},
-      visibleDialog: false,
       titleDialog: ''
     }
   },
@@ -49,11 +48,14 @@ export default {
         return 80
       }
       return 50
+    },
+    visibleDialog() {
+      return this.$store.state.processControl.visibleDialog
     }
   },
   methods: {
     closeDialog() {
-      this.$emit('closeDialog')
+      this.$store.dispatch('setShowDialog', undefined)
     }
   }
 }

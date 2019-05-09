@@ -103,12 +103,12 @@ export default {
       if (typeof processData === 'undefined') {
         this.$store.dispatch('getProcessFromServer', action.uuid)
           .then(response => {
-            this.$emit('showModal', response)
+            this.$store.dispatch('setShowDialog', response)
           }).catch(err => {
             console.warn('ContextMenu: Dictionary Process (State) - Error ' + err.code + ': ' + err.message)
           })
       } else {
-        this.$emit('showModal', processData)
+        this.$store.dispatch('setShowDialog', processData)
       }
     },
     subscribeChanges() {
