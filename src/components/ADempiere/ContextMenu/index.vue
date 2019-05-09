@@ -121,10 +121,9 @@ export default {
     },
     runAction(action) {
       if (action.type === 'action') {
-        this.$message({
-          message: 'Processing',
-          type: 'info',
-          showClose: true
+        this.$notify.info({
+          title: 'Info',
+          message: 'Processing'
         })
         this.$store.dispatch(action.action, {
           action: action,
