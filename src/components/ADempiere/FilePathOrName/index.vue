@@ -9,8 +9,13 @@
 </template>
 
 <script>
+import TextBase from '@/components/ADempiere/TextBase'
+
 export default {
   name: 'FilePathOrName',
+  components: {
+    TextBase
+  },
   props: {
     metadata: {
       type: Object,
