@@ -2,6 +2,8 @@ import { runProcess } from '@/api/ADempiere/data'
 
 const processControl = {
   state: {
+    visibleDialog: false,
+    metadata: {},
     process: []
   },
   mutations: {
@@ -11,45 +13,47 @@ const processControl = {
     dataResetCacheProcess(state, payload) {
       state.process = payload
     },
-    deleteProcess(state, payload) {
-      state.process = payload
+    setShowDialog(state, payload) {
+      state.visibleDialog = true
+      state.metadata = payload
+    },
+    setCloseDialog(state, payload) {
+      state.visibleDialog = false
+      state.metadata = payload
     }
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit }, objectParams) {
+    startProcess({ commit }, payload) {
       var processToRun = {
-        uuid: objectParams.containerUuid
+        uuid: payload.action.uuid
       }
-      commit('addStartedProcess', objectParams.containerUuid)
+      console.log(payload)
+      commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
-
-      console.log('TODO: Run here a server process: ' + objectParams.containerUuid)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      console.log('TODO: Run here a server process: ' + payload.containerUuid)
     },
-    deleteProcess({ commit, state }, uuid) {
-      var processList = state.process.filter((item) => {
-        if (item !== uuid) {
-          return true
-        }
-      })
-      commit('deleteProcess', processList)
+    setShowDialog({ commit }, process) {
+      if (typeof process === 'undefined') {
+        commit('setCloseDialog')
+      } else {
+        commit('setShowDialog', process)
+      }
     }
   },
   getters: {
-    getRunningProcess: (state, rootGetters, rootState) => {
-      var processList = []
-
-      state.process.map((item) => {
-        var itemProcess = rootGetters.getProcess(item)
-        if (typeof itemProcess !== undefined) {
-          processList.push(itemProcess)
-        }
-      })
-      return processList
-      // return process = state.process.find(
-      //   item => item.uuid === processUuid
-      // )
+    getRunningProcess: (state) => (processUuid) => {
+      var process = state.process.find(
+        item => item.uuid === processUuid
+      )
+      return process
     }
   }
 }

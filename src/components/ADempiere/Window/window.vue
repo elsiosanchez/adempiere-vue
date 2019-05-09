@@ -10,7 +10,7 @@
           :is-edit="isEdit"
         />
         <sticky class="sticky-submenu">
-          <submenu @showModal="openDialog" />
+          <submenu />
         </sticky>
         <modal
           :visible="visibleDialog"
@@ -162,7 +162,7 @@ export default {
       showPanel: true,
       uuidRecord: this.$route.params.uuidRecord,
       show3: true,
-      visibleDialog: false,
+      visibleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
       isMobile: true
     }
@@ -179,6 +179,14 @@ export default {
     if (this.$store.state.app.device === 'mobile') {
       this.isMobile = !this.isMobile
     }
+    this.$store.subscribe(mutation => {
+      if (mutation.type === 'setShowDialog') {
+        if (typeof mutation.payload !== 'undefined') {
+          this.visibleDialog = true
+          this.processMetadata = mutation.payload
+        }
+      }
+    })
   },
   beforeMount() {
     this.getWindow(this.windowUuid)
@@ -205,8 +213,12 @@ export default {
       }
     },
     openDialog(process) {
-      this.visibleDialog = true
-      this.processMetadata = process
+      this.$store.subscribe(mutation => {
+        if (mutation.type === 'setShowDialog') {
+          this.visibleDialog = mutation.payload
+          this.processMetadata = process
+        }
+      })
     }
   }
 }
