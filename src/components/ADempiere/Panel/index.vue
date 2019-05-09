@@ -352,19 +352,16 @@ export default {
       } else if (quantityFields === 2) {
         return 12
       }
-      for (var i = 0; i < this.sizesFields.length; i++) {
-        if (this.sizesFields[i].types.indexOf(field.displayType) !== -1) {
-          if (inGroup) {
-            return this.sizesFields[i].sizeInGroup.max
-          } else {
-            return this.sizesFields[i].sizeNotGroup.max
-          }
+      var size = this.sizesFields.find((item) => {
+        if (item.types.indexOf(field.displayType)) {
+          return true
         }
-      }
+      })
+
       if (inGroup) {
-        return 12
+        return size.sizeInGroup.max
       } else {
-        return 24
+        return size.sizeNotGroup.max
       }
     },
     /**
@@ -409,7 +406,7 @@ export default {
         return arr
       }
 
-      var firstChangeGroup = false
+      let firstChangeGroup = false
       let currentGroup = ''
       let typeGroup = ''
       if (arr[0].fieldGroup.name === '' ||
@@ -460,28 +457,26 @@ export default {
       }
 
       // reduce, create array with number GroupAssigned element comun
-      var res = arr.reduce(
-        function(res, currentValue) {
-          if (res.indexOf(currentValue.GroupAssigned) === -1) {
-            res.push(currentValue.GroupAssigned)
-          }
-          return res
-        }, []
-      )
-        .map(function(_group) {
+      var res = arr.reduce((res, currentValue) => {
+        if (res.indexOf(currentValue.GroupAssigned) === -1) {
+          res.push(currentValue.GroupAssigned)
+        }
+        return res
+      }, [])
+        .map((_group) => {
           return {
             groupFinal: _group,
-            metadataFields: arr.filter(function(_el) {
+            metadataFields: arr.filter((_el) => {
               return _el.GroupAssigned === _group
             })
-              .map(function(_el) {
+              .map((_el) => {
                 return _el
               })
           }
         })
 
       // count and add the field numbers according to your group
-      for (const key in res) {
+      Object.keys(res).forEach(key => {
         let count = 0
         const typeG = res[key].metadataFields[0].TypeGroup
 
@@ -500,7 +495,7 @@ export default {
           this.groupsView = this.groupsView + 1
         }
         res[key].activeFields = count
-      }
+      })
 
       return res
     },
