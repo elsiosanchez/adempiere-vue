@@ -19,6 +19,11 @@
           />
         </el-col>
       </el-row>
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <report-preview v-show="processMetadata.isReport" />
+        </el-col>
+      </el-row>
     </div>
     <div v-else style="padding: 20px 100px">
       <h3>
@@ -35,13 +40,15 @@ import Submenu from '@/components/ADempiere/ContextMenu'
 import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
 import { checkStringValue } from '@/utils/ADempiere/valueUtil'
+import ReportPreview from '@/components/ADempiere/ReportsPreview'
 
 export default {
   name: 'Process',
   components: {
     Panel,
     Submenu,
-    Sticky
+    Sticky,
+    ReportPreview
   },
   props: {
     isEdit: {
