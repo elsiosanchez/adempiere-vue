@@ -32,11 +32,14 @@ const processControl = {
     }
   },
   getters: {
-    getRunningProcess: (state) => (processUuid) => {
-      var process = state.process.find(
-        item => item.uuid === processUuid
-      )
-      return process
+    getRunningProcess: (state, rootGetters) => (processUuid) => {
+      var processList = state.process.map((item) => {
+        var process = rootGetters.getProcess(item.uuid)
+        if (typeof process !== undefined) {
+          return process
+        }
+      })
+      return processList
     }
   }
 }

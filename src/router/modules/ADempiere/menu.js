@@ -12,6 +12,18 @@ export function loadMainMenu() {
         path: '*',
         redirect: '/dashboard',
         hidden: true
+      },
+      {
+        path: '/Notification',
+        component: Layout,
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/components/ADempiere/Notification'),
+            name: 'Notification',
+            meta: { title: 'Notification', icon: 'documentation', noCache: true }
+          }
+        ]
       }
     ]
     menu.getChildsList().forEach(function(menu) {
