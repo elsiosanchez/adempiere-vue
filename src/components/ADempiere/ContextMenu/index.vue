@@ -27,7 +27,7 @@
       <el-submenu v-if="relations.length > 0" class="el-menu-item" index="1">
         <template slot="title">Relations</template>
         <el-scrollbar wrap-class="scroll">
-          <el-menu-item v-for="(relation, index) in relations" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
+          <el-menu-item v-for="(relation, index) in relations" v-show="relation.meta.type!=='summary' && relation.meta.uuid!==$route.meta.uuid" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
             {{ relation.meta.title }}
           </el-menu-item>
         </el-scrollbar>
@@ -182,7 +182,7 @@ export default {
   }
 
   .scroll {
-    max-height: 200px;
+    max-height: 400px;
   }
 
   .el-icon-more {
