@@ -116,7 +116,6 @@ export default {
         if (mutation.type === 'reloadContextMenu') {
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
           this.relations = this.$store.getters.getRelations(this.$route.meta.parentUuid)
-          this.relations.find(item => console.log(item))
         }
       })
     },
