@@ -10,33 +10,46 @@ const processControl = {
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
+    },
+    deleteProcess(state, payload) {
+      state.process = payload
     }
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit }, payload) {
+    startProcess({ commit }, objectParams) {
       var processToRun = {
-        uuid: payload.action.uuid
+        uuid: objectParams.containerUuid
       }
-      console.log(payload)
-      commit('addStartedProcess', processToRun)
+      commit('addStartedProcess', objectParams.containerUuid)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-      console.log('TODO: Run here a server process: ' + payload.containerUuid)
+
+      console.log('TODO: Run here a server process: ' + objectParams.containerUuid)
+    },
+    deleteProcess({ commit, state }, uuid) {
+      var processList = state.process.filter((item) => {
+        if (item !== uuid) {
+          return true
+        }
+      })
+      commit('deleteProcess', processList)
     }
   },
   getters: {
-    getRunningProcess: (state) => (processUuid) => {
-      var process = state.process.find(
-        item => item.uuid === processUuid
-      )
-      return process
+    getRunningProcess: (state, rootGetters, rootState) => {
+      var processList = []
+
+      state.process.map((item) => {
+        var itemProcess = rootGetters.getProcess(item)
+        if (typeof itemProcess !== undefined) {
+          processList.push(itemProcess)
+        }
+      })
+      return processList
+      // return process = state.process.find(
+      //   item => item.uuid === processUuid
+      // )
     }
   }
 }
