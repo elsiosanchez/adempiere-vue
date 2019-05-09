@@ -12,6 +12,18 @@ export function loadMainMenu() {
         path: '*',
         redirect: '/dashboard',
         hidden: true
+      },
+      {
+        path: '/ProcessActivity',
+        component: Layout,
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/components/ADempiere/ProcessActivity'),
+            name: 'ProcessActivity',
+            meta: { title: 'ProcessActivity', icon: 'documentation', noCache: true }
+          }
+        ]
       }
     ]
     menu.getChildsList().forEach((menu) => {
