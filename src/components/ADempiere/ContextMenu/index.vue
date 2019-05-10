@@ -133,7 +133,6 @@ export default {
         })
         this.$store.dispatch('tagsView/delView', this.$route)
         this.$router.push({ name: 'Report Viewer' })
-        this.$store.dispatch('openReport', action.reportExportType)
       } else if (action.type === 'P') {
         this.showModal(action)
       }

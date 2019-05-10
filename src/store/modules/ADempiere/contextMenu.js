@@ -11,7 +11,6 @@
 // ]
 const contextMenu = {
   state: {
-    reportFormat: '',
     menu: [],
     currentContextMenuUuid: ''
   },
@@ -36,9 +35,6 @@ const contextMenu = {
     },
     reloadContextMenu(state, payload) {
       state.currentContextMenuUuid = payload.containerUuid
-    },
-    openReport(state, payload) {
-      state.reportFormat = payload
     }
   },
   actions: {
@@ -56,9 +52,6 @@ const contextMenu = {
     },
     reloadContextMenu({ commit }, payload) {
       commit('reloadContextMenu', payload)
-    },
-    openReport({ commit }, reportExportType) {
-      commit('openReport', reportExportType)
     }
   },
   getters: {
