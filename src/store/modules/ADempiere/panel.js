@@ -5,8 +5,7 @@
 // - Window: Just need storage tab and fields
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
-// import { evaluator } from '@/utils/ADempiere/evaluator.js'
-import Vue from 'vue'
+import evaluator from '@/utils/ADempiere/evaluator.js'
 
 const panel = {
   state: {
@@ -76,7 +75,7 @@ const panel = {
         var isMandatoryFromLogic = false
         var isReadOnlyFromLogic = false
         if (dependent.displayLogic.trim() !== '') {
-          isDisplayedFromLogic = Vue.prototype.$Evaluator.evaluateLogic({
+          isDisplayedFromLogic = evaluator.evaluateLogic({
             context: getters,
             parentUuid: payload.parentUuid,
             containerUuid: payload.containerUuid,
@@ -88,7 +87,7 @@ const panel = {
         }
         //  Mandatory Logic
         if (dependent.mandatoryLogic.trim() !== '') {
-          isMandatoryFromLogic = Vue.prototype.$Evaluator.evaluateLogic({
+          isMandatoryFromLogic = evaluator.evaluateLogic({
             context: getters,
             parentUuid: payload.parentUuid,
             containerUuid: payload.containerUuid,
@@ -99,7 +98,7 @@ const panel = {
         }
         //  Read Only Logic
         if (dependent.readOnlyLogic.trim() !== '') {
-          isReadOnlyFromLogic = Vue.prototype.$Evaluator.evaluateLogic({
+          isReadOnlyFromLogic = evaluator.evaluateLogic({
             context: getters,
             parentUuid: payload.parentUuid,
             containerUuid: payload.containerUuid,
