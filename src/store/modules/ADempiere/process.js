@@ -45,7 +45,20 @@ const process = {
                 name: 'Run Process As',
                 type: 'summary',
                 action: '',
-                childs: [],
+                childs: [
+                  {
+                    name: 'Run Process As',
+                    type: 'action',
+                    action: 'startProcess',
+                    uuid: response.getUuid(),
+                    description: response.getDescription(),
+                    help: response.getHelp(),
+                    isReport: response.getIsreport(),
+                    accessLevel: response.getAccesslevel(),
+                    showHelp: response.getShowhelp(),
+                    isDirectPrint: response.getIsdirectprint()
+                  }
+                ],
                 uuid: response.getUuid(),
                 description: response.getDescription(),
                 help: response.getHelp(),
