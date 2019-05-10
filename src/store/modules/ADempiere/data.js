@@ -26,7 +26,6 @@ const data = {
             resolve(options)
           })
           .catch(err => {
-            console.warn('Data Criteria State - Error ' + err.code + ': ' + err.message)
             reject(err)
           })
       })
@@ -56,7 +55,6 @@ const data = {
             resolve(newValue)
           })
           .catch(err => {
-            console.warn('Data State - Error ' + err.code + ': ' + err.message)
             reject(err)
           })
       })

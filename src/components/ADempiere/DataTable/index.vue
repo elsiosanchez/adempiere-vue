@@ -166,7 +166,6 @@ export default {
       this.fieldList.forEach((item) => {
         newValue[item.columnName] = null
       })
-      // this.edit = true
       data.push(newValue)
       this.edit = true
       this.$set(newValue, 'edit', true)

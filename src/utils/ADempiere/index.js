@@ -1,5 +1,5 @@
-import Vue from 'vue'
 import REFERENCES from '@/components/ADempiere/Field/references'
+import evaluator from '@/utils/ADempiere/evaluator.js'
 
 /**
  * Converted the gRPC value to the value needed
@@ -60,6 +60,35 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     }
   }
 
+  var reference = fieldGRPC.getReference()
+  var referenceValue
+  var zoomWindowList
+  if (reference) {
+    if (reference.getWindowsList()) {
+      zoomWindowList = reference.getWindowsList().map((zoomWindow) => {
+        return {
+          id: zoomWindow.getId(),
+          uuid: zoomWindow.getUuid(),
+          name: zoomWindow.getName(),
+          description: zoomWindow.getDescription(),
+          isSOTrx: zoomWindow.getIssotrx(),
+          isActive: zoomWindow.getIsactive()
+        }
+      })
+    }
+    referenceValue = {
+      tableName: reference.getTablename(),
+      keyColumnName: reference.getKeycolumnname(),
+      displayColumnName: reference.getDisplaycolumnname(),
+      query: reference.getQuery(),
+      parsedQuery: reference.getQuery(),
+      directQuery: reference.getDirectquery(),
+      parsedDirectQuery: reference.getDirectquery(),
+      validationCode: reference.getValidationcode(),
+      zoomWindowList: zoomWindowList
+    }
+  }
+
   var field = {
     ...moreAttributes,
 
@@ -99,7 +128,8 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     mandatoryLogic: fieldGRPC.getMandatorylogic(),
     readOnlyLogic: fieldGRPC.getReadonlylogic(),
     parentFieldsList: getParentFields(fieldGRPC),
-    dependentFieldsList: []
+    dependentFieldsList: [],
+    reference: referenceValue
   }
   return field
 }
@@ -126,19 +156,19 @@ export function getParentFields(fieldGRPC) {
   var parentFields = []
   //  For Display logic
   if (fieldGRPC.getDisplaylogic()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getDisplaylogic()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getDisplaylogic()))
   }
   //  For Mandatory Logic
   if (fieldGRPC.getMandatorylogic()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getMandatorylogic()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getMandatorylogic()))
   }
   //  For Read Only Logic
   if (fieldGRPC.getReadonlylogic()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getReadonlylogic()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getReadonlylogic()))
   }
   //  For Default Value
   if (fieldGRPC.getDefaultvalue()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getDefaultvalue()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getDefaultvalue()))
   }
   return parentFields
 }
