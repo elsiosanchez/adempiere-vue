@@ -60,6 +60,35 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     }
   }
 
+  var reference = fieldGRPC.getReference()
+  var referenceValue
+  var zoomWindowList
+  if (reference) {
+    if (reference.getWindowsList()) {
+      zoomWindowList = reference.getWindowsList().map((zoomWindow) => {
+        return {
+          id: zoomWindow.getId(),
+          uuid: zoomWindow.getUuid(),
+          name: zoomWindow.getName(),
+          description: zoomWindow.getDescription(),
+          isSOTrx: zoomWindow.getIssotrx(),
+          isActive: zoomWindow.getIsactive()
+        }
+      })
+    }
+    referenceValue = {
+      tableName: reference.getTablename(),
+      keyColumnName: reference.getKeycolumnname(),
+      displayColumnName: reference.getDisplaycolumnname(),
+      query: reference.getQuery(),
+      parsedQuery: reference.getQuery(),
+      directQuery: reference.getDirectquery(),
+      parsedDirectQuery: reference.getDirectquery(),
+      validationCode: reference.getValidationcode(),
+      zoomWindowList: zoomWindowList
+    }
+  }
+
   var field = {
     ...moreAttributes,
 
@@ -99,7 +128,8 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     mandatoryLogic: fieldGRPC.getMandatorylogic(),
     readOnlyLogic: fieldGRPC.getReadonlylogic(),
     parentFieldsList: getParentFields(fieldGRPC),
-    dependentFieldsList: []
+    dependentFieldsList: [],
+    reference: referenceValue
   }
   return field
 }
