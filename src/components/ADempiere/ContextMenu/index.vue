@@ -122,6 +122,10 @@ export default {
     },
     runAction(action) {
       if (action.type === 'action') {
+        this.$notify.info({
+          title: 'Info',
+          message: 'Processing'
+        })
         this.$store.dispatch(action.action, {
           action: action,
           containerUuid: this.$route.meta.uuid

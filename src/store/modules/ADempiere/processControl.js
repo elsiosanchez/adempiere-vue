@@ -27,9 +27,16 @@ const processControl = {
     // Supported Actions for it
     startProcess({ commit }, payload) {
       var processToRun = {
-        uuid: payload.action.uuid
+        uuid: payload.action.uuid,
+        name: payload.action.name,
+        description: payload.action.description,
+        help: payload.action.help,
+        isReport: payload.action.isReport,
+        accessLevel: payload.accessLevel,
+        showHelp: payload.action.showHelp,
+        isDirectPrint: payload.action.isDirectPrint,
+        reportExportType: payload.action.reportExportType
       }
-      console.log(payload)
       commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
@@ -50,11 +57,14 @@ const processControl = {
     }
   },
   getters: {
-    getRunningProcess: (state) => (processUuid) => {
-      var process = state.process.find(
-        item => item.uuid === processUuid
-      )
-      return process
+    getRunningProcess: (state, rootGetters) => (processUuid) => {
+      var processList = state.process.map((item) => {
+        var process = rootGetters.getProcess(item.uuid)
+        if (typeof process !== undefined) {
+          return process
+        }
+      })
+      return processList
     }
   }
 }
