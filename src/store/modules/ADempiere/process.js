@@ -31,6 +31,46 @@ const process = {
             var fieldDefinitionList = parameterList.map((processItem) => {
               return convertFieldFromGRPC(processItem, additionalAttributes)
             })
+            //  Get export list
+            var reportExportTypeList = response.getReportexporttypesList().map((reportType) => {
+              return {
+                name: reportType.getName(),
+                description: reportType.getDescription(),
+                reportExportType: reportType.getType()
+              }
+            })
+            //  Default Action
+            var processActions = [
+              {
+                name: 'Run Process',
+                type: 'action',
+                action: 'startProcess',
+                uuid: response.getUuid(),
+                description: response.getDescription(),
+                help: response.getHelp(),
+                isReport: response.getIsreport(),
+                accessLevel: response.getAccesslevel(),
+                showHelp: response.getShowhelp(),
+                isDirectPrint: response.getIsdirectprint()
+              }
+            ]
+            reportExportTypeList.forEach((actionValue) => {
+              var action = {
+                name: 'Export to (' + actionValue.name + ')',
+                type: 'action',
+                action: 'startProcess',
+                uuid: response.getUuid(),
+                description: actionValue.description,
+                help: response.getHelp(),
+                isReport: response.getIsreport(),
+                accessLevel: response.getAccesslevel(),
+                showHelp: response.getShowhelp(),
+                isDirectPrint: response.getIsdirectprint(),
+                reportExportType: actionValue.reportExportType
+              }
+              //  Push values
+              processActions.push(action)
+            })
             var panel = {
               id: response.getId(),
               uuid: response.getUuid(),
@@ -50,26 +90,14 @@ const process = {
               accessLevel: response.getAccesslevel(),
               showHelp: response.getShowhelp(),
               isDirectPrint: response.getIsdirectprint(),
+              reportExportTypeList: reportExportTypeList,
               fieldList: fieldDefinitionList
             }
             //  Add process menu
             var contextMenu = {
               containerUuid: response.getUuid(),
               relations: [],
-              actions: [
-                {
-                  name: 'Run Process',
-                  type: 'action',
-                  action: 'startProcess',
-                  uuid: response.getUuid(),
-                  description: response.getDescription(),
-                  help: response.getHelp(),
-                  isReport: response.getIsreport(),
-                  accessLevel: response.getAccesslevel(),
-                  showHelp: response.getShowhelp(),
-                  isDirectPrint: response.getIsdirectprint()
-                }
-              ],
+              actions: processActions,
               references: []
             }
             commit('addPanel', panel)
