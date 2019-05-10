@@ -8,7 +8,6 @@ const processControl = {
   },
   mutations: {
     addStartedProcess(state, payload) {
-      console.log(payload)
       state.process.push(payload)
     },
     dataResetCacheProcess(state, payload) {
