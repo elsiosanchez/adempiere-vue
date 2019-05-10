@@ -8,6 +8,7 @@ const processControl = {
   },
   mutations: {
     addStartedProcess(state, payload) {
+      console.log(payload)
       state.process.push(payload)
     },
     dataResetCacheProcess(state, payload) {
@@ -28,7 +29,6 @@ const processControl = {
       var processToRun = {
         uuid: payload.action.uuid
       }
-      console.log(payload)
       commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
@@ -49,11 +49,14 @@ const processControl = {
     }
   },
   getters: {
-    getRunningProcess: (state) => (processUuid) => {
-      var process = state.process.find(
-        item => item.uuid === processUuid
-      )
-      return process
+    getRunningProcess: (state, rootGetters) => (processUuid) => {
+      var processList = state.process.map((item) => {
+        var process = rootGetters.getProcess(item.uuid)
+        if (typeof process !== undefined) {
+          return process
+        }
+      })
+      return processList
     }
   }
 }

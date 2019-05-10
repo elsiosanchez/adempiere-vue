@@ -97,7 +97,9 @@ module.exports = {
         return options
       })
       .end()
-
+    config.module.rule('pdf')
+      .test(/\.pdf$/)
+      .use('file-loader').loader('file-loader')
     config
       // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',
