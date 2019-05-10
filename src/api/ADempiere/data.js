@@ -14,17 +14,14 @@ function Instance() {
 
 export function getObject(table, uuid = false) {
   return Instance.call(this).requestObject(table, uuid)
-  // return connectionDataRecord.requestObject(table, uuid)
 }
 
 export function getCriteria(table) {
   return Instance.call(this).getCriteria(table)
-  // return connectionDataRecord.getCriteria(table)
 }
 
 export function getObjectListFromCriteria(table, criteria) {
   const criteriaForList = Instance.call(this).getCriteria(table)
-  // const criteriaForList = connectionDataRecord.getCriteria(table)
   criteriaForList.setWhereclause(criteria)
   return Instance.call(this).requestObjectListFromCriteria(criteriaForList)
 }

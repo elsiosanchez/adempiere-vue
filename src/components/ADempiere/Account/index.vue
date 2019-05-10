@@ -24,8 +24,8 @@ export default {
       default: false
     },
     valueModel: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     }
   }
 }

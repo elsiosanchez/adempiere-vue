@@ -1,5 +1,5 @@
-import Vue from 'vue'
 import REFERENCES from '@/components/ADempiere/Field/references'
+import evaluator from '@/utils/ADempiere/evaluator.js'
 
 /**
  * Converted the gRPC value to the value needed
@@ -126,19 +126,19 @@ export function getParentFields(fieldGRPC) {
   var parentFields = []
   //  For Display logic
   if (fieldGRPC.getDisplaylogic()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getDisplaylogic()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getDisplaylogic()))
   }
   //  For Mandatory Logic
   if (fieldGRPC.getMandatorylogic()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getMandatorylogic()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getMandatorylogic()))
   }
   //  For Read Only Logic
   if (fieldGRPC.getReadonlylogic()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getReadonlylogic()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getReadonlylogic()))
   }
   //  For Default Value
   if (fieldGRPC.getDefaultvalue()) {
-    Array.prototype.push.apply(parentFields, Vue.prototype.$Evaluator.parseDepends(fieldGRPC.getDefaultvalue()))
+    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getDefaultvalue()))
   }
   return parentFields
 }
