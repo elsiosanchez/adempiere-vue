@@ -2,7 +2,7 @@
   <div>
     <div v-if="loading">
       <el-row :gutter="20">
-        <router-view />
+        <!-- <router-view /> -->
         <tab
           :window-uuid="windowUuid"
           :tabs-list="windowMetadata.tabsListParent"
