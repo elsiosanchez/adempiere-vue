@@ -123,6 +123,13 @@ const panel = {
               return response
             }
           })
+      } else if (payload.type === 'browser') {
+        return dispatch('getBrowserFromServer', payload.containerUuid)
+          .then(response => {
+            if (response) {
+              return response
+            }
+          })
       } else if (payload.type === 'window') {
         return dispatch('getTabAndFieldFromServer', {
           parentUuid: payload.parentUuid,
@@ -132,13 +139,6 @@ const panel = {
             return response
           }
         })
-      } else if (payload.type === 'window') {
-        return dispatch('getBrowserFromServer', payload.containerUuid)
-          .then(response => {
-            if (response) {
-              return response
-            }
-          })
       }
     },
     dictionaryResetCache({ commit }, param = []) {

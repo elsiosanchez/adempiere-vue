@@ -18,7 +18,7 @@ const process = {
   actions: {
     getProcessFromServer: ({ commit }, processUuid) => {
       return new Promise((resolve, reject) => {
-        getProcessFromDictionary(processUuid, true)
+        getProcessFromDictionary(processUuid)
           .then(response => {
             var parameterList = response.getParametersList()
             var additionalAttributes = {
