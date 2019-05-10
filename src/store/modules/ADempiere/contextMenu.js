@@ -11,7 +11,6 @@
 // ]
 const contextMenu = {
   state: {
-    reportFormat: '',
     menu: [],
     currentContextMenuUuid: ''
   },

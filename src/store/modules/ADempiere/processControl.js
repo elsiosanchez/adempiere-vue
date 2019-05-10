@@ -3,6 +3,8 @@ import { runProcess, getLookupList } from '@/api/ADempiere/data'
 const processControl = {
   state: {
     visibleDialog: false,
+    reportFormat: '',
+    reportContent: ``,
     metadata: {},
     process: []
   },
@@ -20,11 +22,16 @@ const processControl = {
     setCloseDialog(state, payload) {
       state.visibleDialog = false
       state.metadata = payload
+    },
+    openReport(state, payload) {
+      state.reportFormat = payload.output.reportExportType
+      state.reportContent = payload.output.output
     }
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit }, payload) {
+    startProcess({ commit, dispatch }, payload) {
+      var processResult = {}
       var processToRun = {
         uuid: payload.action.uuid,
         name: payload.action.name,
@@ -41,19 +48,35 @@ const processControl = {
         tableName: 'M_DiscountSchema',
         parsedQuery: "SELECT M_DiscountSchema.M_DiscountSchema_ID,NULL,NVL(M_DiscountSchema.Name,'-1'),M_DiscountSchema.IsActive FROM M_DiscountSchema WHERE M_DiscountSchema.DiscountType<>'P' ORDER BY 3"
       })
-        .then(response => {
-          console.log(response)
-        })
         .catch(error => {
           console.log(error)
         })
       // Run process on server and wait for it for notify
       runProcess(processToRun)
         .then(response => {
-          console.log(response)
+          if (typeof response !== 'undefined') {
+            processResult = {
+              instanceUuid: response.getInstanceuuid(),
+              isError: response.getIserror(),
+              summary: response.getSummary(),
+              resultTableId: response.getResulttableid(),
+              logs: response.getLogsList(),
+              output: {
+                uuid: response.getOutput().getUuid(),
+                name: response.getOutput().getName(),
+                description: response.getOutput().getDescription(),
+                fileName: response.getOutput().getFilename(),
+                output: response.getOutput().getOutput(),
+                outputStream: response.getOutput().getOutputstream(),
+                reportExportType: response.getOutput().getReportexporttype()
+              }
+            }
+            dispatch('finishProcess', processResult)
+          }
         })
         .catch(error => {
           console.log(error)
+          dispatch('finishProcess', processResult)
         })
     },
     setShowDialog({ commit }, process) {
@@ -61,6 +84,11 @@ const processControl = {
         commit('setCloseDialog')
       } else {
         commit('setShowDialog', process)
+      }
+    },
+    finishProcess({ commit }, processOutput) {
+      if (!processOutput.isError) {
+        commit('openReport', processOutput)
       }
     }
   },
