@@ -58,6 +58,7 @@ export function runProcess(process) {
   processRequest.setTableid(process.tableId)
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
+  processRequest.setReportexporttype(process.reportExportType)
   //  Run Process
   return Instance.call(this).requestProcess(processRequest)
 }
