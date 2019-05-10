@@ -24,6 +24,22 @@ export function loadMainMenu() {
             meta: { title: 'ProcessActivity', icon: 'documentation', noCache: true }
           }
         ]
+      },
+      {
+        path: '/reporviewer',
+        component: Layout,
+        hidden: true,
+        redirect: '/reportviewer/index',
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/components/ADempiere/ReportViewer'),
+            name: 'Report Viewer',
+            meta: {
+              title: 'Report Viewer'
+            }
+          }
+        ]
       }
     ]
     menu.getChildsList().forEach((menu) => {

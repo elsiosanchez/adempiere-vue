@@ -42,9 +42,10 @@ const process = {
             //  Default Action
             var processActions = [
               {
-                name: 'Run Process',
-                type: 'action',
-                action: 'startProcess',
+                name: 'Run Process As',
+                type: 'summary',
+                action: '',
+                childs: [],
                 uuid: response.getUuid(),
                 description: response.getDescription(),
                 help: response.getHelp(),
@@ -69,7 +70,7 @@ const process = {
                 reportExportType: actionValue.reportExportType
               }
               //  Push values
-              processActions.push(action)
+              processActions[0].childs.push(action)
             })
             var panel = {
               id: response.getId(),
