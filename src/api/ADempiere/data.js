@@ -14,19 +14,36 @@ function Instance() {
 
 export function getObject(table, uuid = false) {
   return Instance.call(this).requestObject(table, uuid)
-  // return connectionDataRecord.requestObject(table, uuid)
 }
 
 export function getCriteria(table) {
   return Instance.call(this).getCriteria(table)
-  // return connectionDataRecord.getCriteria(table)
 }
 
 export function getObjectListFromCriteria(table, criteria) {
   const criteriaForList = Instance.call(this).getCriteria(table)
-  // const criteriaForList = connectionDataRecord.getCriteria(table)
   criteriaForList.setWhereclause(criteria)
   return Instance.call(this).requestObjectListFromCriteria(criteriaForList)
+}
+
+// Request a Lookup list data from Reference
+// The main attributes that function hope are:
+// reference {
+//   tableName,
+//   parsedQuery
+// }
+export function getLookupList(reference) {
+  return Instance.call(this).requestLookupListFromReference(reference)
+}
+
+// Request a Lookup data from Reference
+// The main attributes that function hope are:
+// reference {
+//   tableName,
+//   parsedDirectQuery
+// }
+export function getLookup(reference) {
+  return Instance.call(this).requestLookupFromReference(reference)
 }
 
 // Request a process
