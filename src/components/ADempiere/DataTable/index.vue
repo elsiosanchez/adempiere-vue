@@ -10,9 +10,7 @@
         class="header-search-select"
       />
     </div>
-
     <el-table
-      v-loading="! getRecords"
       :data="filterResult()"
       element-loading-text="Loading..."
       element-loading-spinner="el-icon-loading"
@@ -37,7 +35,7 @@
               <field
                 :label="false"
                 :metadata-field="item"
-                :value="String(scope.row[item.columnName])"
+                :value="scope.row[item.columnName]"
                 size="small"
                 @keyup.enter.native="confirmEdit(scope.row)"
               />
@@ -146,16 +144,33 @@ export default {
       })
     },
     filterResult() {
-      var tab = this.tableData.filter((data) => {
+      var data = []
+      data = this.tableData.filter((rowItem) => {
         if (!this.search) {
-          Object.keys(data).forEach(key => {
-            if (String(data[key]).includes(String(this.search))) {
+          Object.keys(rowItem).forEach(key => {
+            if (String(rowItem[key]).includes(String(this.search))) {
               return true
             }
           })
         }
       })
-      return tab
+
+      if (data.length < 1) {
+        data = this.addNewValue()
+      }
+      return data
+    },
+    addNewValue() {
+      var data = []
+      var newValue = {}
+      this.fieldList.forEach((item) => {
+        newValue[item.columnName] = null
+      })
+      // this.edit = true
+      data.push(newValue)
+      this.edit = true
+      this.$set(newValue, 'edit', true)
+      return data
     },
     deleteRow(index, rows) {
       rows.splice(index, 1)
@@ -220,24 +235,6 @@ export default {
         .then(response => {
           this.tableData = response
           this.getRecords = true
-
-          // for (var j = 0; j < valueObject.getRecordsList().length; j++) {
-          //   var newValue = {}
-          //   var values = valueObject.getRecordsList()[j]
-          //   const map = values.getValuesMap()
-
-          //   for (var i = 0; i < this.fieldList.length; i++) {
-          //     var columnName = this.fieldList[i].columnName
-          //     var tempValue = ''
-          //     tempValue = this.convertValueFromGRPC(map.get(columnName))
-
-          //   }
-          //   this.tableData.push(newValue)
-          //   // var   campos =[ 1,2,3]
-          //   // console.log(campos.includes(2))
-          //     newValue[columnName] = tempValue
-          //   this.$set(newValue, 'edit', false)
-          // }
         })
         .catch(err => console.log('Error Panel detail: ' + err.message))
     },
