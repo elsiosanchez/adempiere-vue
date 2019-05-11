@@ -73,7 +73,7 @@ const browser = {
             if (typeof process !== 'undefined') {
               actions.push({
                 name: process.getName(),
-                type: 'P',
+                type: 'process',
                 uuid: process.getUuid(),
                 description: process.getDescription(),
                 help: process.getHelp(),
