@@ -6,7 +6,7 @@
     <el-popover
       v-for="(item, index) in processRunning"
       :key="index"
-      placement="right"
+      placement="left-start"
       width="400"
       trigger="click"
     >
@@ -33,6 +33,12 @@
           prop="address"
         >
           Start Process
+        </el-table-column>
+        <el-table-column
+          prop="address"
+        >
+          <router-link :to="{ name: 'Report Viewer' }"><svg-icon icon-class="documentation" />
+          </router-link>
         </el-table-column>
       </el-table>
     </el-popover>
