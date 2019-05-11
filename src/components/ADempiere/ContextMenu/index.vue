@@ -133,7 +133,7 @@ export default {
         })
         this.$store.dispatch('tagsView/delView', this.$route)
         this.$router.push({ name: 'Report Viewer' })
-      } else if (action.type === 'P') {
+      } else if (action.type === 'process') {
         this.showModal(action)
       }
     },
