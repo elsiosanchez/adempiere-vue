@@ -91,14 +91,6 @@ export default {
     this.reloadContextMenu()
   },
   methods: {
-    openDialog(process) {
-      this.$store.subscribe(mutation => {
-        if (mutation.type === 'setShowDialog') {
-          this.visibleDialog = mutation.payload
-          this.processMetadata = process
-        }
-      })
-    },
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.browserUuid

@@ -211,14 +211,6 @@ export default {
         this.loading = true
         this.windowMetadata = window
       }
-    },
-    openDialog(process) {
-      this.$store.subscribe(mutation => {
-        if (mutation.type === 'setShowDialog') {
-          this.visibleDialog = mutation.payload
-          this.processMetadata = process
-        }
-      })
     }
   }
 }
