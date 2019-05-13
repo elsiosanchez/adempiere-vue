@@ -12,10 +12,15 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <h3 v-show="checkValue(browserMetadata.description)" class="warn-content text-center">
-          <div>{{ browserMetadata.description }}  </div>
+          <div>{{ browserMetadata.description }}</div>
         </h3>
         <code v-show="checkValue(browserMetadata.help)" v-html="browserMetadata.help" />
         <panel
+          :container-uuid="browserUuid"
+          :metadata="browserMetadata"
+          :panel-type="panelType"
+        />
+        <filter-panel
           :container-uuid="browserUuid"
           :metadata="browserMetadata"
           :panel-type="panelType"
@@ -41,6 +46,7 @@
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
+import FilterPanel from '@/components/ADempiere/Panel/filterPanel'
 import DataTable from '@/components/ADempiere/DataTable'
 import { checkStringValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
@@ -49,6 +55,7 @@ export default {
   name: 'Browser',
   components: {
     Panel,
+    FilterPanel,
     DataTable,
     ContextMenu,
     Sticky,

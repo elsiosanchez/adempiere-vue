@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper">
     <el-form
-      v-if="$store.state.app.device==='desktop'"
       v-model="dataRecords"
       :label-position="labelPosition"
       label-width="200px"
@@ -37,7 +36,7 @@
           </div>
         </div>
       </template>
-      <div class="cards">
+      <div :class="cards()">
         <template v-for="(item, key) in fieldGroups">
           <el-row :key="key">
             <el-col :key="key" :span="24">
@@ -71,71 +70,6 @@
               </div>
             </el-col>
           </el-row>
-        </template>
-      </div>
-    </el-form>
-    <el-form v-else v-model="dataRecords" :label-position="labelPosition" label-width="200px">
-      <template v-if="typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'">
-        <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
-          <div
-            v-if="checkInGroup(firstGroup.groupFinal)
-              && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
-              || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
-            :style="determinateGroup(firstGroup.groupFinal, 'style')"
-            class="card"
-          >
-            <el-card
-              :header="determinateGroup(firstGroup.groupFinal, 'header')"
-              shadow="hover"
-            >
-              <el-row :gutter="gutterRow">
-                <template v-for="(subItem, subKey) in firstGroup.metadataFields">
-                  <field
-                    :key="subKey"
-                    :parent-uuid="parentUuid"
-                    :container-uuid="containerUuid"
-                    :metadata-field="subItem"
-                    :load-record="loadRecord"
-                    :recorddata-fields="dataRecords[subItem.columnName]"
-                    :span="checkNextField(firstGroup.metadataFields, subKey)"
-                    :panel-type="panelType"
-                  />
-                </template>
-              </el-row>
-            </el-card>
-          </div>
-        </div>
-      </template>
-      <div class="cards-not-group">
-        <template v-for="(item, key) in fieldGroups">
-          <div
-            v-if="checkInGroup(item.groupFinal)
-              && (group.groupType == 'T' && group.groupName == item.groupFinal)
-              || (group.groupType !== 'T' && item.typeGroup !== 'T')"
-            :key="key"
-            :style="determinateGroup(item.groupFinal, 'style')"
-            class="card"
-          >
-            <el-card
-              :header="determinateGroup(item.groupFinal, 'header')"
-              shadow="hover"
-            >
-              <el-row :gutter="gutterRow">
-                <template v-for="(subItem, subKey) in item.metadataFields">
-                  <field
-                    :key="subKey"
-                    :parent-uuid="parentUuid"
-                    :container-uuid="containerUuid"
-                    :metadata-field="subItem"
-                    :load-record="loadRecord"
-                    :recorddata-fields="dataRecords[subItem.columnName]"
-                    :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
-                    :panel-type="panelType"
-                  />
-                </template>
-              </el-row>
-            </el-card>
-          </div>
         </template>
       </div>
     </el-form>
@@ -218,6 +152,12 @@ export default {
     this.getPanel()
   },
   methods: {
+    cards() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'cards-not-group'
+      }
+      return 'cards'
+    },
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.containerUuid
