@@ -67,6 +67,10 @@ export default {
       type: String,
       default: ''
     },
+    metadata: {
+      type: Object,
+      default: () => {}
+    },
     label: {
       type: String,
       default: ''
@@ -79,6 +83,10 @@ export default {
     searchable: {
       type: Boolean,
       default: true
+    },
+    panelType: {
+      type: String,
+      default: 'window'
     }
   },
   data() {
@@ -114,7 +122,7 @@ export default {
     }
   },
   created() {
-    this.getTab()
+    this.getTable()
   },
   methods: {
     /**
@@ -184,22 +192,27 @@ export default {
      * Get the tab object with all its attributes as well as the fields it contains
      * @param {string} tabUUID universally unique identifier
      */
-    getTab() {
+    getTable() {
       var fieldList = this.$store.getters.getFieldsListFromPanel(
         this.containerUuid
       )
       if (typeof fieldList === 'undefined' || fieldList.length === 0) {
-        this.$store.dispatch('getTabAndFieldFromServer', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid
-        })
-          .then(response => {
-            this.generatePanel(response.fieldList)
+        if (this.panelType === 'window') {
+          this.$store.dispatch('getTabAndFieldFromServer', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid
           })
-          .catch(err => {
-            console.warn('Dictionay DataTable - Error ' + err.code + ': ' + err.message)
-            this.isLoaded = false
-          })
+            .then(response => {
+              this.generatePanel(response.fieldList)
+            })
+            .catch(err => {
+              console.warn('Dictionay DataTable - Error ' + err.code + ': ' + err.message)
+              this.isLoaded = false
+            })
+        } else {
+          this.tableName = undefined
+          this.generatePanel(this.metadata.fieldList)
+        }
       } else {
         this.generatePanel(fieldList)
       }
@@ -208,7 +221,7 @@ export default {
       this.fieldList = fieldList
       this.fieldSequence = this.sortFields(fieldList)
       this.isLoaded = true
-      if (typeof this.tableName !== 'undefined') {
+      if (typeof this.tableName !== 'undefined' && this.tableName !== '') {
         this.getData(this.tableName)
       }
     },
@@ -222,7 +235,6 @@ export default {
           type: 'error',
           showClose: true
         })
-        console.warn('DataRecord PanelDetail - Error: Table Name is not defined ')
         return
       }
       var criteria = "IsActive = 'Y'"

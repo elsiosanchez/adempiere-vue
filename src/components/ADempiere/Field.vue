@@ -116,7 +116,11 @@ export default {
       return span
     },
     isDisplayed() {
-      return this.field.isActive && this.field.isDisplayed && this.field.isDisplayedFromLogic
+      var display = this.field.isActive && this.field.isDisplayed && this.field.isDisplayedFromLogic
+      if (this.panelType === 'browser') {
+        return this.field.isQueryCriteria
+      }
+      return display
     },
     isReadOnly() {
       return this.field.isReadonly && this.field.isReadonlyFromLogic

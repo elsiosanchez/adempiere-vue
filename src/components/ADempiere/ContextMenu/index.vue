@@ -35,11 +35,12 @@
       <el-menu-item v-else disabled index="1">Relations</el-menu-item>
       <el-submenu class="el-menu-item" index="2">
         <template slot="title">Actions</template>
-        <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
-          {{ action.name }}
-        </el-menu-item>
-        <el-menu-item index="2-1" @click="generateReport('pdf')">{{ 'Generate as PDF' }}</el-menu-item>
-        <el-menu-item index="2-2" @click="generateReport('html')">{{ 'Generate as HTML' }}</el-menu-item>
+        <el-submenu v-for="(action, index) in actions" :key="index" :index="action.name">
+          <template slot="title">{{ action.name }}</template>
+          <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+            {{ child.name }}
+          </el-menu-item>
+        </el-submenu>
       </el-submenu>
       <el-menu-item index="3">References</el-menu-item>
     </el-menu>
@@ -124,21 +125,20 @@ export default {
       if (action.type === 'action') {
         this.$notify.info({
           title: 'Info',
-          message: 'Processing'
+          message: 'Processing ' + action.name
         })
         this.$store.dispatch(action.action, {
           action: action,
           containerUuid: this.$route.meta.uuid
         })
-      } else if (action.type === 'P') {
+        this.$store.dispatch('tagsView/delView', this.$route)
+        this.$router.push({ name: 'Report Viewer' })
+      } else if (action.type === 'process') {
         this.showModal(action)
       }
     },
     handleClick(item) {
       this.$router.push({ name: item.name })
-    },
-    generateReport(type) {
-      this.$store.state.contextMenu.reportFormat = type
     }
   }
 }
