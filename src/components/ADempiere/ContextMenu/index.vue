@@ -35,12 +35,17 @@
       <el-menu-item v-else disabled index="1">Relations</el-menu-item>
       <el-submenu class="el-menu-item" index="2">
         <template slot="title">Actions</template>
-        <el-submenu v-for="(action, index) in actions" :key="index" :index="action.name">
-          <template slot="title">{{ action.name }}</template>
-          <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
-            {{ child.name }}
+        <template v-for="(action, index) in actions">
+          <el-submenu v-if="action.childs" :key="index" :index="action.name">
+            <template slot="title">{{ action.name }}</template>
+            <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+              {{ child.name }}
+            </el-menu-item>
+          </el-submenu>
+          <el-menu-item v-else :key="index" :index="action.name" @click="runAction(action)">
+            {{ action.name }}
           </el-menu-item>
-        </el-submenu>
+        </template>
       </el-submenu>
       <el-menu-item index="3">References</el-menu-item>
     </el-menu>
@@ -131,8 +136,10 @@ export default {
           action: action,
           containerUuid: this.$route.meta.uuid
         })
-        this.$store.dispatch('tagsView/delView', this.$route)
-        this.$router.push({ name: 'Report Viewer' })
+        if (action.isReport) {
+          this.$store.dispatch('tagsView/delView', this.$route)
+          this.$router.push({ name: 'Report Viewer' })
+        }
       } else if (action.type === 'process') {
         this.showModal(action)
       }

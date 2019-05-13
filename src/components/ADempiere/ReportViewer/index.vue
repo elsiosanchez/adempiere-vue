@@ -6,6 +6,18 @@
         <div v-html="reportContentValue" />
       </el-scrollbar>
     </div>
+    <div v-else-if="reportFormat === 'txt'" class="content-txt">
+      <el-scrollbar wrap-class="scroll">
+        <pre v-text="reportContentValue" />
+      </el-scrollbar>
+    </div>
+    <div v-else-if="reportFormat === 'xls' || reportFormat ==='xlsx'">
+      <!--<el-table :data="reportContentValue" border highlight-current-row class="content-excel">
+        <pre>{{ reportContentValue }}</pre>
+        <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
+      </el-table>-->
+      {{ reportFormat + reportContentValue }}
+    </div>
   </div>
 </template>
 
@@ -14,7 +26,9 @@ export default {
   name: 'ReportViewer',
   data() {
     return {
-      pdfLink: require('@/assets/pdf/manual.pdf')
+      pdfLink: require('@/assets/pdf/manual.pdf'),
+      tableData: [],
+      tableHeader: []
     }
   },
   computed: {
@@ -26,14 +40,6 @@ export default {
     }
   },
   methods: {
-    htmlDecode(text) {
-      var processMetadata = document.createElement('div')
-      processMetadata.innerHTML = text
-      return processMetadata.childNodes[0].nodeValue
-    },
-    subscribeChanges() {
-
-    }
   }
 }
 </script>
@@ -46,5 +52,14 @@ export default {
 	}
 	.content-html{
 		width: 100%;
+    padding: 10px;
 	}
+  .content-txt{
+		width: 100%;
+    padding: 10px;
+	}
+  .content-excel {
+    width: 100%;
+    margin-top:20px;
+  }
 </style>
