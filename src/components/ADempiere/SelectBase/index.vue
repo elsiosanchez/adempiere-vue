@@ -2,9 +2,8 @@
   <el-select
     v-model="value"
     :metadata="metadata"
-    :filterable="metadata.Filterable"
-    :collapse-tags="metadata.CollapseTags"
-    :placeholder="metadata.Help"
+    :filterable="true"
+    :placeholder="metadata.help"
     value-key="key"
     @change="handleChange"
   >

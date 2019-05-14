@@ -6,6 +6,7 @@
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
 import evaluator from '@/utils/ADempiere/evaluator.js'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 const panel = {
   state: {
@@ -33,6 +34,14 @@ const panel = {
     },
     dictionaryResetCache(state, payload) {
       state.panel = payload
+    },
+    changeFieldShowedFromUser(state, payload) {
+      state = state.panel.map((item) => {
+        if (payload.containerUuid === item.containerUuid) {
+          return payload.newPanel
+        }
+        return item
+      })
     }
   },
   actions: {
@@ -41,6 +50,22 @@ const panel = {
     },
     addFields({ commit }, payload) {
       commit('addFields', payload)
+    },
+    changeFieldShowedFromUser({ commit, getters }, params) {
+      var panel = getters.getPanel(params.containerUuid)
+      var newFields = panel.fieldList.map((itemField) => {
+        if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
+          itemField.isShowedFromUser = true
+          return itemField
+        }
+        itemField.isShowedFromUser = false
+        return itemField
+      })
+      panel.fieldList = newFields
+      commit('changeFieldShowedFromUser', {
+        containerUuid: params.containerUuid,
+        newPanel: panel
+      })
     },
     notifyPanelChange({ state, dispatch }, payload) {
       state.panel
@@ -157,7 +182,7 @@ const panel = {
         item => item.uuid === containerUuid
       )
       if (typeof panel === 'undefined') {
-        return panel
+        return []
       }
       return panel.fieldList
     },
@@ -174,6 +199,21 @@ const panel = {
         return panel
       }
       return panel.fieldList.find(field => field.uuid === uuid)
+    },
+    getChangedFieldsList: (state) => (containerUuid) => {
+      var panel = state.panel.find(
+        itemPanel => itemPanel.uuid === containerUuid
+      )
+
+      if (typeof panel === 'undefined') {
+        return panel
+      }
+      var fieldList = panel.fieldList.filter((itemField) => {
+        return !isEmptyValue(itemField.value)
+      })
+
+      // fields with not empty value
+      return fieldList
     }
   }
 }

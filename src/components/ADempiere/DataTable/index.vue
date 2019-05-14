@@ -1,7 +1,7 @@
 <template>
   <el-form v-model="tableData" :label-position="labelPosition" label-width="200px">
-    <div v-show="searchable" :class="{'show':show}" align="right" class="search-detail">
-      <svg-icon class-name="search-icon" icon-class="search" @click="click" />
+    <div v-show="searchable" :class="{'show':showSearch}" align="right" class="search-detail">
+      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
       <el-input
         ref="headerSearchSelect"
         v-model="search"
@@ -102,8 +102,7 @@ export default {
       maxSizeColumns: 24,
       isLoaded: false,
       listLoading: true,
-      show: false,
-      // inputWidth: 'width: 50%',
+      showSearch: false,
       search: ''
     }
   },
@@ -113,7 +112,7 @@ export default {
         this.getData(this.tableName)
       }
     },
-    show(value) {
+    showSearch(value) {
       if (value) {
         document.body.addEventListener('click', this.close)
       } else {
@@ -132,17 +131,15 @@ export default {
       row.edit = !row.edit
     },
     click() {
-      this.show = !this.show
-      if (this.show) {
-        // this.inputWidth = 'width: 50%'
+      this.showSearch = !this.showSearch
+      if (this.showSearch) {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
     },
     close() {
       this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.blur()
       this.options = []
-      this.show = false
-      // this.inputWidth = 'width: 0%'
+      this.showSearch = false
     },
     confirmEdit(row, newValue, value) {
       row.edit = false
