@@ -15,9 +15,27 @@
             class="card"
           >
             <el-card
-              :header="determinateGroup(firstGroup.groupFinal, 'header')"
               shadow="hover"
             >
+              <div slot="header" class="clearfix">
+                <span>
+                  {{ determinateGroup(firstGroup.groupFinal, 'header') }}
+                </span>
+                <el-popover
+                  placement="top"
+                  title="Selected fields"
+                  width="200"
+                  trigger="click"
+                >
+                  <filter-fields
+                    :container-uuid="containerUuid"
+                    :panel-type="panelType"
+                  />
+                  <el-button slot="reference" style="float: right; padding: 3px 0">
+                    Add Optional Fields
+                  </el-button>
+                </el-popover>
+              </div>
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
                   <field
@@ -49,9 +67,27 @@
                 class="card"
               >
                 <el-card
-                  :header="determinateGroup(item.groupFinal, 'header')"
                   shadow="hover"
                 >
+                  <div slot="header" class="clearfix">
+                    <span>
+                      {{ determinateGroup(item.groupFinal, 'header') }}
+                    </span>
+                    <el-popover
+                      placement="top"
+                      title="Selected fields"
+                      width="200"
+                      trigger="click"
+                    >
+                      <filter-fields
+                        :container-uuid="containerUuid"
+                        :panel-type="panelType"
+                      />
+                      <el-button slot="reference" style="float: right; padding: 3px 0">
+                        Add Optional Fields
+                      </el-button>
+                    </el-popover>
+                  </div>
                   <el-row :gutter="gutterRow">
                     <template v-for="(subItem, subKey) in item.metadataFields">
                       <field
@@ -78,12 +114,14 @@
 
 <script>
 import Field from '@/components/ADempiere/Field'
+import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import SizeField from '@/components/ADempiere/Field/fieldSize'
 
 export default {
   name: 'Panel',
   components: {
-    Field
+    Field,
+    FilterFields
   },
   props: {
     parentUuid: {
@@ -143,7 +181,7 @@ export default {
     }
   },
   watch: {
-    containerUuid: () => {
+    containerUuid: function() {
       this.generatePanel(this.metadata.fieldList)
     }
   },
@@ -487,10 +525,6 @@ export default {
   .left .el-tooltip__popper,
   .right .el-tooltip__popper {
     padding: 8px 10px;
-  }
-
-  .el-button {
-    width: 110px;
   }
 </style>
 <style>

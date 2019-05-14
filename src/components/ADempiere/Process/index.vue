@@ -5,10 +5,10 @@
     </sticky>
     <el-row :gutter="20">
       <el-col :span="24">
-        <h3 v-show="checkValue(processMetadata.name)" class="warn-content text-center">
+        <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
           {{ processMetadata.name }}
         </h3>
-        <code v-show="checkValue(processMetadata.help)" v-html="processMetadata.help" />
+        <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" />
         <panel
           :position-tab="processMetadata.accesLevel"
           :container-uuid="processUuid"
@@ -32,7 +32,7 @@
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
-import { checkStringValue } from '@/utils/ADempiere/valueUtil'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 export default {
   name: 'Process',
@@ -60,9 +60,7 @@ export default {
     this.getProcess(this.$route.meta.uuid)
   },
   methods: {
-    checkValue(text) {
-      return checkStringValue(text)
-    },
+    isEmptyValue,
     getProcess(uuid = null) {
       if (!uuid) {
         uuid = this.$route.meta.uuid
