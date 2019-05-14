@@ -24,9 +24,20 @@ export function loadMainMenu() {
             meta: { title: 'ProcessActivity', icon: 'documentation', noCache: true }
           }
         ]
+      }, {
+        path: '/SearchWindow',
+        component: Layout,
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/components/ADempiere/SearchWindow'),
+            name: 'SearchWindow',
+            meta: { title: 'SearchWindow', icon: 'documentation', noCache: true }
+          }
+        ]
       },
       {
-        path: '/reporviewer',
+        path: 'reporviewer',
         component: Layout,
         hidden: true,
         redirect: '/reportviewer/index',
