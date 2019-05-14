@@ -6,6 +6,7 @@
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
 import evaluator from '@/utils/ADempiere/evaluator.js'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 const panel = {
   state: {
@@ -174,6 +175,21 @@ const panel = {
         return panel
       }
       return panel.fieldList.find(field => field.uuid === uuid)
+    },
+    getChangedFieldsList: (state) => (containerUuid) => {
+      var panel = state.panel.find(
+        itemPanel => itemPanel.uuid === containerUuid
+      )
+
+      if (typeof panel === 'undefined') {
+        return panel
+      }
+      var fieldList = panel.fieldList.filter((itemField) => {
+        return !isEmptyValue(itemField.value)
+      })
+
+      // fields with not empty value
+      return fieldList
     }
   }
 }

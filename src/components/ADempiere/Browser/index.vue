@@ -130,7 +130,7 @@ export default {
 }
 </script>
 
-<style scoped >
+<style scoped>
   .warn-content{
     margin: 10px 0px !important;
   }

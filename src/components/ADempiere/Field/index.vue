@@ -6,7 +6,6 @@
     <el-col></el-col> container-->
   <el-col v-show="isDisplayed()" :span="getSpan()">
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
-      {{ field.componentPath }}
       <component
         :is="afterLoader"
         :metadata="field"
