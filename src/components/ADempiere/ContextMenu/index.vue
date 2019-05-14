@@ -14,7 +14,7 @@
         <el-menu-item v-else disabled index="1-1">Relations</el-menu-item>
         <el-submenu class="el-menu-item" index="1-2">
           <template slot="title">Actions</template>
-          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
+          <el-menu-item v-for="(action, index) in actionsValue" :key="index" :index="action.name" @click="runAction(action)">
             {{ action.name }}
           </el-menu-item>
         </el-submenu>
@@ -24,7 +24,7 @@
   </div>
   <div v-else class="container-submenu">
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
-      <el-submenu v-if="relations.length > 0" class="el-menu-item" index="1">
+      <el-submenu v-if="relations !== undefined" class="el-menu-item" index="1">
         <template slot="title">Relations</template>
         <el-scrollbar wrap-class="scroll">
           <el-menu-item v-for="(relation, index) in relations" v-show="relation.meta.type!=='summary' && relation.meta.uuid!==$route.meta.uuid" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
@@ -33,7 +33,7 @@
         </el-scrollbar>
       </el-submenu>
       <el-menu-item v-else disabled index="1">Relations</el-menu-item>
-      <el-submenu class="el-menu-item" index="2">
+      <el-submenu v-if="actions !== undefined" class="el-menu-item" index="2">
         <template slot="title">Actions</template>
         <template v-for="(action, index) in actions">
           <el-submenu v-if="action.childs" :key="index" :index="action.name">
@@ -47,6 +47,7 @@
           </el-menu-item>
         </template>
       </el-submenu>
+      <el-menu-item v-else disabled index="2">Actions</el-menu-item>
       <el-menu-item index="3">References</el-menu-item>
     </el-menu>
   </div>
@@ -122,7 +123,9 @@ export default {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'reloadContextMenu') {
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
-          this.relations = this.$store.getters.getRelations(this.$route.meta.parentUuid)
+          if (typeof this.$route.meta.parentUuid !== 'undefined') {
+            this.relations = this.$store.getters.getRelations(this.$route.meta.parentUuid)
+          }
         }
       })
     },
@@ -137,8 +140,17 @@ export default {
           containerUuid: this.$route.meta.uuid
         })
         if (action.isReport) {
-          this.$store.dispatch('tagsView/delView', this.$route)
-          this.$router.push({ name: 'Report Viewer' })
+          var processResult = this.$store.getters.getProcessResult
+          if (processResult.isError) {
+            this.$notify.error({
+              title: 'Error',
+              message: 'Error running the process ' + action.name
+            })
+          } else {
+            this.$router.push({ name: 'Report Viewer', params: { processUuid: processResult.processUuid, instanceUuid: processResult.instanceUuid, fileName: processResult.output.fileName }})
+          }
+          // this.$store.dispatch('tagsView/delView', this.$route)
+          // this.$router.push({ name: 'Report Viewer' })
         }
       } else if (action.type === 'process') {
         this.showModal(action)

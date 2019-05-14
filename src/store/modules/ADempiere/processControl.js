@@ -3,8 +3,7 @@ import { runProcess, getLookupList } from '@/api/ADempiere/data'
 const processControl = {
   state: {
     visibleDialog: false,
-    reportFormat: '',
-    reportContent: ``,
+    reportObject: {},
     metadata: {},
     process: []
   },
@@ -24,9 +23,10 @@ const processControl = {
       state.metadata = payload
     },
     openReport(state, payload) {
-      // console.log('mutation - openReport', payload)
-      state.reportFormat = payload.output.reportExportType
-      state.reportContent = payload.output.output
+      state.reportObject = payload
+    },
+    changeFormatReport(state, payload) {
+      state.reportFormat = payload
     }
   },
   actions: {
@@ -58,6 +58,7 @@ const processControl = {
           if (typeof response !== 'undefined') {
             processResult = {
               instanceUuid: response.getInstanceuuid(),
+              processUuid: processToRun.uuid,
               isError: response.getIserror(),
               summary: response.getSummary(),
               resultTableId: response.getResulttableid(),
@@ -88,9 +89,13 @@ const processControl = {
       }
     },
     finishProcess({ commit }, processOutput) {
-      // console.log('action - finishProcess', processOutput)
       if (!processOutput.isError) {
         commit('openReport', processOutput)
+      }
+    },
+    changeFormatReport({ commit }, reportFormat) {
+      if (typeof reportFormat !== 'undefined') {
+        commit('changeFormatReport', reportFormat)
       }
     }
   },
@@ -103,6 +108,9 @@ const processControl = {
         }
       })
       return processList
+    },
+    getProcessResult: (state) => {
+      return state.reportObject
     }
   }
 }

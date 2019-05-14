@@ -1,45 +1,90 @@
 <template>
-  <div>
-    <iframe v-if="reportFormat === 'pdf'" class="content" :src="pdfLink" />
-    <div v-else-if="reportFormat === 'html'" class="content-html">
-      <el-scrollbar wrap-class="scroll">
-        <div v-html="reportContentValue" />
-      </el-scrollbar>
-    </div>
-    <div v-else-if="reportFormat === 'txt'" class="content-txt">
-      <el-scrollbar wrap-class="scroll">
-        <pre v-text="reportContentValue" />
-      </el-scrollbar>
-    </div>
-    <div v-else-if="reportFormat === 'xls' || reportFormat ==='xlsx'">
-      <!--<el-table :data="reportContentValue" border highlight-current-row class="content-excel">
-        <pre>{{ reportContentValue }}</pre>
-        <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
-      </el-table>-->
-      {{ reportFormat + reportContentValue }}
-    </div>
+  <div v-if="loading">
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <h3 class="text-center">{{ reportHeader }}</h3>
+      </el-col>
+      <el-col :span="12">
+        <context-menu />
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="pdfLink" />
+        <div v-else-if="reportFormatValue === 'html'" class="content-html">
+          <el-scrollbar wrap-class="scroll">
+            <div v-html="reportContentValue" />
+          </el-scrollbar>
+        </div>
+        <div v-else-if="reportFormatValue === 'txt'" class="content-txt">
+          <el-scrollbar wrap-class="scroll">
+            <pre v-text="reportContentValue" />
+          </el-scrollbar>
+        </div>
+        <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'">
+          <el-table :data="reportContentValue" border highlight-current-row class="content-excel">
+            <pre>{{ reportContentValue }}</pre>
+            <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
+          </el-table>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+  <div v-else style="padding: 20px 100px">
+    <h3>
+      Loading Report...
+    </h3>
   </div>
 </template>
 
 <script>
+import ContextMenu from '@/components/ADempiere/ContextMenu'
+
 export default {
   name: 'ReportViewer',
+  components: {
+    ContextMenu
+  },
   data() {
     return {
       pdfLink: require('@/assets/pdf/manual.pdf'),
+      reportFormat: '',
+      reportContent: ``,
+      reportHeader: '',
       tableData: [],
-      tableHeader: []
+      tableHeader: [],
+      loading: false,
+      reportResult: this.$store.state.processControl.reportObject
     }
   },
   computed: {
-    reportFormat() {
-      return this.$store.state.processControl.reportFormat
+    reportFormatValue() {
+      return this.reportFormat
     },
     reportContentValue() {
-      return this.$store.state.processControl.reportContent
+      return this.reportContent
     }
   },
+  created() {
+    this.displayReport(this.reportResult)
+  },
+  mounted() {
+    this.reloadContextMenu()
+  },
   methods: {
+    reloadContextMenu() {
+      this.$store.dispatch('reloadContextMenu', {
+        containerUuid: this.reportResult.processUuid
+      })
+    },
+    displayReport(reportResult) {
+      if (!this.isError) {
+        this.reportFormat = reportResult.output.reportExportType
+        this.reportContent = reportResult.output.output
+        this.reportHeader = reportResult.output.name
+        this.loading = true
+      }
+    }
   }
 }
 </script>

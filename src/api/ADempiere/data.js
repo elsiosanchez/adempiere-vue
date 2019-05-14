@@ -77,6 +77,5 @@ export function runProcess(process) {
   processRequest.setTableselectedid(process.tableSelectedId)
   processRequest.setReportexporttype(process.reportExportType)
   //  Run Process
-  console.log(Instance.call(this).requestProcess(processRequest))
   return Instance.call(this).requestProcess(processRequest)
 }
