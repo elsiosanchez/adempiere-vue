@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper">
     <el-form
-      v-if="$store.state.app.device==='desktop'"
       v-model="dataRecords"
       :label-position="labelPosition"
       label-width="200px"
@@ -16,9 +15,27 @@
             class="card"
           >
             <el-card
-              :header="determinateGroup(firstGroup.groupFinal, 'header')"
               shadow="hover"
             >
+              <div slot="header" class="clearfix">
+                <span>
+                  {{ determinateGroup(firstGroup.groupFinal, 'header') }}
+                </span>
+                <el-popover
+                  placement="top"
+                  title="Selected fields"
+                  width="200"
+                  trigger="click"
+                >
+                  <filter-fields
+                    :container-uuid="containerUuid"
+                    :panel-type="panelType"
+                  />
+                  <el-button slot="reference" style="float: right; padding: 3px 0">
+                    Add Optional Fields
+                  </el-button>
+                </el-popover>
+              </div>
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
                   <field
@@ -37,7 +54,7 @@
           </div>
         </div>
       </template>
-      <div class="cards">
+      <div :class="cards()">
         <template v-for="(item, key) in fieldGroups">
           <el-row :key="key">
             <el-col :key="key" :span="24">
@@ -50,9 +67,27 @@
                 class="card"
               >
                 <el-card
-                  :header="determinateGroup(item.groupFinal, 'header')"
                   shadow="hover"
                 >
+                  <div slot="header" class="clearfix">
+                    <span>
+                      {{ determinateGroup(item.groupFinal, 'header') }}
+                    </span>
+                    <el-popover
+                      placement="top"
+                      title="Selected fields"
+                      width="200"
+                      trigger="click"
+                    >
+                      <filter-fields
+                        :container-uuid="containerUuid"
+                        :panel-type="panelType"
+                      />
+                      <el-button slot="reference" style="float: right; padding: 3px 0">
+                        Add Optional Fields
+                      </el-button>
+                    </el-popover>
+                  </div>
                   <el-row :gutter="gutterRow">
                     <template v-for="(subItem, subKey) in item.metadataFields">
                       <field
@@ -74,82 +109,19 @@
         </template>
       </div>
     </el-form>
-    <el-form v-else v-model="dataRecords" :label-position="labelPosition" label-width="200px">
-      <template v-if="typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'">
-        <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
-          <div
-            v-if="checkInGroup(firstGroup.groupFinal)
-              && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
-              || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
-            :style="determinateGroup(firstGroup.groupFinal, 'style')"
-            class="card"
-          >
-            <el-card
-              :header="determinateGroup(firstGroup.groupFinal, 'header')"
-              shadow="hover"
-            >
-              <el-row :gutter="gutterRow">
-                <template v-for="(subItem, subKey) in firstGroup.metadataFields">
-                  <field
-                    :key="subKey"
-                    :parent-uuid="parentUuid"
-                    :container-uuid="containerUuid"
-                    :metadata-field="subItem"
-                    :load-record="loadRecord"
-                    :recorddata-fields="dataRecords[subItem.columnName]"
-                    :span="checkNextField(firstGroup.metadataFields, subKey)"
-                    :panel-type="panelType"
-                  />
-                </template>
-              </el-row>
-            </el-card>
-          </div>
-        </div>
-      </template>
-      <div class="cards-not-group">
-        <template v-for="(item, key) in fieldGroups">
-          <div
-            v-if="checkInGroup(item.groupFinal)
-              && (group.groupType == 'T' && group.groupName == item.groupFinal)
-              || (group.groupType !== 'T' && item.typeGroup !== 'T')"
-            :key="key"
-            :style="determinateGroup(item.groupFinal, 'style')"
-            class="card"
-          >
-            <el-card
-              :header="determinateGroup(item.groupFinal, 'header')"
-              shadow="hover"
-            >
-              <el-row :gutter="gutterRow">
-                <template v-for="(subItem, subKey) in item.metadataFields">
-                  <field
-                    :key="subKey"
-                    :parent-uuid="parentUuid"
-                    :container-uuid="containerUuid"
-                    :metadata-field="subItem"
-                    :load-record="loadRecord"
-                    :recorddata-fields="dataRecords[subItem.columnName]"
-                    :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
-                    :panel-type="panelType"
-                  />
-                </template>
-              </el-row>
-            </el-card>
-          </div>
-        </template>
-      </div>
-    </el-form>
   </div>
 </template>
 
 <script>
 import Field from '@/components/ADempiere/Field'
+import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import SizeField from '@/components/ADempiere/Field/fieldSize'
 
 export default {
   name: 'Panel',
   components: {
-    Field
+    Field,
+    FilterFields
   },
   props: {
     parentUuid: {
@@ -209,7 +181,7 @@ export default {
     }
   },
   watch: {
-    containerUuid: () => {
+    containerUuid: function() {
       this.generatePanel(this.metadata.fieldList)
     }
   },
@@ -218,6 +190,12 @@ export default {
     this.getPanel()
   },
   methods: {
+    cards() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'cards-not-group'
+      }
+      return 'cards'
+    },
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.containerUuid
@@ -548,10 +526,6 @@ export default {
   .right .el-tooltip__popper {
     padding: 8px 10px;
   }
-
-  .el-button {
-    width: 110px;
-  }
 </style>
 <style>
   .cards {
@@ -569,11 +543,15 @@ export default {
   .card {
     padding: 10px;
     margin: 0 0 1em;
-    width: 100%;
+    width: 100% !important;
     cursor: pointer;
     transition: all 100ms ease-in-out;
     display: inline-block;
     perspective: 1000;
     backface-visibility: hidden;
+  }
+
+  .el-card {
+    width: 100% !important;
   }
 </style>
