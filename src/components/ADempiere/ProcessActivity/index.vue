@@ -1,44 +1,42 @@
 <template>
   <div class="wrapper">
     <h3 class="warn-content text-center">
-      Process Activite
+      Process Activity
     </h3>
     <el-popover
-      v-for="(item, index) in processRunning"
-      :key="index"
       placement="left-start"
       width="400"
       trigger="click"
     >
-      <div>
+      <!-- <div>
         <p>{{ item.description }}</p>
-      </div>
+      </div> -->
       <el-table
         slot="reference"
-        :data="tableData"
+        :data="a"
+        :stripe="true"
         style="width: 100%"
       >
+        <!-- <template v-for="(item, index) in a"> -->
         <el-table-column
-          prop="date"
-          width="420"
-        > {{ item.name }}
-        </el-table-column>
-        <el-table-column
-          prop="name"
           width="400"
+          prop="name"
+          label="name"
         >
-          2016-05-02
+          <!-- {{ item.name }} -->
         </el-table-column>
         <el-table-column
-          prop="address"
+          width="420"
+          prop="description"
+          label="description"
         >
-          Start Process
-        </el-table-column>
-        <el-table-column
-          prop="address"
+          <!-- {{ item.name }} -->
+        </el-table-column><el-table-column
+          width="320"
+          prop="action"
+          label="action"
         >
-          <router-link :to="{ name: 'Report Viewer' }"><svg-icon icon-class="documentation" />
-          </router-link>
+          <!-- {{ item.name }} -->
         </el-table-column>
       </el-table>
     </el-popover>
@@ -46,16 +44,41 @@
 </template>
 <script>
 export default {
-  name: 'Notification',
+  name: 'ProcessActivity',
   data() {
     return {
       tableData: [{
-      }]
+      }],
+      processRunning: this.$store.getters.getRunningProcess()
     }
   },
   computed: {
-    processRunning() {
+    processRunnings() {
       return this.$store.getters.getRunningProcess()
+    },
+    a() {
+      var a = this.$store.getters.getRunningProcess().map((item) => {
+        // var b   = this.$store.getters.getActionProcess()
+        return {
+          name: item.name,
+          description: item.description,
+          action: item.name
+        }
+      })
+      console.log(a)
+      return a
+    }
+  },
+  created() {
+    this.subscribeChanges()
+  },
+  methods: {
+    subscribeChanges() {
+      this.$store.subscribe(mutation => {
+        if (mutation.type === 'startProcess') {
+          this.actions = this.$store.getters.getActionProcess()
+        }
+      })
     }
   }
 }

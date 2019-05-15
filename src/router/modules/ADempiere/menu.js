@@ -24,15 +24,26 @@ export function loadMainMenu() {
             meta: { title: 'ProcessActivity', icon: 'documentation', noCache: true }
           }
         ]
-      },
-      {
-        path: '/reporviewer',
+      }, {
+        path: '/SearchWindow',
         component: Layout,
-        hidden: true,
-        redirect: '/reportviewer/index',
         children: [
           {
             path: 'index',
+            component: () => import('@/components/ADempiere/SearchWindow'),
+            name: 'SearchWindow',
+            meta: { title: 'SearchWindow', icon: 'documentation', noCache: true }
+          }
+        ]
+      },
+      {
+        path: '/report-viewer',
+        component: Layout,
+        hidden: true,
+        redirect: 'report-viewer/:processUuid/:instanceUuid/:fileName',
+        children: [
+          {
+            path: ':processUuid/:instanceUuid/:fileName',
             component: () => import('@/components/ADempiere/ReportViewer'),
             name: 'Report Viewer',
             meta: {
