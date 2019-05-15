@@ -1,6 +1,6 @@
 import REFERENCES from '@/components/ADempiere/Field/references'
 import evaluator from '@/utils/ADempiere/evaluator.js'
-
+import * as utils from './valueUtil.js'
 /**
  * Converted the gRPC value to the value needed
  * @param {mixed} initialValue Value get of gRPC
@@ -115,6 +115,11 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
     defaultValue: fieldGRPC.getDefaultvalue(),
+    defaultValueParse: parseContext({
+      ...moreAttributes,
+      columnName: fieldGRPC.getColumnname(),
+      value: fieldGRPC.getDefaultvalue()
+    }),
     valueMin: fieldGRPC.getValuemin(),
     valueMax: fieldGRPC.getValuemax(),
     //
@@ -178,3 +183,50 @@ export function getParentFields(fieldGRPC) {
   }
   return parentFields
 }
+
+// Parse Context String
+export function parseContext(context) {
+  const store = require('@/store')
+  var value = String(context.value)
+  if (utils.isEmptyValue(value)) { return '' }
+
+  // var instances = value.length - value.replace('@', '').length
+  // if ((instances > 0) && (instances % 2) !== 0) { // could be an email address
+  //   return value
+  // }
+
+  var token
+  var inStr = value
+  var outStr = ''
+
+  var i = inStr.indexOf('@')
+
+  while (i !== -1) {
+    outStr = outStr + inStr.substring(0, i) // up to @
+    inStr = inStr.substring(i + 1, inStr.length)	// from first @
+    var j = inStr.indexOf('@') // next @
+    if (j < 0) {
+      console.log('No second tag: ' + inStr)
+      return ''	//	no second tag
+    }
+
+    token = inStr.substring(0, j)
+    context.columnName = token
+
+    var ctxInfo = store.default.getters.getContext(context)	// get context
+    if ((typeof ctxInfo === 'undefined' || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
+      context.parentUuid = null
+      context.containerUuid = null
+      ctxInfo = store.default.getters.getContext(context)	// get global context
+    }
+    if (typeof ctxInfo === 'undefined' || ctxInfo.length === 0) {
+      console.info('No Context for: ' + token)
+    } else { outStr = outStr + ctxInfo } // replace context with Context
+
+    inStr = inStr.substring(j + 1, inStr.length)	// from second @
+    i = inStr.indexOf('@')
+  }
+  outStr = outStr + inStr	// add the rest of the string
+
+  return outStr
+}	//	parseContext

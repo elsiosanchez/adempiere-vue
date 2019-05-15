@@ -38,10 +38,10 @@ const context = {
     getContext: (state) => (findedContext) => {
       var parent = ''
       var container = ''
-      if (typeof findedContext.parentUuid !== 'undefined') {
+      if (typeof findedContext.parentUuid !== 'undefined' && findedContext.parentUuid !== null) {
         parent = findedContext.parentUuid + '|'
       }
-      if (typeof findedContext.containerUuid !== 'undefined') {
+      if (typeof findedContext.containerUuid !== 'undefined' && findedContext.parentUuid !== null) {
         container = findedContext.containerUuid + '|'
       }
       var key = parent + container + findedContext.columnName
