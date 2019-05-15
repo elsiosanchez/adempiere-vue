@@ -96,6 +96,13 @@ const processControl = {
     }
   },
   getters: {
+    getActionProcess: (state) => (processUuid) => {
+      console.log(state)
+      var process = state.process.find(
+        item => item.uuid === processUuid
+      )
+      return process
+    },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       console.log(state)
       var processList = state.process.map((item) => {

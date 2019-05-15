@@ -66,11 +66,11 @@ export default {
     },
     a() {
       var a = this.$store.getters.getRunningProcess().map((item) => {
-        var b = this.$store.getters.getActions()
+        // var b = this.$store.getters.getActionProcess()
         return {
           name: item.name,
           description: item.description,
-          action: b
+          action: item.name
         }
       })
       console.log(a)
@@ -84,12 +84,9 @@ export default {
     subscribeChanges() {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'startProcess') {
-          this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
+          this.actions = this.$store.getters.getActionProcess()
         }
       })
-    },
-    Action(action) {
-      this.$store.dispatch(action.type)
     }
   }
 }
