@@ -141,16 +141,6 @@ export default {
         })
         if (action.isReport) {
           this.$store.subscribeAction({
-            before: (action, state) => {
-              if (action.type === 'finishProcess') {
-                if (action.payload.isError && action.payload.summary === 'Report') {
-                  this.$notify.error({
-                    title: 'Error',
-                    message: 'Error running the process ' + action.payload.output.name
-                  })
-                }
-              }
-            },
             after: (action, state) => {
               if (action.type === 'finishProcess') {
                 this.$router.push({ name: 'Report Viewer', params: { processUuid: action.payload.processUuid, instanceUuid: action.payload.instanceUuid, fileName: action.payload.output.fileName }})

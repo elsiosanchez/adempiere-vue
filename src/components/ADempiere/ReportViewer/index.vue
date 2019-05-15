@@ -69,7 +69,6 @@ export default {
     this.getCachedReport(this.$route.params.instanceUuid)
   },
   mounted() {
-    // this.displayReport(this.reportResult)
     this.reloadContextMenu()
   },
   methods: {
