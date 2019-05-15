@@ -54,7 +54,7 @@ export default {
       tableData: [],
       tableHeader: [],
       loading: false,
-      reportResult: this.$store.state.processControl.reportObject
+      reportResult: {}
     }
   },
   computed: {
@@ -66,7 +66,7 @@ export default {
     }
   },
   created() {
-    this.displayReport(this.reportResult)
+    this.getCachedReport(this.$route.params.instanceUuid)
   },
   mounted() {
     this.reloadContextMenu()
@@ -84,6 +84,10 @@ export default {
         this.reportHeader = reportResult.output.name
         this.loading = true
       }
+    },
+    getCachedReport(instanceUuid) {
+      this.reportResult = this.$store.getters.getCachedReport(instanceUuid)
+      this.displayReport(this.reportResult)
     }
   }
 }
