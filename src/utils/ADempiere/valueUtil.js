@@ -20,7 +20,7 @@ export function parseContext(context, value) {
 
   var i = inStr.indexOf('@')
   while (i !== -1) {
-    outStr.append(inStr.substring(0, i)) // up to @
+    outStr = outStr + inStr.substring(0, i) // up to @
     inStr = inStr.substring(i + 1, inStr.length())	// from first @
 
     var j = inStr.indexOf('@') // next @
@@ -31,22 +31,22 @@ export function parseContext(context, value) {
 
     token = inStr.substring(0, j)
 
-    context['columnName'] = token
+    context.columnName = token
 
     var ctxInfo = this.$store.getters.getContext(context)	// get context
     if (ctxInfo.length() === 0 && (token.startsWith('#') || token.startsWith('$'))) {
-      context['parentUuid'] = null
-      context['containerUuid'] = null
+      context.parentUuid = null
+      context.containerUuid = null
       ctxInfo = this.$store.getters.getContext(context)	// get global context
     }
     if (ctxInfo.length() === 0) {
       console.log('No Context for: ' + token)
-    } else { outStr = outStr + '' + ctxInfo } // replace context with Context
+    } else { outStr = outStr + ctxInfo } // replace context with Context
 
     inStr = inStr.substring(j + 1, inStr.length())	// from second @
     i = inStr.indexOf('@')
   }
-  outStr = outStr + '' + inStr	// add the rest of the string
+  outStr = outStr + inStr	// add the rest of the string
 
   return outStr
 }	//	parseContext
