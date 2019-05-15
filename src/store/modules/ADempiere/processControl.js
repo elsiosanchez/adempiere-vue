@@ -3,8 +3,7 @@ import { runProcess, getLookupList } from '@/api/ADempiere/data'
 const processControl = {
   state: {
     visibleDialog: false,
-    reportFormat: '',
-    reportContent: ``,
+    reportObject: {},
     metadata: {},
     process: []
   },
@@ -24,8 +23,10 @@ const processControl = {
       state.metadata = payload
     },
     openReport(state, payload) {
-      state.reportFormat = payload.output.reportExportType
-      state.reportContent = payload.output.output
+      state.reportObject = payload
+    },
+    changeFormatReport(state, payload) {
+      state.reportFormat = payload
     }
   },
   actions: {
@@ -43,13 +44,14 @@ const processControl = {
         isDirectPrint: payload.action.isDirectPrint,
         reportExportType: payload.action.reportExportType
       }
+      console.log(payload)
       commit('addStartedProcess', processToRun)
       getLookupList({
         tableName: 'M_DiscountSchema',
         parsedQuery: "SELECT M_DiscountSchema.M_DiscountSchema_ID,NULL,NVL(M_DiscountSchema.Name,'-1'),M_DiscountSchema.IsActive FROM M_DiscountSchema WHERE M_DiscountSchema.DiscountType<>'P' ORDER BY 3"
       })
         .catch(error => {
-          console.log(error)
+          console.log('Error in lookup list' + error)
         })
       // Run process on server and wait for it for notify
       runProcess(processToRun)
@@ -57,6 +59,7 @@ const processControl = {
           if (typeof response !== 'undefined') {
             processResult = {
               instanceUuid: response.getInstanceuuid(),
+              processUuid: processToRun.uuid,
               isError: response.getIserror(),
               summary: response.getSummary(),
               resultTableId: response.getResulttableid(),
@@ -71,11 +74,12 @@ const processControl = {
                 reportExportType: response.getOutput().getReportexporttype()
               }
             }
+
             dispatch('finishProcess', processResult)
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('Error running the process', error)
           dispatch('finishProcess', processResult)
         })
     },
@@ -90,17 +94,36 @@ const processControl = {
       if (!processOutput.isError) {
         commit('openReport', processOutput)
       }
+    },
+    changeFormatReport({ commit }, reportFormat) {
+      if (typeof reportFormat !== 'undefined') {
+        commit('changeFormatReport', reportFormat)
+      }
     }
   },
   getters: {
+    getActionProcess: (state) => (processUuid) => {
+      console.log(state)
+      var process = state.process.find(
+        item => item.uuid === processUuid
+      )
+      return process
+    },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
+      console.log(state)
       var processList = state.process.map((item) => {
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
+          console.log(process)
           return process
         }
       })
+      console.log(processList.toString())
+      console.log(processList)
       return processList
+    },
+    getProcessResult: (state) => {
+      return state.reportObject
     }
   }
 }
