@@ -44,6 +44,7 @@ const processControl = {
         isDirectPrint: payload.action.isDirectPrint,
         reportExportType: payload.action.reportExportType
       }
+      console.log(payload)
       commit('addStartedProcess', processToRun)
       getLookupList({
         tableName: 'M_DiscountSchema',
@@ -73,6 +74,7 @@ const processControl = {
                 reportExportType: response.getOutput().getReportexporttype()
               }
             }
+
             dispatch('finishProcess', processResult)
           }
         })
@@ -100,13 +102,24 @@ const processControl = {
     }
   },
   getters: {
+    getActionProcess: (state) => (processUuid) => {
+      console.log(state)
+      var process = state.process.find(
+        item => item.uuid === processUuid
+      )
+      return process
+    },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
+      console.log(state)
       var processList = state.process.map((item) => {
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
+          console.log(process)
           return process
         }
       })
+      console.log(processList.toString())
+      console.log(processList)
       return processList
     },
     getProcessResult: (state) => {
