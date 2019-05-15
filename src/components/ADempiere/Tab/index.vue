@@ -18,7 +18,7 @@
           :group="item.tabGroup"
           :parent-tab="parentTabs"
           :is-edit="isEdit"
-          panel-type="window"
+          :panel-type="panelType"
         />
       </el-tab-pane>
     </template>
@@ -57,7 +57,8 @@ export default {
       loading: false,
       currentTab: this.$route.params.tabNumber,
       uuidRecord: this.$route.params.uuidRecord,
-      tabUuid: ''
+      tabUuid: '',
+      panelType: 'window'
     }
   },
   created() {

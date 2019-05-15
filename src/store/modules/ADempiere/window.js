@@ -121,7 +121,7 @@ const window = {
             var actions = response.getProcessesList().map((processItem) => {
               return {
                 name: processItem.getName(),
-                type: 'P',
+                type: 'process',
                 uuid: processItem.getUuid(),
                 description: processItem.getDescription(),
                 help: processItem.getHelp(),
