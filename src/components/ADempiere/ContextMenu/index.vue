@@ -140,16 +140,20 @@ export default {
           containerUuid: this.$route.meta.uuid
         })
         if (action.isReport) {
-          this.$store.subscribe(mutation => {
-            if (mutation.type === 'setReportValues') {
-              var processResult = this.$store.getters.getProcessResult
-              if (processResult.isError) {
-                this.$notify.error({
-                  title: 'Error',
-                  message: 'Error running the process ' + action.name
-                })
-              } else {
-                this.$router.push({ name: 'Report Viewer', params: { processUuid: processResult.processUuid, instanceUuid: processResult.instanceUuid, fileName: processResult.output.fileName }})
+          this.$store.subscribeAction({
+            before: (action, state) => {
+              if (action.type === 'finishProcess') {
+                if (action.payload.isError && action.payload.summary === 'Report') {
+                  this.$notify.error({
+                    title: 'Error',
+                    message: 'Error running the process ' + action.payload.output.name
+                  })
+                }
+              }
+            },
+            after: (action, state) => {
+              if (action.type === 'finishProcess') {
+                this.$router.push({ name: 'Report Viewer', params: { processUuid: action.payload.processUuid, instanceUuid: action.payload.instanceUuid, fileName: action.payload.output.fileName }})
                 this.$store.dispatch('tagsView/delView', this.$route)
               }
             }
