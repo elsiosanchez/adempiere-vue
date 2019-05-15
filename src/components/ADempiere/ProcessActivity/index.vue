@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div v-if="a.length > 0" class="wrapper">
     <h3 class="warn-content text-center">
       Process Activity
     </h3>
@@ -36,12 +36,20 @@
       </el-table-column>
     </el-table>
   </div>
+  <div v-else class="wrapper">
+    <h1 class="text-jumbo text-ginormous">
+      Oops! Not process running
+    </h1>
+    <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
+  </div>
 </template>
 <script>
+import errGif from '@/assets/401_images/401.gif'
 export default {
   name: 'ProcessActivity',
   data() {
     return {
+      errGif: errGif + '?' + +new Date(),
       tableData: []
     }
   },
