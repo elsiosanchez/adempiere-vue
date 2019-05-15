@@ -37,13 +37,13 @@ export function loadMainMenu() {
         ]
       },
       {
-        path: 'reporviewer',
+        path: '/report-viewer',
         component: Layout,
         hidden: true,
-        redirect: '/reportviewer/index',
+        redirect: 'report-viewer/:processUuid/:instanceUuid/:fileName',
         children: [
           {
-            path: 'index',
+            path: ':processUuid/:instanceUuid/:fileName',
             component: () => import('@/components/ADempiere/ReportViewer'),
             name: 'Report Viewer',
             meta: {

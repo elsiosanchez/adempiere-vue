@@ -129,7 +129,9 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     readOnlyLogic: fieldGRPC.getReadonlylogic(),
     parentFieldsList: getParentFields(fieldGRPC),
     dependentFieldsList: [],
-    reference: referenceValue
+    reference: referenceValue,
+    // ADD SUPPORT IN SERVER
+    isShowedFromUser: false
   }
   return field
 }
@@ -140,16 +142,16 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
  * @return string type, assigned value to folder after evaluating the parameter
  */
 export function evalutateTypeField(param) {
-  for (let i = 0; i < REFERENCES.length; i++) {
-    if (param === REFERENCES[i].id || param === REFERENCES[i].type) {
-      if (REFERENCES[i].support) {
-        return REFERENCES[i].type
-      } else {
-        return 'String'
+  var path = 'String'
+  REFERENCES.forEach(reference => {
+    if (param === reference.id || param === reference.type) {
+      if (reference.support) {
+        path = reference.type
+        return
       }
     }
-  }
-  return 'String'
+  })
+  return path
 }
 
 export function getParentFields(fieldGRPC) {
