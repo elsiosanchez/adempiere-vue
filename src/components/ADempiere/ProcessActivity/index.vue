@@ -17,23 +17,13 @@
         <!-- {{ item.name }} -->
       </el-table-column>
       <el-table-column
-        prop="output"
-        label="output"
-      />
-      <el-table-column
-        prop="isError"
-        label="isError"
-      />
-      <el-table-column
-        prop="isError"
-        label="process"
-      />
-      <el-table-column
-        prop="output"
-        label="output"
+        prop="description"
+        label="description"
       >
         <!-- {{ item.name }} -->
-      </el-table-column><el-table-column
+      </el-table-column>
+      <!-- {{ item.name }} -->
+      <el-table-column
         prop="action"
         label="action"
       >
@@ -85,8 +75,9 @@ export default {
           description: item.description,
           action: item.action,
           output: item.output,
-          process: item.isError,
+          logs: item.logs,
           isError: item.isError
+
           // help: item.help
         }
       })
@@ -104,16 +95,16 @@ export default {
           if (action.type === 'startProcess') {
             this.$notify.info({
               title: 'Info',
-              message: 'Processing ' + action.name
+              message: 'Processing ' + action.type
             })
-            console.log('hola' + action.name)
+            // console.log('hola' + action.name +''+ action.type)
           }
         },
         after: (action, state) => {
           if (action.type === 'startProcess') {
             this.$notify.error({
               title: 'Error',
-              message: 'Error Processing ' + action.name
+              message: 'Error Processing ' + action.type
             })
           }
         }

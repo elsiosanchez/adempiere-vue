@@ -11,7 +11,7 @@
       />
     </div>
     <el-table
-      :data="filterResult()"
+      :data="datalis.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()) || data.name.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
     >
       <el-table-column
@@ -64,15 +64,9 @@
 
 <script>
 import c_bpartner from '@/components/ADempiere/SearchWindow/datalist.json'
-// import DataTable from '@/components/ADempiere/DataTable'
-// import Search from '@/components/HeaderSearch'
 
 export default {
   name: 'SearchWindow',
-  // components: {
-  //   DataTable,
-  //   Search
-  // },
   props: {
     isEdit: {
       type: Boolean,

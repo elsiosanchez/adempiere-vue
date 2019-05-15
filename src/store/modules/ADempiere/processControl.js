@@ -57,6 +57,7 @@ const processControl = {
       runProcess(processToRun)
         .then(response => {
           if (typeof response !== 'undefined') {
+            console.log(response)
             processResult = {
               instanceUuid: response.getInstanceuuid(),
               processUuid: processToRun.uuid,
@@ -110,15 +111,15 @@ const processControl = {
     },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       var processList = state.process.map((item) => {
+        console.log(item)
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
           return {
             ...process,
             action: item.name,
             help: item.help,
-            process: item.isError,
-            isError: item.isError,
-            output: item.output
+            output: item.output,
+            logs: item.logs
           }
         }
       })
