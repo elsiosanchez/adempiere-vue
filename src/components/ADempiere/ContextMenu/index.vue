@@ -140,17 +140,20 @@ export default {
           containerUuid: this.$route.meta.uuid
         })
         if (action.isReport) {
-          var processResult = this.$store.getters.getProcessResult
-          if (processResult.isError) {
-            this.$notify.error({
-              title: 'Error',
-              message: 'Error running the process ' + action.name
-            })
-          } else {
-            this.$router.push({ name: 'Report Viewer', params: { processUuid: processResult.processUuid, instanceUuid: processResult.instanceUuid, fileName: processResult.output.fileName }})
-          }
-          // this.$store.dispatch('tagsView/delView', this.$route)
-          // this.$router.push({ name: 'Report Viewer' })
+          this.$store.subscribe(mutation => {
+            if (mutation.type === 'setReportValues') {
+              var processResult = this.$store.getters.getProcessResult
+              if (processResult.isError) {
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Error running the process ' + action.name
+                })
+              } else {
+                this.$router.push({ name: 'Report Viewer', params: { processUuid: processResult.processUuid, instanceUuid: processResult.instanceUuid, fileName: processResult.output.fileName }})
+                this.$store.dispatch('tagsView/delView', this.$route)
+              }
+            }
+          })
         }
       } else if (action.type === 'process') {
         this.showModal(action)

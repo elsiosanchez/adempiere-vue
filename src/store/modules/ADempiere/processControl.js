@@ -4,6 +4,7 @@ const processControl = {
   state: {
     visibleDialog: false,
     reportObject: {},
+    reportList: [],
     metadata: {},
     process: []
   },
@@ -22,8 +23,9 @@ const processControl = {
       state.visibleDialog = false
       state.metadata = payload
     },
-    openReport(state, payload) {
+    setReportValues(state, payload) {
       state.reportObject = payload
+      state.reportList.push(payload)
     },
     changeFormatReport(state, payload) {
       state.reportFormat = payload
@@ -44,7 +46,6 @@ const processControl = {
         isDirectPrint: payload.action.isDirectPrint,
         reportExportType: payload.action.reportExportType
       }
-      console.log(payload)
       commit('addStartedProcess', processToRun)
       getLookupList({
         tableName: 'M_DiscountSchema',
@@ -58,8 +59,8 @@ const processControl = {
         .then(response => {
           if (typeof response !== 'undefined') {
             processResult = {
-              instanceUuid: response.getInstanceuuid(),
-              processUuid: processToRun.uuid,
+              instanceUuid: response.getInstanceuuid().trim(),
+              processUuid: processToRun.uuid.trim(),
               isError: response.getIserror(),
               summary: response.getSummary(),
               resultTableId: response.getResulttableid(),
@@ -68,7 +69,7 @@ const processControl = {
                 uuid: response.getOutput().getUuid(),
                 name: response.getOutput().getName(),
                 description: response.getOutput().getDescription(),
-                fileName: response.getOutput().getFilename(),
+                fileName: response.getOutput().getFilename().replace(/ /g, ''),
                 output: response.getOutput().getOutput(),
                 outputStream: response.getOutput().getOutputstream(),
                 reportExportType: response.getOutput().getReportexporttype()
@@ -91,8 +92,8 @@ const processControl = {
       }
     },
     finishProcess({ commit }, processOutput) {
-      if (!processOutput.isError) {
-        commit('openReport', processOutput)
+      if (!processOutput.isError && typeof processOutput.instanceUuid !== 'undefined' && typeof processOutput.processUuid !== 'undefined' && typeof processOutput.output.fileName !== 'undefined') {
+        commit('setReportValues', processOutput)
       }
     },
     changeFormatReport({ commit }, reportFormat) {
@@ -110,20 +111,22 @@ const processControl = {
       return process
     },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
-      console.log(state)
       var processList = state.process.map((item) => {
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
-          console.log(process)
           return process
         }
       })
-      console.log(processList.toString())
-      console.log(processList)
       return processList
     },
     getProcessResult: (state) => {
       return state.reportObject
+    },
+    getCachedReport: (state) => (instanceUuid) => {
+      var cachedReport = state.reportList.find(
+        item => item.instanceUuid === instanceUuid
+      )
+      return cachedReport
     }
   }
 }
