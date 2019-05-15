@@ -38,21 +38,13 @@
         >
           <!-- {{ item.name }} -->
         </el-table-column>
-        <el-table-column
-          width="320"
-        ><router-link :to="{ path: 'reporviewer' }">
-          <svg-icon icon-class="documentation" />
-        </router-link>
-          <!-- {{ item.name }} -->
-        </el-table-column>
-        <!-- </template> -->
       </el-table>
     </el-popover>
   </div>
 </template>
 <script>
 export default {
-  name: 'Notification',
+  name: 'ProcessActivity',
   data() {
     return {
       tableData: [{
@@ -66,7 +58,7 @@ export default {
     },
     a() {
       var a = this.$store.getters.getRunningProcess().map((item) => {
-        // var b = this.$store.getters.getActionProcess()
+        // var b   = this.$store.getters.getActionProcess()
         return {
           name: item.name,
           description: item.description,
