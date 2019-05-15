@@ -80,7 +80,7 @@ export default {
   computed: {
     // load the component that is indicated in the attributes of received property
     afterLoader() {
-      return () => import('./' + this.field.componentPath + '/')
+      return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
     isReadWrite: {
       get: function() {
@@ -95,7 +95,7 @@ export default {
     }
   },
   watch: {
-    metadataField: () => {
+    metadataField: function() {
       this.field = this.metadataField
     }
   },
@@ -113,10 +113,17 @@ export default {
       if (this.field.displayType === 28) {
         span = 0
       }
+      if (this.$store.state.app.device === 'mobile' && this.field.displayType !== 28) {
+        span = 24
+      }
       return span
     },
     isDisplayed() {
-      return this.field.isActive && this.field.isDisplayed && this.field.isDisplayedFromLogic
+      var display = this.field.isActive && this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser)
+      if (this.panelType === 'browser') {
+        return this.field.isQueryCriteria && (this.isMandatory() || this.field.isShowedFromUser)
+      }
+      return display
     },
     isReadOnly() {
       return this.field.isReadonly && this.field.isReadonlyFromLogic
@@ -160,9 +167,13 @@ export default {
      * @return {boolean}
      */
     evaluateRange(id) {
-      var arr = this.fieldRange
-      for (let i = 0; i < arr.length; i++) {
-        if (id === arr[i].id) { return true }
+      var range = this.fieldRange.find((item) => {
+        if (id === item.id) {
+          return true
+        }
+      })
+      if (typeof range !== 'undefined') {
+        return true
       }
       return false
     },
@@ -172,12 +183,14 @@ export default {
      * @param  {integer} id [identifier of the type of display]
      * @return {boolean}
      */
-    verifyIsFieldOnly(Type) {
-      var arr = this.fieldOnly
-      for (let i = 0; i < arr.length; i++) {
-        if (Type === arr[i].id) {
+    verifyIsFieldOnly(type) {
+      var field = this.fieldOnly.find((item) => {
+        if (type === item.id) {
           return true
         }
+      })
+      if (typeof field !== 'undefined') {
+        return true
       }
       return false
     }

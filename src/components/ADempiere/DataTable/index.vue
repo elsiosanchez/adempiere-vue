@@ -1,7 +1,7 @@
 <template>
   <el-form v-model="tableData" :label-position="labelPosition" label-width="200px">
-    <div v-show="searchable" :class="{'show':show}" align="right" class="search-detail">
-      <svg-icon class-name="search-icon" icon-class="search" @click="click" />
+    <div v-show="searchable" :class="{'show':showSearch}" align="right" class="search-detail">
+      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
       <el-input
         ref="headerSearchSelect"
         v-model="search"
@@ -67,6 +67,10 @@ export default {
       type: String,
       default: ''
     },
+    metadata: {
+      type: Object,
+      default: () => {}
+    },
     label: {
       type: String,
       default: ''
@@ -79,6 +83,10 @@ export default {
     searchable: {
       type: Boolean,
       default: true
+    },
+    panelType: {
+      type: String,
+      default: 'window'
     }
   },
   data() {
@@ -94,8 +102,7 @@ export default {
       maxSizeColumns: 24,
       isLoaded: false,
       listLoading: true,
-      show: false,
-      // inputWidth: 'width: 50%',
+      showSearch: false,
       search: ''
     }
   },
@@ -105,7 +112,7 @@ export default {
         this.getData(this.tableName)
       }
     },
-    show(value) {
+    showSearch(value) {
       if (value) {
         document.body.addEventListener('click', this.close)
       } else {
@@ -114,7 +121,7 @@ export default {
     }
   },
   created() {
-    this.getTab()
+    this.getTable()
   },
   methods: {
     /**
@@ -124,17 +131,15 @@ export default {
       row.edit = !row.edit
     },
     click() {
-      this.show = !this.show
-      if (this.show) {
-        // this.inputWidth = 'width: 50%'
+      this.showSearch = !this.showSearch
+      if (this.showSearch) {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
     },
     close() {
       this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.blur()
       this.options = []
-      this.show = false
-      // this.inputWidth = 'width: 0%'
+      this.showSearch = false
     },
     confirmEdit(row, newValue, value) {
       row.edit = false
@@ -184,22 +189,27 @@ export default {
      * Get the tab object with all its attributes as well as the fields it contains
      * @param {string} tabUUID universally unique identifier
      */
-    getTab() {
+    getTable() {
       var fieldList = this.$store.getters.getFieldsListFromPanel(
         this.containerUuid
       )
       if (typeof fieldList === 'undefined' || fieldList.length === 0) {
-        this.$store.dispatch('getTabAndFieldFromServer', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid
-        })
-          .then(response => {
-            this.generatePanel(response.fieldList)
+        if (this.panelType === 'window') {
+          this.$store.dispatch('getTabAndFieldFromServer', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid
           })
-          .catch(err => {
-            console.warn('Dictionay DataTable - Error ' + err.code + ': ' + err.message)
-            this.isLoaded = false
-          })
+            .then(response => {
+              this.generatePanel(response.fieldList)
+            })
+            .catch(err => {
+              console.warn('Dictionay DataTable - Error ' + err.code + ': ' + err.message)
+              this.isLoaded = false
+            })
+        } else {
+          this.tableName = undefined
+          this.generatePanel(this.metadata.fieldList)
+        }
       } else {
         this.generatePanel(fieldList)
       }
@@ -208,7 +218,7 @@ export default {
       this.fieldList = fieldList
       this.fieldSequence = this.sortFields(fieldList)
       this.isLoaded = true
-      if (typeof this.tableName !== 'undefined') {
+      if (typeof this.tableName !== 'undefined' && this.tableName !== '') {
         this.getData(this.tableName)
       }
     },
@@ -222,7 +232,6 @@ export default {
           type: 'error',
           showClose: true
         })
-        console.warn('DataRecord PanelDetail - Error: Table Name is not defined ')
         return
       }
       var criteria = "IsActive = 'Y'"

@@ -18,7 +18,7 @@ const process = {
   actions: {
     getProcessFromServer: ({ commit }, processUuid) => {
       return new Promise((resolve, reject) => {
-        getProcessFromDictionary(processUuid, true)
+        getProcessFromDictionary(processUuid)
           .then(response => {
             var parameterList = response.getParametersList()
             var additionalAttributes = {
@@ -42,10 +42,9 @@ const process = {
             //  Default Action
             var processActions = [
               {
-                name: 'Run Process As',
-                type: 'summary',
-                action: '',
-                childs: [],
+                name: 'Run Process',
+                type: 'action',
+                action: 'startProcess',
                 uuid: response.getUuid(),
                 description: response.getDescription(),
                 help: response.getHelp(),
@@ -55,6 +54,19 @@ const process = {
                 isDirectPrint: response.getIsdirectprint()
               }
             ]
+            var summaryAction = {
+              name: 'Run Process As',
+              type: 'summary',
+              action: '',
+              childs: [],
+              uuid: response.getUuid(),
+              description: response.getDescription(),
+              help: response.getHelp(),
+              isReport: response.getIsreport(),
+              accessLevel: response.getAccesslevel(),
+              showHelp: response.getShowhelp(),
+              isDirectPrint: response.getIsdirectprint()
+            }
             reportExportTypeList.forEach((actionValue) => {
               var action = {
                 name: 'Export to (' + actionValue.name + ')',
@@ -70,8 +82,10 @@ const process = {
                 reportExportType: actionValue.reportExportType
               }
               //  Push values
-              processActions[0].childs.push(action)
+              summaryAction.childs.push(action)
             })
+            //  Add summary Actions
+            processActions.push(summaryAction)
             var panel = {
               id: response.getId(),
               uuid: response.getUuid(),
