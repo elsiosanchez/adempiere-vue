@@ -47,7 +47,7 @@ export function convertValueFromGRPC(initialValue) {
  */
 export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
   var group = {}
-
+  var isShowedFromUser = false
   try {
     group = {
       name: fieldGRPC.getFieldgroup().getName(),
@@ -58,6 +58,10 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
       name: '',
       fieldGroupType: ''
     }
+  }
+
+  if (moreAttributes.isShowedFromUser) {
+    isShowedFromUser = moreAttributes.isShowedFromUser
   }
 
   var reference = fieldGRPC.getReference()
@@ -131,7 +135,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     dependentFieldsList: [],
     reference: referenceValue,
     // ADD SUPPORT IN SERVER
-    isShowedFromUser: false
+    isShowedFromUser: isShowedFromUser
   }
   return field
 }

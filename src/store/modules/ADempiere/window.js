@@ -84,7 +84,8 @@ const window = {
             var fieldsList = response.getFieldsList()
             var additionalAttributes = {
               parentUuid: objectParams.parentUuid,
-              containerUuid: objectParams.containerUuid
+              containerUuid: objectParams.containerUuid,
+              isShowedFromUser: true
             }
 
             //  Convert from gRPC
