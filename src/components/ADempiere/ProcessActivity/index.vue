@@ -17,8 +17,20 @@
         <!-- {{ item.name }} -->
       </el-table-column>
       <el-table-column
-        prop="description"
-        label="description"
+        prop="output"
+        label="output"
+      />
+      <el-table-column
+        prop="isError"
+        label="isError"
+      />
+      <el-table-column
+        prop="isError"
+        label="process"
+      />
+      <el-table-column
+        prop="output"
+        label="output"
       >
         <!-- {{ item.name }} -->
       </el-table-column><el-table-column
@@ -28,19 +40,24 @@
         <!-- {{ item.name }} -->
       </el-table-column>
       <el-table-column
-        prop="action"
-        label="action"
+        label="see reporte"
       >
         <router-link :to="{ path: 'report-viewer' }"><svg-icon icon-class="clipboard" /></router-link>
         <!-- {{ item.name }} -->
       </el-table-column>
     </el-table>
   </div>
-  <div v-else class="wrapper">
-    <h1 class="text-jumbo text-ginormous">
-      Oops! Not process running
-    </h1>
-    <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
+  <div v-else class="errPage-container">
+    <el-row>
+      <el-col :span="12">.
+      </el-col>
+      <el-col :span="12">
+        <h1>
+          Oops! Not process running
+        </h1>
+        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -66,20 +83,39 @@ export default {
         return {
           name: item.name,
           description: item.description,
-          action: item.action
+          action: item.action,
+          output: item.output,
+          process: item.isError,
+          isError: item.isError
+          // help: item.help
         }
       })
       console.log(a)
       return a
     }
   },
+  created() {
+    this.controlError()
+  },
   methods: {
-    subscribeChanges() {
-      this.$store.subscribe(mutation => {
-        if (mutation.type === 'startProcess') {
-          this.actions = this.$store.getters.getProcess(mutation.payload.containerUuid)
-          console.log(this.$store.getters.getProcess(mutation.payload.containerUuid))
-          return this.actions
+    controlError() {
+      this.$store.subscribeAction({
+        before: (action, state) => {
+          if (action.type === 'startProcess') {
+            this.$notify.info({
+              title: 'Info',
+              message: 'Processing ' + action.name
+            })
+            console.log('hola' + action.name)
+          }
+        },
+        after: (action, state) => {
+          if (action.type === 'startProcess') {
+            this.$notify.error({
+              title: 'Error',
+              message: 'Error Processing ' + action.name
+            })
+          }
         }
       })
     }

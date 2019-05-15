@@ -74,7 +74,7 @@ const processControl = {
                 reportExportType: response.getOutput().getReportexporttype()
               }
             }
-
+            console.log(processResult + this.finishProcess)
             dispatch('finishProcess', processResult)
           }
         })
@@ -114,7 +114,11 @@ const processControl = {
         if (typeof process !== undefined) {
           return {
             ...process,
-            action: item.name
+            action: item.name,
+            help: item.help,
+            process: item.isError,
+            isError: item.isError,
+            output: item.output
           }
         }
       })
