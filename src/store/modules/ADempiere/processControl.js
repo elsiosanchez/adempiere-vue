@@ -103,23 +103,21 @@ const processControl = {
   },
   getters: {
     getActionProcess: (state) => (processUuid) => {
-      console.log(state)
       var process = state.process.find(
         item => item.uuid === processUuid
       )
       return process
     },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
-      console.log(state)
       var processList = state.process.map((item) => {
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
-          console.log(process)
-          return process
+          return {
+            ...process,
+            action: item.name
+          }
         }
       })
-      console.log(processList.toString())
-      console.log(processList)
       return processList
     },
     getProcessResult: (state) => {

@@ -3,43 +3,38 @@
     <h3 class="warn-content text-center">
       Process Activity
     </h3>
-    <el-popover
-      placement="left-start"
-      width="400"
-      trigger="click"
+    <el-table
+      :data="a"
+      :stripe="true"
+      style="width: 100%"
     >
-      <!-- <div>
-        <p>{{ item.description }}</p>
-      </div> -->
-      <el-table
-        slot="reference"
-        :data="a"
-        :stripe="true"
-        style="width: 100%"
+      <!-- <template v-for="(item, index) in a"> -->
+      <!-- <template v-for="(item, index) in a"> -->
+      <el-table-column
+        prop="name"
+        label="name"
       >
-        <!-- <template v-for="(item, index) in a"> -->
-        <el-table-column
-          width="400"
-          prop="name"
-          label="name"
-        >
-          <!-- {{ item.name }} -->
-        </el-table-column>
-        <el-table-column
-          width="420"
-          prop="description"
-          label="description"
-        >
-          <!-- {{ item.name }} -->
-        </el-table-column><el-table-column
-          width="320"
-          prop="action"
-          label="action"
-        >
-          <!-- {{ item.name }} -->
-        </el-table-column>
-      </el-table>
-    </el-popover>
+        <!-- {{ item.name }} -->
+      </el-table-column>
+      <el-table-column
+        prop="description"
+        label="description"
+      >
+        <!-- {{ item.name }} -->
+      </el-table-column><el-table-column
+        prop="action"
+        label="action"
+      >
+        <!-- {{ item.name }} -->
+      </el-table-column>
+      <el-table-column
+        prop="action"
+        label="action"
+      >
+        <router-link :to="{ path: 'report-viewer' }"><svg-icon icon-class="clipboard" /></router-link>
+        <!-- {{ item.name }} -->
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 <script>
@@ -47,14 +42,15 @@ export default {
   name: 'ProcessActivity',
   data() {
     return {
-      tableData: [{
-      }],
-      processRunning: this.$store.getters.getRunningProcess()
+      tableData: []
     }
   },
   computed: {
     processRunnings() {
       return this.$store.getters.getRunningProcess()
+    },
+    processActions() {
+      return this.$store.getters.getActionProcess()
     },
     a() {
       var a = this.$store.getters.getRunningProcess().map((item) => {
@@ -62,21 +58,20 @@ export default {
         return {
           name: item.name,
           description: item.description,
-          action: item.name
+          action: item.action
         }
       })
       console.log(a)
       return a
     }
   },
-  created() {
-    this.subscribeChanges()
-  },
   methods: {
     subscribeChanges() {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'startProcess') {
-          this.actions = this.$store.getters.getActionProcess()
+          this.actions = this.$store.getters.getProcess(mutation.payload.containerUuid)
+          console.log(this.$store.getters.getProcess(mutation.payload.containerUuid))
+          return this.actions
         }
       })
     }
