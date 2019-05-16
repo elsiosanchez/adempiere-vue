@@ -21,7 +21,7 @@ export function loadMainMenu() {
             path: 'index',
             component: () => import('@/components/ADempiere/ProcessActivity'),
             name: 'ProcessActivity',
-            meta: { title: 'ProcessActivity', icon: 'documentation', noCache: true }
+            meta: { title: 'ProcessActivity', icon: 'skill', noCache: true }
           }
         ]
       }, {
@@ -32,7 +32,7 @@ export function loadMainMenu() {
             path: 'index',
             component: () => import('@/components/ADempiere/SearchWindow'),
             name: 'SearchWindow',
-            meta: { title: 'SearchWindow', icon: 'documentation', noCache: true }
+            meta: { title: 'SearchWindow', icon: 'search', noCache: true }
           }
         ]
       },
