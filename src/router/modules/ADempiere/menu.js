@@ -100,6 +100,12 @@ function getChildFromAction(menu) {
       noCache: false
     }
   }
+  if (option.meta.type === 'summary') {
+    option['children'] = []
+    menu.getChildsList().forEach((child) => {
+      option.children.push(getChildFromAction(child))
+    })
+  }
   return option
 }
 
