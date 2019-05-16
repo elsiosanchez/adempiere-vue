@@ -23,13 +23,11 @@
     </el-menu>
   </div>
   <div v-else class="container-submenu">
-    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click" unique-opened>
       <el-submenu v-if="relations !== undefined" class="el-menu-item" index="1">
         <template slot="title">Relations</template>
         <el-scrollbar wrap-class="scroll">
-          <el-menu-item v-for="(relation, index) in relations" v-show="relation.meta.type!=='summary' && relation.meta.uuid!==$route.meta.uuid" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
-            {{ relation.meta.title }}
-          </el-menu-item>
+          <item v-for="(relation, index) in relations" :key="index" :item="relation" />
         </el-scrollbar>
       </el-submenu>
       <el-menu-item v-else disabled index="1">Relations</el-menu-item>
@@ -55,8 +53,12 @@
 
 <script>
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
+import Item from './items'
 export default {
   name: 'Submenu',
+  components: {
+    Item
+  },
   mixins: [ResizeMixin],
   props: {
     report: {
@@ -159,9 +161,6 @@ export default {
       } else if (action.type === 'process') {
         this.showModal(action)
       }
-    },
-    handleClick(item) {
-      this.$router.push({ name: item.name })
     }
   }
 }
