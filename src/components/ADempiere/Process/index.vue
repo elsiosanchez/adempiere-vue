@@ -1,8 +1,6 @@
 <template>
   <div v-if="loading">
-    <sticky class="sticky-submenu">
-      <context-menu :report="processMetadata.isReport" />
-    </sticky>
+    <context-menu :report="processMetadata.isReport" class="sticky-submenu" />
     <el-row :gutter="20">
       <el-col :span="24">
         <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
@@ -30,7 +28,6 @@
 // When supporting the processes, smart browser and reports,
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
@@ -38,8 +35,7 @@ export default {
   name: 'Process',
   components: {
     Panel,
-    ContextMenu,
-    Sticky
+    ContextMenu
   },
   props: {
     isEdit: {

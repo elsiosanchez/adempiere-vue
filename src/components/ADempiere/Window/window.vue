@@ -9,9 +9,7 @@
           :parent-tabs="true"
           :is-edit="isEdit"
         />
-        <sticky class="sticky-submenu">
-          <submenu />
-        </sticky>
+        <submenu class="sticky-submenu" />
         <modal
           :visible="visibleDialog"
           :metadata="processMetadata"
@@ -136,7 +134,6 @@ import DataTable from '@/components/ADempiere/DataTable'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import Submenu from '@/components/ADempiere/ContextMenu'
-import Sticky from '@/components/Sticky'
 import Modal from '@/components/ADempiere/Dialog'
 
 export default {
@@ -145,7 +142,6 @@ export default {
     Tab,
     Submenu,
     DataTable,
-    Sticky,
     Modal
   },
   props: {

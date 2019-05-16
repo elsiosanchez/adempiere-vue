@@ -1,8 +1,6 @@
 <template>
   <div v-if="loading">
-    <sticky class="sticky-submenu">
-      <context-menu />
-    </sticky>
+    <context-menu class="sticky-submenu" />
     <modal
       :visible="visibleDialog"
       :metadata="processMetadata"
@@ -39,7 +37,6 @@
 // When supporting the processes, smart browser and reports,
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
@@ -51,7 +48,6 @@ export default {
     Panel,
     DataTable,
     ContextMenu,
-    Sticky,
     Modal
   },
   props: {
