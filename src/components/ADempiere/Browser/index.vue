@@ -45,15 +45,15 @@
             <div v-show="showPanel">
               <div v-if="this.$store.state.app.sidebar.opened">
                 <div class="container2">
-                  <div class="show2">
+                  <div class="ocultarpanel">
                     <el-button
-                      v-if="show3"
+                      v-if="ocultar"
                       :circle="true"
                       class="el-icon-arrow-down button2"
                       @click="showPanel = !showPanel"
                     />
                   </div>
-                  <div class="transi-box">
+                  <div class="contenido-panel-box">
                     <data-table
                       :container-uuid="browserUuid"
                       :panel-type="panelType"
@@ -64,9 +64,9 @@
               </div>
               <div v-else-if="!this.$store.state.app.sidebar.opened">
                 <div class="container2">
-                  <div v-if="this.$store.state.app.device!=='mobile'" class="show2">
+                  <div v-if="this.$store.state.app.device!=='mobile'" class="ocultarpanel">
                     <el-button
-                      v-if="show3"
+                      v-if="ocultar"
                       :circle="true"
                       class="el-icon-arrow-down button2"
                       @click="showPanel = !showPanel"
@@ -74,7 +74,7 @@
                   </div>
                   <div v-else>
                     <el-button
-                      v-if="show3"
+                      v-if="ocultar"
                       :circle="true"
                       class="el-icon-arrow-down button2"
                       @click="showPanel = !showPanel"
@@ -129,7 +129,7 @@ export default {
     return {
       browserMetadata: {},
       showPanel: true,
-      show3: true,
+      ocultar: true,
       browserUuid: this.$route.meta.uuid,
       loading: false,
       uuidRecord: this.$route.params.uuidRecord,
@@ -240,18 +240,18 @@ export default {
     color: #424242;
   }
 
-  .container2:hover .show2 {
+  .container2:hover .ocultarpanel {
     visibility: visible;
   }
 
   .container2:hover .buttonp2 {
     visibility: visible;
   }
-  .container2:hover .transi-box2 {
+  .container2:hover .contenido-panel-box2 {
     visibility: visible;
   }
 
-  .show2 {
+  .ocultarpanel {
     visibility: hidden;
     position: absolute;
     bottom: 0;
@@ -304,7 +304,7 @@ export default {
     font-size: 14px;
   }
 
-  .transi-box {
+  .contenido-panel-box {
     bottom: 0;
     width: calc(100% - 170px);
     position: fixed;
@@ -316,7 +316,7 @@ export default {
     height: 31%;
   }
 
-  .transi-box2 {
+  .contenido-panel-box2 {
     margin-bottom: 0px;
     width: calc(100% + 10px);
     position: fixed;

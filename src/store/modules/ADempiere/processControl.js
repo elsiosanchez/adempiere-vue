@@ -55,33 +55,31 @@ const processControl = {
           console.log('Error in lookup list' + error)
         })
       // Run process on server and wait for it for notify
-      runProcess(processToRun)
+      runProcess(processToRun, payload, process)
         .then(response => {
-          if (typeof response !== 'undefined') {
-            console.log(response)
-            processResult = {
-              instanceUuid: response.getInstanceuuid().trim(),
-              processUuid: processToRun.uuid.trim(),
-              isError: response.getIserror(),
-              summary: response.getSummary(),
-              resultTableId: response.getResulttableid(),
-              logs: response.getLogsList(),
-              output: {
-                uuid: response.getOutput().getUuid(),
-                name: response.getOutput().getName(),
-                description: response.getOutput().getDescription(),
-                fileName: response.getOutput().getFilename().replace(/ /g, ''),
-                output: response.getOutput().getOutput(),
-                outputStream: response.getOutput().getOutputstream(),
-                reportExportType: response.getOutput().getReportexporttype()
-              }
+          processResult = {
+            instanceUuid: response.getInstanceuuid().trim(),
+            processUuid: processToRun.uuid.trim(),
+            isError: response.getIserror(),
+            summary: response.getSummary(),
+            resultTableId: response.getResulttableid(),
+            logs: response.getLogsList(),
+            output: {
+              uuid: response.getOutput().getUuid(),
+              name: response.getOutput().getName(),
+              description: response.getOutput().getDescription(),
+              fileName: response.getOutput().getFilename().replace(/ /g, ''),
+              output: response.getOutput().getOutput(),
+              outputStream: response.getOutput().getOutputstream(),
+              reportExportType: response.getOutput().getReportexporttype()
             }
-            console.log(processResult + this.finishProcess)
-            dispatch('finishProcess', processResult)
           }
+          dispatch('finishProcess', processResult)
+          console.log(processResult)
         })
         .catch(error => {
           console.log('Error running the process', error)
+          console.log(processResult)
           dispatch('finishProcess', processResult)
         })
     },
@@ -112,7 +110,7 @@ const processControl = {
     },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       var processList = state.process.map((item) => {
-        console.log(item)
+        // console.log(item)
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
           return {
@@ -120,7 +118,8 @@ const processControl = {
             action: item.name,
             help: item.help,
             output: item.output,
-            logs: item.logs
+            logs: item.logs,
+            summary: item.summary
           }
         }
       })
