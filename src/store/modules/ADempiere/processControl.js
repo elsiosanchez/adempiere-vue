@@ -58,6 +58,7 @@ const processControl = {
       runProcess(processToRun)
         .then(response => {
           if (typeof response !== 'undefined') {
+            console.log(response)
             processResult = {
               instanceUuid: response.getInstanceuuid().trim(),
               processUuid: processToRun.uuid.trim(),
@@ -75,7 +76,7 @@ const processControl = {
                 reportExportType: response.getOutput().getReportexporttype()
               }
             }
-
+            console.log(processResult + this.finishProcess)
             dispatch('finishProcess', processResult)
           }
         })
@@ -104,7 +105,6 @@ const processControl = {
   },
   getters: {
     getActionProcess: (state) => (processUuid) => {
-      console.log(state)
       var process = state.process.find(
         item => item.uuid === processUuid
       )
@@ -112,9 +112,16 @@ const processControl = {
     },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       var processList = state.process.map((item) => {
+        console.log(item)
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
-          return process
+          return {
+            ...process,
+            action: item.name,
+            help: item.help,
+            output: item.output,
+            logs: item.logs
+          }
         }
       })
       return processList
