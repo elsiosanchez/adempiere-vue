@@ -6,6 +6,7 @@
     :placeholder="metadata.help"
     value-key="key"
     @change="handleChange"
+    @visible-change="getDataList"
   >
     <el-option
       v-for="(item, key) in options"
@@ -17,6 +18,8 @@
 </template>
 
 <script>
+import { parseContext } from '@/utils/ADempiere'
+
 export default {
   name: 'SelectBase',
   props: {
@@ -44,7 +47,6 @@ export default {
     }
   },
   mounted() {
-    this.getDataList()
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,
       containerUuid: this.metadata.containerUuid,
@@ -53,20 +55,29 @@ export default {
     })
   },
   methods: {
-    getDataList() {
-      var table = this.metadata.columnName.replace('_ID', '')
-      var criteria = "IsActive = 'Y'"
+    parseContext,
+    /**
+     * @param {boolean} show triggers when the pull-down menu appears or disappears
+     */
+    getDataList(show) {
+      if (show) {
+        var parsedQuery = this.parseContext({
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          value: this.metadata.reference.query
+        })
 
-      this.$store.dispatch('getObjectListFromCriteria', {
-        table: table,
-        criteria: criteria
-      })
-        .then(response => {
-          this.options = response
+        this.$store.dispatch('getLookupList', {
+          tableName: this.metadata.reference.tableName,
+          parsedQuery: parsedQuery
         })
-        .catch(err => {
-          console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-        })
+          .then(response => {
+            this.options = response
+          })
+          .catch(err => {
+            console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
+          })
+      }
     },
     handleChange() {
       this.$store.dispatch('notifyFieldChange', {

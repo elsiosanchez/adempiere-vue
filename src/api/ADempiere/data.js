@@ -42,8 +42,8 @@ export function getLookupList(reference) {
 //   tableName,
 //   parsedDirectQuery
 // }
-export function getLookup(reference) {
-  return Instance.call(this).requestLookupFromReference(reference)
+export function getLookup(reference, value) {
+  return Instance.call(this).requestLookupFromReference(reference, value)
 }
 
 // Request a process
