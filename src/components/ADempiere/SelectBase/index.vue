@@ -6,6 +6,7 @@
     :placeholder="metadata.help"
     value-key="key"
     @change="handleChange"
+    @visible-change="getDataList"
   >
     <el-option
       v-for="(item, key) in options"
@@ -17,6 +18,8 @@
 </template>
 
 <script>
+import { parseContext } from '@/utils/ADempiere'
+
 export default {
   name: 'SelectBase',
   props: {
@@ -44,7 +47,6 @@ export default {
     }
   },
   mounted() {
-    this.getDataList()
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,
       containerUuid: this.metadata.containerUuid,
@@ -53,20 +55,33 @@ export default {
     })
   },
   methods: {
-    getDataList() {
-      var table = this.metadata.columnName.replace('_ID', '')
-      var criteria = "IsActive = 'Y'"
-
-      this.$store.dispatch('getObjectListFromCriteria', {
-        table: table,
-        criteria: criteria
-      })
-        .then(response => {
-          this.options = response
+    parseContext,
+    /**
+     * @param {boolean} show triggers when the pull-down menu appears or disappears
+     */
+    getDataList(show) {
+      if (show) {
+        var parsedQuery = this.parseContext({
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          value: this.metadata.reference.query
         })
-        .catch(err => {
-          console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-        })
+        var lookupList = this.$store.getters.getLookupList(parsedQuery)
+        if (typeof lookupList === 'undefined' || lookupList.length < 0) {
+          this.$store.dispatch('getLookupList', {
+            tableName: this.metadata.reference.tableName,
+            parsedQuery: parsedQuery
+          })
+            .then(response => {
+              this.options = response
+            })
+            .catch(err => {
+              console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
+            })
+        } else {
+          this.options = lookupList
+        }
+      }
     },
     handleChange() {
       this.$store.dispatch('notifyFieldChange', {

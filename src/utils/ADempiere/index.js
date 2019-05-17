@@ -184,7 +184,14 @@ export function getParentFields(fieldGRPC) {
   return parentFields
 }
 
-// Parse Context String
+/**
+ * Parse Context String
+ * @param {object} context
+ *  - value: (REQUIRED) String to parsing
+ *  - parentUuid: (REQUIRED from Window) UUID Window
+ *  - containerUuid: (REQUIRED) UUID Tab, Process, SmartBrowser, Report and Form
+ *  - columnName: (Optional if exists in value) Column name to search in context
+ */
 export function parseContext(context) {
   const store = require('@/store')
   var value = String(context.value)

@@ -1,4 +1,4 @@
-import { runProcess, getLookupList } from '@/api/ADempiere/data'
+import { runProcess } from '@/api/ADempiere/data'
 
 const processControl = {
   state: {
@@ -47,13 +47,6 @@ const processControl = {
         reportExportType: payload.action.reportExportType
       }
       commit('addStartedProcess', processToRun)
-      getLookupList({
-        tableName: 'M_DiscountSchema',
-        parsedQuery: "SELECT M_DiscountSchema.M_DiscountSchema_ID,NULL,NVL(M_DiscountSchema.Name,'-1'),M_DiscountSchema.IsActive FROM M_DiscountSchema WHERE M_DiscountSchema.DiscountType<>'P' ORDER BY 3"
-      })
-        .catch(error => {
-          console.log('Error in lookup list' + error)
-        })
       // Run process on server and wait for it for notify
       runProcess(processToRun, payload, process)
         .then(response => {

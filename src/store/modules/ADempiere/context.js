@@ -1,9 +1,12 @@
+// Delete when get global context and account context
+import { contextInitial } from '@/utils/ADempiere/dataEmulation.js'
 
 const context = {
   state: {
     context: {
       account: {},
-      containers: new Map(),
+      // containers: new Map(),
+      containers: contextInitial(),
       global: {
         lang: 'en_US',
         Login: {
