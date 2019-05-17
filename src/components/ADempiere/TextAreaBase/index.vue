@@ -1,17 +1,20 @@
 <template>
-  <number-base
+  <text-base
     :metadata="metadata"
     :load-record="loadRecord"
     :value-model="valueModel"
+    :pattern="pattern"
+    :type-input="typeInput"
   />
 </template>
 
 <script>
-import NumberBase from '@/components/ADempiere/NumberBase'
+import TextBase from '@/components/ADempiere/TextBase'
+
 export default {
-  name: 'Number',
+  name: 'TextAreaBase',
   components: {
-    NumberBase
+    TextBase
   },
   props: {
     metadata: {
@@ -23,8 +26,14 @@ export default {
       default: false
     },
     valueModel: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      typeInput: 'textarea',
+      pattern: undefined
     }
   }
 }
