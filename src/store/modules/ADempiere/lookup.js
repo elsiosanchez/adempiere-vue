@@ -1,4 +1,4 @@
-import { getLookupList } from '@/api/ADempiere/data'
+import { getLookup, getLookupList } from '@/api/ADempiere/data'
 import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const lookup = {
@@ -11,8 +11,23 @@ const lookup = {
     }
   },
   actions: {
+    getLookup: ({ commit }, objectParams) => {
+      return new Promise((resolve, reject) => {
+        getLookup(objectParams, objectParams.value)
+          .then(response => {
+            var options = [{
+              label: response.name,
+              key: response.value
+            }]
+            commit('addLoockupList', options)
+            resolve(options)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    },
     getLookupList: ({ commit }, objectParams) => {
-      // console.log(objectParams)
       return new Promise((resolve, reject) => {
         getLookupList(objectParams)
           .then(response => {
@@ -28,7 +43,10 @@ const lookup = {
                 key: value
               })
             })
-            commit('addLoockupList', options)
+            commit('addLoockupList', {
+              list: options,
+              parsedQuery: objectParams.parsedQuery
+            })
             resolve(options)
           })
           .catch(err => {
@@ -37,7 +55,17 @@ const lookup = {
       })
     }
   },
-  getters: {}
+  getters: {
+    getLookupList: (state) => (parsedQuery) => {
+      var lookup = state.lookup.find(
+        item => item.parsedQuery === parsedQuery
+      )
+      if (typeof lookup === 'undefined') {
+        return lookup
+      }
+      return lookup.list
+    }
+  }
 }
 
 export default lookup

@@ -66,17 +66,21 @@ export default {
           containerUuid: this.metadata.containerUuid,
           value: this.metadata.reference.query
         })
-
-        this.$store.dispatch('getLookupList', {
-          tableName: this.metadata.reference.tableName,
-          parsedQuery: parsedQuery
-        })
-          .then(response => {
-            this.options = response
+        var lookupList = this.$store.getters.getLookupList(parsedQuery)
+        if (typeof lookupList === 'undefined' || lookupList.length < 0) {
+          this.$store.dispatch('getLookupList', {
+            tableName: this.metadata.reference.tableName,
+            parsedQuery: parsedQuery
           })
-          .catch(err => {
-            console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-          })
+            .then(response => {
+              this.options = response
+            })
+            .catch(err => {
+              console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
+            })
+        } else {
+          this.options = lookupList
+        }
       }
     },
     handleChange() {
