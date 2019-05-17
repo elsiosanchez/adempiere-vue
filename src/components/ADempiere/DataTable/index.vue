@@ -52,6 +52,7 @@
 
 <script>
 import Field from '@/components/ADempiere/Field'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 export default {
   name: 'DataTable',
@@ -124,6 +125,7 @@ export default {
     this.getTable()
   },
   methods: {
+    isEmptyValue,
     /**
      * Action table buttons edit and delete records
      */
@@ -151,13 +153,17 @@ export default {
     filterResult() {
       var data = []
       data = this.tableData.filter((rowItem) => {
-        if (!this.search) {
+        if (!this.isEmptyValue(this.search)) {
+          let find = false
           Object.keys(rowItem).forEach(key => {
             if (String(rowItem[key]).includes(String(this.search))) {
-              return true
+              find = true
+              return find
             }
           })
+          return find
         }
+        return true
       })
 
       if (data.length < 1) {

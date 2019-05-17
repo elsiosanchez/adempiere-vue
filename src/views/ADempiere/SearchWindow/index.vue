@@ -11,7 +11,7 @@
       />
     </div>
     <el-table
-      :data="datalis.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()) || data.name.toLowerCase().includes(search.toLowerCase()))"
+      :data="filterResult()"
       style="width: 100%"
     >
       <el-table-column
@@ -64,6 +64,7 @@
 
 <script>
 import c_bpartner from '@/views/ADempiere/SearchWindow/datalist.json'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 export default {
   name: 'SearchWindow',
@@ -95,6 +96,7 @@ export default {
     }
   },
   methods: {
+    isEmptyValue,
     click() {
       this.showSearch = !this.showSearch
       if (this.showSearch) {
@@ -107,19 +109,24 @@ export default {
       this.showSearch = false
     },
     filterResult() {
-      this.data = this.datalis.filter((rowItem) => {
-        if (!this.search) {
+      return this.datalis.filter((rowItem) => {
+        if (!this.isEmptyValue(this.search)) {
+          let find = false
           Object.keys(rowItem).forEach(key => {
-            if (String(rowItem[key]).includes(String(this.search))) {
-              return true
+            if (typeof rowItem[key] !== 'undefined' && String(rowItem[key]).includes(this.search)) {
+              find = true
+              return find
             }
           })
+          return find
         }
+        return true
       })
     }
   }
 }
 </script>
+
 <style lang="scss" scoped>
   .search-detail {
     font-size: 0 !important;
