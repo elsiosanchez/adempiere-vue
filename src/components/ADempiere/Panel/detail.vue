@@ -1,49 +1,37 @@
 <template>
-  <div>
-    <el-row :gutter="20">
-      <el-row v-if="true" :gutter="12">
-        <el-col :span="6">
-          <div class="container">
-            <div v-if="this.$store.state.app.device!=='mobile'" class="show">
-              <el-button
-                v-if="!showPanel"
-                :circle="true"
-                class="el-icon-arrow-up button1"
-                @click="showPanel = !showPanel"
-              />
-            </div>
-            <div v-else>
-              <el-button
-                v-if="!showPanel"
-                :circle="true"
-                class="el-icon-arrow-up button1"
-                @click="showPanel = !showPanel"
-              />
-            </div>
+  <el-row v-if="showDetail" :gutter="12" class="root-container">
+    <div class="container">
+      <el-col :span="6">
+        <div class="container">
+          <div :class="isMobie()">
+            <el-button
+              v-if="!showPanel"
+              :circle="true"
+              class="el-icon-arrow-up button1"
+              @click="handleChange()"
+            />
           </div>
-          <div>
-            <el-collapse-transition class="paneltab">
-              <div v-show="showPanel">
-                <div v-if="this.$store.state.app.sidebar.opened">
-                  <div class="container2">
-                    <div class="show2">
-                      <el-button
-                        v-if="show3"
-                        :circle="true"
-                        class="el-icon-arrow-down button2"
-                        @click="showPanel = !showPanel"
-                      />
-                    </div>
-                    <slot />
-                  </div>
+        </div>
+        <el-collapse-transition class="paneltab">
+          <div v-show="showPanel">
+            <div v-if="this.$store.state.app.sidebar.opened">
+              <div class="container2">
+                <div class="show2">
+                  <el-button
+                    v-if="showPanel"
+                    :circle="true"
+                    class="el-icon-arrow-down button2"
+                    @click="handleChange()"
+                  />
                 </div>
+                <slot />
               </div>
-            </el-collapse-transition>
+            </div>
           </div>
-        </el-col>
-      </el-row>
-    </el-row>
-  </div>
+        </el-collapse-transition>
+      </el-col>
+    </div>
+  </el-row>
 </template>
 
 <script>
@@ -53,12 +41,25 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
+    },
+    showDetail: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
-      showPanel: true,
-      show3: true
+      showPanel: true
+    }
+  },
+  methods: {
+    isMobie() {
+      if (this.$store.state.app.device !== 'mobile') {
+        return 'show-button'
+      }
+    },
+    handleChange() {
+      this.showPanel = !this.showPanel
     }
   }
 }
@@ -77,9 +78,10 @@ export default {
     height: 10%;
     display: flex;
     color: #424242;
+    margin-left: 10px;
   }
 
-  .container:hover .show {
+  .container:hover .show-button {
     visibility: visible;
     height: 80px;
   }
@@ -88,7 +90,7 @@ export default {
     visibility: visible;
   }
 
-  .show {
+  .show-button {
     visibility: hidden;
     position: absolute;
     bottom: 0;
@@ -135,17 +137,6 @@ export default {
     transition: all 0.5s ease-in;
     display: flex;
   }
-  .avatar {
-    width: 54px;
-    height: 28px;
-}
-.avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 134px;
-    height: 5px;
-    line-height: 57px;
-}
 
   .buttonp2 {
     visibility: visible;
@@ -212,11 +203,5 @@ export default {
   .el-col {
     border-radius: 4px;
     left: 150px;
-  }
-
-  .sticky-submenu {
-    position: absolute !important;
-    right: 10px;
-    top: 0;
   }
 </style>

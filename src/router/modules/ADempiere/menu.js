@@ -19,7 +19,7 @@ export function loadMainMenu() {
         children: [
           {
             path: 'index',
-            component: () => import('@/components/ADempiere/ProcessActivity'),
+            component: () => import('@/views/ADempiere/ProcessActivity'),
             name: 'ProcessActivity',
             meta: { title: 'ProcessActivity', icon: 'skill', noCache: true }
           }
@@ -30,7 +30,7 @@ export function loadMainMenu() {
         children: [
           {
             path: 'index',
-            component: () => import('@/components/ADempiere/SearchWindow'),
+            component: () => import('@/views/ADempiere/SearchWindow'),
             name: 'SearchWindow',
             meta: { title: 'SearchWindow', icon: 'search', noCache: true }
           }
@@ -44,7 +44,7 @@ export function loadMainMenu() {
         children: [
           {
             path: ':processUuid/:instanceUuid/:fileName',
-            component: () => import('@/components/ADempiere/ReportViewer'),
+            component: () => import('@/views/ADempiere/ReportViewer'),
             name: 'Report Viewer',
             meta: {
               title: 'Report Viewer'
@@ -77,11 +77,11 @@ function getChildFromAction(menu) {
   var routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid()
   let selectedComponent
   if (action === 'W') {
-    selectedComponent = () => import('@/components/ADempiere/Window/window')
+    selectedComponent = () => import('@/views/ADempiere/Window')
   } else if (action === 'S') {
-    selectedComponent = () => import('@/components/ADempiere/Browser')
+    selectedComponent = () => import('@/views/ADempiere/Browser')
   } else if (action === 'P' || action === 'R') {
-    selectedComponent = () => import('@/components/ADempiere/Process')
+    selectedComponent = () => import('@/views/ADempiere/Process')
   } else {
     routeIdentifier = actionAttributes.name + '/' + menu.getUuid()
   }

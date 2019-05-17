@@ -11,6 +11,7 @@
     </el-scrollbar>
   </el-submenu>
 </template>
+
 <script>
 export default {
   name: 'Item',
@@ -28,6 +29,7 @@ export default {
   }
 }
 </script>
+
 <style>
 	.scroll {
     max-height: 400px;

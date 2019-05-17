@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import c_bpartner from '@/components/ADempiere/SearchWindow/datalist.json'
+import c_bpartner from '@/views/ADempiere/SearchWindow/datalist.json'
 
 export default {
   name: 'SearchWindow',

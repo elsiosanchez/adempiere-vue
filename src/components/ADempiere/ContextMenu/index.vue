@@ -54,8 +54,9 @@
 <script>
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import Item from './items'
+
 export default {
-  name: 'Submenu',
+  name: 'ContextMenu',
   components: {
     Item
   },

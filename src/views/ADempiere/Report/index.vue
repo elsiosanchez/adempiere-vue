@@ -2,7 +2,7 @@
   <div>
     <div v-if="loading">
       <sticky class="sticky-submenu">
-        <submenu />
+        <context-menu />
       </sticky>
       <el-row :gutter="20">
         <el-col :span="24">
@@ -31,7 +31,7 @@
 <script>
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
-import Submenu from '@/components/ADempiere/ContextMenu'
+import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
 
@@ -39,7 +39,7 @@ export default {
   name: 'Report',
   components: {
     Panel,
-    Submenu,
+    ContextMenu,
     Sticky
   },
   props: {
