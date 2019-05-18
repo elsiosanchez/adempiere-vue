@@ -3,21 +3,21 @@
 const REFERENCES = [
   {
     id: 25,
-    type: 'Account',
+    type: 'TextBase',
     support: true,
     description: 'Account Element',
     alias: ['Account']
   },
   {
     id: 12,
-    type: 'Amount',
+    type: 'NumberBase',
     support: true,
     description: 'Number with 4 decimals',
     alias: ['Amount']
   },
   {
     id: 33,
-    type: 'Assignment',
+    type: 'SelectBase',
     support: true,
     description: 'Resource Assignment',
     alias: ['Assignment']
@@ -52,7 +52,7 @@ const REFERENCES = [
   },
   {
     id: 37,
-    type: 'CostsPrices',
+    type: 'NumberBase',
     support: true,
     description: 'Costs + Prices (minimum currency precision but if exists more)',
     alias: ['CostsPrices', 'Costs+Prices', 'Cost Prices']
@@ -73,28 +73,28 @@ const REFERENCES = [
   },
   {
     id: 39,
-    type: 'FileName',
+    type: 'TextBase',
     support: true,
     description: 'Local File',
     alias: ['FileName', 'File Name']
   },
   {
     id: 38,
-    type: 'FilePath',
+    type: 'TextBase',
     support: true,
     description: 'Local File Path',
     alias: ['FilePath', 'File Path']
   },
   {
     id: 53670,
-    type: 'FilePathOrName',
+    type: 'TextBase',
     support: true,
     description: 'Local File Path or Name',
     alias: ['FilePathOrName', 'File Path Or Name']
   },
   {
     id: 13,
-    type: 'ID',
+    type: 'NumberBase',
     support: true,
     description: '10 Digit Identifier',
     alias: ['ID']
@@ -108,105 +108,105 @@ const REFERENCES = [
   },
   {
     id: 11,
-    type: 'Integer',
+    type: 'NumberBase',
     support: true,
     description: '10 Digit numeric',
     alias: ['Integer']
   },
   {
     id: 17,
-    type: 'List',
+    type: 'SelectBase',
     support: true,
     description: 'Reference List',
     alias: ['List']
   },
   {
     id: 21,
-    type: 'Location',
+    type: 'SelectBase',
     support: true,
     description: 'Location/Address',
     alias: ['Location', 'Location (Address)', 'Location/Address']
   },
   {
     id: 31,
-    type: 'Locator',
+    type: 'SelectBase',
     support: true,
     description: 'Warehouse Locator Data type',
     alias: ['Locator', 'Locator (WH)', 'Locator/WH']
   },
   {
     id: 34,
-    type: 'Memo',
+    type: 'TextAreaBase',
     support: true,
     description: 'Reference List',
     alias: ['Memo']
   },
   {
     id: 22,
-    type: 'Number',
+    type: 'NumberBase',
     support: true,
     description: 'Float Number',
     alias: ['Number']
   },
   {
     id: 42,
-    type: 'PrinterName',
+    type: 'TextBase',
     support: true,
     description: 'Printer Name',
     alias: ['PrinterName', 'Printer Name']
   },
   {
     id: 35,
-    type: 'ProductAttribute',
+    type: 'SelectBase',
     support: true,
     description: 'Product Attribute',
     alias: ['ProductAttribute', 'Product Attribute']
   },
   {
     id: 29,
-    type: 'Quantity',
+    type: 'NumberBase',
     support: true,
     description: 'Quantity data type',
     alias: ['Quantity']
   },
   {
     id: 30,
-    type: 'Search',
+    type: 'SelectBase',
     support: true,
     description: 'Search Field',
     alias: ['Search']
   },
   {
     id: 10,
-    type: 'String',
+    type: 'TextBase',
     support: true,
     description: 'Character String',
     alias: ['String']
   },
   {
     id: 18,
-    type: 'Table',
+    type: 'SelectBase',
     support: true,
     description: 'Table List',
     alias: ['Table']
   },
   {
     id: 19,
-    type: 'TableDirect',
+    type: 'SelectBase',
     support: true,
     description: 'Direct Table Access',
     alias: ['TableDirect', 'Table Direct']
   },
   {
     id: 14,
-    type: 'Text',
+    type: 'TextAreaBase',
     support: true,
     description: 'Character String up to 2000 characters',
     alias: ['Text']
   },
   {
     id: 36,
-    type: 'TextLong',
+    type: 'TextAreaBase',
     support: true,
     description: 'Text (Long) - Text > 2000 characters',
     alias: ['TextLong', 'Text Long']
@@ -220,7 +220,7 @@ const REFERENCES = [
   },
   {
     id: 40,
-    type: 'Url',
+    type: 'TextBase',
     support: true,
     description: 'URL',
     alias: ['URL', 'Url']

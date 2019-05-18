@@ -83,4 +83,7 @@ export default {
   .el-input-number .el-input__inner{
     text-align: right;
   }
+  .el-input-number.is-controls-right .el-input__inner {
+    padding-right: 15px !important;
+  }
 </style>
