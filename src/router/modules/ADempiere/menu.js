@@ -37,7 +37,7 @@ export function loadMainMenu() {
         ]
       },
       {
-        path: 'report-viewer',
+        path: '/report-viewer',
         component: Layout,
         hidden: true,
         redirect: 'report-viewer/:processUuid/:instanceUuid/:fileName',
