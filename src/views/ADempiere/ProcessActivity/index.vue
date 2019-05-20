@@ -23,7 +23,7 @@
       <el-table-column
         label="see report"
       >
-        <router-link :to="{ path: 'report-viewer' }"><svg-icon icon-class="clipboard" /></router-link>
+        <router-link :to="{ name: 'Report Viewer', params: { processUuid,instanceUuid,fileName } }"><svg-icon icon-class="clipboard" /></router-link>
       </el-table-column>
       <el-table-column
         label="Status"
@@ -34,7 +34,7 @@
           title="Status"
           width="400"
           trigger="click"
-          content="loading details of the processes"
+          content="type : Report"
         />
         <el-button v-popover:popover type="text">detail of the process</el-button>
         <!-- {{ item.name }} -->

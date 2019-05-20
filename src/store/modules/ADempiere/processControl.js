@@ -72,7 +72,6 @@ const processControl = {
         })
         .catch(error => {
           console.log('Error running the process', error)
-          console.log(processResult)
           dispatch('finishProcess', processResult)
         })
     },
@@ -103,8 +102,8 @@ const processControl = {
     },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       var processList = state.process.map((item) => {
-        // console.log(item)
         var process = rootGetters.getProcess(item.uuid)
+        console.log(processList)
         if (typeof process !== undefined) {
           return {
             ...process,
