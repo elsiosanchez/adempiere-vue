@@ -47,6 +47,9 @@ export default {
     }
   },
   mounted() {
+    if (this.metadata.defaultValue === -1) {
+      this.value = ''
+    }
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,
       containerUuid: this.metadata.containerUuid,

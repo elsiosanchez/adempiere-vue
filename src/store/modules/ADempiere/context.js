@@ -38,6 +38,12 @@ const context = {
     }
   },
   getters: {
+    /**
+     * @param  {object} findedContext
+     *  - parentUuid
+     *  - containerUuid
+     *  - columnName
+     */
     getContext: (state) => (findedContext) => {
       var parent = ''
       var container = ''

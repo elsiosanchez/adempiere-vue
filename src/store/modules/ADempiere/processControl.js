@@ -1,4 +1,5 @@
 import { runProcess } from '@/api/ADempiere/data'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 const processControl = {
   state: {
@@ -33,7 +34,7 @@ const processControl = {
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit, dispatch }, payload) {
+    startProcess({ commit, getters, dispatch }, payload) {
       var processResult = {}
       var processToRun = {
         uuid: payload.action.uuid,
@@ -44,11 +45,12 @@ const processControl = {
         accessLevel: payload.accessLevel,
         showHelp: payload.action.showHelp,
         isDirectPrint: payload.action.isDirectPrint,
-        reportExportType: payload.action.reportExportType
+        reportExportType: payload.action.reportExportType,
+        parameters: getters.getProcessParameters(payload.uuid)
       }
       commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
-      runProcess(processToRun, payload, process)
+      runProcess(processToRun)
         .then(response => {
           processResult = {
             instanceUuid: response.getInstanceuuid().trim(),
@@ -126,6 +128,31 @@ const processControl = {
         item => item.instanceUuid === instanceUuid
       )
       return cachedReport
+    },
+    getProcessParameters: (state, rootGetters) => (processUuid) => {
+      const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
+      const params = fieldList
+        .map((fieldItem) => {
+          const value = rootGetters.getContext({
+            parentUuid: processUuid,
+            containerUuid: processUuid,
+            columnName: fieldItem.columnName
+          })
+          if (!isEmptyValue(value)) {
+            return {
+              columnName: fieldItem.columnName,
+              value: value
+            }
+          }
+          return undefined
+        })
+        .filter((itemParams) => {
+          if (typeof itemParams !== 'undefined') {
+            return true
+          }
+          return false
+        })
+      return params
     }
   }
 }
