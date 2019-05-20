@@ -10,7 +10,7 @@ export function loadMainMenu() {
     const asyncRouterMap = [
       {
         path: '*',
-        redirect: '/dashboard',
+        redirect: '/404',
         hidden: true
       },
       {
