@@ -7,7 +7,7 @@
             <el-button
               v-if="!showPanel"
               :circle="true"
-              class="el-icon-arrow-up button1"
+              class="el-icon-arrow-up button-top"
               @click="handleChange()"
             />
           </div>
@@ -15,12 +15,12 @@
         <el-collapse-transition class="paneltab">
           <div v-show="showPanel">
             <div v-if="this.$store.state.app.sidebar.opened">
-              <div class="container2">
-                <div class="show2">
+              <div class="container-table">
+                <div class="show-container">
                   <el-button
                     v-if="showPanel"
                     :circle="true"
-                    class="el-icon-arrow-down button2"
+                    class="el-icon-arrow-down button-bottom"
                     @click="handleChange()"
                   />
                 </div>
@@ -66,10 +66,6 @@ export default {
 </script>
 
 <style scoped >
-  .paneltab {
-    border: 1px solid blue;
-  }
-
   .container {
     bottom: 0;
     z-index: 0;
@@ -105,7 +101,7 @@ export default {
     transition: all .5s ease-in;
   }
 
-  .container2 {
+  .container-table {
     bottom: 0;
     height: 135px;
     width: 100%;
@@ -116,18 +112,18 @@ export default {
     background-color: #fff;
   }
 
-  .container2:hover .show2 {
+  .container-table:hover .show-container {
     visibility: visible;
   }
 
-  .container2:hover .buttonp2 {
+  .container-table:hover .buttonp2 {
     visibility: visible;
   }
-  .container2:hover .transi-box2 {
+  .container-table:hover .transi-box-menu-menu-hiden {
     visibility: visible;
   }
 
-  .show2 {
+  .show-container {
     visibility: hidden;
     position: absolute;
     bottom: 0;
@@ -143,7 +139,7 @@ export default {
     transition: all .5s ease-in;
   }
 
-  .button1 {
+  .button-top {
    width: 40px;
    bottom: 0;
    right: 50%;
@@ -155,9 +151,9 @@ export default {
    outline: 0;
    font-size: 14px;
  }
-  .button2 {
+  .button-bottom {
     width: 37px;
-    bottom: 39%;
+    bottom: 20%;
     z-index: 2;
     right: 50%;
     position: fixed;
@@ -169,7 +165,7 @@ export default {
     font-size: 14px;
   }
 
-  .transi-box {
+  .transi-box-menu {
     bottom: 0;
     width: calc(100% - 170px);
     position: fixed;
@@ -181,7 +177,7 @@ export default {
     height: 11%;
   }
 
-  .transi-box2 {
+  .transi-box-menu-menu-hiden {
     margin-bottom: 0px;
     width: calc(100% + 10px);
     position: fixed;
