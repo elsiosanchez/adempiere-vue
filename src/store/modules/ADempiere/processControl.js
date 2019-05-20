@@ -36,6 +36,7 @@ const processControl = {
     // Supported Actions for it
     startProcess({ commit, getters, dispatch }, payload) {
       var processResult = {}
+      var parameters = getters.getProcessParameters(payload.action.uuid)
       var processToRun = {
         uuid: payload.action.uuid,
         name: payload.action.name,
@@ -46,8 +47,9 @@ const processControl = {
         showHelp: payload.action.showHelp,
         isDirectPrint: payload.action.isDirectPrint,
         reportExportType: payload.action.reportExportType,
-        parameters: getters.getProcessParameters(payload.uuid)
+        parameters: parameters
       }
+
       commit('addStartedProcess', processToRun)
       // Run process on server and wait for it for notify
       runProcess(processToRun)
@@ -74,8 +76,6 @@ const processControl = {
         })
         .catch(error => {
           console.log('Error running the process', error)
-          console.log(processResult)
-          dispatch('finishProcess', processResult)
         })
     },
     setShowDialog({ commit }, process) {
@@ -146,12 +146,7 @@ const processControl = {
           }
           return undefined
         })
-        .filter((itemParams) => {
-          if (typeof itemParams !== 'undefined') {
-            return true
-          }
-          return false
-        })
+        .filter(itemParams => itemParams)
       return params
     }
   }

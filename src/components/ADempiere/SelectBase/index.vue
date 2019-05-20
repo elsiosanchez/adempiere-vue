@@ -34,22 +34,33 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.defaultValue,
+      value: '',
       loading: false,
       options: [],
       list: [],
-      showControls: true
+      showControls: true,
+      blanckOption: {
+        label: '',
+        value: -1
+      }
     }
   },
   watch: {
     valueModel: function() {
       this.value = this.valueModel
+    },
+    value: function() {
+      if (this.value === -1 || this.value === '-1') {
+        this.value = ''
+      }
+    }
+  },
+  beforeMount() {
+    if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
+      this.options.push(this.blanckOption)
     }
   },
   mounted() {
-    if (this.metadata.defaultValue === -1) {
-      this.value = ''
-    }
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,
       containerUuid: this.metadata.containerUuid,
@@ -77,6 +88,7 @@ export default {
           })
             .then(response => {
               this.options = response
+              this.options.push(this.blanckOption)
             })
             .catch(err => {
               console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
