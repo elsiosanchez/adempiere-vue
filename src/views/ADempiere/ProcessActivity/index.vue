@@ -8,40 +8,44 @@
       :stripe="true"
       style="width: 100%"
     >
-      <!-- <template v-for="(item, index) in a"> -->
-      <!-- <template v-for="(item, index) in a"> -->
       <el-table-column
         prop="name"
         label="name"
-      >
-        <!-- {{ item.name }} -->
-      </el-table-column>
+      />
       <el-table-column
         prop="description"
         label="description"
-      >
-        <!-- {{ item.name }} -->
-      </el-table-column>
-      <!-- {{ item.name }} -->
+      />
       <el-table-column
         prop="action"
         label="action"
-      >
-        <!-- {{ item.name }} -->
-      </el-table-column>
+      />
       <el-table-column
-        label="see reporte"
+        label="see report"
       >
         <router-link :to="{ path: 'report-viewer' }"><svg-icon icon-class="clipboard" /></router-link>
+      </el-table-column>
+      <el-table-column
+        label="Status"
+      >
+        <el-popover
+          ref="popover"
+          placement="right"
+          title="Status"
+          width="400"
+          trigger="click"
+          content="loading details of the processes"
+        />
+        <el-button v-popover:popover type="text">detail of the process</el-button>
         <!-- {{ item.name }} -->
       </el-table-column>
     </el-table>
   </div>
   <div v-else class="errPage-container">
     <el-row>
-      <el-col :span="12">.
+      <el-col :span="8">.
       </el-col>
-      <el-col :span="12">
+      <el-col :span="8">
         <h1>
           Oops! Not process running
         </h1>
@@ -58,19 +62,16 @@ export default {
   data() {
     return {
       errGif: errGif + '?' + +new Date(),
-      tableData: []
+      tableData: [],
+      showDialog: false
     }
   },
   computed: {
     processRunnings() {
       return this.$store.getters.getRunningProcess()
     },
-    processActions() {
-      return this.$store.getters.getActionProcess()
-    },
     a() {
       var a = this.$store.getters.getRunningProcess().map((item) => {
-        // var b   = this.$store.getters.getActionProcess()
         return {
           name: item.name,
           description: item.description,
@@ -78,11 +79,8 @@ export default {
           output: item.output,
           logs: item.logs,
           isError: item.isError
-
-          // help: item.help
         }
       })
-      console.log(a)
       return a
     }
   },
@@ -98,7 +96,6 @@ export default {
               title: 'Info',
               message: 'Processing ' + action.type
             })
-            // console.log('hola' + action.name +''+ action.type)
           }
         },
         after: (action, state) => {
