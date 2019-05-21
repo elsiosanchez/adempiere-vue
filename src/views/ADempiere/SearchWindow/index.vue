@@ -23,6 +23,9 @@
         prop="c_bpartner_id"
         label="c_bpartner_id"
         width="180"
+        column-key="c_bpartner_id"
+        :filters="[{text: '113', value: '113'}, {text: '121', value: '121'}]"
+        :filter-method="filterHandler"
       />
       <el-table-column
         prop="ad_client_id"
