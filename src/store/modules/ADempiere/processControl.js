@@ -1,5 +1,5 @@
-import { runProcess } from '@/api/ADempiere/data'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
+import { runProcess, getLookup } from '@/api/ADempiere/data'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 const processControl = {
   state: {
@@ -51,6 +51,16 @@ const processControl = {
       }
 
       commit('addStartedProcess', processToRun)
+      getLookup({
+        tableName: 'C_PaymentTerm',
+        parsedDirectQuery: "SELECT C_PaymentTerm.C_PaymentTerm_ID,NULL,NVL(C_PaymentTerm_Trl.Name,'-1'),C_PaymentTerm.IsActive FROM C_PaymentTerm INNER JOIN C_PaymentTerm_TRL ON (C_PaymentTerm.C_PaymentTerm_ID=C_PaymentTerm_Trl.C_PaymentTerm_ID AND C_PaymentTerm_Trl.AD_Language='es_MX') WHERE C_PaymentTerm.C_PaymentTerm_ID=?"
+      }, 106)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       // Run process on server and wait for it for notify
       runProcess(processToRun)
         .then(response => {
@@ -86,7 +96,10 @@ const processControl = {
       }
     },
     finishProcess({ commit }, processOutput) {
-      if (!processOutput.isError && typeof processOutput.instanceUuid !== 'undefined' && typeof processOutput.processUuid !== 'undefined' && typeof processOutput.output.fileName !== 'undefined') {
+      if (!processOutput.isError &&
+        typeof processOutput.instanceUuid !== 'undefined' &&
+        typeof processOutput.processUuid !== 'undefined' &&
+        typeof processOutput.output.fileName !== 'undefined') {
         commit('setReportValues', processOutput)
       }
     },
