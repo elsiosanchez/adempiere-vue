@@ -42,6 +42,10 @@ const panel = {
         }
         return item
       })
+    },
+    changeFieldValue(state, payload) {
+      payload.field.oldValue = payload.field.value
+      payload.field.value = payload.newValue
     }
   },
   actions: {
@@ -89,6 +93,10 @@ const panel = {
       var fieldList = state.panel
         .find(item => item.uuid === payload.containerUuid).fieldList
       var field = fieldList.find(field => field.columnName === payload.columnName)
+      commit('changeFieldValue', {
+        field: field,
+        newValue: payload.newValue
+      })
       //  Change Dependents
       var dependents = fieldList.filter((item) => {
         return field.dependentFieldsList.includes(item.columnName)
