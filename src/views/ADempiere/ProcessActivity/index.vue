@@ -23,7 +23,7 @@
       <el-table-column
         label="see report"
       >
-        <router-link :to="{ path: 'report-viewer' }"><svg-icon icon-class="clipboard" /></router-link>
+        <router-link :to="{ path: ':processUuid/:instanceUuid/:fileName' }"><svg-icon icon-class="clipboard" /></router-link>
       </el-table-column>
       <el-table-column
         label="Status"

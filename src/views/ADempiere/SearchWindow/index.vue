@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div v-show="searchable" :class="{'show':showSearch}" align="right" class="search-detail">
+    <br>
+    <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
+      <el-button @click="clearFilter">reset all filters</el-button>
       <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
       <el-input
         ref="headerSearchSelect"
@@ -10,53 +12,70 @@
         class="header-search-select"
       />
     </div>
+    <br>
     <el-table
+      ref="filterTable"
       :data="filterResult()"
-      style="width: 100%"
+      :border="true"
+      :stripe="true"
     >
       <el-table-column
         prop="c_bpartner_id"
         label="c_bpartner_id"
+        width="180"
       />
       <el-table-column
         prop="ad_client_id"
         label="ad_client_id"
+        width="180"
       />
       <el-table-column
         prop="ad_org_id"
         label="ad_org_id"
+        width="180"
       />
       <el-table-column
         prop="isactive"
         label="isactive"
+        width="180"
       />
       <el-table-column
         prop="created"
         label="created"
+        width="180"
       />
       <el-table-column
         prop="createdby"
         label="createdby"
+        width="180"
+        column-key="createdby"
+        :filters="[{text: '0', value: '0'}, {text: '100', value: '100'}]"
+        :filter-method="filterHandler"
       />
       <el-table-column
         prop="updated"
         label="updated"
+        width="180"
       />
       <el-table-column
         prop="updated"
         label="updated"
+        width="180"
       />
       <el-table-column
         prop="updatedby"
         label="updatedby"
+        width="180"
       />
       <el-table-column
         prop="value"
         label="value"
+        width="180"
       />
       <el-table-column
         prop="name"
         label="name"
+        width="180"
       />
     </el-table>
   </div>
@@ -108,6 +127,16 @@ export default {
       this.options = []
       this.showSearch = false
     },
+    clearFilter() {
+      this.$refs.filterTable.clearFilter()
+    },
+    formatter(row, column) {
+      return row.address
+    },
+    filterHandler(value, row, column) {
+      const property = column['property']
+      return row[property] === value
+    },
     filterResult() {
       return this.datalis.filter((rowItem) => {
         if (!this.isEmptyValue(this.search)) {
@@ -132,8 +161,8 @@ export default {
     font-size: 0 !important;
 
     .search-icon {
-      cursor: pointer;
-      font-size: 18px;
+      cursor: grabbing;
+      font-size: 23px;
       color: #000;
       vertical-align: middle;
     }
