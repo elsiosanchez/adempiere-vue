@@ -146,15 +146,10 @@ const processControl = {
       const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
       const params = fieldList
         .map((fieldItem) => {
-          const value = rootGetters.getContext({
-            parentUuid: processUuid,
-            containerUuid: processUuid,
-            columnName: fieldItem.columnName
-          })
-          if (!isEmptyValue(value)) {
+          if (!isEmptyValue(fieldItem.value)) {
             return {
               columnName: fieldItem.columnName,
-              value: value
+              value: fieldItem.value
             }
           }
           return undefined
