@@ -31,8 +31,9 @@
     </el-row>
     <modal
       :visible="visibleDialog"
-      :metadata="reportResult"
+      :metadata="processMetadataValue"
       :parent-uuid="reportResult.processUuid"
+      :report-export-type="reportFormat"
       @closeDialog="visibleDialog=false"
     />
   </div>
@@ -72,6 +73,9 @@ export default {
     },
     reportContentValue() {
       return this.reportContent
+    },
+    processMetadataValue() {
+      return this.$store.getters.getProcess(this.$route.params.processUuid)
     }
   },
   created() {
