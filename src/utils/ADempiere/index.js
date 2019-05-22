@@ -107,6 +107,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     displayType: fieldGRPC.getDisplaytype(),
     componentPath: evalutateTypeField(fieldGRPC.getDisplaytype()),
     isFieldOnly: fieldGRPC.getIsfieldonly(),
+    isRange: fieldGRPC.getIsrange(),
     isSameLine: fieldGRPC.getIssameline(),
     sequence: fieldGRPC.getSequence(),
     seqNoGrid: fieldGRPC.getSeqnogrid(),

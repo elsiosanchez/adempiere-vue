@@ -140,10 +140,6 @@ export default {
       type: String,
       default: ''
     },
-    parentsTab: {
-      type: Boolean,
-      default: true
-    },
     group: {
       type: Object,
       default: () => ({
@@ -276,7 +272,7 @@ export default {
         return
       }
       // if (this.loadRecord === false) {
-      this.$store.dispatch('requestObject', {
+      this.$store.dispatch('getObject', {
         table: table,
         recordUuid: uuidRecord,
         parentUuid: this.parentUuid,
