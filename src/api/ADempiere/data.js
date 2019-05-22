@@ -76,6 +76,18 @@ export function runProcess(process) {
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
   processRequest.setReportexporttype(process.reportExportType)
+  process.parameters.forEach(parameter => {
+    const convertedParameter = Instance.call(this).convertParameter(parameter)
+    processRequest.addParameters(convertedParameter)
+  })
+  // processRequest.setParametersList(convertParameter())
   //  Run Process
   return Instance.call(this).requestProcess(processRequest)
+}
+
+// Request a Process Activity list
+export function requestProcessActivity() {
+  var processActivityRequest = Instance.call(this).getProcessActivityRequest()
+  //  Get Process Activity
+  return Instance.call(this).requestProcessActivity(processActivityRequest)
 }

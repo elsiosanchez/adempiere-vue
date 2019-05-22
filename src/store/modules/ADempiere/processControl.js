@@ -1,4 +1,4 @@
-import { runProcess } from '@/api/ADempiere/data'
+import { runProcess, requestProcessActivity, getObjectListFromCriteria } from '@/api/ADempiere/data'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 const processControl = {
@@ -49,8 +49,26 @@ const processControl = {
         reportExportType: payload.action.reportExportType,
         parameters: parameters
       }
-
+      console.log(processToRun)
       commit('addStartedProcess', processToRun)
+      getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
+        .then(response => {
+          console.log(response)
+          response.getRecordsList().forEach(item => {
+            console.log(item.getValuesMap())
+          })
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      // Example of process Activity
+      requestProcessActivity()
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       // Run process on server and wait for it for notify
       runProcess(processToRun)
         .then(response => {
@@ -135,15 +153,10 @@ const processControl = {
       const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
       const params = fieldList
         .map((fieldItem) => {
-          const value = rootGetters.getContext({
-            parentUuid: processUuid,
-            containerUuid: processUuid,
-            columnName: fieldItem.columnName
-          })
-          if (!isEmptyValue(value)) {
+          if (!isEmptyValue(fieldItem.value)) {
             return {
               columnName: fieldItem.columnName,
-              value: value
+              value: fieldItem.value
             }
           }
           return undefined
