@@ -29,6 +29,12 @@
         </div>
       </el-col>
     </el-row>
+    <modal
+      :visible="visibleDialog"
+      :metadata="reportResult"
+      :parent-uuid="reportResult.processUuid"
+      @closeDialog="visibleDialog=false"
+    />
   </div>
   <div v-else style="padding: 20px 100px">
     <h3>
@@ -39,11 +45,13 @@
 
 <script>
 import ContextMenu from '@/components/ADempiere/ContextMenu'
+import Modal from '@/components/ADempiere/Dialog'
 
 export default {
   name: 'ReportViewer',
   components: {
-    ContextMenu
+    ContextMenu,
+    Modal
   },
   data() {
     return {
@@ -54,7 +62,8 @@ export default {
       tableData: [],
       tableHeader: [],
       loading: false,
-      reportResult: {}
+      reportResult: {},
+      visibleDialog: this.$store.state.processControl.visibleDialog
     }
   },
   computed: {

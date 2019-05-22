@@ -9,7 +9,7 @@
     />
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">Cancel</el-button>
-      <el-button type="primary" @click="closeDialog">Confirm</el-button>
+      <el-button type="primary" @click="runAction(metadata)">Confirm</el-button>
     </span>
   </el-dialog>
 </template>
@@ -56,6 +56,35 @@ export default {
   methods: {
     closeDialog() {
       this.$store.dispatch('setShowDialog', undefined)
+    },
+    runAction(action) {
+      console.log(action)
+      this.closeDialog()
+      this.$notify.info({
+        title: 'Info',
+        message: 'Processing ' + action.name
+      })
+      this.$store.dispatch('startProcess', {
+        action: action,
+        containerUuid: action.processUuid
+      })
+      if (action.isReport) {
+        this.$store.subscribeAction({
+          after: (action, state) => {
+            if (action.type === 'finishProcess') {
+              this.$router.push({
+                name: 'Report Viewer',
+                params: {
+                  processUuid: action.payload.processUuid,
+                  instanceUuid: action.payload.instanceUuid,
+                  fileName: action.payload.output.fileName
+                }
+              })
+              this.$store.dispatch('tagsView/delView', this.$route)
+            }
+          }
+        })
+      }
     }
   }
 }
