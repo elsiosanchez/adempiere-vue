@@ -76,13 +76,39 @@ export function runProcess(process) {
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
   processRequest.setReportexporttype(process.reportExportType)
-  process.parameters.forEach(parameter => {
-    const convertedParameter = Instance.call(this).convertParameter(parameter)
-    processRequest.addParameters(convertedParameter)
-  })
+  if (process.parameters !== undefined) {
+    process.parameters.forEach(parameter => {
+      const convertedParameter = Instance.call(this).convertParameter(parameter)
+      processRequest.addParameters(convertedParameter)
+    })
+  }
   // processRequest.setParametersList(convertParameter())
   //  Run Process
   return Instance.call(this).requestProcess(processRequest)
+}
+
+// Request a browser search
+// This function allows follow structure:
+// process.uuid
+// process.parameters [
+//   {
+//     columnName,
+//     value
+//   }
+// ]
+export function getBrowserSearch(browser) {
+  var browserRequest = Instance.call(this).getBrowserRequest()
+  //  Fill Request browser
+  browserRequest.setUuid(browser.uuid)
+  if (browser.parameters !== undefined) {
+    browser.parameters.forEach(parameter => {
+      const convertedParameter = Instance.call(this).convertParameter(parameter)
+      browserRequest.addParameters(convertedParameter)
+    })
+  }
+  // browserRequest.setParametersList(convertParameter())
+  //  Run browser
+  return Instance.call(this).requestBrowser(browserRequest)
 }
 
 // Request a Process Activity list
