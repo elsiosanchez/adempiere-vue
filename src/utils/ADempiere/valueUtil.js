@@ -18,13 +18,38 @@ export function isEmptyValue(value) {
     return Boolean(!value.trim().length)
   } else if (typeof value === 'function' || typeof value === 'number' || typeof value === 'boolean' || Object.prototype.toString.call(value) === '[object Date]') {
     return false
-  } else if (value.isArray) {
+  } else if (Array.isArray(value)) {
     return Boolean(!value.length)
   } else if (typeof value === 'object') {
     return Boolean(!Object.keys(value).length)
   }
 
   return true
+}
+
+export function typeValue(value) {
+  if (typeof value === 'undefined' || value == null) {
+    return value
+  } else if (typeof value === 'string') {
+    return 'STRING'
+  } else if (typeof value === 'function') {
+    return 'FUNCTION'
+  } else if (typeof value === 'number') {
+    if (value.isInteger()) {
+      return 'INTEGER'
+    } else {
+      return 'NUMBER'
+    }
+  } else if (typeof value === 'boolean') {
+    return 'BOOLEAN'
+  } else if (Object.prototype.toString.call(value) === '[object Date]') {
+    return 'DATE'
+  } else if (Array.isArray(value)) {
+    return 'ARRAY'
+  } else if (typeof value === 'object') {
+    return 'OBJECT'
+  }
+  return value
 }
 
 /**

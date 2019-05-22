@@ -66,7 +66,7 @@ const REFERENCES = [
   },
   {
     id: 16,
-    type: 'DateTime',
+    type: 'Date',
     support: true,
     description: 'Date with time',
     alias: ['DateTime', 'Date Time', 'Date+Time']

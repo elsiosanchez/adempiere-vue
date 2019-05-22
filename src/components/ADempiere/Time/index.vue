@@ -1,7 +1,6 @@
 <template>
   <el-time-picker
     v-model="value"
-    :metadata="metadata"
     :value-format="metadata.VFormat"
     :picker-options="{
       selectableRange: metadata.Range

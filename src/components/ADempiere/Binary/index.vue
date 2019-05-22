@@ -1,7 +1,6 @@
 <template>
   <el-upload
     v-model="value"
-    :metadata="metadata"
     :limit="metadata.Limit"
     :on-remove="handleRemove"
     :on-success="handleSuccess"

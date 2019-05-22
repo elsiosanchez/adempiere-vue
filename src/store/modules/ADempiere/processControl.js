@@ -157,9 +157,16 @@ const processControl = {
     },
     getProcessParameters: (state, rootGetters) => (processUuid) => {
       const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
+      const range = []
       const params = fieldList
         .map((fieldItem) => {
           if (!isEmptyValue(fieldItem.value)) {
+            if (fieldItem.isRange) {
+              range.push({
+                columnName: fieldItem.columnName + '_To',
+                value: fieldItem.valueTo
+              })
+            }
             return {
               columnName: fieldItem.columnName,
               value: fieldItem.value
@@ -168,7 +175,7 @@ const processControl = {
           return undefined
         })
         .filter(itemParams => itemParams)
-      return params
+      return params.concat(range)
     }
   }
 }
