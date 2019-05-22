@@ -1,4 +1,4 @@
-import { runProcess, requestProcessActivity, getObjectListFromCriteria } from '@/api/ADempiere/data'
+import { runProcess, requestProcessActivity, getObjectListFromCriteria, getBrowserSearch } from '@/api/ADempiere/data'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 const processControl = {
@@ -55,7 +55,7 @@ const processControl = {
         reportExportType: reportExportType,
         parameters: parameters
       }
-      console.log(processToRun)
+      // console.log(processToRun)
       commit('addStartedProcess', processToRun)
       getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
         .then(response => {
@@ -69,6 +69,18 @@ const processControl = {
         })
       // Example of process Activity
       requestProcessActivity()
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      var browserToSearch = {
+        uuid: '8aaf0ce8-fb40-11e8-a479-7a0060f0aa01'
+      }
+      //  Browser Search
+      getBrowserSearch(browserToSearch)
         .then(response => {
           console.log(response)
         })
