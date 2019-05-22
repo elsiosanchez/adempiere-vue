@@ -35,6 +35,12 @@ const processControl = {
   actions: {
     // Supported Actions for it
     startProcess({ commit, getters, dispatch }, payload) {
+      var reportExportType
+      if (typeof payload.action.reportExportType === 'undefined') {
+        reportExportType = payload.reportFormat
+      } else {
+        reportExportType = payload.action.reportExportType
+      }
       var processResult = {}
       var parameters = getters.getProcessParameters(payload.action.uuid)
       var processToRun = {
@@ -46,7 +52,7 @@ const processControl = {
         accessLevel: payload.accessLevel,
         showHelp: payload.action.showHelp,
         isDirectPrint: payload.action.isDirectPrint,
-        reportExportType: payload.action.reportExportType,
+        reportExportType: reportExportType,
         parameters: parameters
       }
       console.log(processToRun)

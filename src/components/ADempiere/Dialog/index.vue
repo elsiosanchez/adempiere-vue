@@ -34,6 +34,10 @@ export default {
     metadata: {
       type: Object,
       required: true
+    },
+    reportExportType: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -58,7 +62,6 @@ export default {
       this.$store.dispatch('setShowDialog', undefined)
     },
     runAction(action) {
-      console.log(action)
       this.closeDialog()
       this.$notify.info({
         title: 'Info',
@@ -66,7 +69,8 @@ export default {
       })
       this.$store.dispatch('startProcess', {
         action: action,
-        containerUuid: action.processUuid
+        reportFormat: this.reportExportType,
+        containerUuid: action.uuid
       })
       if (action.isReport) {
         this.$store.subscribeAction({
