@@ -1,8 +1,8 @@
 [
     {
-        "c_bpartner_id" : 113,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :113,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2001-03-27T19:44:25Z",
         "createdby" : 0,
@@ -86,9 +86,9 @@
         "uuid" : "91d961fe-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 121,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :121,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2003-01-13T14:14:03Z",
         "createdby" : 100,
@@ -172,9 +172,9 @@
         "uuid" : "91d964c4-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50000,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50000,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-22T18:13:15Z",
         "createdby" : 100,
@@ -258,9 +258,9 @@
         "uuid" : "91d9669a-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50001,
-        "ad_client_id" : 11,
-        "ad_org_id" : 11,
+        "c_bpartner_id" :50001,
+        "ad_client_id" :11,
+        "ad_org_id" :11,
         "isactive" : "Y",
         "created" : "2008-09-22T18:14:45Z",
         "createdby" : 100,
@@ -344,9 +344,9 @@
         "uuid" : "91d9687a-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50002,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50002,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-22T18:15:58Z",
         "createdby" : 100,
@@ -430,9 +430,9 @@
         "uuid" : "91d96a50-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50004,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50004,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-24T19:14:04Z",
         "createdby" : 100,
@@ -516,9 +516,9 @@
         "uuid" : "91d96df2-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50005,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50005,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-24T19:15:47Z",
         "createdby" : 100,
@@ -602,9 +602,9 @@
         "uuid" : "91d96fbe-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50007,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50007,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-24T19:18:33Z",
         "createdby" : 100,
@@ -688,9 +688,9 @@
         "uuid" : "91d97180-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50008,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50008,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-24T19:19:39Z",
         "createdby" : 100,
@@ -774,9 +774,9 @@
         "uuid" : "91d9734c-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 50009,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :50009,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-24T19:20:35Z",
         "createdby" : 100,
@@ -861,8 +861,8 @@
     },
     {
         "c_bpartner_id" : 50003,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2008-09-22T18:17:27Z",
         "createdby" : 100,
@@ -889,7 +889,7 @@
         "c_invoiceschedule_id" : null,
         "rating" : null,
         "salesvolume" : 0,
-        "numberemployees" : 111111111,
+        "numberemployees" :111111111,
         "naics" : null,
         "firstsale" : null,
         "acqusitioncost" : 123456780.00,
@@ -946,9 +946,9 @@
         "uuid" : "91d96c26-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" : 117,
-        "ad_client_id" : 11,
-        "ad_org_id" : 0,
+        "c_bpartner_id" :117,
+        "ad_client_id" :11,
+        "ad_org_id" :0,
         "isactive" : "Y",
         "created" : "2001-04-12T01:11:36Z",
         "createdby" : 100,
