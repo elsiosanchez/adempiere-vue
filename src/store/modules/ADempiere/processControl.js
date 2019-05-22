@@ -55,12 +55,6 @@ const processControl = {
         tableName: 'C_PaymentTerm',
         parsedDirectQuery: "SELECT C_PaymentTerm.C_PaymentTerm_ID,NULL,NVL(C_PaymentTerm_Trl.Name,'-1'),C_PaymentTerm.IsActive FROM C_PaymentTerm INNER JOIN C_PaymentTerm_TRL ON (C_PaymentTerm.C_PaymentTerm_ID=C_PaymentTerm_Trl.C_PaymentTerm_ID AND C_PaymentTerm_Trl.AD_Language='es_MX') WHERE C_PaymentTerm.C_PaymentTerm_ID=?"
       }, 106)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
       // Run process on server and wait for it for notify
       runProcess(processToRun)
         .then(response => {
@@ -82,7 +76,6 @@ const processControl = {
             }
           }
           dispatch('finishProcess', processResult)
-          console.log(processResult)
         })
         .catch(error => {
           console.log('Error running the process', error)
@@ -146,10 +139,15 @@ const processControl = {
       const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
       const params = fieldList
         .map((fieldItem) => {
-          if (!isEmptyValue(fieldItem.value)) {
+          const value = rootGetters.getContext({
+            parentUuid: processUuid,
+            containerUuid: processUuid,
+            columnName: fieldItem.columnName
+          })
+          if (!isEmptyValue(value)) {
             return {
               columnName: fieldItem.columnName,
-              value: fieldItem.value
+              value: value
             }
           }
           return undefined

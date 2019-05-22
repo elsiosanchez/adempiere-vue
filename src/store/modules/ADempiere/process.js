@@ -52,6 +52,18 @@ const process = {
                 accessLevel: response.getAccesslevel(),
                 showHelp: response.getShowhelp(),
                 isDirectPrint: response.getIsdirectprint()
+              },
+              {
+                name: 'Change parameters',
+                type: 'process',
+                action: 'changeParameters',
+                uuid: response.getUuid(),
+                description: response.description,
+                help: response.getHelp(),
+                isReport: response.getIsreport(),
+                accessLevel: response.getAccesslevel(),
+                showHelp: response.getShowhelp(),
+                isDirectPrint: response.getIsdirectprint()
               }
             ]
             var summaryAction = {

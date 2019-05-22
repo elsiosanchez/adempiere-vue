@@ -88,7 +88,7 @@ function getChildFromAction(menu) {
   var option = {
     path: routeIdentifier,
     component: selectedComponent,
-    name: menu.getReferenceuuid(),
+    name: menu.getUuid(),
     hidden: actionAttributes.hidden,
     alwaysShow: false,
     meta: {
