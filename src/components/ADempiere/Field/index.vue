@@ -57,10 +57,6 @@ export default {
       type: [Number, String, Boolean, Array, Object],
       default: undefined
     },
-    positionTab: {
-      type: Number,
-      default: 0
-    },
     span: {
       type: Number,
       default: undefined
@@ -142,23 +138,6 @@ export default {
         return undefined
       }
       return this.field.name
-    },
-    /**
-     * Parse the date format to be compatible with element-ui
-     */
-    checkValueFormat() {
-      // Date = 15 and DateTime = 16
-      if (this.field.displayType === 15 ||
-        this.field.displayType === 16) {
-        if (this.field.VFormat == null) {
-          this.field.VFormat = ''
-        }
-        this.field.VFormat = this.field.VFormat.replace(/[Y]/gi, 'y')
-      }
-      // Date = 15
-      if (this.field.displayType === 15) {
-        this.field.VFormat = this.field.VFormat.replace(/[m]/gi, 'M')
-      }
     },
     /**
      * Evaluate the current field with the range type fields contained in the

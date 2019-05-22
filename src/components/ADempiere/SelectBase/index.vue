@@ -59,6 +59,7 @@ export default {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
     }
+    this.getData()
   },
   mounted() {
     this.$store.dispatch('setContext', {
@@ -70,6 +71,26 @@ export default {
   },
   methods: {
     parseContext,
+    getData() {
+      var parsedDirectQuery = this.parseContext({
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        value: this.metadata.reference.directQuery
+      })
+      this.$store.dispatch('getLookup', {
+        tableName: this.metadata.reference.tableName,
+        parsedDirectQuery: parsedDirectQuery,
+        value: -1
+      })
+        .then(response => {
+          this.value = response.label
+          this.options.push(response)
+          this.options.push(this.blanckOption)
+        })
+        .catch(err => {
+          console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
+        })
+    },
     /**
      * @param {boolean} show triggers when the pull-down menu appears or disappears
      */
@@ -88,7 +109,7 @@ export default {
           })
             .then(response => {
               this.options = response
-              this.options.push(this.blanckOption)
+              this.options.unshift(this.blanckOption)
             })
             .catch(err => {
               console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)

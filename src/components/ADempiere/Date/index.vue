@@ -1,10 +1,13 @@
 <template>
   <el-date-picker
     v-model="value"
-    :metadata="metadata"
-    :format="metadata.VFormat"
-    type="date"
+    :format="format"
+    value-format="timestamp"
+    :type="typePicker()"
     placeholder="Pick a day"
+    range-separator="To"
+    start-placeholder="Start date"
+    end-placeholder="End date"
     @change="handleChange"
   />
 </template>
@@ -29,41 +32,16 @@ export default {
   data() {
     return {
       value: this.metadata.ValueModel,
-      pickerOptions1: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [
-          {
-            text: 'Today',
-            onClick(picker) {
-              picker.$emit('pick', new Date())
-            }
-          },
-          {
-            text: 'Yesterday',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            }
-          },
-          {
-            text: 'A week ago',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          }
-        ]
-      }
+      format: undefined
     }
   },
   watch: {
     valueModel: function() {
       this.value = this.valueModel
     }
+  },
+  created() {
+    this.checkValueFormat()
   },
   mounted() {
     this.$store.dispatch('setContext', {
@@ -74,6 +52,19 @@ export default {
     })
   },
   methods: {
+    typePicker() {
+      if (this.metadata.isRange) {
+        return 'daterange'
+      }
+      return 'date'
+    },
+    /**
+     * Parse the date format to be compatible with element-ui
+     */
+    checkValueFormat() {
+      // Date = 15
+      this.format = this.metadata.VFormat.replace(/[Y]/gi, 'y').replace(/[m]/gi, 'M').replace(/[D]/gi, 'd')
+    },
     handleChange() {
       this.$store.dispatch('notifyFieldChange', {
         parentUuid: this.metadata.parentUuid,

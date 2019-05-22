@@ -16,7 +16,6 @@
           :metadata="item"
           :table-name="item.tableName"
           :group="item.tabGroup"
-          :parent-tab="parentTabs"
           :is-edit="isEdit"
           :panel-type="panelType"
         />
@@ -41,10 +40,6 @@ export default {
     tabsList: {
       type: [Array, Object],
       default: () => []
-    },
-    parentTabs: {
-      type: Boolean,
-      default: false
     },
     isEdit: {
       type: Boolean,

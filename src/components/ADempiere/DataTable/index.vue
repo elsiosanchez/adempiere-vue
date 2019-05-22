@@ -35,7 +35,7 @@
               <field
                 :label="false"
                 :metadata-field="item"
-                :value="scope.row[item.columnName]"
+                :recorddata-fields="scope.row[item.columnName]"
                 size="small"
                 @keyup.enter.native="confirmEdit(scope.row)"
               />
@@ -72,10 +72,6 @@ export default {
       type: Object,
       default: () => {}
     },
-    label: {
-      type: String,
-      default: ''
-    },
     tableName: {
       type: String,
       default: ''
@@ -102,7 +98,6 @@ export default {
       preSizeColumns: 12,
       maxSizeColumns: 24,
       isLoaded: false,
-      listLoading: true,
       showSearch: false,
       search: ''
     }
