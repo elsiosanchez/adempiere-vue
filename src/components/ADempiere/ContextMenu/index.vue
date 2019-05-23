@@ -40,7 +40,7 @@
               {{ child.name }}
             </el-menu-item>
           </el-submenu>
-          <el-menu-item v-else :key="index" :index="action.name" @click="runAction(action)">
+          <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
             {{ action.name }}
           </el-menu-item>
         </template>
@@ -126,6 +126,13 @@ export default {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'reloadContextMenu') {
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
+          this.actions.forEach((item) => {
+            item['disabled'] = false
+          })
+          if (this.$route.name !== 'Report Viewer') {
+            var index = this.actions.findIndex(item => item.action === 'changeParameters')
+            this.actions[index].disabled = true
+          }
           if (typeof this.$route.meta.parentUuid !== 'undefined') {
             this.relations = this.$store.getters.getRelations(this.$route.meta.parentUuid)
           }

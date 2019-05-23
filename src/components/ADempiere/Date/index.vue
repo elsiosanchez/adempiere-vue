@@ -1,10 +1,13 @@
 <template>
   <el-date-picker
     v-model="value"
-    :metadata="metadata"
-    :format="metadata.VFormat"
-    type="date"
+    :format="format"
+    value-format="timestamp"
+    :type="typePicker()"
     placeholder="Pick a day"
+    range-separator="To"
+    start-placeholder="Start date"
+    end-placeholder="End date"
     @change="handleChange"
   />
 </template>
@@ -29,41 +32,16 @@ export default {
   data() {
     return {
       value: this.metadata.ValueModel,
-      pickerOptions1: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [
-          {
-            text: 'Today',
-            onClick(picker) {
-              picker.$emit('pick', new Date())
-            }
-          },
-          {
-            text: 'Yesterday',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            }
-          },
-          {
-            text: 'A week ago',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          }
-        ]
-      }
+      format: undefined
     }
   },
   watch: {
     valueModel: function() {
       this.value = this.valueModel
     }
+  },
+  created() {
+    this.checkValueFormat()
   },
   mounted() {
     this.$store.dispatch('setContext', {
@@ -74,12 +52,41 @@ export default {
     })
   },
   methods: {
-    handleChange() {
+    typePicker() {
+      var time = ''
+      var range = ''
+      if (this.metadata.displayType === 16) {
+        time = 'time'
+      }
+      // if (this.metadata.isRange) {
+      //   range = 'range'
+      // }
+      return 'date' + time + range
+    },
+    /**
+     * Parse the date format to be compatible with element-ui
+     */
+    checkValueFormat() {
+      // Date = 15
+      this.format = this.metadata.VFormat.replace(/[Y]/gi, 'y').replace(/[m]/gi, 'M').replace(/[D]/gi, 'd')
+    },
+    handleChange(value) {
+      // var valueFirst
+      // var valueTo
+      // if (this.metadata.isRange || this.value.isArray) {
+      //   valueFirst = new Date(value[0])
+      //   valueTo = new Date(value[1])
+      // } else {
+      //   valueFirst = new Date(value)
+      //   valueTo = undefined
+      // }
+      this.value = new Date(value)
       this.$store.dispatch('notifyFieldChange', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         columnName: this.metadata.columnName,
         newValue: this.value
+        // valueTo: valueTo
       })
     }
   }

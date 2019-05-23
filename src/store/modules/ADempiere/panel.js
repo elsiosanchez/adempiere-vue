@@ -46,6 +46,7 @@ const panel = {
     changeFieldValue(state, payload) {
       payload.field.oldValue = payload.field.value
       payload.field.value = payload.newValue
+      // payload.field.valueTo = payload.valueTo
     }
   },
   actions: {
@@ -96,6 +97,7 @@ const panel = {
       commit('changeFieldValue', {
         field: field,
         newValue: payload.newValue
+        // valueTo: payload.valueTo
       })
       //  Change Dependents
       var dependents = fieldList.filter((item) => {

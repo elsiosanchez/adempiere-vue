@@ -7,29 +7,6 @@ const data = {
   mutations: {
   },
   actions: {
-    getObjectListFromCriteria: ({ dispatch }, objectParams) => {
-      return new Promise((resolve, reject) => {
-        getObjectListFromCriteria(objectParams.table, objectParams.criteria)
-          .then(response => {
-            const recordList = response.getRecordsList()
-            var options = []
-            recordList.forEach(element => {
-              const map = element.getValuesMap()
-              const value = convertValueFromGRPC(map.get('Value'))
-              const name = convertValueFromGRPC(map.get('Name'))
-
-              options.push({
-                label: name,
-                key: value
-              })
-            })
-            resolve(options)
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
-    },
     getObject: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObject(objectParams.table, objectParams.recordUuid)
@@ -55,6 +32,30 @@ const data = {
             resolve(newValue)
           })
           .catch(err => {
+            reject(err)
+          })
+      })
+    },
+    getObjectListFromCriteria: ({ dispatch }, objectParams) => {
+      return new Promise((resolve, reject) => {
+        getObjectListFromCriteria(objectParams.table, objectParams.criteria)
+          .then(response => {
+            const recordList = response.getRecordsList()
+            var options = []
+            recordList.forEach(element => {
+              const map = element.getValuesMap()
+              const value = convertValueFromGRPC(map.get('Value'))
+              const name = convertValueFromGRPC(map.get('Name'))
+
+              options.push({
+                label: name,
+                key: value
+              })
+            })
+            resolve(options)
+          })
+          .catch(err => {
+            console.log(err)
             reject(err)
           })
       })

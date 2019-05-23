@@ -1,7 +1,6 @@
 <template>
   <el-upload
     v-model="value"
-    :metadata="metadata"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"

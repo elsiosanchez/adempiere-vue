@@ -4,7 +4,6 @@
       <tab
         :window-uuid="windowUuid"
         :tabs-list="windowMetadata.tabsListParent"
-        :parent-tabs="true"
         :is-edit="isEdit"
       />
       <submenu class="sticky-submenu" />
@@ -30,7 +29,6 @@
                 :position-tab="key"
                 :table-name="item.tableName"
                 :group="item.tabGroup"
-                :parent="false"
                 :searchable="false"
               />
             </el-tab-pane>

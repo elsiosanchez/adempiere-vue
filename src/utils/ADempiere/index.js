@@ -45,7 +45,7 @@ export function convertValueFromGRPC(initialValue) {
  * @param {object} fieldGRPC
  * @param {object} moreAttributes
  */
-export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
+export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange = false) {
   var group = {}
   var isShowedFromUser = false
   try {
@@ -107,6 +107,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     displayType: fieldGRPC.getDisplaytype(),
     componentPath: evalutateTypeField(fieldGRPC.getDisplaytype()),
     isFieldOnly: fieldGRPC.getIsfieldonly(),
+    isRange: fieldGRPC.getIsrange(),
     isSameLine: fieldGRPC.getIssameline(),
     sequence: fieldGRPC.getSequence(),
     seqNoGrid: fieldGRPC.getSeqnogrid(),
@@ -119,6 +120,12 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
       ...moreAttributes,
       columnName: fieldGRPC.getColumnname(),
       value: fieldGRPC.getDefaultvalue()
+    }),
+    defaultValueTo: fieldGRPC.getDefaultvalueto(),
+    defaultValueToParse: parseContext({
+      ...moreAttributes,
+      columnName: fieldGRPC.getColumnname(),
+      value: fieldGRPC.getDefaultvalueto()
     }),
     valueMin: fieldGRPC.getValuemin(),
     valueMax: fieldGRPC.getValuemax(),
@@ -141,6 +148,14 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}) {
     reference: referenceValue,
     // ADD SUPPORT IN SERVER
     isShowedFromUser: isShowedFromUser
+  }
+
+  if (typeRange) {
+    field.columnName = field.columnName + '_to'
+    field.name = 'To ' + field.name
+    field.defaultValue = field.defaultValueTo
+    field.uuid = field.uuid + '_to'
+    field.defaultValueParse = field.defaultValueToParse
   }
   return field
 }

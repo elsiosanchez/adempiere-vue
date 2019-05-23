@@ -28,10 +28,14 @@ const browser = {
             }
 
             //  Convert from gRPC
-            fieldsList = fieldsList.map((item) => {
-              item = convertFieldFromGRPC(item, additionalAttributes)
-              return item
+            var fieldsRangeList = []
+            fieldsList = fieldsList.map((fieldItem) => {
+              if (fieldItem.getIsrange()) {
+                fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
+              }
+              return convertFieldFromGRPC(fieldItem, additionalAttributes)
             })
+            fieldsList = fieldsList.concat(fieldsRangeList)
 
             //  Get dependent fields
             fieldsList.filter(field => field.parentFieldsList && field.isActive)
