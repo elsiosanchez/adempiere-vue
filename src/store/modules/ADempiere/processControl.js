@@ -1,5 +1,9 @@
-import { runProcess, requestProcessActivity, getObjectListFromCriteria, getBrowserSearch } from '@/api/ADempiere/data'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
+import {
+  runProcess,
+  requestProcessActivity,
+  getObjectListFromCriteria,
+  getBrowserSearch
+} from '@/api/ADempiere/data'
 
 const processControl = {
   state: {
@@ -38,7 +42,7 @@ const processControl = {
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit, getters, dispatch }, payload) {
+    startProcess({ commit, rootGetters, dispatch }, payload) {
       var reportExportType
       if (typeof payload.action.reportExportType === 'undefined') {
         reportExportType = payload.reportFormat
@@ -46,7 +50,7 @@ const processControl = {
         reportExportType = payload.action.reportExportType
       }
       var processResult = {}
-      var parameters = getters.getProcessParameters(payload.action.uuid)
+      var parameters = rootGetters.getPanelParameters(payload.action.uuid)
       var processToRun = {
         uuid: payload.action.uuid,
         name: payload.action.name,
@@ -217,21 +221,6 @@ const processControl = {
         item => item.instanceUuid === instanceUuid
       )
       return sessionProcess
-    },
-    getProcessParameters: (state, rootGetters) => (processUuid) => {
-      const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
-      const params = fieldList
-        .map((fieldItem) => {
-          if (!isEmptyValue(fieldItem.value)) {
-            return {
-              columnName: fieldItem.columnName,
-              value: fieldItem.value
-            }
-          }
-          return undefined
-        })
-        .filter(itemParams => itemParams)
-      return params
     }
   }
 }

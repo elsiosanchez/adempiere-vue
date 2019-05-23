@@ -67,7 +67,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
 
   var reference = fieldGRPC.getReference()
   var referenceValue
-  var zoomWindowList
+  var zoomWindowList = []
   if (reference) {
     if (reference.getWindowsList()) {
       zoomWindowList = reference.getWindowsList().map((zoomWindow) => {
@@ -90,6 +90,18 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
       directQuery: reference.getDirectquery(),
       parsedDirectQuery: reference.getDirectquery(),
       validationCode: reference.getValidationcode(),
+      zoomWindowList: zoomWindowList
+    }
+  } else {
+    referenceValue = {
+      tableName: '',
+      keyColumnName: '',
+      displayColumnName: '',
+      query: '',
+      parsedQuery: '',
+      directQuery: '',
+      parsedDirectQuery: '',
+      validationCode: '',
       zoomWindowList: zoomWindowList
     }
   }

@@ -89,8 +89,8 @@ export function runProcess(process) {
 
 // Request a browser search
 // This function allows follow structure:
-// process.uuid
-// process.parameters [
+// browser.uuid
+// browser.parameters [
 //   {
 //     columnName,
 //     value

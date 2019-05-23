@@ -81,11 +81,13 @@ const window = {
       return new Promise((resolve, reject) => {
         getTab(objectParams.containerUuid)
           .then(response => {
+            var panelType = 'window'
             var fieldsList = response.getFieldsList()
             var additionalAttributes = {
               parentUuid: objectParams.parentUuid,
               containerUuid: objectParams.containerUuid,
-              isShowedFromUser: true
+              isShowedFromUser: true,
+              panelType: panelType
             }
 
             //  Convert from gRPC
@@ -116,7 +118,8 @@ const window = {
               fieldList: fieldsList,
               tableName: response.getTablename(),
               linkColumnName: response.getLinkcolumnname(),
-              parentColumnName: response.getParentcolumnname()
+              parentColumnName: response.getParentcolumnname(),
+              panelType: panelType
             }
             //  Convert from gRPC process list
             var actions = response.getProcessesList().map((processItem) => {
