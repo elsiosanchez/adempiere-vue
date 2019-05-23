@@ -100,7 +100,13 @@ export default {
     },
     getCachedReport(instanceUuid) {
       this.reportResult = this.$store.getters.getCachedReport(instanceUuid)
-      this.displayReport(this.reportResult)
+      if (typeof this.reportResult === 'undefined') {
+        this.$store.dispatch('getSessionProcessFromServer')
+        this.reportResult = this.$store.getters.getSessionProcess(instanceUuid)
+        this.displayReport(this.reportResult)
+      } else {
+        this.displayReport(this.reportResult)
+      }
     }
   }
 }

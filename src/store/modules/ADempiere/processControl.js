@@ -7,7 +7,8 @@ const processControl = {
     reportObject: {},
     reportList: [],
     metadata: {},
-    process: []
+    process: [],
+    sessionProcess: []
   },
   mutations: {
     addStartedProcess(state, payload) {
@@ -27,6 +28,9 @@ const processControl = {
     setReportValues(state, payload) {
       state.reportObject = payload
       state.reportList.push(payload)
+    },
+    setSessionProcess(state, payload) {
+      state.sessionProcess = payload.responses
     },
     changeFormatReport(state, payload) {
       state.reportFormat = payload
@@ -67,15 +71,6 @@ const processControl = {
         .catch(error => {
           console.log(error)
         })
-      // Example of process Activity
-      requestProcessActivity()
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-
       var browserToSearch = {
         uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
         parameters: [
@@ -117,6 +112,50 @@ const processControl = {
         })
         .catch(error => {
           console.log('Error running the process', error)
+        })
+    },
+    getSessionProcessFromServer({ commit }) {
+      // Example of process Activity
+      requestProcessActivity()
+        .then(response => {
+          /* var infoLogs = response.getLogsList().map((log) => {
+            return {
+              recordId: log.getRecordid(),
+              log: log.getLog()
+            }
+          }) */
+          var responseList = response.getResponsesList().map((responseItem) => {
+            return {
+              instanceUuid: responseItem.getInstanceuuid(),
+              isError: responseItem.getIserror(),
+              summary: responseItem.getSummary(),
+              resultTableId: responseItem.getResulttableid(),
+              isProcessing: responseItem.getIsprocessing(),
+              logs: responseItem.getLogsList(),
+              output: responseItem.getOutput()
+            }
+          })
+          responseList.forEach((item) => {
+            if (typeof item.output !== 'undefined') {
+              item.output = {
+                uuid: item.output.getUuid(),
+                name: item.output.getName(),
+                description: item.output.getDescription(),
+                fileName: item.output.getFilename(),
+                output: item.output.getOutput(),
+                outputStream: item.output.getOutputstream(),
+                reportExportType: item.output.getReportexporttype()
+              }
+            }
+          })
+          var processResponseList = {
+            recordCount: response.getRecordcount(),
+            responses: responseList
+          }
+          commit('setSessionProcess', processResponseList)
+        })
+        .catch(error => {
+          console.log(error)
         })
     },
     setShowDialog({ commit }, process) {
@@ -172,6 +211,12 @@ const processControl = {
         item => item.instanceUuid === instanceUuid
       )
       return cachedReport
+    },
+    getSessionProcess: (state) => (instanceUuid) => {
+      var sessionProcess = state.sessionProcess.find(
+        item => item.instanceUuid === instanceUuid
+      )
+      return sessionProcess
     },
     getProcessParameters: (state, rootGetters) => (processUuid) => {
       const fieldList = rootGetters.getFieldsListFromPanel(processUuid)
