@@ -77,7 +77,13 @@ const processControl = {
         })
 
       var browserToSearch = {
-        uuid: '8aaf0ce8-fb40-11e8-a479-7a0060f0aa01'
+        uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
+        parameters: [
+          {
+            columnName: 'I_DocStatus',
+            value: 'CO'
+          }
+        ]
       }
       //  Browser Search
       getBrowserSearch(browserToSearch)
