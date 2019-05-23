@@ -28,9 +28,16 @@ const process = {
               containerUuid: response.getUuid()
             }
 
-            var fieldDefinitionList = parameterList.map((processItem) => {
-              return convertFieldFromGRPC(processItem, additionalAttributes)
+            //  Convert from gRPC
+            var fieldsRangeList = []
+            var fieldDefinitionList = parameterList.map((fieldItem) => {
+              if (fieldItem.getIsrange()) {
+                fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
+              }
+              return convertFieldFromGRPC(fieldItem, additionalAttributes)
             })
+            fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
+
             //  Get export list
             var reportExportTypeList = response.getReportexporttypesList().map((reportType) => {
               return {

@@ -1,10 +1,8 @@
 <template>
   <el-color-picker
     v-model="value"
-    :metadata="metadata"
     :value="metadata.DefaultValue"
     :show-alpha="ShowAlphaColor"
-    :size="metadata.Size"
     @change="handleChange"
   />
 </template>
