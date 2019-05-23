@@ -1,10 +1,11 @@
-import { runProcess, requestProcessActivity, getObjectListFromCriteria, getBrowserSearch } from '@/api/ADempiere/data'
+import { runProcess, requestProcessActivity, getObjectListFromCriteria } from '@/api/ADempiere/data'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 const processControl = {
   state: {
     visibleDialog: false,
     reportObject: {},
+    serveList: [],
     reportList: [],
     metadata: {},
     process: []
@@ -12,6 +13,9 @@ const processControl = {
   mutations: {
     addStartedProcess(state, payload) {
       state.process.push(payload)
+    },
+    addServerProcess(state, payload) {
+      state.serveList.push(payload)
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
@@ -35,12 +39,6 @@ const processControl = {
   actions: {
     // Supported Actions for it
     startProcess({ commit, getters, dispatch }, payload) {
-      var reportExportType
-      if (typeof payload.action.reportExportType === 'undefined') {
-        reportExportType = payload.reportFormat
-      } else {
-        reportExportType = payload.action.reportExportType
-      }
       var processResult = {}
       var parameters = getters.getProcessParameters(payload.action.uuid)
       var processToRun = {
@@ -52,10 +50,10 @@ const processControl = {
         accessLevel: payload.accessLevel,
         showHelp: payload.action.showHelp,
         isDirectPrint: payload.action.isDirectPrint,
-        reportExportType: reportExportType,
+        reportExportType: payload.action.reportExportType,
         parameters: parameters
       }
-      // console.log(processToRun)
+      console.log(processToRun)
       commit('addStartedProcess', processToRun)
       getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
         .then(response => {
@@ -67,22 +65,16 @@ const processControl = {
         .catch(error => {
           console.log(error)
         })
-      // Example of process Activity
-      requestProcessActivity()
+      requestProcessActivity({ commit }, process)
         .then(response => {
           console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-
-      var browserToSearch = {
-        uuid: '8aaf0ce8-fb40-11e8-a479-7a0060f0aa01'
-      }
-      //  Browser Search
-      getBrowserSearch(browserToSearch)
-        .then(response => {
-          console.log(response)
+          var server = {
+            processUuid: response.getResponsesList(),
+            summary: response.getSummary(),
+            logs: response.getLogsList()
+          }
+          console.log(server)
+          commit('addStartedProcess', server)
         })
         .catch(error => {
           console.log(error)
@@ -107,6 +99,7 @@ const processControl = {
               reportExportType: response.getOutput().getReportexporttype()
             }
           }
+          console.log(processResult)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -141,9 +134,12 @@ const processControl = {
       )
       return process
     },
+    getServerProcess: (state) => {
+      console.log(state)
+      return state.serveList
+    },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       var processList = state.process.map((item) => {
-        // console.log(item)
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
           return {
@@ -152,10 +148,12 @@ const processControl = {
             help: item.help,
             output: item.output,
             logs: item.logs,
-            summary: item.summary
+            summary: item.getSummary
           }
         }
       })
+      console.log(processList)
+      console.log(state.reportObject)
       return processList
     },
     getProcessResult: (state) => {
