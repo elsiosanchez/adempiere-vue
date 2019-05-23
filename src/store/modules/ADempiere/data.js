@@ -38,6 +38,35 @@ const data = {
     },
     getObjectListFromCriteria: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
+        getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
+          .then(response => {
+            var recordList = response.getRecordsList().map((recordItem) => {
+              return {
+                id: recordItem.getId(),
+                uuid: recordItem.getUuid(),
+                tableName: recordItem.getTablename(),
+                valuesMap: recordItem.getValuesMap()
+              }
+            })
+            /* var values = []
+            recordList.forEach(element => {
+              element.valuesMap.forEach((value, key) => {
+                values.push({
+                  key: key,
+                  value: convertValueFromGRPC(value)
+                })
+                element.valuesMap = values
+              })
+            }) */
+            console.log(recordList)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      })
+    }
+    /* getObjectListFromCriteria: ({ dispatch }, objectParams) => {
+      return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams.table, objectParams.criteria)
           .then(response => {
             const recordList = response.getRecordsList()
@@ -59,7 +88,7 @@ const data = {
             reject(err)
           })
       })
-    }
+    } */
   }
 }
 
