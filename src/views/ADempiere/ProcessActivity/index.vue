@@ -10,10 +10,10 @@
       style="width: 100%"
     >
       <el-table-column
-        prop=""
-        label=""
+        prop="name"
+        label="name"
       />
-      <!-- <el-table-column
+      <el-table-column
         prop="description"
         label="description"
       />
@@ -25,7 +25,7 @@
         label="see report"
       >
         <router-link :to="{ path: ':processUuid/:instanceUuid/:fileName' }"><svg-icon icon-class="clipboard" /></router-link>
-      </el-table-column> -->
+      </el-table-column>
       <!-- <el-table-column
         label="Status"
       >
@@ -38,7 +38,7 @@
           content="loading details of the processes"
         />
         <el-button v-popover:popover type="text">detail of the process</el-button>
-          {{ item.name }}
+         {{ item.name }}
       </el-table-column> -->
     </el-table>
   </div>
@@ -72,13 +72,22 @@ export default {
       return this.$store.getters.getRunningProcess()
     },
     a() {
-      var a = this.$store.getters.getRunningProcess()
-      console.log(a)
+      var a = this.$store.getters.getRunningProcess().map((item) => {
+        return {
+          name: item.name,
+          description: item.description,
+          action: item.action,
+          output: item.output,
+          isReport: item.isReport
+        }
+      })
       return a
     }
   },
   created() {
     this.controlError()
+    // this.getCachedProcess()
+    // console.log(this.getCachedProcess())
   },
   methods: {
     controlError() {
@@ -101,6 +110,15 @@ export default {
         }
       })
     }
+    // getCachedProcess() {
+    //   this.processResul = this.$store.getters.getRunningProcess()
+    //   if (typeof this.reportResult === 'undefined') {
+    //     this.$store.dispatch('getSessionProcessServe')
+    //     this.processResul = this.$store.getters.getSessionProcess()
+    //   }
+    //   console.log(this.processResul)
+    //   return this.processResul
+    // }
   }
 }
 </script>

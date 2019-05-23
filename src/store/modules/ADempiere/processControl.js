@@ -13,6 +13,7 @@ const processControl = {
   },
   mutations: {
     addStartedProcess(state, payload) {
+      state.sessionProcess = payload.responses
       state.process.push(payload)
     },
     addServerProcess(state, payload) {
@@ -55,10 +56,23 @@ const processControl = {
         showHelp: payload.action.showHelp,
         isDirectPrint: payload.action.isDirectPrint,
         reportExportType: payload.action.reportExportType,
+        summary: payload.action.summary,
         parameters: parameters
       }
       console.log(processToRun)
       commit('addStartedProcess', processToRun)
+      requestProcessActivity({ commit }, process)
+        .then(response => {
+          console.log(response)
+          var server = {
+            processUuid: response.getResponsesList()
+          }
+          console.log(server)
+          commit('addStartedProcess', server)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
         .then(response => {
           console.log(response)
@@ -69,17 +83,7 @@ const processControl = {
         .catch(error => {
           console.log(error)
         })
-      var browserToSearch = {
-        uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
-        parameters: [
-          {
-            columnName: 'I_DocStatus',
-            value: 'CO'
-          }
-        ]
-      }
-      //  Browser Search
-      getBrowserSearch(browserToSearch)
+      requestProcessActivity({ commit }, process)
         .then(response => {
           console.log(response)
           var server = {
@@ -93,6 +97,16 @@ const processControl = {
         .catch(error => {
           console.log(error)
         })
+      // var browserToSearch = {
+      //   uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
+      //   parameters: [
+      //     {
+      //       columnName: 'I_DocStatus',
+      //       value: 'CO'
+      //     }
+      //   ]
+      // }
+      //  Browser Search
       // Run process on server and wait for it for notify
       runProcess(processToRun)
         .then(response => {
@@ -120,6 +134,20 @@ const processControl = {
           console.log('Error running the process', error)
         })
     },
+    getSessionProcessServe({ commit }) {
+      requestProcessActivity({ commit }, process)
+        .then(response => {
+          console.log(response)
+          var process = {
+            processUuid: response.getResponsesList()
+          }
+          console.log(process)
+          commit('addStartedProcess', process)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     getSessionProcessFromServer({ commit }) {
       // Example of process Activity
       requestProcessActivity()
@@ -144,12 +172,12 @@ const processControl = {
           responseList.forEach((item) => {
             if (typeof item.output !== 'undefined') {
               item.output = {
+                output: item.output.getOutput(),
+                outputStream: item.output.getOutputstream(),
                 uuid: item.output.getUuid(),
                 name: item.output.getName(),
                 description: item.output.getDescription(),
                 fileName: item.output.getFilename(),
-                output: item.output.getOutput(),
-                outputStream: item.output.getOutputstream(),
                 reportExportType: item.output.getReportexporttype()
               }
             }
@@ -159,6 +187,7 @@ const processControl = {
             responses: responseList
           }
           commit('setSessionProcess', processResponseList)
+          // commit('addStartedProcess', processResponseList)
         })
         .catch(error => {
           console.log(error)
@@ -211,14 +240,13 @@ const processControl = {
         }
       })
       console.log(processList)
-      console.log(state.reportObject)
       return processList
     },
     getProcessResult: (state) => {
       return state.reportObject
     },
     getCachedReport: (state) => (instanceUuid) => {
-      var cachedReport = state.reportList.find(
+      var cachedReport = state.reportList(
         item => item.instanceUuid === instanceUuid
       )
       return cachedReport
