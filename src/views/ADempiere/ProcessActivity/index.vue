@@ -3,16 +3,17 @@
     <h3 class="warn-content text-center">
       Process Activity
     </h3>
+    {{ a }}
     <el-table
       :data="a"
       :stripe="true"
       style="width: 100%"
     >
       <el-table-column
-        prop="name"
-        label="name"
+        prop=""
+        label=""
       />
-      <el-table-column
+      <!-- <el-table-column
         prop="description"
         label="description"
       />
@@ -24,8 +25,8 @@
         label="see report"
       >
         <router-link :to="{ path: ':processUuid/:instanceUuid/:fileName' }"><svg-icon icon-class="clipboard" /></router-link>
-      </el-table-column>
-      <el-table-column
+      </el-table-column> -->
+      <!-- <el-table-column
         label="Status"
       >
         <el-popover
@@ -37,8 +38,8 @@
           content="loading details of the processes"
         />
         <el-button v-popover:popover type="text">detail of the process</el-button>
-        <!-- {{ item.name }} -->
-      </el-table-column>
+          {{ item.name }}
+      </el-table-column> -->
     </el-table>
   </div>
   <div v-else class="errPage-container">
@@ -71,16 +72,8 @@ export default {
       return this.$store.getters.getRunningProcess()
     },
     a() {
-      var a = this.$store.getters.getRunningProcess().map((item) => {
-        return {
-          name: item.name,
-          description: item.description,
-          action: item.action,
-          output: item.output,
-          logs: item.logs,
-          isError: item.isError
-        }
-      })
+      var a = this.$store.getters.getRunningProcess()
+      console.log(a)
       return a
     }
   },

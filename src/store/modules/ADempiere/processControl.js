@@ -5,6 +5,7 @@ const processControl = {
   state: {
     visibleDialog: false,
     reportObject: {},
+    serveList: [],
     reportList: [],
     metadata: {},
     process: []
@@ -12,6 +13,9 @@ const processControl = {
   mutations: {
     addStartedProcess(state, payload) {
       state.process.push(payload)
+    },
+    addServerProcess(state, payload) {
+      state.serveList.push(payload)
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
@@ -61,10 +65,16 @@ const processControl = {
         .catch(error => {
           console.log(error)
         })
-      // Example of process Activity
-      requestProcessActivity()
+      requestProcessActivity({ commit }, process)
         .then(response => {
           console.log(response)
+          var server = {
+            processUuid: response.getResponsesList(),
+            summary: response.getSummary(),
+            logs: response.getLogsList()
+          }
+          console.log(server)
+          commit('addStartedProcess', server)
         })
         .catch(error => {
           console.log(error)
@@ -89,6 +99,7 @@ const processControl = {
               reportExportType: response.getOutput().getReportexporttype()
             }
           }
+          console.log(processResult)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -123,9 +134,12 @@ const processControl = {
       )
       return process
     },
+    getServerProcess: (state) => {
+      console.log(state)
+      return state.serveList
+    },
     getRunningProcess: (state, rootGetters) => (processUuid) => {
       var processList = state.process.map((item) => {
-        // console.log(item)
         var process = rootGetters.getProcess(item.uuid)
         if (typeof process !== undefined) {
           return {
@@ -134,10 +148,12 @@ const processControl = {
             help: item.help,
             output: item.output,
             logs: item.logs,
-            summary: item.summary
+            summary: item.getSummary
           }
         }
       })
+      console.log(processList)
+      console.log(state.reportObject)
       return processList
     },
     getProcessResult: (state) => {
