@@ -72,15 +72,17 @@ export default {
   methods: {
     parseContext,
     getData() {
+      this.value = this.metadata.value
       var parsedDirectQuery = this.parseContext({
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         value: this.metadata.reference.directQuery
       })
+
       this.$store.dispatch('getLookup', {
         tableName: this.metadata.reference.tableName,
         parsedDirectQuery: parsedDirectQuery,
-        value: -1
+        value: this.value
       })
         .then(response => {
           this.value = response.label

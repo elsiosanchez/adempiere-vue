@@ -1,6 +1,7 @@
 import REFERENCES from '@/components/ADempiere/Field/references'
 import evaluator from '@/utils/ADempiere/evaluator.js'
 import * as utils from './valueUtil.js'
+
 /**
  * Converted the gRPC value to the value needed
  * @param {mixed} initialValue Value get of gRPC
@@ -93,6 +94,17 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     }
   }
 
+  var defaultValueParse = parseContext({
+    ...moreAttributes,
+    columnName: fieldGRPC.getColumnname(),
+    value: fieldGRPC.getDefaultvalue()
+  })
+  var defaultValueToParse = parseContext({
+    ...moreAttributes,
+    columnName: fieldGRPC.getColumnname(),
+    value: fieldGRPC.getDefaultvalueto()
+  })
+
   var field = {
     ...moreAttributes,
 
@@ -115,18 +127,11 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
+    value: defaultValueParse,
     defaultValue: fieldGRPC.getDefaultvalue(),
-    defaultValueParse: parseContext({
-      ...moreAttributes,
-      columnName: fieldGRPC.getColumnname(),
-      value: fieldGRPC.getDefaultvalue()
-    }),
+    defaultValueParse: defaultValueParse,
     defaultValueTo: fieldGRPC.getDefaultvalueto(),
-    defaultValueToParse: parseContext({
-      ...moreAttributes,
-      columnName: fieldGRPC.getColumnname(),
-      value: fieldGRPC.getDefaultvalueto()
-    }),
+    defaultValueToParse: defaultValueToParse,
     valueMin: fieldGRPC.getValuemin(),
     valueMax: fieldGRPC.getValuemax(),
     //
@@ -151,10 +156,11 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
   }
 
   if (typeRange) {
+    field.uuid = field.uuid + '_to'
     field.columnName = field.columnName + '_to'
     field.name = 'To ' + field.name
+    field.value = defaultValueToParse
     field.defaultValue = field.defaultValueTo
-    field.uuid = field.uuid + '_to'
     field.defaultValueParse = field.defaultValueToParse
   }
   return field
