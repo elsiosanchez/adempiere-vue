@@ -115,9 +115,12 @@ export default {
       return span
     },
     isDisplayed() {
-      var display = this.field.isActive && this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser)
+      var display = this.field.isActive && this.field.isDisplayed &&
+        this.field.isDisplayedFromLogic &&
+        (this.isMandatory() || this.field.isShowedFromUser)
       if (this.panelType === 'browser') {
-        return this.field.isQueryCriteria && (this.isMandatory() || this.field.isShowedFromUser)
+        display = this.field.isQueryCriteria &&
+        (this.isMandatory() || this.field.isShowedFromUser)
       }
       return display
     },

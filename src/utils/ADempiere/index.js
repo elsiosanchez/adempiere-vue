@@ -106,12 +106,12 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     }
   }
 
-  var defaultValueParse = parseContext({
+  var parsedDefaultValue = parseContext({
     ...moreAttributes,
     columnName: fieldGRPC.getColumnname(),
     value: fieldGRPC.getDefaultvalue()
   })
-  var defaultValueToParse = parseContext({
+  var parsedDefaultValueTo = parseContext({
     ...moreAttributes,
     columnName: fieldGRPC.getColumnname(),
     value: fieldGRPC.getDefaultvalueto()
@@ -139,11 +139,11 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
-    value: defaultValueParse,
+    value: parsedDefaultValue,
     defaultValue: fieldGRPC.getDefaultvalue(),
-    defaultValueParse: defaultValueParse,
+    parsedDefaultValue: parsedDefaultValue,
     defaultValueTo: fieldGRPC.getDefaultvalueto(),
-    defaultValueToParse: defaultValueToParse,
+    parsedDefaultValueTo: parsedDefaultValueTo,
     valueMin: fieldGRPC.getValuemin(),
     valueMax: fieldGRPC.getValuemax(),
     //
@@ -152,6 +152,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     isMandatory: fieldGRPC.getIsmandatory(),
     isReadOnly: fieldGRPC.getIsreadonly(),
     isDisplayedFromLogic: fieldGRPC.getIsdisplayed(),
+    // isDisplayedFromLogic: (moreAttributes.panelType === 'browser' && fieldGRPC.getIsquerycriteria()),
     isReadOnlyFromLogic: fieldGRPC.getIsreadonly(),
     isMandatoryFromLogic: fieldGRPC.getIsmandatory(),
     //
@@ -167,13 +168,14 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     isShowedFromUser: isShowedFromUser
   }
 
+  // Overwrite some values
   if (typeRange) {
     field.uuid = field.uuid + '_to'
     field.columnName = field.columnName + '_to'
     field.name = 'To ' + field.name
-    field.value = defaultValueToParse
+    field.value = parsedDefaultValueTo
     field.defaultValue = field.defaultValueTo
-    field.defaultValueParse = field.defaultValueToParse
+    field.parsedDefaultValue = field.parsedDefaultValueTo
   }
   return field
 }
