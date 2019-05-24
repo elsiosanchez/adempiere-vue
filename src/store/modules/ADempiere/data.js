@@ -38,30 +38,25 @@ const data = {
     },
     getObjectListFromCriteria: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
-        getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
+        getObjectListFromCriteria(objectParams.table, objectParams.criteria)
           .then(response => {
             var recordList = response.getRecordsList().map((recordItem) => {
+              var values = []
+              recordItem.getValuesMap().forEach((value, key) => {
+                values.push({ key: key, value: convertValueFromGRPC(value) })
+              })
               return {
                 id: recordItem.getId(),
                 uuid: recordItem.getUuid(),
                 tableName: recordItem.getTablename(),
-                valuesMap: recordItem.getValuesMap()
+                valuesMap: values
               }
             })
-            /* var values = []
-            recordList.forEach(element => {
-              element.valuesMap.forEach((value, key) => {
-                values.push({
-                  key: key,
-                  value: convertValueFromGRPC(value)
-                })
-                element.valuesMap = values
-              })
-            }) */
-            console.log(recordList)
+            resolve(recordList)
           })
           .catch(error => {
-            console.log(error)
+            console.log('Error getting data with criteria' + error)
+            reject(error)
           })
       })
     }
