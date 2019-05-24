@@ -85,23 +85,23 @@ const panel = {
           })
         })
     },
-    notifyFieldChange({ commit, state, getters }, payload) {
+    notifyFieldChange({ commit, state, dispatch, getters }, payload) {
       //  Call context management
       commit('setContext', {
         ...payload,
         value: payload.newValue
       })
-      var fieldList = state.panel
-        .find(item => item.uuid === payload.containerUuid).fieldList
-      var field = fieldList.find(field => field.columnName === payload.columnName)
+      var panel = state.panel.find(panelItem => panelItem.uuid === payload.containerUuid)
+      var fieldList = panel.fieldList
+      var field = fieldList.find(fieldItem => fieldItem.columnName === payload.columnName)
       commit('changeFieldValue', {
         field: field,
         newValue: payload.newValue
         // valueTo: payload.valueTo
       })
       //  Change Dependents
-      var dependents = fieldList.filter((item) => {
-        return field.dependentFieldsList.includes(item.columnName)
+      var dependents = fieldList.filter(fieldItem => {
+        return field.dependentFieldsList.includes(fieldItem.columnName)
       })
       //  Iterate for change logic
       dependents.forEach((dependent) => {
@@ -149,6 +149,9 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
+      if (panel.panelType === 'browser') {
+        dispatch('getBrowserSearch', payload.containerUuid)
+      }
     },
     getPanelAndFields({ dispatch }, payload) {
       if (payload.type === 'process' || payload.type === 'report') {
@@ -224,8 +227,33 @@ const panel = {
 
       // fields with not empty value
       return fieldList
+    },
+    getPanelParameters: (state, getters) => (containerUuid, evaluateMandatory = false) => {
+      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var emptyMandatoryField = false
+      const params = fieldList
+        .map(fieldItem => {
+          if (!isEmptyValue(fieldItem.value) &&
+            (fieldItem.isQueryCriteria &&
+              (fieldItem.isMandatory &&
+                fieldItem.isMandatoryFromLogic || fieldItem.isShowedFromUser))) {
+            return {
+              columnName: fieldItem.columnName,
+              value: fieldItem.value
+            }
+          }
+          // empty field mandatory
+          if (fieldItem.isMandatoryFromLogic) {
+            emptyMandatoryField = true
+          }
+          return undefined
+        })
+        .filter(itemParams => itemParams)
+      if (evaluateMandatory && emptyMandatoryField) {
+        return []
+      }
+      return params
     }
   }
 }
-
 export default panel

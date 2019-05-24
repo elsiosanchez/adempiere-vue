@@ -18,13 +18,15 @@ const browser = {
       return new Promise((resolve, reject) => {
         getBrowser(browserUuid)
           .then(response => {
+            var panelType = 'browser'
             var fieldsList = response.getFieldsList()
 
             var additionalAttributes = {
               browserUuid: response.getUuid(),
               browserId: response.getId(),
               parentUuid: response.getUuid(),
-              containerUuid: response.getUuid()
+              containerUuid: response.getUuid(),
+              panelType: panelType
             }
 
             //  Convert from gRPC
@@ -59,7 +61,11 @@ const browser = {
               name: response.getName(),
               description: response.getDescription(),
               help: response.getHelp(),
+              query: response.getQuery(),
+              parsedQuery: response.getQuery(),
               whereClause: response.getWhereclause(),
+              parsedWhereClause: response.getWhereclause(),
+              orderByClause: response.getOrderbyclause(),
               isUpdateable: response.getIsupdateable(),
               isDeleteable: response.getIsdeleteable(),
               isSelectedByDefault: response.getIsselectedbydefault(),
@@ -68,7 +74,8 @@ const browser = {
               isShowTotal: response.getIsshowtotal(),
               isActive: response.getIsactive(),
               viewUuid: response.getViewuuid(),
-              fieldList: fieldsList
+              fieldList: fieldsList,
+              panelType: panelType
             }
 
             // //  Convert from gRPC process list

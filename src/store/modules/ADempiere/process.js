@@ -20,12 +20,17 @@ const process = {
       return new Promise((resolve, reject) => {
         getProcessFromDictionary(processUuid)
           .then(response => {
+            var panelType = 'process'
+            if (response.getIsreport()) {
+              panelType = 'report'
+            }
             var parameterList = response.getParametersList()
             var additionalAttributes = {
               processUuid: response.getUuid(),
               processId: response.getId(),
               parentUuid: response.getUuid(),
-              containerUuid: response.getUuid()
+              containerUuid: response.getUuid(),
+              panelType: panelType
             }
 
             //  Convert from gRPC
@@ -110,7 +115,8 @@ const process = {
               uuid: response.getUuid(),
               name: response.getName(),
               parentUuid: response.getUuid(),
-              fieldList: fieldDefinitionList
+              fieldList: fieldDefinitionList,
+              panelType: panelType
             }
 
             var processDefinition = {

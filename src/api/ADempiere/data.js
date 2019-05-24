@@ -89,8 +89,8 @@ export function runProcess(process) {
 
 // Request a browser search
 // This function allows follow structure:
-// process.uuid
-// process.parameters [
+// browser.uuid
+// browser.parameters [
 //   {
 //     columnName,
 //     value
@@ -98,8 +98,13 @@ export function runProcess(process) {
 // ]
 export function getBrowserSearch(browser) {
   var browserRequest = Instance.call(this).getBrowserRequest()
+  var criteria = Instance.call(this).getCriteria('')
   //  Fill Request browser
   browserRequest.setUuid(browser.uuid)
+  criteria.setQuery(browser.query)
+  criteria.setWhereclause(browser.whereClause)
+  criteria.setOrderbyclause(browser.orderByClause)
+  browserRequest.setCriteria(criteria)
   if (browser.parameters !== undefined) {
     browser.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
