@@ -9,6 +9,7 @@ const processControl = {
     visibleDialog: false,
     reportObject: {},
     reportList: [],
+    serveList: [],
     metadata: {},
     process: [],
     sessionProcess: []
@@ -16,6 +17,9 @@ const processControl = {
   mutations: {
     addStartedProcess(state, payload) {
       state.process.push(payload)
+    },
+    addServerProcess(state, payload) {
+      state.serveList.push(payload)
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
@@ -62,6 +66,13 @@ const processControl = {
         reportExportType: reportExportType,
         parameters: parameters
       }
+      requestProcessActivity({ commit }, process)
+        .then(response => {
+          console.log(response)
+          var server = response.getResponsesList()
+          console.log(server)
+          commit('addStartedProcess', server)
+        })
       // console.log(processToRun)
       commit('addStartedProcess', processToRun)
       var browserToSearch = {
@@ -173,6 +184,10 @@ const processControl = {
     }
   },
   getters: {
+    getServerProcess: (state) => {
+      console.log(state)
+      return state.serveList
+    },
     getActionProcess: (state) => (processUuid) => {
       var process = state.process.find(
         item => item.uuid === processUuid
@@ -194,6 +209,7 @@ const processControl = {
           }
         }
       })
+      console.log(processList)
       return processList
     },
     getProcessResult: (state) => {
