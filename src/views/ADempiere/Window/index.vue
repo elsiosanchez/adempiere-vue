@@ -157,7 +157,7 @@ export default {
 
   .transi-box2 {
     margin-bottom: 0px;
-    width: calc(100% + 10px);
+    width: calc(100% - 209px);
     position: fixed;
     bottom: 0;
     border-radius: 4px;
