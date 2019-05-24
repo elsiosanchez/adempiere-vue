@@ -13,12 +13,17 @@ const lookup = {
   actions: {
     getLookup: ({ commit }, objectParams) => {
       return new Promise((resolve, reject) => {
+        // getLookup({
+        //   tableName: 'C_PaymentTerm',
+        //   parsedDirectQuery: "SELECT C_PaymentTerm.C_PaymentTerm_ID,NULL,NVL(C_PaymentTerm_Trl.Name,'-1'),C_PaymentTerm.IsActive FROM C_PaymentTerm INNER JOIN C_PaymentTerm_TRL ON (C_PaymentTerm.C_PaymentTerm_ID=C_PaymentTerm_Trl.C_PaymentTerm_ID AND C_PaymentTerm_Trl.AD_Language='es_MX') WHERE C_PaymentTerm.C_PaymentTerm_ID=?"
+        // }, 106)
         getLookup(objectParams, objectParams.value)
           .then(response => {
-            var options = [{
-              label: response.name,
-              key: response.value
-            }]
+            const map = response.getValuesMap()
+            var options = {
+              label: convertValueFromGRPC(map.get('DisplayColumn')),
+              key: convertValueFromGRPC(map.get('KeyColumn'))
+            }
             commit('addLoockupList', options)
             resolve(options)
           })
