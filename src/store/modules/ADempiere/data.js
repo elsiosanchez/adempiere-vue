@@ -40,6 +40,30 @@ const data = {
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams.table, objectParams.criteria)
           .then(response => {
+            var recordList = response.getRecordsList().map((recordItem) => {
+              var values = []
+              recordItem.getValuesMap().forEach((value, key) => {
+                values.push({ key: key, value: convertValueFromGRPC(value) })
+              })
+              return {
+                id: recordItem.getId(),
+                uuid: recordItem.getUuid(),
+                tableName: recordItem.getTablename(),
+                valuesMap: values
+              }
+            })
+            resolve(recordList)
+          })
+          .catch(error => {
+            console.log('Error getting data with criteria' + error)
+            reject(error)
+          })
+      })
+    }
+    /* getObjectListFromCriteria: ({ dispatch }, objectParams) => {
+      return new Promise((resolve, reject) => {
+        getObjectListFromCriteria(objectParams.table, objectParams.criteria)
+          .then(response => {
             const recordList = response.getRecordsList()
             var options = []
             recordList.forEach(element => {
@@ -59,7 +83,7 @@ const data = {
             reject(err)
           })
       })
-    }
+    } */
   }
 }
 

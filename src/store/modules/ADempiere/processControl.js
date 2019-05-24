@@ -1,7 +1,6 @@
 import {
   runProcess,
   requestProcessActivity,
-  getObjectListFromCriteria,
   getBrowserSearch
 } from '@/api/ADempiere/data'
 
@@ -65,16 +64,6 @@ const processControl = {
       }
       // console.log(processToRun)
       commit('addStartedProcess', processToRun)
-      getObjectListFromCriteria('C_BPartner', "IsCustomer = 'Y'")
-        .then(response => {
-          console.log(response)
-          response.getRecordsList().forEach(item => {
-            console.log(item.getValuesMap())
-          })
-        })
-        .catch(error => {
-          console.log(error)
-        })
       var browserToSearch = {
         uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
         parameters: [
