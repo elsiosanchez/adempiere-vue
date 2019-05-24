@@ -233,7 +233,10 @@ const panel = {
       var emptyMandatoryField = false
       const params = fieldList
         .map(fieldItem => {
-          if (!isEmptyValue(fieldItem.value)) {
+          if (!isEmptyValue(fieldItem.value) &&
+            (fieldItem.isQueryCriteria &&
+              (fieldItem.isMandatory &&
+                fieldItem.isMandatoryFromLogic || fieldItem.isShowedFromUser))) {
             return {
               columnName: fieldItem.columnName,
               value: fieldItem.value
@@ -253,5 +256,4 @@ const panel = {
     }
   }
 }
-
 export default panel

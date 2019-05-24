@@ -81,7 +81,7 @@ export default {
 
       this.$store.dispatch('getLookup', {
         tableName: this.metadata.reference.tableName,
-        parsedDirectQuery: parsedDirectQuery,
+        directQuery: parsedDirectQuery,
         value: this.value
       })
         .then(response => {
@@ -107,7 +107,7 @@ export default {
         if (typeof lookupList === 'undefined' || lookupList.length < 0) {
           this.$store.dispatch('getLookupList', {
             tableName: this.metadata.reference.tableName,
-            parsedQuery: parsedQuery
+            query: parsedQuery
           })
             .then(response => {
               this.options = response

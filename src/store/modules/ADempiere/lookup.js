@@ -38,14 +38,13 @@ const lookup = {
           .then(response => {
             const recordList = response.getRecordsList()
             var options = []
-            var i = 0
             recordList.forEach(element => {
               const map = element.getValuesMap()
               const name = convertValueFromGRPC(map.get('DisplayColumn'))
-              const value = i++
+              const key = convertValueFromGRPC(map.get('KeyColumn'))
               options.push({
                 label: name,
-                key: value
+                key: key
               })
             })
             commit('addLoockupList', {

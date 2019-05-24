@@ -98,8 +98,13 @@ export function runProcess(process) {
 // ]
 export function getBrowserSearch(browser) {
   var browserRequest = Instance.call(this).getBrowserRequest()
+  var criteria = Instance.call(this).getCriteria('')
   //  Fill Request browser
   browserRequest.setUuid(browser.uuid)
+  criteria.setQuery(browser.query)
+  criteria.setWhereclause(browser.whereClause)
+  criteria.setOrderbyclause(browser.orderByClause)
+  browserRequest.setCriteria(criteria)
   if (browser.parameters !== undefined) {
     browser.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
