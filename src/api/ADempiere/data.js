@@ -90,6 +90,9 @@ export function runProcess(process) {
 // Request a browser search
 // This function allows follow structure:
 // browser.uuid
+// browser.query
+// browser.whereClause
+// browser.orderByClause
 // browser.parameters [
 //   {
 //     columnName,
