@@ -1,5 +1,5 @@
 import { getBrowser } from '@/api/ADempiere/dictionary'
-import { convertFieldFromGRPC } from '@/utils/ADempiere'
+import { convertFieldFromGRPC, parseContext } from '@/utils/ADempiere'
 
 const browser = {
   state: {
@@ -51,6 +51,17 @@ const browser = {
                   }
                 })
               })
+            var parsedQuery = parseContext({
+              parentUuid: browserUuid,
+              containerUuid: browserUuid,
+              value: response.getQuery()
+            })
+            var parsedWhereClause = parseContext({
+              parentUuid: browserUuid,
+              containerUuid: browserUuid,
+              value: response.getWhereclause()
+            })
+
             //  Panel for save on store
             var newBrowser = {
               id: response.getId(),
@@ -62,9 +73,9 @@ const browser = {
               description: response.getDescription(),
               help: response.getHelp(),
               query: response.getQuery(),
-              parsedQuery: response.getQuery(),
+              parsedQuery: parsedQuery,
               whereClause: response.getWhereclause(),
-              parsedWhereClause: response.getWhereclause(),
+              parsedWhereClause: parsedWhereClause,
               orderByClause: response.getOrderbyclause(),
               isUpdateable: response.getIsupdateable(),
               isDeleteable: response.getIsdeleteable(),

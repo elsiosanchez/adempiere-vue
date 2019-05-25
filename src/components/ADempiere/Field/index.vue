@@ -115,14 +115,16 @@ export default {
       return span
     },
     isDisplayed() {
-      var display = this.field.isActive && this.field.isDisplayed &&
-        this.field.isDisplayedFromLogic &&
-        (this.isMandatory() || this.field.isShowedFromUser)
+      const mandatory = this.isMandatory()
+      var display = this.field.isDisplayed && this.field.isDisplayedFromLogic &&
+        (mandatory || this.field.isShowedFromUser)
+
       if (this.panelType === 'browser') {
         display = this.field.isQueryCriteria &&
-        (this.isMandatory() || this.field.isShowedFromUser)
+        (mandatory || this.field.isShowedFromUser)
       }
-      return display
+
+      return this.field.isActive && display
     },
     isReadOnly() {
       return this.field.isReadonly && this.field.isReadonlyFromLogic
