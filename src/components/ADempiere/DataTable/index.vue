@@ -11,7 +11,7 @@
       />
     </div>
     <el-table
-      :data="filterResult()"
+      :data="tableData"
       element-loading-text="Loading..."
       element-loading-spinner="el-icon-loading"
       border
@@ -21,11 +21,10 @@
       class="table"
       size="mini"
     >
-      <template v-for="(item, key) in fieldSequence">
+      <template v-for="(item, key) in dataFields">
         <el-table-column
-          v-show="getDisplay(item.isDisplayed)"
           :key="key"
-          :prop="item.columnName"
+          :prop="item.value"
           :label="item.name"
           class="tableitem"
           width="300"
@@ -41,7 +40,7 @@
               />
             </template>
             <span v-else @dblclick="scope.row.edit=!scope.row.edit">
-              {{ scope.row[item.columnName] }}
+              {{ scope.row.valuesMap[key].value }}
             </span>
           </template>
         </el-table-column>
@@ -91,6 +90,7 @@ export default {
       tableData: [],
       fieldList: [],
       fieldSequence: [],
+      dataFields: [],
       getRecords: false,
       edit: false,
       labelPosition: 'top',
@@ -118,6 +118,9 @@ export default {
   },
   created() {
     this.getTable()
+  },
+  mounted() {
+    // this.compareFields(this.fieldSequence, this.tableData)
   },
   methods: {
     isEmptyValue,
@@ -160,7 +163,6 @@ export default {
         }
         return true
       })
-
       if (data.length < 1) {
         data = this.addNewValue()
       }
@@ -242,10 +244,41 @@ export default {
         criteria: criteria
       })
         .then(response => {
-          this.tableData = response
+          response.forEach((responseItem) => {
+            this.tableData.push(responseItem)
+          })
+          var array1 = this.fieldSequence
+          var array2 = this.tableData[0].valuesMap
+          array1.forEach((fieldItem) => {
+            array2.forEach((dataItem) => {
+              if (fieldItem.columnName === dataItem.key) {
+                fieldItem.value = dataItem.value
+                this.dataFields.push(fieldItem)
+              }
+            })
+          })
+          this.dataFields.forEach((field) => {
+            if (typeof field.value === 'number') {
+              field.value = String(field.value)
+            }
+          })
           this.getRecords = true
         })
         .catch(err => console.log('Error Panel detail: ' + err.message))
+    },
+    compareFields(fieldSequence, tableData) {
+      /* var dataFields = []
+      fieldSequence.forEach((fieldItem) => {
+        tableData.valuesMap.forEach((dataItem) => {
+          if (dataItem.key === 'Name') {
+            console.log('algo', dataItem)
+          }
+          /* if (fieldItem.columnName === dataItem.key) {
+            dataFields.push(fieldItem)
+          }
+        })
+      })
+      console.log(dataFields) */
     },
     /**
      * Sorts the column components according to the value that is obtained from
