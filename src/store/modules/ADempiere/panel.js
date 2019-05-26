@@ -36,7 +36,7 @@ const panel = {
       state.panel = payload
     },
     changeFieldShowedFromUser(state, payload) {
-      state = state.panel.map((item) => {
+      state = state.panel.map(item => {
         if (payload.containerUuid === item.containerUuid) {
           return payload.newPanel
         }
@@ -56,7 +56,7 @@ const panel = {
     addFields({ commit }, payload) {
       commit('addFields', payload)
     },
-    changeFieldShowedFromUser({ commit, getters }, params) {
+    changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
       var newFields = panel.fieldList.map((itemField) => {
         if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
@@ -71,6 +71,10 @@ const panel = {
         containerUuid: params.containerUuid,
         newPanel: panel
       })
+      // Updated record result
+      if (panel.panelType === 'browser') {
+        dispatch('getBrowserSearch', panel.uuid)
+      }
     },
     notifyPanelChange({ state, dispatch }, payload) {
       state.panel
@@ -232,23 +236,27 @@ const panel = {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
       var emptyMandatoryField = false
       const params = fieldList
-        .map(fieldItem => {
-          if (!isEmptyValue(fieldItem.value) &&
-            (fieldItem.isQueryCriteria &&
-              (fieldItem.isMandatory &&
-                fieldItem.isMandatoryFromLogic || fieldItem.isShowedFromUser))) {
-            return {
-              columnName: fieldItem.columnName,
-              value: fieldItem.value
-            }
+        .filter(fieldItem => {
+          const mandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
+
+          var display = (mandatory || fieldItem.isShowedFromUser) &&
+          fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic
+
+          if (fieldItem.panelType === 'browser') {
+            display = fieldItem.isQueryCriteria &&
+            (mandatory || fieldItem.isShowedFromUser)
           }
-          // empty field mandatory
-          if (fieldItem.isMandatoryFromLogic) {
+
+          if (fieldItem.isActive && !isEmptyValue(fieldItem.value) && display) {
+            return true
+          }
+          // empty field
+          if (display) {
             emptyMandatoryField = true
           }
           return undefined
         })
-        .filter(itemParams => itemParams)
+
       if (evaluateMandatory && emptyMandatoryField) {
         return []
       }

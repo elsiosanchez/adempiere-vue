@@ -225,6 +225,9 @@ class evaluator {
       // remove second @: ExampleColumn@ = ExampleColumn
       const value = string.substring(0, pos)
 
+      // delete secodn columnName and @
+      string = string.substring(pos + 1)
+
       // add column name in array
       listFields.push(value)
     }
