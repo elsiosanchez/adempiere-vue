@@ -1,6 +1,6 @@
 // Vuex file for store all related to panel and fields
 // Use it for handle events for changes and put context, also can be
-// used for hadle display logic, read only logic and mandatory logic
+// used for hadle isDisplayed logic, read only logic and mandatory logic
 // The scope is use panel as storage of:
 // - Window: Just need storage tab and fields
 // - Process & Report: Always save a panel and parameters
@@ -109,7 +109,7 @@ const panel = {
       })
       //  Iterate for change logic
       dependents.forEach((dependent) => {
-        //  Display Logic
+        //  isDisplayed Logic
         var isDisplayedFromLogic = false
         var isMandatoryFromLogic = false
         var isReadOnlyFromLogic = false
@@ -237,21 +237,12 @@ const panel = {
       var emptyMandatoryField = false
       const params = fieldList
         .filter(fieldItem => {
-          const mandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
-
-          var display = (mandatory || fieldItem.isShowedFromUser) &&
-          fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic
-
-          if (fieldItem.panelType === 'browser') {
-            display = fieldItem.isQueryCriteria &&
-            (mandatory || fieldItem.isShowedFromUser)
-          }
-
-          if (fieldItem.isActive && !isEmptyValue(fieldItem.value) && display) {
+          var isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isShowedFromUser && (fieldItem.isMandatory || fieldItem.isMandatoryFromLogic || fieldItem.isDisplayedFromLogic)
+          if (!isEmptyValue(fieldItem.value)) {
             return true
           }
           // empty field
-          if (display) {
+          if (isDisplayed) {
             emptyMandatoryField = true
           }
           return undefined

@@ -43,14 +43,11 @@ export default {
   },
   methods: {
     isDisplayed(field) {
-      var display = field.isActive && field.isDisplayed && field.isDisplayedFromLogic
+      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedFromUser || field.isMandatory || field.isMandatoryFromLogic || field.isDisplayedFromLogic)
       if (field.isShowedFromUser) {
         this.newFields.push(field.columnName)
       }
-      if (this.panelType === 'browser') {
-        return field.isQueryCriteria
-      }
-      return display
+      return isDisplayed
     },
     getPanel() {
       var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)

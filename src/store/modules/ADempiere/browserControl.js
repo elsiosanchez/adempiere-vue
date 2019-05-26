@@ -34,19 +34,19 @@ const browserControl = {
           value: browser.whereClause
         })
 
-        var browserSearchQueryParams = {
+        var browserSearchQueryParameters = {
           uuid: browserUuid,
           query: parsedQuery,
           whereClause: parsedWhereClause,
           orderByClause: browser.orderByClause,
           parameters: parameters
         }
-        console.log(browserSearchQueryParams)
-        // Add validation compare browserSearchQueryParams
+        console.log(browserSearchQueryParameters)
+        // Add validation compare browserSearchQueryParameters
         // return new Promise((resolve, reject) => {
-        getBrowserSearch(browserSearchQueryParams)
+        getBrowserSearch(browserSearchQueryParameters)
           .then(response => {
-            commit('addBrowserSearch', browserSearchQueryParams)
+            commit('addBrowserSearch', browserSearchQueryParameters)
             console.log(response)
             // resolve(response)
           })

@@ -9,7 +9,7 @@
       <component
         :is="afterLoader"
         :metadata="field"
-        :value-model="recorddataFields"
+        :value-model="recordDataFields"
         :required="isMandatory()"
         :readonly="!isReadOnly()"
         :load-record="loadRecord"
@@ -53,7 +53,7 @@ export default {
       type: Boolean,
       default: false
     },
-    recorddataFields: {
+    recordDataFields: {
       type: [Number, String, Boolean, Array, Object],
       default: undefined
     },
@@ -105,7 +105,7 @@ export default {
       if (this.isDisplayed()) {
         span = this.span
       }
-      // display type Button
+      // isDisplayed type Button
       if (this.field.displayType === 28) {
         span = 0
       }
@@ -115,16 +115,9 @@ export default {
       return span
     },
     isDisplayed() {
-      const mandatory = this.isMandatory()
-      var display = this.field.isDisplayed && this.field.isDisplayedFromLogic &&
-        (mandatory || this.field.isShowedFromUser)
-
-      if (this.panelType === 'browser') {
-        display = this.field.isQueryCriteria &&
-        (mandatory || this.field.isShowedFromUser)
-      }
-
-      return this.field.isActive && display
+      var isDisplayed = this.field.isDisplayed && this.field.isShowedFromUser && (this.isMandatory() || this.field.isDisplayedFromLogic)
+      //  Verify for displayed and is active
+      return this.field.isActive && isDisplayed
     },
     isReadOnly() {
       return this.field.isReadonly && this.field.isReadonlyFromLogic
@@ -147,7 +140,7 @@ export default {
     /**
      * Evaluate the current field with the range type fields contained in the
      * constant FIELD_RANGE
-     * @param  {integer} id [identifier of the type of display]
+     * @param  {integer} id [identifier of the type of isDisplayed]
      * @return {boolean}
      */
     evaluateRange(id) {
@@ -164,7 +157,7 @@ export default {
     /**
      * Evaluate the current field with the only fields contained in the
      * constant FIELD_ONLY
-     * @param  {integer} id [identifier of the type of display]
+     * @param  {integer} id [identifier of the type of isDisplayed]
      * @return {boolean}
      */
     verifyIsFieldOnly(type) {

@@ -1,5 +1,5 @@
 import { getBrowser } from '@/api/ADempiere/dictionary'
-import { convertFieldFromGRPC, parseContext } from '@/utils/ADempiere'
+import { convertFieldFromGRPC } from '@/utils/ADempiere'
 
 const browser = {
   state: {
@@ -20,7 +20,8 @@ const browser = {
           .then(response => {
             var panelType = 'browser'
             var fieldsList = response.getFieldsList()
-
+            var query = response.getQuery()
+            var whereClause = response.getWhereclause()
             var additionalAttributes = {
               browserUuid: response.getUuid(),
               browserId: response.getId(),
@@ -35,10 +36,17 @@ const browser = {
               if (fieldItem.getIsrange()) {
                 fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
               }
-              return convertFieldFromGRPC(fieldItem, additionalAttributes)
+              var field = convertFieldFromGRPC(fieldItem, additionalAttributes)
+              if (query.includes('@' + field.columnName + '@') || whereClause.includes('@' + field.columnName + '@')) {
+                field.isMandatory = true
+                field.isQueryCriteria = true
+                field.isShowedFromUser = true
+              }
+              //  Change displayed from type
+              field.isDisplayed = field.isQueryCriteria
+              return field
             })
             fieldsList = fieldsList.concat(fieldsRangeList)
-
             //  Get dependent fields
             fieldsList.filter(field => field.parentFieldsList && field.isActive)
               .forEach((field, index, list) => {
@@ -51,17 +59,6 @@ const browser = {
                   }
                 })
               })
-            var parsedQuery = parseContext({
-              parentUuid: browserUuid,
-              containerUuid: browserUuid,
-              value: response.getQuery()
-            })
-            var parsedWhereClause = parseContext({
-              parentUuid: browserUuid,
-              containerUuid: browserUuid,
-              value: response.getWhereclause()
-            })
-
             //  Panel for save on store
             var newBrowser = {
               id: response.getId(),
@@ -73,9 +70,9 @@ const browser = {
               description: response.getDescription(),
               help: response.getHelp(),
               query: response.getQuery(),
-              parsedQuery: parsedQuery,
-              whereClause: response.getWhereclause(),
-              parsedWhereClause: parsedWhereClause,
+              parsedQuery: query,
+              whereClause: whereClause,
+              parsedWhereClause: response.getWhereclause(),
               orderByClause: response.getOrderbyclause(),
               isUpdateable: response.getIsupdateable(),
               isDeleteable: response.getIsdeleteable(),

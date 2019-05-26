@@ -152,7 +152,6 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     isMandatory: fieldGRPC.getIsmandatory(),
     isReadOnly: fieldGRPC.getIsreadonly(),
     isDisplayedFromLogic: fieldGRPC.getIsdisplayed(),
-    // isDisplayedFromLogic: (moreAttributes.panelType === 'browser' && fieldGRPC.getIsquerycriteria()),
     isReadOnlyFromLogic: fieldGRPC.getIsreadonly(),
     isMandatoryFromLogic: fieldGRPC.getIsmandatory(),
     //
@@ -164,15 +163,15 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     parentFieldsList: getParentFields(fieldGRPC),
     dependentFieldsList: [],
     reference: referenceValue,
-    // ADD SUPPORT IN SERVER
+    // TODO: Add support on server
     isShowedFromUser: isShowedFromUser
   }
 
   // Overwrite some values
   if (typeRange) {
-    field.uuid = field.uuid + '_to'
-    field.columnName = field.columnName + '_to'
-    field.name = 'To ' + field.name
+    field.uuid = field.uuid + '_To'
+    field.columnName = field.columnName + '_To'
+    field.name = field.name + ' To'
     field.value = parsedDefaultValueTo
     field.defaultValue = field.defaultValueTo
     field.parsedDefaultValue = field.parsedDefaultValueTo
