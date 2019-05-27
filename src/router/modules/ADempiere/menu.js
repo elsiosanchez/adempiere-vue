@@ -24,7 +24,20 @@ export function loadMainMenu() {
             meta: { title: 'ProcessActivity', icon: 'skill', noCache: true }
           }
         ]
-      }, {
+      },
+      //  {
+      //   path: '/Rol',
+      //   component: Layout,
+      //   children: [
+      //     {
+      //       path: 'index',
+      //       component: () => import('@/views/ADempiere/Rol'),
+      //       name: 'Rol',
+      //       meta: { title: 'Rol', icon: 'lock', noCache: true }
+      //     }
+      //   ]
+      // },
+      {
         path: '/SearchWindow',
         component: Layout,
         children: [

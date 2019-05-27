@@ -11,14 +11,27 @@ function Instance() {
 
 // Get User Info from session Uuid or token
 export function getInfo(sessionUuid) {
+  var roles = []
   return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
+    console.log(session.getRole)
+    var rolList = session.getRolesList().map((roles) => {
+      return {
+        id: roles.getId(),
+        uuid: roles.getUuid(),
+        name: roles.getName()
+      }
+    })
+    rolList.forEach(element => {
+      roles.push(element.name)
+    })
+    console.log(rolList)
     const response = {
       data: {
         name: session.getUserinfo().getName(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-        introduction: session.getUserinfo().getComments(),
-        roles: ['admin', 'editor']
+        introduction: session.getUserinfo().getDescription(),
+        roles: ['Admin', 'User']
       }
     }
     return response
