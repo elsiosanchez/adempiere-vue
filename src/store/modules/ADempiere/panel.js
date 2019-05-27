@@ -232,27 +232,32 @@ const panel = {
       // fields with not empty value
       return fieldList
     },
-    getPanelParameters: (state, getters) => (containerUuid, evaluateMandatory = false) => {
+    /**
+     * get field list visible and with values
+     */
+    getPanelParameters: (state, getters) => (containerUuid, evaluateEmptyDisplayed = false) => {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var emptyMandatoryField = false
+      var emptyFieldDisplayed = false // indicate if exists a field displayed and empty value
       const params = fieldList
         .filter(fieldItem => {
-          var isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isShowedFromUser && (fieldItem.isMandatory || fieldItem.isMandatoryFromLogic || fieldItem.isDisplayedFromLogic)
-          if (!isEmptyValue(fieldItem.value)) {
+          const mandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
+          const displayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isShowedFromUser && (fieldItem.isDisplayedFromLogic || mandatory)
+          if (!isEmptyValue(fieldItem.value) && displayed) {
             return true
           }
-          // empty field
-          if (isDisplayed) {
-            emptyMandatoryField = true
+          // empty value
+          if (displayed && evaluateEmptyDisplayed) {
+            emptyFieldDisplayed = true
           }
-          return undefined
+          return false
         })
 
-      if (evaluateMandatory && emptyMandatoryField) {
+      if (evaluateEmptyDisplayed && emptyFieldDisplayed) {
         return []
       }
       return params
     }
   }
 }
+
 export default panel
