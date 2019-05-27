@@ -254,10 +254,10 @@ export default {
         .catch(err => console.log('Error Panel detail: ' + err.message))
     },
     compareFields() {
-      var array1 = this.fieldSequence
-      var array2 = this.tableData[0].valuesMap
-      array1.forEach((fieldItem) => {
-        array2.forEach((dataItem) => {
+      var fieldsData = this.fieldSequence
+      var valuesMap = this.tableData[0].valuesMap
+      fieldsData.forEach((fieldItem) => {
+        valuesMap.forEach((dataItem) => {
           if (fieldItem.columnName === dataItem.key) {
             fieldItem.value = dataItem.value
             this.dataFields.push(fieldItem)
