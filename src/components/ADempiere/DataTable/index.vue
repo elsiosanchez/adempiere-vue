@@ -11,7 +11,7 @@
       />
     </div>
     <el-table
-      :data="tableData"
+      :data="filterResult()"
       element-loading-text="Loading..."
       element-loading-spinner="el-icon-loading"
       border
@@ -23,6 +23,7 @@
     >
       <template v-for="(item, key) in dataFields">
         <el-table-column
+          v-show="getDisplay(item.isDisplayed)"
           :key="key"
           :prop="item.value"
           :label="item.name"
@@ -40,7 +41,7 @@
               />
             </template>
             <span v-else @dblclick="scope.row.edit=!scope.row.edit">
-              {{ scope.row.valuesMap[key].value }}
+              {{ item.value }}
             </span>
           </template>
         </el-table-column>
@@ -247,38 +248,27 @@ export default {
           response.forEach((responseItem) => {
             this.tableData.push(responseItem)
           })
-          var array1 = this.fieldSequence
-          var array2 = this.tableData[0].valuesMap
-          array1.forEach((fieldItem) => {
-            array2.forEach((dataItem) => {
-              if (fieldItem.columnName === dataItem.key) {
-                fieldItem.value = dataItem.value
-                this.dataFields.push(fieldItem)
-              }
-            })
-          })
-          this.dataFields.forEach((field) => {
-            if (typeof field.value === 'number') {
-              field.value = String(field.value)
-            }
-          })
+          this.compareFields()
           this.getRecords = true
         })
         .catch(err => console.log('Error Panel detail: ' + err.message))
     },
-    compareFields(fieldSequence, tableData) {
-      /* var dataFields = []
-      fieldSequence.forEach((fieldItem) => {
-        tableData.valuesMap.forEach((dataItem) => {
-          if (dataItem.key === 'Name') {
-            console.log('algo', dataItem)
-          }
-          /* if (fieldItem.columnName === dataItem.key) {
-            dataFields.push(fieldItem)
+    compareFields() {
+      var array1 = this.fieldSequence
+      var array2 = this.tableData[0].valuesMap
+      array1.forEach((fieldItem) => {
+        array2.forEach((dataItem) => {
+          if (fieldItem.columnName === dataItem.key) {
+            fieldItem.value = dataItem.value
+            this.dataFields.push(fieldItem)
           }
         })
       })
-      console.log(dataFields) */
+      this.dataFields.forEach((field) => {
+        if (typeof field.value === 'number') {
+          field.value = String(field.value)
+        }
+      })
     },
     /**
      * Sorts the column components according to the value that is obtained from

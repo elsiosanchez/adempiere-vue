@@ -60,30 +60,6 @@ const data = {
           })
       })
     }
-    /* getObjectListFromCriteria: ({ dispatch }, objectParams) => {
-      return new Promise((resolve, reject) => {
-        getObjectListFromCriteria(objectParams.table, objectParams.criteria)
-          .then(response => {
-            const recordList = response.getRecordsList()
-            var options = []
-            recordList.forEach(element => {
-              const map = element.getValuesMap()
-              const value = convertValueFromGRPC(map.get('Value'))
-              const name = convertValueFromGRPC(map.get('Name'))
-
-              options.push({
-                label: name,
-                key: value
-              })
-            })
-            resolve(options)
-          })
-          .catch(err => {
-            console.log(err)
-            reject(err)
-          })
-      })
-    } */
   }
 }
 
