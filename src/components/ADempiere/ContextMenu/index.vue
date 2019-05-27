@@ -132,7 +132,9 @@ export default {
             })
             if (this.$route.name !== 'Report Viewer') {
               var index = this.actions.findIndex(item => item.action === 'changeParameters')
-              this.actions[index].disabled = true
+              if (index !== -1) {
+                this.actions[index].disabled = true
+              }
             }
           }
           if (typeof this.$route.meta.parentUuid !== 'undefined') {
