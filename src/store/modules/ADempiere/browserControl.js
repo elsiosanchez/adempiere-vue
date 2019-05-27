@@ -12,16 +12,16 @@ const browserControl = {
   },
   actions: {
     getBrowserSearch({ commit, rootGetters }, browserUuid) {
-      var parameters = rootGetters.getPanelParameters(browserUuid, true)
-      console.log(parameters)
-      if (parameters.length > 0) {
-        parameters = parameters.map(fieldItem => {
+      var fieldList = rootGetters.getPanelParameters(browserUuid, true)
+      // console.log(fieldList)
+      if (fieldList.length > 0) {
+        var parameters = fieldList.map(fieldItem => {
           return {
             columnName: fieldItem.columnName,
             value: fieldItem.value
           }
         })
-        console.log(parameters)
+
         var browser = rootGetters.getBrowser(browserUuid)
         var parsedQuery = parseContext({
           parentUuid: browserUuid,
