@@ -13,7 +13,7 @@ function Instance() {
 export function getInfo(sessionUuid) {
   var roles = []
   return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
-    console.log(session.getRolesList())
+    console.log(session.getRole)
     var rolList = session.getRolesList().map((roles) => {
       return {
         id: roles.getId(),
@@ -32,7 +32,7 @@ export function getInfo(sessionUuid) {
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        roles: session.getUserinfo().getName()
+        roles: ['User']
       }
     }
     return response
@@ -63,7 +63,7 @@ export function login(loginValues) {
         name: session.getUserinfo().getName(),
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getComments(),
-        roles: session.getUserinfo().getName()
+        roles: ['admin', 'editor']
       }
     }
     return response
