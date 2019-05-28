@@ -31,15 +31,35 @@
           :key="key"
           :label="item.name"
           :prop="item.columnName"
-        />
+        >
+          <template slot-scope="scope">
+            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
+              <field
+                :label="false"
+                :metadata-field="item"
+                :recorddata-fields="scope.row[item.columnName]"
+                size="small"
+                @keyup.enter.native="confirmEdit(scope.row)"
+              />
+            </template>
+            <span v-else @dblclick="scope.row.edit=!scope.row.edit">
+              {{ item.value }}
+            </span>
+          </template>
+        </el-table-column>
       </template>
     </el-table>
   </el-form>
 </template>
 
 <script>
+import Field from '@/components/ADempiere/Field'
+
 export default {
   name: 'DataTable',
+  components: {
+    Field
+  },
   props: {
     parentUuid: {
       type: String,
@@ -74,7 +94,8 @@ export default {
       searchTable: '', // text from search
       showSearch: false, // show input from search
       fieldList: [],
-      tableData: this.dataRecord
+      tableData: this.dataRecord,
+      edit: false
     }
   },
   computed: {
@@ -114,6 +135,19 @@ export default {
       } else {
         this.showSearch = false
       }
+    },
+    /**
+     * Action table buttons edit and delete records
+     */
+    handleDblClick(row) {
+      row.edit = !row.edit
+    },
+    confirmEdit(row, newValue, value) {
+      row.edit = false
+      this.$message({
+        message: 'The title has been edited',
+        type: 'success'
+      })
     },
     /**
      * Verify is displayed field in column table
