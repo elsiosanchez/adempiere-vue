@@ -23,6 +23,7 @@
             :container-uuid="browserUuid"
             :panel-type="panelType"
             :metadata="browserMetadata"
+            :data-record="response"
           />
         </detail>
       </el-col>
@@ -70,7 +71,8 @@ export default {
       uuidRecord: this.$route.params.uuidRecord,
       visibleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
-      panelType: 'browser'
+      panelType: 'browser',
+      response: []
     }
   },
   beforeCreate() {
@@ -91,9 +93,18 @@ export default {
   },
   mounted() {
     this.reloadContextMenu()
+    this.subscribe()
   },
   methods: {
     isEmptyValue,
+    subscribe() {
+      this.$store.subscribe(mutation => {
+        if (mutation.type === 'addBrowserSearch') {
+          this.response = this.$store.getters.getResponseBrowser()
+          console.log(this.response)
+        }
+      })
+    },
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.browserUuid

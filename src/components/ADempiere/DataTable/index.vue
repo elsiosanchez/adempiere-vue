@@ -84,6 +84,10 @@ export default {
     panelType: {
       type: String,
       default: 'window'
+    },
+    dataRecord: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -114,6 +118,12 @@ export default {
         document.body.addEventListener('click', this.close)
       } else {
         document.body.removeEventListener('click', this.close)
+      }
+    },
+    dataRecord: function() {
+      if (this.dataRecord.length > 0) {
+        this.tableData = this.dataRecord
+        this.compareFields()
       }
     }
   },
