@@ -1,13 +1,13 @@
 <template>
-  <el-row v-if="showDetail" :gutter="12" class="root-container">
+  <el-row v-if="showDetail" :gutter="12">
     <div class="container">
       <el-col :span="6">
-        <div class="container">
+        <div class="container root-container">
           <div :class="isMobie()">
             <el-button
               v-if="!showPanel"
               :circle="true"
-              class="el-icon-arrow-up button-top"
+              class="el-icon-arrow-up button-top btn-base"
               @click="handleChange()"
             />
           </div>
@@ -20,7 +20,7 @@
                   <el-button
                     v-if="showPanel"
                     :circle="true"
-                    class="el-icon-arrow-down button-bottom"
+                    class="el-icon-arrow-down button-bottom btn-base"
                     @click="handleChange()"
                   />
                 </div>
@@ -66,20 +66,28 @@ export default {
 </script>
 
 <style scoped >
+  /*
+  .root-container {
+    border-top: 2px solid #606266;
+    height: 50%;
+    margin: 5px;
+  }
+  */
   .container {
     bottom: 0;
     z-index: 0;
     position: fixed;
     width: 100%;
-    height: 10%;
+    height: 50%;
     display: flex;
     color: #424242;
     margin-left: 10px;
+    border-top: 2px solid #606266;
   }
 
   .container:hover .show-button {
     visibility: visible;
-    height: 80px;
+    height: 50%;
   }
 
   .container:hover button {
@@ -103,7 +111,7 @@ export default {
 
   .container-table {
     bottom: 0;
-    height: 135px;
+    height: 50%;
     width: 100%;
     position: fixed;
     position: fixed;
@@ -138,23 +146,8 @@ export default {
     visibility: visible;
     transition: all .5s ease-in;
   }
-
-  .button-top {
-   width: 40px;
-   bottom: 0;
-   right: 50%;
-   position: fixed;
-   background: #ffffff;
-   color: #606266;
-   -webkit-appearance: none;
-   text-align: center;
-   outline: 0;
-   font-size: 14px;
- }
-  .button-bottom {
-    width: 37px;
-    bottom: 20%;
-    z-index: 2;
+  .btn-base {
+    width: 40px;
     right: 50%;
     position: fixed;
     background: #ffffff;
@@ -163,6 +156,16 @@ export default {
     text-align: center;
     outline: 0;
     font-size: 14px;
+  }
+  .btn-base :hover {
+    box-shadow: 5px #5a5a5a;
+  }
+  .button-top {
+    bottom: 0;
+  }
+  .button-bottom {
+    bottom: 50%;
+    z-index: 2;
   }
 
   .transi-box-menu {
@@ -174,7 +177,7 @@ export default {
     text-align: center;
     color: #FFF;
     box-sizing: border-box;
-    height: 11%;
+    height: 50%;
   }
 
   .transi-box-menu-menu-hiden {
@@ -186,8 +189,7 @@ export default {
     background-color: #FFF;
     text-align: center;
     color: #FFF;
-    height: 39%;
-
+    height: 50%;
     box-sizing: border-box;
     margin-right: 2px;
   }

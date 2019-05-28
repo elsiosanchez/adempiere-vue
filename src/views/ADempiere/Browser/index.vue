@@ -18,12 +18,13 @@
           :metadata="browserMetadata"
           :panel-type="panelType"
         />
-        <detail>
+        <detail
+          :show-detail="true"
+        >
           <data-table
             :container-uuid="browserUuid"
             :panel-type="panelType"
-            :metadata="browserMetadata"
-            :data-record="response"
+            :data-record="recordParams"
           />
         </detail>
       </el-col>
@@ -72,7 +73,7 @@ export default {
       visibleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
       panelType: 'browser',
-      response: []
+      recordParams: []
     }
   },
   beforeCreate() {
@@ -100,8 +101,7 @@ export default {
     subscribe() {
       this.$store.subscribe(mutation => {
         if (mutation.type === 'addBrowserSearch') {
-          this.response = this.$store.getters.getResponseBrowser()
-          console.log(this.response)
+          this.recordParams = mutation.payload
         }
       })
     },

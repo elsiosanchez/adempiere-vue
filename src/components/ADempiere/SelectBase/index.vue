@@ -59,7 +59,9 @@ export default {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
     }
-    this.getData()
+    if (this.metadata.isShowedFromUser) {
+      this.getData()
+    }
   },
   mounted() {
     this.$store.dispatch('setContext', {
