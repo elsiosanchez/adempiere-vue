@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setCurrentrole } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -7,6 +7,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
+  currentrole: [],
   roles: []
 }
 
@@ -25,6 +26,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_CURRENTROLE: (state, currentrole) => {
+    state.currentrole = currentrole
   }
 }
 
@@ -54,13 +58,14 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { roles, name, avatar, introduction, currentrole } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
 
+        commit('SET_CURRENTROLE', currentrole)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
@@ -100,10 +105,10 @@ const actions = {
   // dynamically modify permissions
   changeRoles({ commit, dispatch }, role) {
     return new Promise(async resolve => {
-      const token = role + '-token'
+      const currentrole = role + '-currentrole'
 
-      commit('SET_TOKEN', token)
-      setToken(token)
+      commit('SET_TOKEN', currentrole)
+      setCurrentrole(currentrole)
 
       const { roles } = await dispatch('getInfo')
 

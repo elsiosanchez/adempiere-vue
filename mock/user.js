@@ -1,10 +1,11 @@
 
 const tokens = {
   admin: {
-    token: 'admin-token'
+    currentrole: 'admin-token'
+    
   },
   editor: {
-    token: 'editor-token'
+    currentrole: 'editor-token'
   }
 }
 

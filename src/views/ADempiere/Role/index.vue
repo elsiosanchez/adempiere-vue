@@ -10,9 +10,7 @@
 import SwitchRoles from './components/SwitchRoles'
 export default {
   name: 'Role',
-  components: {
-    SwitchRoles
-  },
+  components: { SwitchRoles },
   data() {
     return {
       rol: [],
@@ -28,13 +26,7 @@ export default {
 
   methods: {
     handleRolesChange() {
-      this.rol = this.$store.dispatch('getRol')
-      // if(this.rol === 'GardenAdmin'){
-      //   this.$store.dispatch('getRol')
-      // }
-      console.log(this.rol)
-      return this.rol
-      // this.$router.push({ path: '/documentation/index?' })
+      this.$router.push({ path: '/permission/index?' + +new Date() })
     }
   }
 }

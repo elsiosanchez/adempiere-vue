@@ -50,7 +50,7 @@ export function getInfo(sessionUuid) {
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        // currentrol: ['admin'],
+        currentrole: ['admin'],
         roles: rolList
       }
     }
@@ -64,6 +64,7 @@ export function getInfo(sessionUuid) {
 // Make login by UserName and password, this function can return user data for show
 export function login(loginValues) {
   return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language).then(session => {
+    console.log(session.getUuid())
     const response = {
       data: {
         token: session.getUuid(),
