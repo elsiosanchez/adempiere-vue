@@ -137,6 +137,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     seqNoGrid: fieldGRPC.getSeqnogrid(),
     isIdentifier: fieldGRPC.getIsidentifier(),
     isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
+    isUpdateable: fieldGRPC.getIsupdateable(),
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
     value: parsedDefaultValue,

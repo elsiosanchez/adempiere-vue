@@ -46,29 +46,23 @@ const browserControl = {
           // Add validation compare browserSearchQueryParameters
           getBrowserSearch(browserSearchQueryParameters)
             .then(response => {
-              // commit('addBrowserSearch', browserSearchQueryParameters)
-              var recordList = response.getRecordsList().map((recordItem) => {
-                var values = []
-                recordItem.getValuesMap().forEach((value, key) => {
-                  values.push({ key: key, value: convertValueFromGRPC(value) })
+              const recordList = response.getRecordsList()
+              var record = recordList.map(itemRecord => {
+                const map = itemRecord.getValuesMap()
+                var values = {}
+                map.forEach((value, key) => {
+                  values[key] = convertValueFromGRPC(value)
                 })
-
-                return {
-                  id: recordItem.getId(),
-                  uuid: recordItem.getUuid(),
-                  tableName: recordItem.getTablename(),
-                  valuesMap: values
-                }
+                return values
               })
-              commit('addBrowserSearch', recordList)
-              resolve(recordList)
+              console.log(record)
+              commit('addBrowserSearch', record)
+              resolve(record)
             })
             .catch(err => {
               console.warn(err)
               reject(err)
             })
-        } else {
-          reject({ error: 0, message: 'No parameters' })
         }
       })
     }
