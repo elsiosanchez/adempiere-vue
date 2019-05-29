@@ -26,14 +26,14 @@ export function loadMainMenu() {
         ]
       },
       {
-        path: '/Rol',
+        path: '/Role',
         component: Layout,
         children: [
           {
             path: 'index',
-            component: () => import('@/views/ADempiere/Rol'),
-            name: 'Rol',
-            meta: { title: 'Rol', icon: 'lock', noCache: true }
+            component: () => import('@/views/ADempiere/Role'),
+            name: 'Role',
+            meta: { title: 'Role', icon: 'lock', noCache: true }
           }
         ]
       },

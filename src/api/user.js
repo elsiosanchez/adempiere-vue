@@ -8,11 +8,9 @@ function Instance() {
     'Version Epale'
   )
 }
-
-// Get User Info from session Uuid or token
-export function getInfo(sessionUuid) {
+export function getRol() {
   var roles = []
-  return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
+  return Instance.call(this).requestUserInfoFromSession().then(session => {
     var rolList = session.getRolesList().map((roles) => {
       return {
         id: roles.getId(),
@@ -25,31 +23,39 @@ export function getInfo(sessionUuid) {
       roles.push(element.name)
     })
     console.log(rolList)
-    // console.log(RequestUserInfo)
-    // if (rolList[0] === rolList[0]) {
+  })
+}
+
+// Get User Info from session Uuid or token
+export function getInfo(sessionUuid) {
+  var roles = []
+  return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
+    var rolList = session.getRolesList().map((roles) => {
+      return {
+        id: roles.getId(),
+        uuid: roles.getUuid(),
+        name: roles.getName()
+      }
+    })
+    rolList.forEach(element => {
+      roles.push(element.name)
+    })
+    console.log(rolList)
+    console.log(roles)
+    // console.log(rolList[1])
+    // console.log(getUserinfo())
     const response = {
       data: {
         name: session.getUserinfo().getName(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        roles: session.getUserinfo().getName()
+        // currentrol: ['admin'],
+        roles: rolList
       }
     }
+    console.log(response)
     return response
-    // }
-    // if (rolList[1] === rolList[1]) {
-    //   const response = {
-    //     data: {
-    //       name: session.getUserinfo().getName(),
-    //       // TODO: Add from ADempiere
-    //       avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-    //       introduction: session.getUserinfo().getDescription(),
-    //       roles: ['User']
-    //     }
-    //   }
-    //   return response
-    // }
   }).catch(error => {
     console.log(error)
   })
@@ -67,6 +73,7 @@ export function login(loginValues) {
         roles: session.getUserinfo().getName()
       }
     }
+    console.log(response)
     return response
   }).catch(error => {
     console.log(error)
