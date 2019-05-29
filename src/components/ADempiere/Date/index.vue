@@ -72,14 +72,11 @@ export default {
       this.format = this.metadata.VFormat.replace(/[Y]/gi, 'y').replace(/[m]/gi, 'M').replace(/[D]/gi, 'd')
     },
     handleChange(value) {
-      var valueFirst
+      var valueFirst = new Date(value)
       var valueTo
-      if (this.metadata.isRange || this.value.isArray) {
+      if (this.metadata.isRange || value.isArray) {
         valueFirst = new Date(value[0])
         valueTo = new Date(value[1])
-      } else {
-        valueFirst = new Date(value)
-        valueTo = undefined
       }
       this.$store.dispatch('notifyFieldChange', {
         parentUuid: this.metadata.parentUuid,
