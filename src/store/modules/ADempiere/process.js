@@ -1,5 +1,5 @@
 import { getProcess as getProcessFromDictionary } from '@/api/ADempiere/dictionary'
-import { convertFieldFromGRPC } from '@/utils/ADempiere'
+import { convertFieldFromGRPC, evalutateTypeField } from '@/utils/ADempiere'
 
 const process = {
   state: {
@@ -36,7 +36,7 @@ const process = {
             //  Convert from gRPC
             var fieldsRangeList = []
             var fieldDefinitionList = parameterList.map((fieldItem) => {
-              if (fieldItem.getIsrange()) {
+              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
                 fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
               }
               return convertFieldFromGRPC(fieldItem, additionalAttributes)

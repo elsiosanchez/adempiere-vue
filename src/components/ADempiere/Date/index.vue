@@ -8,6 +8,7 @@
     range-separator="To"
     start-placeholder="Start date"
     end-placeholder="End date"
+    unlink-panels
     @change="handleChange"
   />
 </template>
@@ -58,9 +59,9 @@ export default {
       if (this.metadata.displayType === 16) {
         time = 'time'
       }
-      // if (this.metadata.isRange) {
-      //   range = 'range'
-      // }
+      if (this.metadata.isRange) {
+        range = 'range'
+      }
       return 'date' + time + range
     },
     /**
@@ -71,22 +72,18 @@ export default {
       this.format = this.metadata.VFormat.replace(/[Y]/gi, 'y').replace(/[m]/gi, 'M').replace(/[D]/gi, 'd')
     },
     handleChange(value) {
-      // var valueFirst
-      // var valueTo
-      // if (this.metadata.isRange || this.value.isArray) {
-      //   valueFirst = new Date(value[0])
-      //   valueTo = new Date(value[1])
-      // } else {
-      //   valueFirst = new Date(value)
-      //   valueTo = undefined
-      // }
-      this.value = new Date(value)
+      var valueFirst = new Date(value)
+      var valueTo
+      if (this.metadata.isRange || value.isArray) {
+        valueFirst = new Date(value[0])
+        valueTo = new Date(value[1])
+      }
       this.$store.dispatch('notifyFieldChange', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         columnName: this.metadata.columnName,
-        newValue: this.value
-        // valueTo: valueTo
+        newValue: valueFirst,
+        valueTo: valueTo
       })
     }
   }
