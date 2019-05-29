@@ -1,5 +1,5 @@
 import { getBrowser } from '@/api/ADempiere/dictionary'
-import { convertFieldFromGRPC } from '@/utils/ADempiere'
+import { convertFieldFromGRPC, evalutateTypeField } from '@/utils/ADempiere'
 
 const browser = {
   state: {
@@ -33,7 +33,7 @@ const browser = {
             //  Convert from gRPC
             var fieldsRangeList = []
             fieldsList = fieldsList.map((fieldItem) => {
-              if (fieldItem.getIsrange()) {
+              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
                 fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
               }
               var field = convertFieldFromGRPC(fieldItem, additionalAttributes)
