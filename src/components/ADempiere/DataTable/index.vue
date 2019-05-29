@@ -18,6 +18,7 @@
       border
       style="width: 1100px"
       type="expand"
+      @select="handleSelectable"
     >
       <el-table-column
         v-if="tableSelection"
@@ -148,6 +149,10 @@ export default {
         message: 'The title has been edited',
         type: 'success'
       })
+    },
+    handleSelectable(row, index) {
+      console.log(row)
+      console.log(index)
     },
     /**
      * Verify is displayed field in column table
