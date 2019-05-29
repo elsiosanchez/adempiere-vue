@@ -13,7 +13,6 @@ function Instance() {
 export function getInfo(sessionUuid) {
   var roles = []
   return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
-    console.log(session.getRolesList())
     var rolList = session.getRolesList().map((roles) => {
       return {
         id: roles.getId(),
@@ -21,10 +20,12 @@ export function getInfo(sessionUuid) {
         name: roles.getName()
       }
     })
+    // this.$store.dispatch('getRol')
     rolList.forEach(element => {
       roles.push(element.name)
     })
     console.log(rolList)
+    // console.log(RequestUserInfo)
     // if (rolList[0] === rolList[0]) {
     const response = {
       data: {
