@@ -3,10 +3,17 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
   state: {
+    recordSelection: new Map()
   },
   mutations: {
+    recordSelection(state, payload) {
+      state.recordSelection.set(payload.containerUuid, payload.value)
+    }
   },
   actions: {
+    recordSelection({ commit }, parameters) {
+      commit('recordSelection', parameters)
+    },
     getObject: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObject(objectParams.table, objectParams.recordUuid)
@@ -59,6 +66,11 @@ const data = {
             reject(error)
           })
       })
+    }
+  },
+  getters: {
+    getRecordSelection: (state) => (containerUuid) => {
+      return state.recordSelection.get(containerUuid)
     }
   }
 }

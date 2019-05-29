@@ -26,11 +26,11 @@ export function convertValueFromGRPC(initialValue) {
 
     case 3:
       returnValue = initialValue.getBooleanvalue()
-      if (returnValue) {
-        returnValue = 'Yes'
-      } else {
-        returnValue = 'No'
-      }
+      // if (returnValue) {
+      //   returnValue = 'Yes'
+      // } else {
+      //   returnValue = 'No'
+      // }
       break
 
     case 4:
@@ -136,6 +136,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     sequence: fieldGRPC.getSequence(),
     seqNoGrid: fieldGRPC.getSeqnogrid(),
     isIdentifier: fieldGRPC.getIsidentifier(),
+    isKey: fieldGRPC.getIskey(),
     isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
     isUpdateable: fieldGRPC.getIsupdateable(),
     formatPattern: fieldGRPC.getFormatpattern(),

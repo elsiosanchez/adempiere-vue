@@ -1,8 +1,8 @@
 <template>
-  <el-row v-if="showDetail" :gutter="12">
+  <el-row v-if="showDetail" :gutter="12" class="root-container">
     <div class="container">
       <el-col :span="6">
-        <div class="container root-container">
+        <div class="hidden-container">
           <div :class="isMobie()">
             <el-button
               v-if="!showPanel"
@@ -73,16 +73,25 @@ export default {
     margin: 5px;
   }
   */
+  .hidden-container {
+    bottom: 0;
+    z-index: 0;
+    position: fixed;
+    width: 100%;
+    color: #424242;
+    margin-left: 10px;
+    border-top: 10px solid #606266;
+  }
+
   .container {
     bottom: 0;
     z-index: 0;
     position: fixed;
     width: 100%;
-    height: 50%;
     display: flex;
     color: #424242;
     margin-left: 10px;
-    border-top: 2px solid #606266;
+    border-top: 10px solid #606266;
   }
 
   .container:hover .show-button {
