@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-bottom:15px;">
-      {{ $t('permission.roles') }}: {{ roles }}
+      {{ $t('permission.roles') }}: {{ currentRole }}
     </div>
     {{ $t('permission.switchRoles') }}:
     <el-radio-group v-for="(item, key) in roles" :key="key" v-model="switchRoles">
@@ -12,12 +12,10 @@
 
 <script>
 export default {
-  // data() {
-  //   return {
-  //     switchRoles: this.roles[0]
-  //   }
-  // },
   computed: {
+    currentRole() {
+      return this.$store.getters.currentrole
+    },
     roles() {
       return this.$store.getters.roles
     },

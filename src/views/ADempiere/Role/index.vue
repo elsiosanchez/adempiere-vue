@@ -1,36 +1,43 @@
 <template>
   <div class="app-container">
-    <h3 class="warn-content text-center">
-      Your Role
-    </h3>
-    <br>
-    <h2>
-      {{ currentrole }}
-    </h2>
+    <h2> {{ currentRole }} </h2>
     <switch-roles @change="handleRolesChange" />
   </div>
 </template>
+
 <script>
 import SwitchRoles from './components/SwitchRoles'
+
 export default {
   name: 'Role',
   components: { SwitchRoles },
   data() {
     return {
-      rol: [],
-      isRol: [],
-      showDialog: false
+      rol: []
     }
   },
   computed: {
-    currentrole() {
+    currentRole() {
       return this.$store.getters.currentrole
+    },
+    roles() {
+      return this.$store.getters.roles
+    },
+    switchRoles: {
+      get() {
+        return this.roles[1]
+      }
     }
   },
-
   methods: {
     handleRolesChange() {
-      this.$router.push({ path: '/permission/index?' + +new Date() })
+      // this.rol = this.role
+      // if (typeof this.rol !== 'undefined') {
+      //   this.$store.dispatch('SET_rol')
+      //   this.rol = this.$store.gett
+      // }
+      console.log(this.rol)
+      this.$router.push({ path: '/documentation/index' })
     }
   }
 }
