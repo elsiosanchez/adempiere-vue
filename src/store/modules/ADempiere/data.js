@@ -7,7 +7,7 @@ const data = {
   },
   mutations: {
     recordSelection(state, payload) {
-      state.recordSelection.set(payload.containerUuid, payload.value)
+      state.recordSelection.set(payload.containerUuid, payload)
     }
   },
   actions: {
@@ -70,7 +70,18 @@ const data = {
   },
   getters: {
     getRecordSelection: (state) => (containerUuid) => {
-      return state.recordSelection.get(containerUuid)
+      var selection = state.recordSelection.get(containerUuid)
+      if (typeof selection !== 'undefined') {
+        return selection
+      }
+      return {
+        containerUuid: containerUuid,
+        record: [],
+        selection: []
+      }
+    },
+    getSelection: (state) => {
+      return state.recordSelection
     }
   }
 }

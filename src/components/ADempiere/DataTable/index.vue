@@ -19,7 +19,7 @@
       highlight-current-row
       style="width: 1100px"
       type="expand"
-      :row-key="fieldKey"
+      :row-key="keyColumn"
       :data="tableData"
       @select="handleSelection"
     >
@@ -83,10 +83,6 @@ export default {
       type: Boolean,
       default: true
     },
-    panelType: {
-      type: String,
-      default: 'window'
-    },
     dataRecord: {
       type: Array,
       default: () => []
@@ -96,16 +92,21 @@ export default {
     return {
       labelPosition: 'top',
       searchTable: '', // text from search
-      showSearch: false, // show input from search
+      showSearch: false, // show input from search,
+      panel: {},
       fieldList: [],
-      fieldKey: '', // keyColumn
+      keyColumn: '', // column as isKey in fieldList
       tableData: this.dataRecord,
+      multipleSelection: [],
       edit: false
     }
   },
   computed: {
-    getFields() {
-      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    getPanel() {
+      return this.$store.getters.getPanel(this.containerUuid)
+    },
+    getSelection() {
+      return this.$store.getters.getRecordSelection(this.containerUuid)
     }
   },
   watch: {
@@ -121,12 +122,17 @@ export default {
     },
     fieldList() {
       if (this.fieldList.length > 0) {
-        this.keyColumn()
+        this.getKeyColumn()
       }
     }
   },
   beforeMount() {
-    this.fieldList = this.getFieldList()
+    this.panel = this.generatePanel()
+  },
+  mounted() {
+    var allRecord = this.getSelection
+    console.log('a', allRecord)
+    this.toggleSelection(allRecord.selection)
   },
   methods: {
     /**
@@ -149,6 +155,19 @@ export default {
     /**
      * Action table buttons edit and delete records
      */
+    toggleSelection(rows) {
+      // rows = this.getSelection
+      if (rows.length > 0) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
     handleDblClick(row) {
       row.edit = !row.edit
     },
@@ -164,7 +183,8 @@ export default {
       console.log(index)
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
-        value: row
+        selection: row,
+        record: this.dataRecord
       })
     },
     /**
@@ -176,16 +196,16 @@ export default {
       //  Verify for displayed and is active
       return field.isActive && field.isDisplayed && field.isDisplayedFromLogic || isMandatory
     },
-    getFieldList() {
-      var fields = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-      return this.sortFields(fields, 'SortNo')
+    generatePanel() {
+      var panel = this.getPanel
+      this.keyColumn = panel.keyColumn
+      this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
     },
-    keyColumn() {
-      var fieldKey = this.fieldList.find((item) => {
-        return item.isKey === true
+    getKeyColumn() {
+      var fieldKey = this.fieldList.find((itemField) => {
+        return itemField.isKey === true
       })
-      this.fieldKey = fieldKey.columnName
-      return fieldKey.columnName
+      this.keyColumn = fieldKey.columnName
     },
     /**
      * Sorts the column components according to the value that is obtained from
@@ -206,8 +226,6 @@ export default {
   }
 }
 </script>
-<style>
-</style>
 
 <style lang="scss" scoped>
   .search-detail {

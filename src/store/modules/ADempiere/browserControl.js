@@ -57,7 +57,13 @@ const browserControl = {
                 })
                 return values
               })
-              commit('addBrowserSearch', record)
+
+              var selection = rootGetters.getDataSelection(browserUuid)
+              commit('recordSelection', {
+                containerUuid: browserUuid,
+                record: record,
+                selection: selection
+              })
               resolve(record)
             })
             .catch(err => {
