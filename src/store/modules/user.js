@@ -106,12 +106,12 @@ const actions = {
   },
 
   // dynamically modify permissions
-  changeRoles({ commit, dispatch }) {
+  changeRoles({ commit, dispatch }, role) {
     return new Promise(async resolve => {
-      // const token = role
+      const token = role
 
-      // commit('SET_TOKEN', token)
-      // setToken(token)
+      commit('SET_CURRENTROLE', token)
+      setToken(token)
 
       const { roles } = await dispatch('getInfo')
 
