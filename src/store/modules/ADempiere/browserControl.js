@@ -11,7 +11,7 @@ const browserControl = {
     }
   },
   actions: {
-    getBrowserSearch({ commit, rootGetters }, browserUuid) {
+    getBrowserSearch({ commit, dispatch, rootGetters }, browserUuid) {
       return new Promise((resolve, reject) => {
         var fieldListRange = []
         var fieldList = rootGetters.getPanelParameters(browserUuid, true)

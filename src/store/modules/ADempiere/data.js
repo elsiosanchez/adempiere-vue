@@ -3,18 +3,27 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
   state: {
-    recordSelection: new Map(),
+    recordSelection: [],
     dataSelection: [],
     dataRecord: []
   },
   mutations: {
     recordSelection(state, payload) {
-      state.recordSelection.set(payload.containerUuid, payload)
+      if (payload.index > -1) {
+        state.recordSelection.splice(payload.index, 1)
+      }
+      state.recordSelection.push(payload)
     }
   },
   actions: {
-    recordSelection({ commit }, parameters) {
-      commit('recordSelection', parameters)
+    recordSelection({ commit, state }, parameters) {
+      var index = state.recordSelection.findIndex((recordItem) => {
+        return recordItem.containerUuid === parameters.containerUuid
+      })
+      commit('recordSelection', {
+        ...parameters,
+        index: index
+      })
     },
     getObject: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
@@ -71,10 +80,12 @@ const data = {
     }
   },
   getters: {
-    getRecordSelection: (state) => (containerUuid) => {
-      var selection = state.recordSelection.get(containerUuid)
-      if (typeof selection !== 'undefined') {
-        return selection
+    getDataRecordAndSelection: (state) => (containerUuid) => {
+      var data = state.recordSelection.find(itemRecord => {
+        return itemRecord.containerUuid === containerUuid
+      })
+      if (typeof data !== 'undefined') {
+        return data
       }
       return {
         containerUuid: containerUuid,
@@ -82,19 +93,13 @@ const data = {
         selection: []
       }
     },
-    getDataDetail: (state) => (containerUuid) => {
-      var selection = state.recordSelection.get(containerUuid)
-      if (typeof selection !== 'undefined') {
-        return selection.record
-      }
-      return []
+    getDataRecordDetail: (state, getters) => (containerUuid) => {
+      var data = getters.getDataRecordAndSelection(containerUuid)
+      return data.record
     },
-    getDataSelection: (state) => (containerUuid) => {
-      var selection = state.recordSelection.get(containerUuid)
-      if (typeof selection !== 'undefined') {
-        return selection.selection
-      }
-      return []
+    getDataRecordSelection: (state, getters) => (containerUuid) => {
+      var selection = getters.getDataRecordAndSelection(containerUuid)
+      return selection.selection
     }
   }
 }

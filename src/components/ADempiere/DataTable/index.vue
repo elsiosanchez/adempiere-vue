@@ -20,7 +20,7 @@
       style="width: 1100px"
       type="expand"
       :row-key="keyColumn"
-      :data="tableData"
+      :data="getDataDetail"
       @select="handleSelection"
     >
       <el-table-column
@@ -102,10 +102,10 @@ export default {
       return this.$store.getters.getPanel(this.containerUuid)
     },
     getDataDetail() {
-      return this.$store.getters.getDataDetail(this.containerUuid)
+      return this.$store.getters.getDataRecordDetail(this.containerUuid)
     },
     getDataSelection() {
-      return this.$store.getters.getDataSelection(this.containerUuid)
+      return this.$store.getters.getDataRecordSelection(this.containerUuid)
     }
   },
   watch: {
