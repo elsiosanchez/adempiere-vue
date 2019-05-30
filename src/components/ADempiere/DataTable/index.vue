@@ -13,25 +13,28 @@
     <el-table
       ref="multipleTable"
       fit
-      :data="tableData"
       max-height="250"
       border
+      stripe
+      highlight-current-row
       style="width: 1100px"
       type="expand"
-      @select="handleSelectable"
+      :row-key="fieldKey"
+      :data="tableData"
+      @select="handleSelection"
     >
       <el-table-column
         v-if="tableSelection"
         type="selection"
         fixed
       />
-
       <template v-for="(item, key) in fieldList">
         <el-table-column
           v-if="isDisplayed(item)"
           :key="key"
           :label="item.name"
           :prop="item.columnName"
+          :column-key="item.columnName"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
@@ -44,7 +47,7 @@
               />
             </template>
             <span v-else @dblclick="scope.row.edit=!scope.row.edit">
-              {{ item.value }}
+              {{ scope.row[item.columnName] }}
             </span>
           </template>
         </el-table-column>
@@ -95,6 +98,7 @@ export default {
       searchTable: '', // text from search
       showSearch: false, // show input from search
       fieldList: [],
+      fieldKey: '', // keyColumn
       tableData: this.dataRecord,
       edit: false
     }
@@ -114,6 +118,11 @@ export default {
     },
     dataRecord() {
       this.tableData = this.dataRecord
+    },
+    fieldList() {
+      if (this.fieldList.length > 0) {
+        this.keyColumn()
+      }
     }
   },
   beforeMount() {
@@ -150,9 +159,13 @@ export default {
         type: 'success'
       })
     },
-    handleSelectable(row, index) {
+    handleSelection(row, index) {
       console.log(row)
       console.log(index)
+      this.$store.dispatch('recordSelection', {
+        containerUuid: this.containerUuid,
+        value: row
+      })
     },
     /**
      * Verify is displayed field in column table
@@ -166,6 +179,13 @@ export default {
     getFieldList() {
       var fields = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
       return this.sortFields(fields, 'SortNo')
+    },
+    keyColumn() {
+      var fieldKey = this.fieldList.find((item) => {
+        return item.isKey === true
+      })
+      this.fieldKey = fieldKey.columnName
+      return fieldKey.columnName
     },
     /**
      * Sorts the column components according to the value that is obtained from
