@@ -67,7 +67,6 @@ const browserControl = {
               resolve(record)
             })
             .catch(err => {
-              console.warn(err)
               reject(err)
             })
         }

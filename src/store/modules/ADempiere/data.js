@@ -3,7 +3,9 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
   state: {
-    recordSelection: new Map()
+    recordSelection: new Map(),
+    dataSelection: [],
+    dataRecord: []
   },
   mutations: {
     recordSelection(state, payload) {
@@ -80,8 +82,19 @@ const data = {
         selection: []
       }
     },
-    getSelection: (state) => {
-      return state.recordSelection
+    getDataDetail: (state) => (containerUuid) => {
+      var selection = state.recordSelection.get(containerUuid)
+      if (typeof selection !== 'undefined') {
+        return selection.record
+      }
+      return []
+    },
+    getDataSelection: (state) => (containerUuid) => {
+      var selection = state.recordSelection.get(containerUuid)
+      if (typeof selection !== 'undefined') {
+        return selection.selection
+      }
+      return []
     }
   }
 }

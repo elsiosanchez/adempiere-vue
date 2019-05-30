@@ -88,7 +88,6 @@ export default {
   },
   created() {
     this.getBrowser(this.$route.meta.uuid)
-    this.subscribe()
   },
   beforeMount() {
     this.getBrowser(this.$route.meta.uuid)
@@ -98,16 +97,6 @@ export default {
   },
   methods: {
     isEmptyValue,
-    subscribe() {
-      var recordParams = this.$store.getters.getRecordSelection(this.browserUuid)
-      this.recordParams = recordParams.record
-      this.$store.subscribe(mutation => {
-        if (mutation.type === 'recordSelection' && mutation.payload.uuid === this.browserUuid) {
-          console.log(mutation)
-          this.recordParams = mutation.payload.record
-        }
-      })
-    },
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.browserUuid

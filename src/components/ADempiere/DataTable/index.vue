@@ -1,6 +1,6 @@
 <template>
-  <el-form v-model="tableData" label-position="labelPosition">
-    <div v-show="searchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
+  <el-form :label-position="labelPosition">
+    <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
       <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
       <el-input
         ref="headerSearchInput"
@@ -24,7 +24,7 @@
       @select="handleSelection"
     >
       <el-table-column
-        v-if="tableSelection"
+        v-if="isTableSelection"
         type="selection"
         fixed
       />
@@ -73,19 +73,15 @@ export default {
       type: String,
       default: ''
     },
-    // Show section from search in data
-    searchable: {
+    // Show input section from search in data
+    isSearchable: {
       type: Boolean,
       default: true
     },
     // Show check from selection row
-    tableSelection: {
+    isTableSelection: {
       type: Boolean,
       default: true
-    },
-    dataRecord: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
@@ -96,8 +92,8 @@ export default {
       panel: {},
       fieldList: [],
       keyColumn: '', // column as isKey in fieldList
-      tableData: this.dataRecord,
-      multipleSelection: [],
+      tableData: this.getDataDetail,
+      multipleSelection: this.getDataSelection,
       edit: false
     }
   },
@@ -105,8 +101,11 @@ export default {
     getPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
-    getSelection() {
-      return this.$store.getters.getRecordSelection(this.containerUuid)
+    getDataDetail() {
+      return this.$store.getters.getDataDetail(this.containerUuid)
+    },
+    getDataSelection() {
+      return this.$store.getters.getDataSelection(this.containerUuid)
     }
   },
   watch: {
@@ -116,23 +115,11 @@ export default {
       } else {
         document.body.removeEventListener('click', this.close)
       }
-    },
-    dataRecord() {
-      this.tableData = this.dataRecord
-    },
-    fieldList() {
-      if (this.fieldList.length > 0) {
-        this.getKeyColumn()
-      }
     }
   },
   beforeMount() {
     this.panel = this.generatePanel()
-  },
-  mounted() {
-    var allRecord = this.getSelection
-    console.log('a', allRecord)
-    this.toggleSelection(allRecord.selection)
+    this.toggleSelection(this.getDataSelection)
   },
   methods: {
     /**
@@ -156,8 +143,7 @@ export default {
      * Action table buttons edit and delete records
      */
     toggleSelection(rows) {
-      // rows = this.getSelection
-      if (rows.length > 0) {
+      if (rows) {
         rows.forEach(row => {
           this.$refs.multipleTable.toggleRowSelection(row)
         })
@@ -179,12 +165,10 @@ export default {
       })
     },
     handleSelection(row, index) {
-      console.log(row)
-      console.log(index)
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: row,
-        record: this.dataRecord
+        record: this.getDataDetail
       })
     },
     /**
@@ -200,12 +184,6 @@ export default {
       var panel = this.getPanel
       this.keyColumn = panel.keyColumn
       this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
-    },
-    getKeyColumn() {
-      var fieldKey = this.fieldList.find((itemField) => {
-        return itemField.isKey === true
-      })
-      this.keyColumn = fieldKey.columnName
     },
     /**
      * Sorts the column components according to the value that is obtained from
