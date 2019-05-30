@@ -1,8 +1,12 @@
 <template>
   <div class="app-container">
     <h3 class="warn-content text-center">
-      Role  {{ name }}
+      Your Role
     </h3>
+    <br>
+    <h2>
+      {{ currentrole }}
+    </h2>
     <switch-roles @change="handleRolesChange" />
   </div>
 </template>
@@ -19,8 +23,8 @@ export default {
     }
   },
   computed: {
-    name() {
-      return this.$store.getters.name
+    currentrole() {
+      return this.$store.getters.currentrole
     }
   },
 

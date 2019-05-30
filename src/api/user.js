@@ -30,6 +30,7 @@ export function getRol() {
 export function getInfo(sessionUuid) {
   var roles = []
   return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
+    console.log(session.getRolesList())
     var rolList = session.getRolesList().map((roles) => {
       return {
         id: roles.getId(),
@@ -40,7 +41,7 @@ export function getInfo(sessionUuid) {
     rolList.forEach(element => {
       roles.push(element.name)
     })
-    console.log(rolList)
+    // console.log(session.getRole().getName())
     console.log(roles)
     // console.log(rolList[1])
     // console.log(getUserinfo())
@@ -50,7 +51,7 @@ export function getInfo(sessionUuid) {
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        currentrole: ['admin'],
+        currentrole: session.getUserinfo().getName(),
         roles: rolList
       }
     }
@@ -65,12 +66,14 @@ export function getInfo(sessionUuid) {
 export function login(loginValues) {
   return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language).then(session => {
     console.log(session.getUuid())
+    console.log(session.getRole().getName())
     const response = {
       data: {
         token: session.getUuid(),
         name: session.getUserinfo().getName(),
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-        introduction: session.getUserinfo().getComments(),
+        introduction: session.getRole().getName(),
+        currentrole: session.getRole().getName(),
         roles: session.getUserinfo().getName()
       }
     }

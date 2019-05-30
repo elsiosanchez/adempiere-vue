@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken, setCurrentrole } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -7,7 +7,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  currentrole: [],
+  currentrole: '',
   roles: []
 }
 
@@ -24,11 +24,11 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
-  },
   SET_CURRENTROLE: (state, currentrole) => {
     state.currentrole = currentrole
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   }
 }
 
@@ -40,6 +40,8 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        // commit('SET_CURRENTROLE', data.currentrole)
+        // console.log(data.currentrole)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -53,7 +55,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-
+        // console.log(data.currentrole)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
@@ -65,11 +67,12 @@ const actions = {
           reject('getInfo: roles must be a non-null array!')
         }
 
-        commit('SET_CURRENTROLE', currentrole)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
+        commit('SET_CURRENTROLE', currentrole)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
+        console.log(currentrole)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -105,10 +108,10 @@ const actions = {
   // dynamically modify permissions
   changeRoles({ commit, dispatch }, role) {
     return new Promise(async resolve => {
-      const currentrole = role + '-currentrole'
+      const token = role
 
-      commit('SET_TOKEN', currentrole)
-      setCurrentrole(currentrole)
+      commit('SET_TOKEN', token)
+      setToken(token)
 
       const { roles } = await dispatch('getInfo')
 

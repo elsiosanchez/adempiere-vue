@@ -1,23 +1,22 @@
 <template>
   <div>
     <div style="margin-bottom:15px;">
-      {{ $t('permission.roles') }}:
-      <ul id="example-1">
-        <template v-for="item in roles">
-          {{ item.name }}
-        </template>
-      </ul>
+      {{ $t('permission.roles') }}: {{ roles }}
     </div>
     {{ $t('permission.switchRoles') }}:
-    <el-radio-group v-for="(item,index) in roles" :key="index" v-model="switchRoles">
-      <el-radio-button :key="index"> {{ item.name }} </el-radio-button>
-      <!-- <el-radio-button :key="index"> {{ item.name }} </el-radio-button> -->
+    <el-radio-group v-for="(item, key) in roles" :key="key" v-model="switchRoles">
+      <el-radio-button :key="key" :label="item.name" />
     </el-radio-group>
   </div>
 </template>
 
 <script>
 export default {
+  // data() {
+  //   return {
+  //     switchRoles: this.roles[0]
+  //   }
+  // },
   computed: {
     roles() {
       return this.$store.getters.roles

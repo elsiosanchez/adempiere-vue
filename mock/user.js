@@ -1,23 +1,22 @@
 
 const tokens = {
-  admin: {
-    currentrole: 'admin-token'
-    
+  GardenWorldAdmin: {
+    currentrole: 'GardenWorld Admin-token'
   },
-  editor: {
-    currentrole: 'editor-token'
+  GardenWorldUser: {
+    currentrole: 'GardenWorld User-token'
   }
 }
 
 const users = {
-  'admin-token': {
-    roles: ['admin'],
+  'GardenWorld Admin-token': {
+    roles: ['GardenWorld Admin'],
     introduction: 'I am a super administrator',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Super Admin'
   },
-  'editor-token': {
-    roles: ['editor'],
+  'GardenWorld User': {
+    roles: ['GardenWorld User'],
     introduction: 'I am an editor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'
