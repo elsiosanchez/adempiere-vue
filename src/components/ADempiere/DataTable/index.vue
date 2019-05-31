@@ -118,7 +118,9 @@ export default {
     }
   },
   beforeMount() {
-    this.panel = this.generatePanel()
+    this.generatePanel()
+  },
+  mounted() {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
@@ -126,21 +128,27 @@ export default {
      * ASOCIATE WITH SEARCH INPUT
      */
     click() {
-      this.showSearch = !this.showSearch
+      if (this.searchTable.trim().length > 0) {
+        this.showSearch = true
+      } else {
+        this.showSearch = !this.showSearch
+      }
+
       if (this.showSearch) {
         this.$refs.headerSearchInput && this.$refs.headerSearchInput.focus()
       }
     },
     close() {
-      this.$refs.headerSearchInput && this.$refs.headerSearchInput.blur()
       if (this.searchTable.trim().length > 0) {
         this.showSearch = true
       } else {
+        this.$refs.headerSearchInput && this.$refs.headerSearchInput.blur()
         this.showSearch = false
       }
     },
     /**
-     * Action table buttons edit and delete records
+     * Select or unselect rows
+     * USE ONLY MOUNTED
      */
     toggleSelection(rows) {
       if (rows) {
@@ -171,6 +179,33 @@ export default {
         record: this.getDataDetail
       })
     },
+    filterResult() {
+      var data = []
+      data = this.getDataDetail.filter((rowItem) => {
+        if (this.searchTable.trim().length > 0) {
+          let find = false
+          Object.keys(rowItem).forEach(key => {
+            // if exists some selection columns
+            if (this.panel.selectionColumn.length > 0) {
+              if (this.panel.selectionColumn.indexOf(key) > -1 &&
+                String(rowItem[key]).includes(String(this.searchTable))) {
+                find = true
+                return find
+              }
+            } else {
+              // not selection column, search in all rows
+              if (String(rowItem[key]).includes(String(this.searchTable))) {
+                find = true
+                return find
+              }
+            }
+          })
+          return find
+        }
+        return true
+      })
+      return data
+    },
     /**
      * Verify is displayed field in column table
      */
@@ -182,6 +217,7 @@ export default {
     },
     generatePanel() {
       var panel = this.getPanel
+      this.panel = panel
       this.keyColumn = panel.keyColumn
       this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
     },
@@ -217,7 +253,7 @@ export default {
     }
 
     .header-search-input {
-      font-size: 18px;
+      font-size: 16px;
       transition: width 0.2s;
       width: 0;
       overflow: hidden;
