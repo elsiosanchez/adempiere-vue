@@ -231,6 +231,12 @@ const processControl = {
       )
       return cachedReport
     },
+    getReportInfo: (state) => (procesUuid) => {
+      var reportInfo = state.reportList.find(
+        item => item.processUuid === procesUuid
+      )
+      return reportInfo
+    },
     getSessionProcess: (state) => (instanceUuid) => {
       var sessionProcess = state.sessionProcess.find(
         item => item.instanceUuid === instanceUuid

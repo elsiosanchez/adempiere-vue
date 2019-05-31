@@ -3,41 +3,20 @@
     <h3 class="warn-content text-center">
       Process Activity
     </h3>
-    <el-table
-      :data="a"
-      :stripe="true"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="name"
-        label="name"
-      />
-      <el-table-column
-        prop="description"
-        label="description"
-      />
-      <el-table-column
-        prop="action"
-        label="action"
-      />
-      <el-table-column
-        label="see report"
-      >
-        <router-link :to="{ path: ':processUuid/:instanceUuid/:fileName' }"><svg-icon icon-class="clipboard" /></router-link>
+    <el-table :data="a" :stripe="true" style="width: 100%">
+      <el-table-column prop="name" label="name" />
+      <el-table-column prop="description" label="description" />
+      <el-table-column prop="action" label="action" />
+      <el-table-column label="see report">
+        <template slot-scope="scope">
+          <router-link :to="{ name: 'Report Viewer', params: {instanceUuid: scope.row.reportInfo.instanceUuid, processUuid: scope.row.reportInfo.processUuid, fileName: scope.row.reportInfo.output.fileName}}">
+            <span><svg icon-class="clipboard" /></span>
+          </router-link>
+        </template>
       </el-table-column>
-      <el-table-column
-        label="Status"
-      >
-        <el-popover
-          ref="popover"
-          placement="right"
-          title="Status"
-          width="400"
-          trigger="click"
-          content="loading details of the processes"
-        />
+      <el-table-column label="Status">
+        <el-popover ref="popover" placement="right" title="Status" width="400" trigger="click" :content="status" />
         <el-button v-popover:popover type="text">detail of the process</el-button>
-        <!-- {{ item.name }} -->
       </el-table-column>
     </el-table>
   </div>
@@ -62,8 +41,9 @@ export default {
   data() {
     return {
       errGif: errGif + '?' + +new Date(),
-      tableData: [],
-      showDialog: false
+      tableColumns: ['Name', 'Description', 'Action', 'See Report', 'Status'],
+      showDialog: false,
+      status: ''
     }
   },
   computed: {
@@ -72,13 +52,20 @@ export default {
     },
     a() {
       var a = this.$store.getters.getRunningProcess().map((item) => {
+        var reportInfo
+        var status
+        if (item.isReport) {
+          reportInfo = this.$store.getters.getReportInfo(item.uuid)
+        }
         return {
           name: item.name,
           description: item.description,
           action: item.action,
           output: item.output,
           logs: item.logs,
-          isError: item.isError
+          status: status,
+          isReport: item.isReport,
+          reportInfo: reportInfo
         }
       })
       return a
