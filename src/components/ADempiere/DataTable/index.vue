@@ -20,7 +20,7 @@
       style="width: 1100px"
       type="expand"
       :row-key="keyColumn"
-      :data="filterResult()"
+      :data="getDataDetail"
       @select="handleSelection"
     >
       <el-table-column
@@ -119,6 +119,8 @@ export default {
   },
   beforeMount() {
     this.generatePanel()
+  },
+  mounted() {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
@@ -131,6 +133,7 @@ export default {
       } else {
         this.showSearch = !this.showSearch
       }
+
       if (this.showSearch) {
         this.$refs.headerSearchInput && this.$refs.headerSearchInput.focus()
       }
@@ -144,7 +147,8 @@ export default {
       }
     },
     /**
-     * Action table buttons edit and delete records
+     * Select or unselect rows
+     * USE ONLY MOUNTED
      */
     toggleSelection(rows) {
       if (rows) {
@@ -249,7 +253,7 @@ export default {
     }
 
     .header-search-input {
-      font-size: 18px;
+      font-size: 16px;
       transition: width 0.2s;
       width: 0;
       overflow: hidden;
