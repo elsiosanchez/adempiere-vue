@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-    <h2> {{ currentRole }} </h2>
     <switch-roles @change="handleRolesChange" />
   </div>
 </template>
@@ -17,9 +16,6 @@ export default {
     }
   },
   computed: {
-    currentRole() {
-      return this.$store.getters.currentrole
-    },
     roles() {
       return this.$store.getters.roles
     },
