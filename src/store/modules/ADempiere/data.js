@@ -100,6 +100,19 @@ const data = {
     getDataRecordSelection: (state, getters) => (containerUuid) => {
       var selection = getters.getDataRecordAndSelection(containerUuid)
       return selection.selection
+    },
+    getSelectionToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
+      var selectionToServer = {}
+      var data = getters.getDataRecordAndSelection(containerUuid)
+      if (data.selection.length > 0) {
+        var panel = rootGetters.getPanel(containerUuid)
+        var keyColumn = panel.keyColumn
+        data.selection.forEach(itemRow => {
+          var recordKeyColumn = itemRow[keyColumn]
+          selectionToServer[recordKeyColumn] = itemRow
+        })
+      }
+      return selectionToServer
     }
   }
 }
