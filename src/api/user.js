@@ -33,7 +33,6 @@ export function login(loginValues) {
 export function getInfo(token) {
   return Instance.call(this).requestUserInfoFromSession(token).then(session => {
     console.log(session.getRolesList())
-    // console.log(currentrole)
     var roles = []
     var rolList = session.getRolesList().map((roles) => {
       return {
@@ -48,15 +47,12 @@ export function getInfo(token) {
     console.log(roles)
     console.log(rolList)
     // console.log(getUserinfo())
-    // var qlq = this.$store.getters.currentrole
     const response = {
       data: {
         name: session.getUserinfo().getName(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        prueba: [],
-        // currentrole: session.getUserinfo().getName(),
         roles: rolList
       }
     }

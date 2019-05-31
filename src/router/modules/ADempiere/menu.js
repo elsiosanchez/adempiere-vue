@@ -103,13 +103,13 @@ function getChildFromAction(menu) {
     component: selectedComponent,
     name: menu.getUuid(),
     hidden: actionAttributes.hidden,
-    alwaysShow: false,
     meta: {
       title: menu.getName(),
       uuid: menu.getReferenceuuid(),
       type: actionAttributes.name,
       parentUuid: menu.getParentuuid(),
       icon: actionAttributes.icon,
+      alwaysShow: true,
       noCache: false
     }
   }

@@ -8,12 +8,32 @@ function Instance() {
     'Version Epale'
   )
 }
+// Make login by UserName and password, this function can return user data for show
+export function login(loginValues) {
+  return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language).then(session => {
+    // console.log(session.getRole().getName())
+    const response = {
+      data: {
+        token: session.getUuid(),
+        name: session.getUserinfo().getName(),
+        avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
+        introduction: session.getRole().getName(),
+        currentRole: session.getRole().getName(),
+        roles: session.getRole()
+      }
+    }
+    console.log(response)
+    return response
+  }).catch(error => {
+    console.log(error)
+  })
+}
 
 // Get User Info from session Uuid or token
-export function getInfo(sessionUuid) {
-  var roles = []
-  return Instance.call(this).requestUserInfoFromSession(sessionUuid).then(session => {
-    console.log(session.getRole)
+export function getInfo(token) {
+  return Instance.call(this).requestUserInfoFromSession(token).then(session => {
+    console.log(session.getRolesList())
+    var roles = []
     var rolList = session.getRolesList().map((roles) => {
       return {
         id: roles.getId(),
@@ -24,54 +44,24 @@ export function getInfo(sessionUuid) {
     rolList.forEach(element => {
       roles.push(element.name)
     })
+    console.log(roles)
     console.log(rolList)
-    // if (rolList[0] === rolList[0]) {
+    // console.log(getUserinfo())
     const response = {
       data: {
         name: session.getUserinfo().getName(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        roles: ['User']
+        roles: rolList
       }
     }
-    return response
-    // }
-    // if (rolList[1] === rolList[1]) {
-    //   const response = {
-    //     data: {
-    //       name: session.getUserinfo().getName(),
-    //       // TODO: Add from ADempiere
-    //       avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-    //       introduction: session.getUserinfo().getDescription(),
-    //       roles: ['User']
-    //     }
-    //   }
-    //   return response
-    // }
-  }).catch(error => {
-    console.log(error)
-  })
-}
-
-// Make login by UserName and password, this function can return user data for show
-export function login(loginValues) {
-  return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language).then(session => {
-    const response = {
-      data: {
-        token: session.getUuid(),
-        name: session.getUserinfo().getName(),
-        avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-        introduction: session.getUserinfo().getComments(),
-        roles: ['admin', 'editor']
-      }
-    }
+    console.log(response)
     return response
   }).catch(error => {
     console.log(error)
   })
 }
-
 // Logout from server
 export function logout(sessionUuid) {
   return Instance.call(this).requestLogout(sessionUuid)

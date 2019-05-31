@@ -25,6 +25,7 @@ export default {
       },
       set(val) {
         this.$store.dispatch('user/changeRoles', val)
+        this.$router.push({ path: '/dashboard' })
       }
     }
   }

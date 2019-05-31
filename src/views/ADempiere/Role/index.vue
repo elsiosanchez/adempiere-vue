@@ -27,7 +27,9 @@ export default {
   },
   methods: {
     handleRolesChange() {
-      this.$router.push({ path: '/documentation/index' })
+      this.$router.push({ path: '/dashboard' })
+      console.log('recarga')
+      // this.$router.push({ path: '/documentation/index' })
     }
   }
 }

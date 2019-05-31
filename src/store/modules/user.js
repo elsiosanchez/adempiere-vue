@@ -1,13 +1,13 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { resetRouter } from '@/router'
+import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
   introduction: '',
-  currentrole: '',
+  currentRole: '',
   roles: []
 }
 
@@ -24,8 +24,8 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_CURRENTROLE: (state, currentrole) => {
-    state.currentrole = currentrole
+  SET_CURRENTROLE: (state, currentRole) => {
+    state.currentRole = currentRole
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
@@ -40,8 +40,8 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
-        commit('SET_CURRENTROLE', data.currentrole)
-        console.log(data.currentrole)
+        commit('SET_CURRENTROLE', data.currentRole)
+        console.log(data.currentRole)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -55,18 +55,24 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
+        // console.log(data.currentrole)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
         const { roles, name, avatar, introduction } = data
+        console.log(rootGetters.currentrole)
+        // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
+        // prueba = rootGetters.currentrole
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
-        commit('SET_CURRENTROLE', rootGetters.currentrole)
+        commit('SET_CURRENTROLE', rootGetters.currentRole)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
+        // console.log(currentrole)
+        console.log(roles)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -106,18 +112,14 @@ const actions = {
 
       commit('SET_CURRENTROLE', token)
       setToken(token)
+      console.log(token)
+      // const { roles } = await dispatch('getInfo')
 
-      const { roles } = await dispatch('getInfo')
+      // // // generate accessible routes map based on   roles
+      // const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
 
-      resetRouter()
-
-      // generate accessible routes map based on roles
-      const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-
-      // dynamically add accessible routes
-      router.addRoutes(accessRoutes)
-
-      resolve()
+      // // // dynamically add accessible routes
+      // router.addRoutes(accessRoutes)
     })
   }
 }
