@@ -118,7 +118,7 @@ export default {
     }
   },
   beforeMount() {
-    this.panel = this.generatePanel()
+    this.generatePanel()
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
@@ -181,9 +181,19 @@ export default {
         if (this.searchTable.trim().length > 0) {
           let find = false
           Object.keys(rowItem).forEach(key => {
-            if (String(rowItem[key]).includes(String(this.searchTable))) {
-              find = true
-              return find
+            // if exists some selection columns
+            if (this.panel.selectionColumn.length > 0) {
+              if (this.panel.selectionColumn.indexOf(key) > -1 &&
+                String(rowItem[key]).includes(String(this.searchTable))) {
+                find = true
+                return find
+              }
+            } else {
+              // not selection column, search in all rows
+              if (String(rowItem[key]).includes(String(this.searchTable))) {
+                find = true
+                return find
+              }
             }
           })
           return find
@@ -203,6 +213,7 @@ export default {
     },
     generatePanel() {
       var panel = this.getPanel
+      this.panel = panel
       this.keyColumn = panel.keyColumn
       this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
     },

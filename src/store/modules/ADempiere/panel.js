@@ -50,12 +50,22 @@ const panel = {
     }
   },
   actions: {
-    addPanel({ commit }, payload) {
-      var fieldKey = payload.fieldList.find((itemField) => {
-        return itemField.isKey === true
+    addPanel({ commit }, params) {
+      var keyColumn = ''
+      var selectionColumn = []
+
+      params.fieldList.forEach((itemField) => {
+        if (itemField.isKey) {
+          keyColumn = itemField.columnName
+        }
+        if (itemField.isSelectionColumn) {
+          selectionColumn.push(itemField.columnName)
+        }
       })
-      payload.keyColumn = fieldKey.columnName
-      commit('addPanel', payload)
+
+      params.keyColumn = keyColumn
+      params.selectionColumn = selectionColumn
+      commit('addPanel', params)
     },
     addFields({ commit }, payload) {
       commit('addFields', payload)
