@@ -51,6 +51,10 @@ const panel = {
   },
   actions: {
     addPanel({ commit }, payload) {
+      var fieldKey = payload.fieldList.find((itemField) => {
+        return itemField.isKey === true
+      })
+      payload.keyColumn = fieldKey.columnName
       commit('addPanel', payload)
     },
     addFields({ commit }, payload) {

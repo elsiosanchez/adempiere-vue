@@ -11,7 +11,7 @@ const browserControl = {
     }
   },
   actions: {
-    getBrowserSearch({ commit, rootGetters }, browserUuid) {
+    getBrowserSearch({ commit, dispatch, rootGetters }, browserUuid) {
       return new Promise((resolve, reject) => {
         var fieldListRange = []
         var fieldList = rootGetters.getPanelParameters(browserUuid, true)
@@ -57,11 +57,16 @@ const browserControl = {
                 })
                 return values
               })
-              commit('addBrowserSearch', record)
+
+              var selection = rootGetters.getDataSelection(browserUuid)
+              commit('recordSelection', {
+                containerUuid: browserUuid,
+                record: record,
+                selection: selection
+              })
               resolve(record)
             })
             .catch(err => {
-              console.warn(err)
               reject(err)
             })
         }
