@@ -1,22 +1,32 @@
 <template>
-  <div v-if="a.length > 0" class="wrapper">
+  <div v-if="processListData.length > 0" class="wrapper">
     <h3 class="warn-content text-center">
       Process Activity
     </h3>
-    <el-table :data="a" :stripe="true" style="width: 100%">
-      <el-table-column prop="name" label="name" />
-      <el-table-column prop="description" label="description" />
-      <el-table-column prop="action" label="action" />
-      <el-table-column label="see report">
+    <el-table :data="processListData" :stripe="true" class="table">
+      <template v-for="(item, key) in tableColumns">
+        <el-table-column :key="key" :label="item">
+          <template slot-scope="scope">
+            <span>{{ scope.row[item] }}</span>
+          </template>
+        </el-table-column>
+      </template>
+      <el-table-column label="Report" prop="Report">
         <template slot-scope="scope">
-          <router-link :to="{ name: 'Report Viewer', params: {instanceUuid: scope.row.reportInfo.instanceUuid, processUuid: scope.row.reportInfo.processUuid, fileName: scope.row.reportInfo.output.fileName}}">
-            <span><svg icon-class="clipboard" /></span>
+          <router-link
+            v-if="scope.row.Report.instanceUuid!=='undefined'"
+            :to="{
+              name: 'Report Viewer',
+              params: {
+                instanceUuid: scope.row.Report.instanceUuid,
+                processUuid: scope.row.Report.processUuid,
+                fileName: scope.row.Report.output.fileName
+              }
+            }"
+          >
+            <i class="el-icon-printer" />
           </router-link>
         </template>
-      </el-table-column>
-      <el-table-column label="Status">
-        <el-popover ref="popover" placement="right" title="Status" width="400" trigger="click" :content="status" />
-        <el-button v-popover:popover type="text">detail of the process</el-button>
       </el-table-column>
     </el-table>
   </div>
@@ -41,7 +51,7 @@ export default {
   data() {
     return {
       errGif: errGif + '?' + +new Date(),
-      tableColumns: ['Name', 'Description', 'Action', 'See Report', 'Status'],
+      tableColumns: ['Name', 'Description', 'Action', 'Status'],
       showDialog: false,
       status: ''
     }
@@ -50,25 +60,45 @@ export default {
     processRunnings() {
       return this.$store.getters.getRunningProcess()
     },
-    a() {
-      var a = this.$store.getters.getRunningProcess().map((item) => {
-        var reportInfo
-        var status
+    processListData() {
+      var processListData = this.$store.getters.getRunningProcess().map((item) => {
+        var reportInfo = {
+          instanceUuid: 'undefined',
+          processUuid: item.uuid,
+          isError: false,
+          summary: '',
+          resultTableId: 0,
+          logs: [],
+          output: {
+            uuid: '',
+            name: '',
+            description: '',
+            fileName: 'undefined',
+            output: '',
+            outputStream: {},
+            reportExportType: '',
+            isRootInsert: false,
+            elm: {}
+          }
+        }
+        var status = 'Processing'
         if (item.isReport) {
           reportInfo = this.$store.getters.getReportInfo(item.uuid)
+          if (reportInfo.isError) {
+            status = 'Error'
+          } else {
+            status = 'Completed'
+          }
         }
         return {
-          name: item.name,
-          description: item.description,
-          action: item.action,
-          output: item.output,
-          logs: item.logs,
-          status: status,
-          isReport: item.isReport,
-          reportInfo: reportInfo
+          Name: item.name,
+          Description: item.description,
+          Action: item.action,
+          Status: status,
+          Report: reportInfo
         }
       })
-      return a
+      return processListData
     }
   },
   created() {
@@ -98,3 +128,9 @@ export default {
   }
 }
 </script>
+<style>
+  .table {
+    width: 100%;
+    padding: 15px;
+  }
+</style>
