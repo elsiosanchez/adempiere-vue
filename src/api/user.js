@@ -11,7 +11,6 @@ function Instance() {
 // Make login by UserName and password, this function can return user data for show
 export function login(loginValues) {
   return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language).then(session => {
-    // console.log(session.getRole().getName())
     const response = {
       data: {
         token: session.getUuid(),
@@ -22,7 +21,6 @@ export function login(loginValues) {
         roles: session.getRole()
       }
     }
-    console.log(response)
     return response
   }).catch(error => {
     console.log(error)
@@ -32,7 +30,6 @@ export function login(loginValues) {
 // Get User Info from session Uuid or token
 export function getInfo(token) {
   return Instance.call(this).requestUserInfoFromSession(token).then(session => {
-    console.log(session.getRolesList())
     var roles = []
     var rolList = session.getRolesList().map((roles) => {
       return {
@@ -44,9 +41,6 @@ export function getInfo(token) {
     rolList.forEach(element => {
       roles.push(element.name)
     })
-    console.log(roles)
-    console.log(rolList)
-    // console.log(getUserinfo())
     const response = {
       data: {
         name: session.getUserinfo().getName(),
@@ -56,7 +50,6 @@ export function getInfo(token) {
         roles: rolList
       }
     }
-    console.log(response)
     return response
   }).catch(error => {
     console.log(error)
