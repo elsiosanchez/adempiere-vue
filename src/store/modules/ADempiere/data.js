@@ -109,7 +109,14 @@ const data = {
         var keyColumn = panel.keyColumn
         data.selection.forEach(itemRow => {
           var recordKeyColumn = itemRow[keyColumn]
-          selectionToServer[recordKeyColumn] = itemRow
+
+          Object.defineProperty(selectionToServer, recordKeyColumn, {
+            value: itemRow,
+            writable: true,
+            configurable: true,
+            enumerable: true
+          })
+          // selectionToServer[recordKeyColumn] = itemRow
         })
       }
       return selectionToServer
