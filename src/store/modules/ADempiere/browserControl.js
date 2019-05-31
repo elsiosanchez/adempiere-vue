@@ -13,16 +13,19 @@ const browserControl = {
   actions: {
     getBrowserSearch({ commit, rootGetters }, browserUuid) {
       return new Promise((resolve, reject) => {
+        var fieldListRange = []
         var fieldList = rootGetters.getPanelParameters(browserUuid, true)
-        // console.log(fieldList)
         if (fieldList.length > 0) {
           var parameters = fieldList.map(fieldItem => {
+            if (fieldItem.isRange) {
+              fieldListRange.push({ columnName: fieldItem.columnName + '_To', value: fieldItem.valueTo })
+            }
             return {
               columnName: fieldItem.columnName,
               value: fieldItem.value
             }
           })
-
+          var finalParameters = parameters.concat(fieldListRange)
           var browser = rootGetters.getBrowser(browserUuid)
           var parsedQuery = parseContext({
             parentUuid: browserUuid,
@@ -40,9 +43,8 @@ const browserControl = {
             query: parsedQuery,
             whereClause: parsedWhereClause,
             orderByClause: browser.orderByClause,
-            parameters: parameters
+            parameters: finalParameters
           }
-          console.log(browserSearchQueryParameters)
           // Add validation compare browserSearchQueryParameters
           getBrowserSearch(browserSearchQueryParameters)
             .then(response => {
@@ -55,7 +57,6 @@ const browserControl = {
                 })
                 return values
               })
-              console.log(record)
               commit('addBrowserSearch', record)
               resolve(record)
             })

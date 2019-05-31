@@ -53,7 +53,20 @@ const processControl = {
         reportExportType = payload.action.reportExportType
       }
       var processResult = {}
-      var parameters = rootGetters.getPanelParameters(payload.action.uuid)
+      var fieldList = rootGetters.getPanelParameters(payload.action.uuid)
+      var fieldListRange = []
+      if (fieldList.length > 0) {
+        var parameters = fieldList.map(fieldItem => {
+          if (fieldItem.isRange) {
+            fieldListRange.push({ columnName: fieldItem.columnName + '_To', value: fieldItem.valueTo })
+          }
+          return {
+            columnName: fieldItem.columnName,
+            value: fieldItem.value
+          }
+        })
+        var finalParameters = parameters.concat(fieldListRange)
+      }
       var processToRun = {
         uuid: payload.action.uuid,
         name: payload.action.name,
@@ -64,7 +77,7 @@ const processControl = {
         showHelp: payload.action.showHelp,
         isDirectPrint: payload.action.isDirectPrint,
         reportExportType: reportExportType,
-        parameters: parameters
+        parameters: finalParameters
       }
       requestProcessActivity({ commit }, process)
         .then(response => {
