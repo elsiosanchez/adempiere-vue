@@ -94,17 +94,9 @@ export default {
   },
   mounted() {
     this.reloadContextMenu()
-    this.subscribe()
   },
   methods: {
     isEmptyValue,
-    subscribe() {
-      this.$store.subscribe(mutation => {
-        if (mutation.type === 'addBrowserSearch') {
-          this.recordParams = mutation.payload
-        }
-      })
-    },
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.browserUuid

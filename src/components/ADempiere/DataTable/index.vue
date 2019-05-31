@@ -1,6 +1,6 @@
 <template>
-  <el-form v-model="tableData" label-position="labelPosition">
-    <div v-show="searchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
+  <el-form :label-position="labelPosition">
+    <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
       <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
       <el-input
         ref="headerSearchInput"
@@ -19,12 +19,12 @@
       highlight-current-row
       style="width: 1100px"
       type="expand"
-      :row-key="fieldKey"
-      :data="tableData"
+      :row-key="keyColumn"
+      :data="getDataDetail"
       @select="handleSelection"
     >
       <el-table-column
-        v-if="tableSelection"
+        v-if="isTableSelection"
         type="selection"
         fixed
       />
@@ -73,39 +73,39 @@ export default {
       type: String,
       default: ''
     },
-    // Show section from search in data
-    searchable: {
+    // Show input section from search in data
+    isSearchable: {
       type: Boolean,
       default: true
     },
     // Show check from selection row
-    tableSelection: {
+    isTableSelection: {
       type: Boolean,
       default: true
-    },
-    panelType: {
-      type: String,
-      default: 'window'
-    },
-    dataRecord: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
     return {
       labelPosition: 'top',
       searchTable: '', // text from search
-      showSearch: false, // show input from search
+      showSearch: false, // show input from search,
+      panel: {},
       fieldList: [],
-      fieldKey: '', // keyColumn
-      tableData: this.dataRecord,
+      keyColumn: '', // column as isKey in fieldList
+      tableData: this.getDataDetail,
+      multipleSelection: this.getDataSelection,
       edit: false
     }
   },
   computed: {
-    getFields() {
-      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    getPanel() {
+      return this.$store.getters.getPanel(this.containerUuid)
+    },
+    getDataDetail() {
+      return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    },
+    getDataSelection() {
+      return this.$store.getters.getDataRecordSelection(this.containerUuid)
     }
   },
   watch: {
@@ -115,18 +115,11 @@ export default {
       } else {
         document.body.removeEventListener('click', this.close)
       }
-    },
-    dataRecord() {
-      this.tableData = this.dataRecord
-    },
-    fieldList() {
-      if (this.fieldList.length > 0) {
-        this.keyColumn()
-      }
     }
   },
   beforeMount() {
-    this.fieldList = this.getFieldList()
+    this.panel = this.generatePanel()
+    this.toggleSelection(this.getDataSelection)
   },
   methods: {
     /**
@@ -149,6 +142,18 @@ export default {
     /**
      * Action table buttons edit and delete records
      */
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
     handleDblClick(row) {
       row.edit = !row.edit
     },
@@ -160,11 +165,10 @@ export default {
       })
     },
     handleSelection(row, index) {
-      console.log(row)
-      console.log(index)
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
-        value: row
+        selection: row,
+        record: this.getDataDetail
       })
     },
     /**
@@ -176,16 +180,10 @@ export default {
       //  Verify for displayed and is active
       return field.isActive && field.isDisplayed && field.isDisplayedFromLogic || isMandatory
     },
-    getFieldList() {
-      var fields = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-      return this.sortFields(fields, 'SortNo')
-    },
-    keyColumn() {
-      var fieldKey = this.fieldList.find((item) => {
-        return item.isKey === true
-      })
-      this.fieldKey = fieldKey.columnName
-      return fieldKey.columnName
+    generatePanel() {
+      var panel = this.getPanel
+      this.keyColumn = panel.keyColumn
+      this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
     },
     /**
      * Sorts the column components according to the value that is obtained from
@@ -206,8 +204,6 @@ export default {
   }
 }
 </script>
-<style>
-</style>
 
 <style lang="scss" scoped>
   .search-detail {
