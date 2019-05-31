@@ -20,7 +20,7 @@
       style="width: 1100px"
       type="expand"
       :row-key="keyColumn"
-      :data="getDataDetail"
+      :data="filterResult()"
       @select="handleSelection"
     >
       <el-table-column
@@ -126,16 +126,20 @@ export default {
      * ASOCIATE WITH SEARCH INPUT
      */
     click() {
-      this.showSearch = !this.showSearch
+      if (this.searchTable.trim().length > 0) {
+        this.showSearch = true
+      } else {
+        this.showSearch = !this.showSearch
+      }
       if (this.showSearch) {
         this.$refs.headerSearchInput && this.$refs.headerSearchInput.focus()
       }
     },
     close() {
-      this.$refs.headerSearchInput && this.$refs.headerSearchInput.blur()
       if (this.searchTable.trim().length > 0) {
         this.showSearch = true
       } else {
+        this.$refs.headerSearchInput && this.$refs.headerSearchInput.blur()
         this.showSearch = false
       }
     },
@@ -170,6 +174,23 @@ export default {
         selection: row,
         record: this.getDataDetail
       })
+    },
+    filterResult() {
+      var data = []
+      data = this.getDataDetail.filter((rowItem) => {
+        if (this.searchTable.trim().length > 0) {
+          let find = false
+          Object.keys(rowItem).forEach(key => {
+            if (String(rowItem[key]).includes(String(this.searchTable))) {
+              find = true
+              return find
+            }
+          })
+          return find
+        }
+        return true
+      })
+      return data
     },
     /**
      * Verify is displayed field in column table
