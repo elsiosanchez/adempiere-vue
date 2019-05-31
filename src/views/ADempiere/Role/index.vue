@@ -31,12 +31,6 @@ export default {
   },
   methods: {
     handleRolesChange() {
-      // this.rol = this.role
-      // if (typeof this.rol !== 'undefined') {
-      //   this.$store.dispatch('SET_rol')
-      //   this.rol = this.$store.gett
-      // }
-      console.log(this.rol)
       this.$router.push({ path: '/documentation/index' })
     }
   }
