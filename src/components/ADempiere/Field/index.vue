@@ -115,7 +115,7 @@ export default {
       return span
     },
     isDisplayed() {
-      var isDisplayed = this.field.isDisplayed && this.field.isShowedFromUser && (this.isMandatory() || this.field.isDisplayedFromLogic)
+      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser)
       //  Verify for displayed and is active
       return this.field.isActive && isDisplayed
     },
