@@ -249,24 +249,24 @@ const panel = {
     /**
      * get field list visible and with values
      */
-    getPanelParameters: (state, getters) => (containerUuid, evaluateEmptyDisplayed = false) => {
+    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false) => {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var emptyFieldDisplayed = false // indicate if exists a field displayed and empty value
+      var isEmptyFieldDisplayed = false // indicate if exists a field displayed and empty value
       const params = fieldList
         .filter(fieldItem => {
-          const mandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
-          const displayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isShowedFromUser && (fieldItem.isDisplayedFromLogic || mandatory)
-          if (!isEmptyValue(fieldItem.value) && displayed) {
+          const isMandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
+          const isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isShowedFromUser && (fieldItem.isDisplayedFromLogic || isMandatory)
+          if (!isEmptyValue(fieldItem.value) && isDisplayed) {
             return true
           }
           // empty value
-          if (displayed && evaluateEmptyDisplayed) {
-            emptyFieldDisplayed = true
+          if (isDisplayed && isEvaluateEmptyDisplayed) {
+            isEmptyFieldDisplayed = true
           }
           return false
         })
 
-      if (evaluateEmptyDisplayed && emptyFieldDisplayed) {
+      if (isEvaluateEmptyDisplayed && isEmptyFieldDisplayed) {
         return []
       }
       return params

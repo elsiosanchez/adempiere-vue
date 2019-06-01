@@ -39,6 +39,9 @@ const browser = {
               var field = convertFieldFromGRPC(fieldItem, additionalAttributes)
               if (query.includes('@' + field.columnName + '@') || whereClause.includes('@' + field.columnName + '@')) {
                 field.isMandatory = true
+                field.isMandatoryFromLogic = true
+                field.isDisplayed = true
+                field.isDisplayedFromLogic = true
                 field.isQueryCriteria = true
                 field.isShowedFromUser = true
               }
