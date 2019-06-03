@@ -37,18 +37,6 @@ export function loadMainMenu() {
         ]
       },
       {
-        path: '/table',
-        component: Layout,
-        children: [
-          {
-            path: 'drag-table',
-            component: () => import('@/views/table/drag-table'),
-            name: 'DragTable',
-            meta: { title: 'dragTable' }
-          }
-        ]
-      },
-      {
         path: '/report-viewer',
         component: Layout,
         hidden: true,

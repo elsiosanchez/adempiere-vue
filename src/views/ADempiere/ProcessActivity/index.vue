@@ -2,12 +2,25 @@
   <div v-if="processListData.length > 0" class="wrapper">
     <h3 class="warn-content text-center">
       Process Activity
+      <!-- {{ processListData }} -->
     </h3>
     <el-table ref="dragTable" :data="processListData" :stripe="true" class="table">
       <template v-for="(item, key) in tableColumns">
         <el-table-column :key="key" :label="item">
           <template slot-scope="scope">
-            <span>{{ scope.row[item] }}</span>
+            <!-- <span>{{ scope.row[item] }}</span> -->
+            <el-popover :key="key" trigger="click" placement="top">
+              <p>Name: {{ scope.row.Name }}</p>
+              <p>Statu: {{ scope.row.Status }}</p>
+              <p>isError: {{ scope.row.Report.isError }}</p>
+              <p>summary: {{ scope.row.Report.summary }}</p>
+              <p>resultTableId: {{ scope.row.Report.resultTableId }}</p>
+              <p>logs: {{ scope.row.Report.logs }}</p>
+              <!-- <p>output: {{ scope.row.Report.output.output }}</p> -->
+              <div slot="reference" class="name-wrapper">
+                <el-button type="text"> {{ scope.row[item] }} </el-button>
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
       </template>
