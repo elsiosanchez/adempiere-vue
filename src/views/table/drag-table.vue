@@ -103,7 +103,7 @@ export default {
       this.total = data.total
       this.listLoading = false
       this.oldList = this.list.map(v => v.id)
-      this.newList = this.oldList.slice()
+      this.newList = this.oldList.splice()
       this.$nextTick(() => {
         this.setSort()
       })
