@@ -14,7 +14,7 @@ const browser = {
     }
   },
   actions: {
-    getBrowserFromServer: ({ commit }, browserUuid) => {
+    getBrowserFromServer: ({ commit, dispatch }, browserUuid) => {
       return new Promise((resolve, reject) => {
         getBrowser(browserUuid)
           .then(response => {
@@ -39,6 +39,9 @@ const browser = {
               var field = convertFieldFromGRPC(fieldItem, additionalAttributes)
               if (query.includes('@' + field.columnName + '@') || whereClause.includes('@' + field.columnName + '@')) {
                 field.isMandatory = true
+                field.isMandatoryFromLogic = true
+                field.isDisplayed = true
+                field.isDisplayedFromLogic = true
                 field.isQueryCriteria = true
                 field.isShowedFromUser = true
               }
@@ -111,7 +114,7 @@ const browser = {
               references: []
             }
 
-            commit('addPanel', newBrowser)
+            dispatch('addPanel', newBrowser)
             commit('addBrowser', newBrowser)
             commit('setMenu', contextMenu)
             resolve(newBrowser)

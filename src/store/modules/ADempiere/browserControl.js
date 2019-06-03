@@ -58,7 +58,7 @@ const browserControl = {
                 return values
               })
 
-              var selection = rootGetters.getDataSelection(browserUuid)
+              var selection = rootGetters.getDataRecordSelection(browserUuid)
               commit('recordSelection', {
                 containerUuid: browserUuid,
                 record: record,

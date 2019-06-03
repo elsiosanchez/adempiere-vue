@@ -16,7 +16,7 @@ const process = {
     }
   },
   actions: {
-    getProcessFromServer: ({ commit }, processUuid) => {
+    getProcessFromServer: ({ commit, dispatch }, processUuid) => {
       return new Promise((resolve, reject) => {
         getProcessFromDictionary(processUuid)
           .then(response => {
@@ -140,7 +140,7 @@ const process = {
               actions: processActions,
               references: []
             }
-            commit('addPanel', panel)
+            dispatch('addPanel', panel)
             commit('addProcess', processDefinition)
             commit('setMenu', contextMenu)
             resolve(processDefinition)

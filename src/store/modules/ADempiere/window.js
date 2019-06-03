@@ -77,7 +77,7 @@ const window = {
           })
       })
     },
-    getTabAndFieldFromServer: ({ commit }, objectParams) => {
+    getTabAndFieldFromServer: ({ commit, dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
         getTab(objectParams.containerUuid)
           .then(response => {
@@ -142,7 +142,7 @@ const window = {
               actions: actions,
               references: []
             }
-            commit('addPanel', panel)
+            dispatch('addPanel', panel)
             commit('setMenu', contextMenu)
             resolve(panel)
           })
