@@ -157,15 +157,17 @@ export default {
           this.$store.subscribeAction({
             after: (action, state) => {
               if (action.type === 'finishProcess') {
-                this.$router.push({
-                  name: 'Report Viewer',
-                  params: {
-                    processUuid: action.payload.processUuid,
-                    instanceUuid: action.payload.instanceUuid,
-                    fileName: action.payload.output.fileName
-                  }
-                })
-                this.$store.dispatch('tagsView/delView', this.$route)
+                if (!action.payload.isError) {
+                  this.$router.push({
+                    name: 'Report Viewer',
+                    params: {
+                      processUuid: action.payload.processUuid,
+                      instanceUuid: action.payload.instanceUuid,
+                      fileName: action.payload.output.fileName
+                    }
+                  })
+                  this.$store.dispatch('tagsView/delView', this.$route)
+                }
               }
             }
           })

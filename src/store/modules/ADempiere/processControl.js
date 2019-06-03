@@ -128,6 +128,24 @@ const processControl = {
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
+          processResult = {
+            instanceUuid: '',
+            processUuid: processToRun.uuid.trim(),
+            isError: true,
+            summary: '',
+            resultTableId: '',
+            logs: [],
+            output: {
+              uuid: '',
+              name: '',
+              description: '',
+              fileName: '',
+              output: '',
+              outputStream: '',
+              reportExportType: ''
+            }
+          }
+          dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
         })
     },
@@ -187,6 +205,8 @@ const processControl = {
         typeof processOutput.instanceUuid !== 'undefined' &&
         typeof processOutput.processUuid !== 'undefined' &&
         typeof processOutput.output.fileName !== 'undefined') {
+        commit('setReportValues', processOutput)
+      } else {
         commit('setReportValues', processOutput)
       }
     },

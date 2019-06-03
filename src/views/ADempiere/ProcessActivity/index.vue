@@ -14,7 +14,7 @@
       <el-table-column label="Report" prop="Report">
         <template slot-scope="scope">
           <router-link
-            v-if="scope.row.Report.instanceUuid!=='undefined'"
+            v-if="scope.row.Report.instanceUuid!=='undefined' && !scope.row.Report.isError"
             :to="{
               name: 'Report Viewer',
               params: {
