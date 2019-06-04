@@ -8,7 +8,7 @@ function Instance() {
   return new Dictionary(
     HOST_GRPC_DICTIONARY,
     getToken(),
-    Cookies.get('lang') || 'en_US'
+    Cookies.get('language') || 'en_US'
   )
 }
 

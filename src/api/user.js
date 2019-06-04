@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import Access from '@adempiere/grpc-access-client'
 import { HOST_GRPC_AUTHENTICATION } from '@/api/ADempiere/constants'
 
@@ -5,7 +6,8 @@ import { HOST_GRPC_AUTHENTICATION } from '@/api/ADempiere/constants'
 function Instance() {
   return new Access(
     HOST_GRPC_AUTHENTICATION,
-    'Version Epale'
+    'Version Epale',
+    Cookies.get('language') || 'en_US'
   )
 }
 // Make login by UserName and password, this function can return user data for show

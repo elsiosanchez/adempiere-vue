@@ -8,7 +8,7 @@ function Instance() {
   return new DataRecord(
     HOST_GRPC_DATA,
     getToken(),
-    Cookies.get('lang') || 'en_US'
+    Cookies.get('language') || 'en_US'
   )
 }
 
