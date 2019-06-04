@@ -97,6 +97,7 @@ function getChildFromAction(menu) {
     selectedComponent = () => import('@/views/ADempiere/Process')
   } else {
     routeIdentifier = actionAttributes.name + '/' + menu.getUuid()
+    selectedComponent = () => import('@/views/ADempiere/Summary')
   }
   var option = {
     path: routeIdentifier,
