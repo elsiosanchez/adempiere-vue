@@ -7,25 +7,23 @@
             <el-button
               v-if="!showPanel"
               :circle="true"
-              class="el-icon-arrow-up button-top btn-base"
+              class="el-icon-arrow-up button-bottom btn-base"
               @click="handleChange()"
             />
           </div>
         </div>
         <el-collapse-transition class="paneltab">
           <div v-show="showPanel">
-            <div v-if="this.$store.state.app.sidebar.opened">
-              <div class="container-table">
-                <div class="show-container">
-                  <el-button
-                    v-if="showPanel"
-                    :circle="true"
-                    class="el-icon-arrow-down button-bottom btn-base"
-                    @click="handleChange()"
-                  />
-                </div>
-                <slot />
+            <div class="container-table">
+              <div class="show-container">
+                <el-button
+                  v-if="showPanel"
+                  :circle="true"
+                  class="el-icon-arrow-down button-top btn-base"
+                  @click="handleChange()"
+                />
               </div>
+              <slot />
             </div>
           </div>
         </el-collapse-transition>
@@ -69,7 +67,7 @@ export default {
   /*
   .root-container {
     border-top: 2px solid #606266;
-    height: 50%;
+    height: 40%;
     margin: 5px;
   }
   */
@@ -96,7 +94,7 @@ export default {
 
   .container:hover .show-button {
     visibility: visible;
-    height: 50%;
+    height: 40%;
   }
 
   .container:hover button {
@@ -120,8 +118,8 @@ export default {
 
   .container-table {
     bottom: 0;
-    height: 50%;
-    width: 100%;
+    height: auto;
+    width: calc(100% + 10px);
     position: fixed;
     position: fixed;
     display: flex;
@@ -151,13 +149,14 @@ export default {
     display: flex;
   }
 
-  .buttonp2 {
+  /* .buttonp2 {
     visibility: visible;
-    transition: all .5s ease-in;
-  }
+
+  } */
   .btn-base {
     width: 40px;
-    right: 50%;
+    right: 40%;
+    transition: all .10s ease-in;
     position: fixed;
     background: #ffffff;
     color: #606266;
@@ -169,24 +168,25 @@ export default {
   .btn-base :hover {
     box-shadow: 5px #5a5a5a;
   }
+  /* Bottom up */
   .button-top {
-    bottom: 0;
-  }
-  .button-bottom {
-    bottom: 50%;
+    bottom: 40%;
     z-index: 2;
   }
+  /* Bottom button */
+  .button-bottom {
+    bottom: 0%;
+  }
 
-  .transi-box-menu {
+  /* .transi-box-menu {
     bottom: 0;
-    width: calc(100% - 170px);
     position: fixed;
     border-radius: 4px;
     background-color: #FFF;
     text-align: center;
     color: #FFF;
     box-sizing: border-box;
-    height: 50%;
+    height: 40%;
   }
 
   .transi-box-menu-menu-hiden {
@@ -198,17 +198,8 @@ export default {
     background-color: #FFF;
     text-align: center;
     color: #FFF;
-    height: 50%;
+    height: 40%;
     box-sizing: border-box;
     margin-right: 2px;
-  }
-
-  .el-row {
-    margin-bottom: 20px;
-  }
-
-  .el-col {
-    border-radius: 4px;
-    left: 150px;
-  }
+  } */
 </style>

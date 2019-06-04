@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="currentTab" type="border-card" @tab-click="handleClick">
+  <el-tabs v-model="currentTab" type="border-card" class="paneltabchildren" @tab-click="handleClick">
     <template v-for="(item, key) in tabsList">
       <el-tab-pane
         :key="key"
@@ -85,9 +85,16 @@ export default {
 }
 </script>
 
-<style scoped >
-  .paneltab {
-    border: 1px solid blue;
+<style scoped>
+  .paneltabchildren {
+    /* border: 1px solid blue; */
+    bottom: 0;
+    height: auto;
+    width: 100%;
+    position: fixed;
+    position: fixed;
+    color: #424242;
+    background-color: #fff;
   }
 
   .el-row {

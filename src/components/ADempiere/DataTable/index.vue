@@ -13,21 +13,19 @@
     <el-table
       ref="multipleTable"
       fit
+      fixed
       max-height="250"
-      border
       stripe
       highlight-current-row
-      style="width: 1100px"
-      type="expand"
       :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"
     >
       <el-table-column
         v-if="isTableSelection"
+        fixed
         type="selection"
         :prop="keyColumn"
-        fixed
       />
       <template v-for="(item, key) in fieldList">
         <el-table-column
@@ -36,6 +34,7 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
+          width="180"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
@@ -219,26 +218,6 @@ export default {
       var isDisplayed = field.isDisplayed && field.isDisplayedFromLogic
       //  Verify for displayed and is active
       return field.isActive && isDisplayed
-    },
-    /**
-     * Get the tab object with all its attributes as well as the fields it contains
-     */
-    getPanel() {
-      var panel = this.getterPanel
-      if (typeof panel === 'undefined' || panel.fieldList.length === 0) {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType.trim()
-        }).then(response => {
-          this.panel = response
-          this.generatePanel()
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
-        })
-      } else {
-        this.panel = panel
-        this.generatePanel()
-      }
     },
     /**
      * Get the tab object with all its attributes as well as the fields it contains
