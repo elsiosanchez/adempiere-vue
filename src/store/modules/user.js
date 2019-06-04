@@ -101,19 +101,20 @@ const actions = {
 
   // dynamically modify permissions
   changeRoles({ commit, dispatch }, role) {
-    return new Promise(async resolve => {
-      const token = role
+    commit('SET_CURRENTROLE', role)
+    // return new Promise(async resolve => {
+    //   const token = role
+    //   commit('SET_TOKEN', token)
+    //   // commit('SET_CURRENTROLE',)
+    //   setToken(token)
+    //   // const { roles } = await dispatch('getInfo')
 
-      commit('SET_CURRENTROLE', token)
-      setToken(token)
-      // const { roles } = await dispatch('getInfo')
+    //   // // // generate accessible routes map based on   roles
+    //   // const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
 
-      // // // generate accessible routes map based on   roles
-      // const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-
-      // // // dynamically add accessible routes
-      // router.addRoutes(accessRoutes)
-    })
+    //   // // // dynamically add accessible routes
+    //   // router.addRoutes(accessRoutes)
+    // })
   }
 }
 
