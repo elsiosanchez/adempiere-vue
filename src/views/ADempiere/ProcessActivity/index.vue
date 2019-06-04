@@ -2,12 +2,25 @@
   <div v-if="processListData.length > 0" class="wrapper">
     <h3 class="warn-content text-center">
       Process Activity
+      <!-- {{ processListData }} -->
     </h3>
-    <el-table :data="processListData" :stripe="true" class="table">
+    <el-table ref="dragTable" :data="processListData" :stripe="true" class="table">
       <template v-for="(item, key) in tableColumns">
         <el-table-column :key="key" :label="item">
           <template slot-scope="scope">
-            <span>{{ scope.row[item] }}</span>
+            <!-- <span>{{ scope.row[item] }}</span> -->
+            <el-popover :key="key" trigger="click" placement="top">
+              <p>Name: {{ scope.row.Name }}</p>
+              <p>Statu: {{ scope.row.Status }}</p>
+              <p>isError: {{ scope.row.Report.isError }}</p>
+              <p>summary: {{ scope.row.Report.summary }}</p>
+              <p>resultTableId: {{ scope.row.Report.resultTableId }}</p>
+              <p>logs: {{ scope.row.Report.logs }}</p>
+              <!-- <p>output: {{ scope.row.Report.output.output }}</p> -->
+              <div slot="reference" class="name-wrapper">
+                <el-button type="text"> {{ scope.row[item] }} </el-button>
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
       </template>
@@ -45,6 +58,7 @@
 </template>
 <script>
 import errGif from '@/assets/401_images/401.gif'
+import Sortable from 'sortablejs'
 
 export default {
   name: 'ProcessActivity',
@@ -53,6 +67,9 @@ export default {
       errGif: errGif + '?' + +new Date(),
       tableColumns: ['Name', 'Description', 'Action', 'Status'],
       showDialog: false,
+      sortable: null,
+      oldprocessListData: [],
+      newprocessListData: [],
       status: ''
     }
   },
@@ -103,8 +120,35 @@ export default {
   },
   created() {
     this.controlError()
+    this.getList()
   },
   methods: {
+    async getList() {
+      this.oldprocessListData = this.processListData.map(v => v.id)
+      this.newprocessListData = this.oldprocessListData.slice()
+      this.$nextTick(() => {
+        this.setSort()
+      })
+    },
+    setSort() {
+      const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+      this.sortable = Sortable.create(el, {
+        ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
+        setData: function(dataTransfer) {
+          // to avoid Firefox bug
+          // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+          dataTransfer.setData('Text', '')
+        },
+        onEnd: evt => {
+          const targetRow = this.processListData.splice(evt.oldIndex, 1)[0]
+          this.processListData.splice(evt.newIndex, 0, targetRow)
+
+          // for show the changes, you can delete in you code
+          const tempIndex = this.newprocessListData.splice(evt.oldIndex, 1)[0]
+          this.newprocessListData.splice(evt.newIndex, 0, tempIndex)
+        }
+      })
+    },
     controlError() {
       this.$store.subscribeAction({
         before: (action, state) => {
@@ -117,9 +161,9 @@ export default {
         },
         after: (action, state) => {
           if (action.type === 'startProcess') {
-            this.$notify.error({
-              title: 'Error',
-              message: 'Error Processing ' + action.type
+            this.$notify.info({
+              title: 'Info',
+              message: ' Processing ' + action.type
             })
           }
         }
