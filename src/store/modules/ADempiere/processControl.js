@@ -235,9 +235,13 @@ const processControl = {
       var processList = state.process.map((item) => {
         if (!item.isReport) {
           process = rootGetters.getProcess(item.uuid)
+          return {
+            ...process,
+            action: 'Run Process'
+          }
         } else {
           process = rootGetters.getProcess(item.processUuid)
-          if (typeof process !== undefined) {
+          if (typeof process !== 'undefined') {
             return {
               ...process,
               action: item.action,
