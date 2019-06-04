@@ -41,11 +41,6 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Drag">
-        <template slot-scope="{}">
-          <svg-icon class="drag-handler" icon-class="drag" />
-        </template>
-      </el-table-column>
     </el-table>
   </div>
   <div v-else class="errPage-container">
@@ -166,9 +161,9 @@ export default {
         },
         after: (action, state) => {
           if (action.type === 'startProcess') {
-            this.$notify.error({
-              title: 'Error',
-              message: 'Error Processing ' + action.type
+            this.$notify.info({
+              title: 'Info',
+              message: ' Processing ' + action.type
             })
           }
         }
