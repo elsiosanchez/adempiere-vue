@@ -86,8 +86,9 @@ const processControl = {
           console.log(server)
           commit('addStartedProcess', server)
         })
-      // console.log(processToRun)
-      commit('addStartedProcess', processToRun)
+      if (!processToRun.isReport) {
+        commit('addStartedProcess', processToRun)
+      }
       var browserToSearch = {
         uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
         parameters: [
@@ -109,9 +110,11 @@ const processControl = {
       runProcess(processToRun)
         .then(response => {
           processResult = {
+            action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
             processUuid: processToRun.uuid.trim(),
             isError: response.getIserror(),
+            isReport: processToRun.isReport,
             summary: response.getSummary(),
             resultTableId: response.getResulttableid(),
             logs: response.getLogsList(),
@@ -206,6 +209,7 @@ const processControl = {
         typeof processOutput.processUuid !== 'undefined' &&
         typeof processOutput.output.fileName !== 'undefined') {
         commit('setReportValues', processOutput)
+        commit('addStartedProcess', processOutput)
       } else {
         commit('setReportValues', processOutput)
       }
@@ -226,17 +230,22 @@ const processControl = {
       )
       return process
     },
-    getRunningProcess: (state, rootGetters) => (processUuid) => {
+    getRunningProcess: (state, rootGetters) => {
+      var process
       var processList = state.process.map((item) => {
-        var process = rootGetters.getProcess(item.uuid)
-        if (typeof process !== undefined) {
-          return {
-            ...process,
-            action: item.name,
-            help: item.help,
-            output: item.output,
-            logs: item.logs,
-            summary: item.summary
+        if (!item.isReport) {
+          process = rootGetters.getProcess(item.uuid)
+        } else {
+          process = rootGetters.getProcess(item.processUuid)
+          if (typeof process !== undefined) {
+            return {
+              ...process,
+              action: item.action,
+              instanceUuid: item.instanceUuid,
+              output: item.output,
+              logs: item.logs,
+              summary: item.summary
+            }
           }
         }
       })

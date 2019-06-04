@@ -58,10 +58,10 @@ export default {
   },
   computed: {
     processRunnings() {
-      return this.$store.getters.getRunningProcess()
+      return this.$store.getters.getRunningProcess
     },
     processListData() {
-      var processListData = this.$store.getters.getRunningProcess().map((item) => {
+      var processListData = this.processRunnings.map((item) => {
         var reportInfo = {
           instanceUuid: 'undefined',
           processUuid: item.uuid,
@@ -83,7 +83,7 @@ export default {
         }
         var status = 'Processing'
         if (item.isReport) {
-          reportInfo = this.$store.getters.getReportInfo(item.uuid)
+          reportInfo = this.$store.getters.getCachedReport(item.instanceUuid)
           if (reportInfo.isError) {
             status = 'Error'
           } else {
