@@ -147,7 +147,12 @@ export default {
       if (action.type === 'action') {
         this.$notify.info({
           title: 'Info',
-          message: 'Processing ' + action.name
+          message: 'Processing ' + action.action
+        })
+        this.$notify.info({
+          title: 'Info',
+          message: 'process finished  ' + action.name,
+          position: 'bottom-right'
         })
         this.$store.dispatch(action.action, {
           action: action,
@@ -171,6 +176,10 @@ export default {
           })
         }
       } else if (action.type === 'process') {
+        this.$notify.info({
+          title: 'Info',
+          message: 'process finished ' + action.name
+        })
         this.showModal(action)
       }
     }

@@ -100,31 +100,6 @@ export default {
       })
       return processListData
     }
-  },
-  created() {
-    this.controlError()
-  },
-  methods: {
-    controlError() {
-      this.$store.subscribeAction({
-        before: (action, state) => {
-          if (action.type === 'startProcess') {
-            this.$notify.info({
-              title: 'Info',
-              message: 'Processing ' + action.type
-            })
-          }
-        },
-        after: (action, state) => {
-          if (action.type === 'startProcess') {
-            this.$notify.error({
-              title: 'Error',
-              message: 'Error Processing ' + action.type
-            })
-          }
-        }
-      })
-    }
   }
 }
 </script>

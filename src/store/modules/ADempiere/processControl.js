@@ -12,11 +12,15 @@ const processControl = {
     serveList: [],
     metadata: {},
     process: [],
+    notify: [],
     sessionProcess: []
   },
   mutations: {
     addStartedProcess(state, payload) {
       state.process.push(payload)
+    },
+    addNotifyProcess(state, payload) {
+      state.notify.push(payload)
     },
     addServerProcess(state, payload) {
       state.serveList.push(payload)
@@ -126,6 +130,7 @@ const processControl = {
             }
           }
           dispatch('finishProcess', processResult)
+          commit('addNotifyProcess', processResult)
         })
         .catch(error => {
           console.log('Error running the process', error)
@@ -235,7 +240,11 @@ const processControl = {
       var reportInfo = state.reportList.find(
         item => item.processUuid === procesUuid
       )
+      console.log(reportInfo)
       return reportInfo
+    },
+    getInfo: (state) => {
+      return state.notify
     },
     getSessionProcess: (state) => (instanceUuid) => {
       var sessionProcess = state.sessionProcess.find(
