@@ -1,30 +1,28 @@
 <template>
-  <div>
-    <div v-if="loading">
-      <sticky class="sticky-submenu">
-        <context-menu />
-      </sticky>
-      <el-row :gutter="20">
-        <el-col :span="24">
-          <h2 v-show="checkValue(processMetadata.description)" class="warn-content text-center">
-            <div>{{ processMetadata.description }}  </div>
-          </h2>
-          <code v-show="checkValue(processMetadata.help)" v-html="processMetadata.help" />
-          <panel
-            :position-tab="processMetadata.accesLevel"
-            :container-uuid="metadataProcessUuid"
-            :metadata-tab="processMetadata"
-            :is-edit="isEdit"
-            panel-type="report"
-          />
-        </el-col>
-      </el-row>
-    </div>
-    <div v-else style="padding: 20px 100px">
-      <h3>
-        Loading Report...
-      </h3>
-    </div>
+  <div v-if="isLoading">
+    <sticky class="sticky-submenu">
+      <context-menu />
+    </sticky>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <h2 v-show="checkValue(processMetadata.description)" class="warn-content text-center">
+          <div>{{ processMetadata.description }}  </div>
+        </h2>
+        <code v-show="checkValue(processMetadata.help)" v-html="processMetadata.help" />
+        <panel
+          :position-tab="processMetadata.accesLevel"
+          :container-uuid="metadataProcessUuid"
+          :metadata-tab="processMetadata"
+          :is-edit="isEdit"
+          panel-type="report"
+        />
+      </el-col>
+    </el-row>
+  </div>
+  <div v-else style="padding: 20px 100px">
+    <h3>
+      Loading Report...
+    </h3>
   </div>
 </template>
 
@@ -56,7 +54,7 @@ export default {
     return {
       processMetadata: {},
       processUUID: this.$route.meta.uuid,
-      loading: false,
+      isLoading: false,
       uuidRecord: this.$route.params.uuidRecord
     }
   },
@@ -74,14 +72,14 @@ export default {
         this.$store.dispatch('getProcessAPI', uuid)
           .then(response => {
             this.processMetadata = response
-            this.loading = true
+            this.isLoading = true
           })
           .catch(err => {
-            this.loading = true
+            this.isLoading = true
             console.log('Dictionary Process - Error ' + err.code + ': ' + err.message)
           })
       } else {
-        this.loading = true
+        this.isLoading = true
         this.processMetadata = process
       }
     },

@@ -1,11 +1,11 @@
 <template>
-  <div v-if="loading">
+  <div v-if="isLoading">
     <context-menu class="sticky-submenu" />
     <modal
-      :visible="visibleDialog"
+      :visible="isVisisbleDialog"
       :metadata="processMetadata"
       :parent-uuid="browserUuid"
-      @closeDialog="visibleDialog=true"
+      @closeDialog="isVisisbleDialog=true"
     />
     <el-row :gutter="20">
       <el-col :span="24">
@@ -64,12 +64,10 @@ export default {
   data() {
     return {
       browserMetadata: {},
-      showPanel: true,
-      ocultar: true,
       browserUuid: this.$route.meta.uuid,
-      loading: false,
+      isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
-      visibleDialog: this.$store.state.processControl.visibleDialog,
+      isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
       panelType: 'browser'
     }
@@ -78,7 +76,7 @@ export default {
     this.$store.subscribe(mutation => {
       if (mutation.type === 'setShowDialog') {
         if (typeof mutation.payload !== 'undefined') {
-          this.visibleDialog = true
+          this.isVisisbleDialog = true
           this.processMetadata = mutation.payload
         }
       }
@@ -109,14 +107,14 @@ export default {
         this.$store.dispatch('getBrowserFromServer', uuid)
           .then(response => {
             this.browserMetadata = response
-            this.loading = true
+            this.isLoading = true
           })
           .catch(err => {
-            this.loading = true
+            this.isLoading = true
             console.log('Dictionary browse - Error ' + err.code + ': ' + err.message)
           })
       } else {
-        this.loading = true
+        this.isLoading = true
         this.browserMetadata = browser
       }
     }

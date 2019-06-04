@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading">
+  <div v-if="isLoading">
     <context-menu :report="processMetadata.isReport" class="sticky-submenu" />
     <el-row :gutter="20">
       <el-col :span="24">
@@ -47,7 +47,7 @@ export default {
     return {
       processMetadata: {},
       processUuid: this.$route.meta.uuid,
-      loading: false,
+      isLoading: false,
       recordUuid: this.$route.params.uuidRecord,
       panelType: 'process'
     }
@@ -68,13 +68,13 @@ export default {
           type: this.panelType
         }).then(response => {
           this.processMetadata = response
-          this.loading = true
+          this.isLoading = true
         }).catch(err => {
-          this.loading = true
+          this.isLoading = true
           console.log('Dictionary Process - Error ' + err.code + ': ' + err.message)
         })
       } else {
-        this.loading = true
+        this.isLoading = true
         this.processMetadata = process
       }
     }

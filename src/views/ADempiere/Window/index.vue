@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading">
+  <div v-if="isLoading">
     <el-row :gutter="20">
       <tab
         :window-uuid="windowUuid"
@@ -8,10 +8,10 @@
       />
       <submenu class="sticky-submenu" />
       <modal
-        :visible="visibleDialog"
+        :visible="isVisibleDialog"
         :metadata="processMetadata"
         :parent-uuid="windowUuid"
-        @closeDialog="visibleDialog=false"
+        @closeDialog="isVisibleDialog=false"
       />
       <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
         <tab-children
@@ -56,13 +56,10 @@ export default {
     return {
       windowMetadata: {},
       windowUuid: this.$route.meta.uuid,
-      loading: false,
-      showPanel: true,
+      isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
-      show3: true,
-      visibleDialog: this.$store.state.processControl.visibleDialog,
-      processMetadata: {},
-      isMobile: true
+      isVisibleDialog: this.$store.state.processControl.visibleDialog,
+      processMetadata: {}
     }
   },
   computed: {
@@ -74,13 +71,10 @@ export default {
     }
   },
   beforeCreate() {
-    if (this.$store.state.app.device === 'mobile') {
-      this.isMobile = !this.isMobile
-    }
     this.$store.subscribe(mutation => {
       if (mutation.type === 'setShowDialog') {
         if (typeof mutation.payload !== 'undefined') {
-          this.visibleDialog = true
+          this.isVisibleDialog = true
           this.processMetadata = mutation.payload
         }
       }
@@ -99,14 +93,14 @@ export default {
         this.$store.dispatch('getWindowFromServer', uuid)
           .then(response => {
             this.windowMetadata = response
-            this.loading = true
+            this.isLoading = true
           })
           .catch(err => {
-            this.loading = true
+            this.isLoading = true
             console.warn('Dictionary Window - Error ' + err.code + ': ' + err.message)
           })
       } else {
-        this.loading = true
+        this.isLoading = true
         this.windowMetadata = window
       }
     }

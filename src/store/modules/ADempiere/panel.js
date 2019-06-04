@@ -208,28 +208,20 @@ const panel = {
     getPanel: (state) => (containerUuid) => {
       return state.panel.find(item => item.uuid === containerUuid)
     },
-    getFieldsListFromPanel: (state) => (containerUuid) => {
-      var panel = state.panel.find(
-        item => item.uuid === containerUuid
-      )
+    getFieldsListFromPanel: (state, getters) => (containerUuid) => {
+      var panel = getters.getPanel(containerUuid)
       if (typeof panel === 'undefined') {
         return []
       }
       return panel.fieldList
     },
-    getFieldFromColumnName: (state) => (columnName, containerUuid) => {
-      var panel = state.panel.find(item => item.uuid === containerUuid)
-      if (typeof panel === 'undefined') {
-        return panel
-      }
-      return panel.fieldList.find(field => field.columnName === columnName)
+    getFieldFromColumnName: (state, getters) => (columnName, containerUuid) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      return fieldList.find(field => field.columnName === columnName)
     },
-    getFieldFromUuid: (state) => (uuid, containerUuid) => {
-      var panel = state.panel.find(item => item.uuid === containerUuid)
-      if (typeof panel === 'undefined') {
-        return panel
-      }
-      return panel.fieldList.find(field => field.uuid === uuid)
+    getFieldFromUuid: (state, getters) => (uuid, containerUuid) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      return fieldList.find(field => field.uuid === uuid)
     },
     getChangedFieldsList: (state) => (containerUuid) => {
       var panel = state.panel.find(
@@ -255,7 +247,7 @@ const panel = {
       const params = fieldList
         .filter(fieldItem => {
           const isMandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
-          const isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isShowedFromUser && (fieldItem.isDisplayedFromLogic || isMandatory)
+          const isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic && (fieldItem.isShowedFromUser || isMandatory)
           if (!isEmptyValue(fieldItem.value) && isDisplayed) {
             return true
           }

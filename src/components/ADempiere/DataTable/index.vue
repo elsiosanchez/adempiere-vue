@@ -40,7 +40,7 @@
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
               <field
-                :label="false"
+                :is-show-label="false"
                 :metadata-field="item"
                 :recorddata-fields="scope.row[item.columnName]"
                 size="small"

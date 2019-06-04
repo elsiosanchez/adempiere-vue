@@ -1,15 +1,27 @@
 <template>
-  <el-dialog :title="metadata.name" :visible="visibleDialog" :show-close="false" :width="width+'%'">
+  <el-dialog
+    :title="metadata.name"
+    :visible="isVisibleDialog"
+    :show-close="false"
+    :width="width+'%'"
+    :close-on-press-escape="true"
+    :close-on-click-modal="true"
+  >
     {{ metadata.description }}
     <panel
       :parent-uuid="parentUuid"
       :container-uuid="metadata.uuid"
       :metadata="metadata"
+      :is-view="false"
       :panel-type="'process'"
     />
     <span slot="footer" class="dialog-footer">
-      <el-button @click="closeDialog">Cancel</el-button>
-      <el-button type="primary" @click="runAction(metadata)">Confirm</el-button>
+      <el-button @click="closeDialog">
+        Cancel
+      </el-button>
+      <el-button type="primary" @click="runAction(metadata)">
+        Confirm
+      </el-button>
     </span>
   </el-dialog>
 </template>
@@ -53,7 +65,7 @@ export default {
       }
       return 50
     },
-    visibleDialog() {
+    isVisibleDialog() {
       return this.$store.state.processControl.visibleDialog
     }
   },
