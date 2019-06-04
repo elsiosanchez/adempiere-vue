@@ -86,8 +86,9 @@ const processControl = {
           console.log(server)
           commit('addStartedProcess', server)
         })
-      // console.log(processToRun)
-      commit('addStartedProcess', processToRun)
+      if (!processToRun.isReport) {
+        commit('addStartedProcess', processToRun)
+      }
       var browserToSearch = {
         uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
         parameters: [
@@ -109,9 +110,11 @@ const processControl = {
       runProcess(processToRun)
         .then(response => {
           processResult = {
+            action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
             processUuid: processToRun.uuid.trim(),
             isError: response.getIserror(),
+            isReport: processToRun.isReport,
             summary: response.getSummary(),
             resultTableId: response.getResulttableid(),
             logs: response.getLogsList(),
@@ -128,6 +131,24 @@ const processControl = {
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
+          processResult = {
+            instanceUuid: '',
+            processUuid: processToRun.uuid.trim(),
+            isError: true,
+            summary: '',
+            resultTableId: '',
+            logs: [],
+            output: {
+              uuid: '',
+              name: '',
+              description: '',
+              fileName: '',
+              output: '',
+              outputStream: '',
+              reportExportType: ''
+            }
+          }
+          dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
         })
     },
@@ -188,6 +209,9 @@ const processControl = {
         typeof processOutput.processUuid !== 'undefined' &&
         typeof processOutput.output.fileName !== 'undefined') {
         commit('setReportValues', processOutput)
+        commit('addStartedProcess', processOutput)
+      } else {
+        commit('setReportValues', processOutput)
       }
     },
     changeFormatReport({ commit }, reportFormat) {
@@ -206,17 +230,26 @@ const processControl = {
       )
       return process
     },
-    getRunningProcess: (state, rootGetters) => (processUuid) => {
+    getRunningProcess: (state, rootGetters) => {
+      var process
       var processList = state.process.map((item) => {
-        var process = rootGetters.getProcess(item.uuid)
-        if (typeof process !== undefined) {
+        if (!item.isReport) {
+          process = rootGetters.getProcess(item.uuid)
           return {
             ...process,
-            action: item.name,
-            help: item.help,
-            output: item.output,
-            logs: item.logs,
-            summary: item.summary
+            action: 'Run Process'
+          }
+        } else {
+          process = rootGetters.getProcess(item.processUuid)
+          if (typeof process !== 'undefined') {
+            return {
+              ...process,
+              action: item.action,
+              instanceUuid: item.instanceUuid,
+              output: item.output,
+              logs: item.logs,
+              summary: item.summary
+            }
           }
         }
       })

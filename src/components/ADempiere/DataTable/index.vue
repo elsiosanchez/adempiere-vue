@@ -240,26 +240,6 @@ export default {
         this.generatePanel()
       }
     },
-    /**
-     * Get the tab object with all its attributes as well as the fields it contains
-     */
-    getPanel() {
-      var panel = this.getterPanel
-      if (typeof panel === 'undefined' || panel.fieldList.length === 0) {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType.trim()
-        }).then(response => {
-          this.panel = response
-          this.generatePanel()
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
-        })
-      } else {
-        this.panel = panel
-        this.generatePanel()
-      }
-    },
     generatePanel() {
       var panel = this.panel
       this.keyColumn = panel.keyColumn
