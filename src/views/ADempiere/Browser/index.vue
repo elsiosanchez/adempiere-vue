@@ -24,7 +24,6 @@
           <data-table
             :container-uuid="browserUuid"
             :panel-type="panelType"
-            :data-record="recordParams"
           />
         </detail>
       </el-col>
@@ -72,8 +71,7 @@ export default {
       uuidRecord: this.$route.params.uuidRecord,
       visibleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
-      panelType: 'browser',
-      recordParams: []
+      panelType: 'browser'
     }
   },
   beforeCreate() {

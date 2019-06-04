@@ -10,13 +10,9 @@
         :name="String(key)"
         :lazy="true"
       >
-        <panel
+        <data-table
           :parent-uuid="windowUuid"
           :container-uuid="item.uuid"
-          :metadata="item"
-          :table-name="item.tableName"
-          :group="item.tabGroup"
-          :is-edit="isEdit"
           :panel-type="panelType"
         />
       </el-tab-pane>
@@ -25,12 +21,12 @@
 </template>
 
 <script>
-import Panel from '@/components/ADempiere/Panel'
+import DataTable from '@/components/ADempiere/DataTable'
 
 export default {
   name: 'Tab',
   components: {
-    Panel
+    DataTable
   },
   props: {
     windowUuid: {

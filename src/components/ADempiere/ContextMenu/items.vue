@@ -16,7 +16,6 @@
 export default {
   name: 'Item',
   props: {
-    // route object
     item: {
       type: Object,
       required: true

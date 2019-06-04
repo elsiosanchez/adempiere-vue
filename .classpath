@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="node_modules/JSV/jsdoc-toolkit/java/src"/>
-	<classpathentry kind="lib" path="node_modules/JSV/jsdoc-toolkit/java/classes/js.jar"/>
-	<classpathentry kind="lib" path="node_modules/JSV/jsdoc-toolkit/jsdebug.jar"/>
-	<classpathentry kind="lib" path="node_modules/JSV/jsdoc-toolkit/jsrun.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

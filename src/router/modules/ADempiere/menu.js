@@ -24,7 +24,20 @@ export function loadMainMenu() {
             meta: { title: 'ProcessActivity', icon: 'skill', noCache: true }
           }
         ]
-      }, {
+      },
+      {
+        path: '/Role',
+        component: Layout,
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/views/ADempiere/Role'),
+            name: 'Role',
+            meta: { title: 'Role', icon: 'lock', noCache: true }
+          }
+        ]
+      },
+      {
         path: '/SearchWindow',
         component: Layout,
         children: [
@@ -84,19 +97,20 @@ function getChildFromAction(menu) {
     selectedComponent = () => import('@/views/ADempiere/Process')
   } else {
     routeIdentifier = actionAttributes.name + '/' + menu.getUuid()
+    selectedComponent = () => import('@/views/ADempiere/Summary')
   }
   var option = {
     path: routeIdentifier,
     component: selectedComponent,
     name: menu.getUuid(),
     hidden: actionAttributes.hidden,
-    alwaysShow: false,
     meta: {
       title: menu.getName(),
       uuid: menu.getReferenceuuid(),
       type: actionAttributes.name,
       parentUuid: menu.getParentuuid(),
       icon: actionAttributes.icon,
+      alwaysShow: true,
       noCache: false
     }
   }
