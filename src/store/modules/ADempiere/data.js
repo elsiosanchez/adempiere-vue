@@ -54,23 +54,27 @@ const data = {
           })
       })
     },
-    getObjectListFromCriteria: ({ dispatch }, objectParams) => {
+    getObjectListFromCriteria: ({ commit, dispatch, rootGetters }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams.table, objectParams.criteria)
           .then(response => {
-            var recordList = response.getRecordsList().map((recordItem) => {
-              var values = []
-              recordItem.getValuesMap().forEach((value, key) => {
-                values.push({ key: key, value: convertValueFromGRPC(value) })
+            const recordList = response.getRecordsList()
+            var record = recordList.map(itemRecord => {
+              const map = itemRecord.getValuesMap()
+              var values = {}
+              map.forEach((value, key) => {
+                values[key] = convertValueFromGRPC(value)
               })
-              return {
-                id: recordItem.getId(),
-                uuid: recordItem.getUuid(),
-                tableName: recordItem.getTablename(),
-                valuesMap: values
-              }
+              return values
             })
-            resolve(recordList)
+
+            var selection = rootGetters.getDataRecordSelection(objectParams.containerUuid)
+            commit('recordSelection', {
+              containerUuid: objectParams.containerUuid,
+              record: record,
+              selection: selection
+            })
+            resolve(record)
           })
           .catch(error => {
             console.log('Error getting data with criteria' + error)
@@ -101,6 +105,21 @@ const data = {
       var selection = getters.getDataRecordAndSelection(containerUuid)
       return selection.selection
     },
+    /**
+     * Getter converter selection data record in object format
+     * {
+     *    keyColumnRecord: {
+     *      columname: value,
+     *      columname: value,
+     *      columname: value
+     *    },
+     *    keyColumnRecord: {
+     *      columname: value,
+     *      columname: value,
+     *      columname: value
+     *    }
+     * }
+     */
     getSelectionToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
       var selectionToServer = {}
       var data = getters.getDataRecordAndSelection(containerUuid)

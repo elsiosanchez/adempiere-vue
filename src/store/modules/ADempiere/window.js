@@ -14,7 +14,7 @@ const window = {
     }
   },
   actions: {
-    getWindowFromServer: ({ commit }, windowUuid) => {
+    getWindowFromServer: ({ commit, dispatch }, windowUuid) => {
       return new Promise((resolve, reject) => {
         gettingWindow(windowUuid)
           .then(response => {
@@ -55,6 +55,11 @@ const window = {
                 parentTabs.push(tab)
               } else {
                 childrenTabs.push(tab)
+                dispatch('getObjectListFromCriteria', {
+                  containerUuid: tab.uuid,
+                  table: tab.tableName,
+                  criteria: "IsActive = 'Y'"
+                })
               }
               allTabs.push(tab)
             })

@@ -14,26 +14,10 @@
         @closeDialog="visibleDialog=false"
       />
       <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-        <el-tabs type="border-card" class="transi-box2">
-          <template v-for="(item, key) in windowMetadata.tabsListChildren">
-            <el-tab-pane
-              :key="key"
-              :label="item.name"
-              :lazy="true"
-              class="el-tabs__nav-scroll"
-            >
-              <data-table
-                :parent-uuid="windowMetadata.uuid"
-                :container-uuid="item.uuid"
-                :metadata="item"
-                :position-tab="key"
-                :table-name="item.tableName"
-                :group="item.tabGroup"
-                :searchable="false"
-              />
-            </el-tab-pane>
-          </template>
-        </el-tabs>
+        <tab-children
+          :window-uuid="windowUuid"
+          :tabs-list="windowMetadata.tabsListChildren"
+        />
       </detail>
     </el-row>
   </div>
@@ -46,8 +30,8 @@
 
 <script>
 import Tab from '@/components/ADempiere/Tab'
+import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 import Detail from '@/components/ADempiere/Panel/detail'
-import DataTable from '@/components/ADempiere/DataTable'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import Submenu from '@/components/ADempiere/ContextMenu'
@@ -57,9 +41,9 @@ export default {
   name: 'Window',
   components: {
     Tab,
+    TabChildren,
     Detail,
     Submenu,
-    DataTable,
     Modal
   },
   props: {

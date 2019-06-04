@@ -73,6 +73,10 @@ export default {
       type: String,
       default: ''
     },
+    panelType: {
+      type: String,
+      default: 'window'
+    },
     // Show input section from search in data
     isSearchable: {
       type: Boolean,
@@ -98,7 +102,7 @@ export default {
     }
   },
   computed: {
-    getPanel() {
+    getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
     getDataDetail() {
@@ -117,8 +121,9 @@ export default {
       }
     }
   },
-  beforeMount() {
-    this.generatePanel()
+  created() {
+    // get tab with uuid
+    this.getPanel()
   },
   mounted() {
     this.toggleSelection(this.getDataSelection)
@@ -215,11 +220,33 @@ export default {
       //  Verify for displayed and is active
       return field.isActive && field.isDisplayed && field.isDisplayedFromLogic || isMandatory
     },
+    /**
+     * Get the tab object with all its attributes as well as the fields it contains
+     */
+    getPanel() {
+      var panel = this.getterPanel
+      if (typeof panel === 'undefined' || panel.fieldList.length === 0) {
+        this.$store.dispatch('getPanelAndFields', {
+          containerUuid: this.containerUuid,
+          type: this.panelType.trim()
+        }).then(response => {
+          this.panel = response
+          this.generatePanel()
+        }).catch(err => {
+          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        })
+      } else {
+        this.panel = panel
+        this.generatePanel()
+      }
+    },
     generatePanel() {
-      var panel = this.getPanel
-      this.panel = panel
+      var panel = this.panel
       this.keyColumn = panel.keyColumn
       this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
+      if (this.isEdit && this.panelType === 'window') {
+        this.getData(this.tableName)
+      }
     },
     /**
      * Sorts the column components according to the value that is obtained from
