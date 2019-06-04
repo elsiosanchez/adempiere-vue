@@ -13,19 +13,8 @@ const browserControl = {
   actions: {
     getBrowserSearch({ commit, dispatch, rootGetters }, browserUuid) {
       return new Promise((resolve, reject) => {
-        var fieldListRange = []
-        var fieldList = rootGetters.getPanelParameters(browserUuid, true)
-        if (fieldList.length > 0) {
-          var parameters = fieldList.map(fieldItem => {
-            if (fieldItem.isRange) {
-              fieldListRange.push({ columnName: fieldItem.columnName + '_To', value: fieldItem.valueTo })
-            }
-            return {
-              columnName: fieldItem.columnName,
-              value: fieldItem.value
-            }
-          })
-          var finalParameters = parameters.concat(fieldListRange)
+        var finalParameters = rootGetters.getParamsProcessToServer(browserUuid)
+        if (finalParameters.length > 0) {
           var browser = rootGetters.getBrowser(browserUuid)
           var parsedQuery = parseContext({
             parentUuid: browserUuid,
