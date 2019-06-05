@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.ValueModel,
+      value: this.metadata.value,
       format: undefined
     }
   },
@@ -69,7 +69,14 @@ export default {
      */
     checkValueFormat() {
       // Date = 15
-      this.format = this.metadata.VFormat.replace(/[Y]/gi, 'y').replace(/[m]/gi, 'M').replace(/[D]/gi, 'd')
+      var format = this.metadata.VFormat.replace(/[Y]/gi, 'y').replace(/[m]/gi, 'M').replace(/[D]/gi, 'd')
+      if (format === '') {
+        format = 'yyyy/MM/dd'
+      }
+      this.format = format
+    },
+    convertTimestamp() {
+      this.value = (new Date(this.metadata.value)).getTime()
     },
     handleChange(value) {
       var valueFirst = new Date(value)

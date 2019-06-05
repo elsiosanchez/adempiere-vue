@@ -52,32 +52,36 @@ const process = {
               }
             })
             //  Default Action
-            var processActions = [
-              {
-                name: 'Run Process',
-                type: 'action',
-                action: 'startProcess',
-                uuid: response.getUuid(),
-                description: response.getDescription(),
-                help: response.getHelp(),
-                isReport: response.getIsreport(),
-                accessLevel: response.getAccesslevel(),
-                showHelp: response.getShowhelp(),
-                isDirectPrint: response.getIsdirectprint()
-              },
-              {
-                name: 'Change parameters',
-                type: 'process',
-                action: 'changeParameters',
-                uuid: response.getUuid(),
-                description: response.description,
-                help: response.getHelp(),
-                isReport: response.getIsreport(),
-                accessLevel: response.getAccesslevel(),
-                showHelp: response.getShowhelp(),
-                isDirectPrint: response.getIsdirectprint()
-              }
-            ]
+            var processActions = []
+            var isDisableRunProcess = false
+            if (response.getIsreport()) {
+              isDisableRunProcess = true
+            }
+            processActions.push({
+              name: 'Run Process',
+              type: 'action',
+              action: 'startProcess',
+              uuid: response.getUuid(),
+              description: response.getDescription(),
+              help: response.getHelp(),
+              isReport: response.getIsreport(),
+              accessLevel: response.getAccesslevel(),
+              showHelp: response.getShowhelp(),
+              disabled: isDisableRunProcess,
+              isDirectPrint: response.getIsdirectprint()
+            }, {
+              name: 'Change parameters',
+              type: 'process',
+              action: 'changeParameters',
+              uuid: response.getUuid(),
+              description: response.description,
+              help: response.getHelp(),
+              isReport: response.getIsreport(),
+              accessLevel: response.getAccesslevel(),
+              showHelp: response.getShowhelp(),
+              isDirectPrint: response.getIsdirectprint()
+            })
+
             var summaryAction = {
               name: 'Run Process As',
               type: 'summary',

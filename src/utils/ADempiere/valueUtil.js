@@ -71,7 +71,7 @@ export function zeroPad(number, pad = 2) {
 export function clientDateTime(type = '') {
   // get current date from client
   const date = new Date() // instance the objet Data
-  const currentDate = date.getFullYear() + '-' + zeroPad(date.getMonth() + 1) + '-' + date.getDate()
+  const currentDate = date.getFullYear() + '-' + zeroPad(date.getMonth() + 1) + '-' + zeroPad(date.getDate())
   const currentTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
   const currentDateTime = {
     date: currentDate,

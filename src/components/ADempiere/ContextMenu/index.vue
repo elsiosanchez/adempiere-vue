@@ -1,52 +1,72 @@
 <template>
-  <div v-if="device==='mobile'" class="container-submenu-mobile">
-    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click">
-      <el-submenu class="el-menu-item" index="1">
-        <template slot="title"><i class="el-icon-more" /></template>
-        <el-submenu v-if="relations.length > 0" class="el-menu-item" index="1-1">
-          <template slot="title">Relations</template>
+  <div :class="isMobileClassmenu()">
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click" unique-opened>
+      <el-submenu v-if="device==='mobile'" class="el-menu-item" index="1">
+        <template slot="title">
+          <i class="el-icon-more" />
+        </template>
+        <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" :index="indexMenu() + '1'">
+          <template slot="title">
+            Relations
+          </template>
           <el-scrollbar wrap-class="scroll">
             <el-menu-item v-for="(relation, index) in relations" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
               {{ relation.meta.title }}
             </el-menu-item>
           </el-scrollbar>
         </el-submenu>
-        <el-menu-item v-else disabled index="1-1">Relations</el-menu-item>
-        <el-submenu class="el-menu-item" index="1-2">
-          <template slot="title">Actions</template>
-          <el-menu-item v-for="(action, index) in actionsValue" :key="index" :index="action.name" @click="runAction(action)">
+        <el-menu-item v-else disabled :index="indexMenu() + '1'">
+          Relations
+        </el-menu-item>
+        <el-submenu class="el-menu-item" :index="indexMenu() + '2'">
+          <template slot="title">
+            Actions
+          </template>
+          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
             {{ action.name }}
           </el-menu-item>
         </el-submenu>
-        <el-menu-item index="1-3">References</el-menu-item>
+        <el-menu-item :index="indexMenu() + '3'">
+          References
+        </el-menu-item>
       </el-submenu>
-    </el-menu>
-  </div>
-  <div v-else class="container-submenu">
-    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click" unique-opened>
-      <el-submenu v-if="relations !== undefined" class="el-menu-item" index="1">
-        <template slot="title">Relations</template>
-        <el-scrollbar wrap-class="scroll">
-          <item v-for="(relation, index) in relations" :key="index" :item="relation" />
-        </el-scrollbar>
-      </el-submenu>
-      <el-menu-item v-else disabled index="1">Relations</el-menu-item>
-      <el-submenu v-if="actions !== undefined" class="el-menu-item" index="2">
-        <template slot="title">Actions</template>
-        <template v-for="(action, index) in actions">
-          <el-submenu v-if="action.childs" :key="index" :index="action.name">
-            <template slot="title">{{ action.name }}</template>
-            <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
-              {{ child.name }}
+      <template v-else class="container-submenu">
+        <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
+          <template slot="title">
+            Relations
+          </template>
+          <el-scrollbar wrap-class="scroll">
+            <item v-for="(relation, index) in relations" :key="index" :item="relation" />
+          </el-scrollbar>
+        </el-submenu>
+        <el-menu-item v-else disabled index="1">
+          Relations
+        </el-menu-item>
+        <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2">
+          <template slot="title">
+            Actions
+          </template>
+          <template v-for="(action, index) in actions">
+            <el-submenu v-if="action.childs" :key="index" :index="action.name">
+              <template slot="title">
+                {{ action.name }}
+              </template>
+              <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+                {{ child.name }}
+              </el-menu-item>
+            </el-submenu>
+            <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
+              {{ action.name }}
             </el-menu-item>
-          </el-submenu>
-          <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-            {{ action.name }}
-          </el-menu-item>
-        </template>
-      </el-submenu>
-      <el-menu-item v-else disabled index="2">Actions</el-menu-item>
-      <el-menu-item index="3">References</el-menu-item>
+          </template>
+        </el-submenu>
+        <el-menu-item v-else disabled index="2">
+          Actions
+        </el-menu-item>
+        <el-menu-item index="3">
+          References
+        </el-menu-item>
+      </template>
     </el-menu>
   </div>
 </template>
@@ -109,6 +129,19 @@ export default {
     this.subscribeChanges()
   },
   methods: {
+    isMobileClassmenu() {
+      const cssClass = 'container-submenu'
+      if (this.device === 'mobile') {
+        return cssClass + '-mobile'
+      }
+      return cssClass
+    },
+    indexMenu(index = '') {
+      if (this.device === 'mobile') {
+        return index + '1-'
+      }
+      return index
+    },
     showModal(action) {
       var processData = this.$store.getters.getProcess(action.uuid)
       if (typeof processData === 'undefined') {
@@ -128,7 +161,9 @@ export default {
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
           if (typeof this.actions !== 'undefined') {
             this.actions.forEach((item) => {
-              item['disabled'] = false
+              if (typeof item.disabled === 'undefined') {
+                item['disabled'] = false
+              }
             })
             if (this.$route.name !== 'Report Viewer') {
               var index = this.actions.findIndex(item => item.action === 'changeParameters')
@@ -145,31 +180,39 @@ export default {
     },
     runAction(action) {
       if (action.type === 'action') {
-        this.$notify.info({
-          title: 'Info',
-          message: 'Processing ' + action.name
-        })
-        this.$store.dispatch(action.action, {
-          action: action,
-          containerUuid: this.$route.meta.uuid
-        })
-        if (action.isReport) {
-          this.$store.subscribeAction({
-            after: (action, state) => {
-              if (action.type === 'finishProcess') {
-                if (!action.payload.isError) {
-                  this.$router.push({
-                    name: 'Report Viewer',
-                    params: {
-                      processUuid: action.payload.processUuid,
-                      instanceUuid: action.payload.instanceUuid,
-                      fileName: action.payload.output.fileName
-                    }
-                  })
-                  this.$store.dispatch('tagsView/delView', this.$route)
+        // this.$notify.info({
+        //   title: 'Info',
+        //   message: 'Processing ' + action.name
+        // })
+        var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
+        if (finalParameters.length > 0) {
+          this.$store.dispatch(action.action, {
+            action: action,
+            containerUuid: this.$route.meta.uuid
+          })
+          if (action.isReport) {
+            this.$store.subscribeAction({
+              after: (action, state) => {
+                if (action.type === 'finishProcess') {
+                  if (!action.payload.isError) {
+                    this.$router.push({
+                      name: 'Report Viewer',
+                      params: {
+                        processUuid: action.payload.processUuid,
+                        instanceUuid: action.payload.instanceUuid,
+                        fileName: action.payload.output.fileName
+                      }
+                    })
+                    this.$store.dispatch('tagsView/delView', this.$route)
+                  }
                 }
               }
-            }
+            })
+          }
+        } else {
+          this.$notify.info({
+            title: 'Info',
+            message: 'Some params empty.'
           })
         }
       } else if (action.type === 'process') {

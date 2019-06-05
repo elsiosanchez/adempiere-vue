@@ -1,7 +1,6 @@
 import {
   runProcess,
-  requestProcessActivity,
-  getBrowserSearch
+  requestProcessActivity
 } from '@/api/ADempiere/data'
 
 const processControl = {
@@ -45,88 +44,80 @@ const processControl = {
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit, rootGetters, dispatch }, payload) {
+    startProcess({ commit, rootGetters, dispatch }, params) {
       var reportExportType
-      if (typeof payload.action.reportExportType === 'undefined') {
-        reportExportType = payload.reportFormat
+      if (typeof params.action.reportExportType === 'undefined') {
+        reportExportType = params.reportFormat
       } else {
-        reportExportType = payload.action.reportExportType
+        reportExportType = params.action.reportExportType
       }
-      var processResult = {}
-      var fieldList = rootGetters.getPanelParameters(payload.action.uuid)
-      var fieldListRange = []
-      if (fieldList.length > 0) {
-        var parameters = fieldList.map(fieldItem => {
-          if (fieldItem.isRange) {
-            fieldListRange.push({ columnName: fieldItem.columnName + '_To', value: fieldItem.valueTo })
-          }
-          return {
-            columnName: fieldItem.columnName,
-            value: fieldItem.value
-          }
-        })
-        var finalParameters = parameters.concat(fieldListRange)
-      }
+      var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
+      // if (finalParameters.length < 1) {
+      //   console.info('Parameters empty')
+      //   return
+      // }
+
       var processToRun = {
-        uuid: payload.action.uuid,
-        name: payload.action.name,
-        description: payload.action.description,
-        help: payload.action.help,
-        isReport: payload.action.isReport,
-        accessLevel: payload.accessLevel,
-        showHelp: payload.action.showHelp,
-        isDirectPrint: payload.action.isDirectPrint,
+        uuid: params.action.uuid,
+        name: params.action.name,
+        description: params.action.description,
+        help: params.action.help,
+        isReport: params.action.isReport,
+        accessLevel: params.accessLevel,
+        showHelp: params.action.showHelp,
+        isDirectPrint: params.action.isDirectPrint,
         reportExportType: reportExportType,
         parameters: finalParameters
       }
-      requestProcessActivity({ commit }, process)
-        .then(response => {
-          console.log(response)
-          var server = response.getResponsesList()
-          console.log(server)
-          commit('addStartedProcess', server)
-        })
-      if (!processToRun.isReport) {
-        commit('addStartedProcess', processToRun)
-      }
-      var browserToSearch = {
-        uuid: '8aaf072a-fb40-11e8-a479-7a0060f0aa01',
-        parameters: [
-          {
-            columnName: 'I_DocStatus',
-            value: 'CO'
-          }
-        ]
-      }
-      //  Browser Search
-      getBrowserSearch(browserToSearch)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      // requestProcessActivity({ commit }, process)
+      //   .then(response => {
+      //     console.log(response)
+      //     var server = response.getResponsesList()
+      //     console.log(server)
+      //     commit('addStartedProcess', server)
+      //   })
+      // if (!processToRun.isReport) {
+      //   commit('addStartedProcess', processToRun)
+      // }
+
       // Run process on server and wait for it for notify
+      var processResult = {}
       runProcess(processToRun)
         .then(response => {
+          var output = response.getOutput()
+          if (typeof output !== 'undefined') {
+            output = {
+              uuid: output.getUuid(),
+              name: output.getName(),
+              description: output.getDescription(),
+              fileName: output.getFilename(),
+              output: output.getOutput(),
+              outputStream: output.getOutputstream(),
+              reportExportType: output.getReportexporttype()
+            }
+          }
+          var logList = response.getLogsList()
+          if (typeof logList !== undefined) {
+            logList = logList.map(itemLog => {
+              return {
+                log: itemLog.getLog(),
+                recordId: itemLog.getRecordid()
+              }
+            })
+          } else {
+            logList = []
+          }
           processResult = {
             action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
             processUuid: processToRun.uuid.trim(),
             isError: response.getIserror(),
+            isProcessing: response.getIsprocessing(),
             isReport: processToRun.isReport,
             summary: response.getSummary(),
             resultTableId: response.getResulttableid(),
-            logs: response.getLogsList(),
-            output: {
-              uuid: response.getOutput().getUuid(),
-              name: response.getOutput().getName(),
-              description: response.getOutput().getDescription(),
-              fileName: response.getOutput().getFilename().replace(/ /g, ''),
-              output: response.getOutput().getOutput(),
-              outputStream: response.getOutput().getOutputstream(),
-              reportExportType: response.getOutput().getReportexporttype()
-            }
+            logs: logList,
+            output: output
           }
           dispatch('finishProcess', processResult)
         })
@@ -134,6 +125,7 @@ const processControl = {
           processResult = {
             instanceUuid: '',
             processUuid: processToRun.uuid.trim(),
+            isProcessing: false,
             isError: true,
             summary: '',
             resultTableId: '',
@@ -207,7 +199,7 @@ const processControl = {
       if (!processOutput.isError &&
         typeof processOutput.instanceUuid !== 'undefined' &&
         typeof processOutput.processUuid !== 'undefined' &&
-        typeof processOutput.output.fileName !== 'undefined') {
+        typeof processOutput.output !== 'undefined') {
         commit('setReportValues', processOutput)
         commit('addStartedProcess', processOutput)
       } else {
