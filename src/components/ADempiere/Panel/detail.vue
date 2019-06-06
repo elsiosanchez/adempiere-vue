@@ -1,7 +1,7 @@
 <template>
-  <el-row v-if="showDetail" :gutter="12" class="root-container">
-    <div class="container">
-      <el-col :span="6">
+  <el-row v-if="showDetail" :gutter="12">
+    <el-col :span="24">
+      <div v-if="showDetail">
         <div class="hidden-container">
           <div :class="isMobie()">
             <el-button
@@ -12,10 +12,10 @@
             />
           </div>
         </div>
-        <el-collapse-transition class="paneltab">
+        <el-collapse-transition class="container-table">
           <div v-show="showPanel">
-            <div v-if="this.$store.state.app.sidebar.opened">
-              <div class="container-table">
+            <div>
+              <div class="container">
                 <div class="show-container">
                   <el-button
                     v-if="showPanel"
@@ -29,8 +29,8 @@
             </div>
           </div>
         </el-collapse-transition>
-      </el-col>
-    </div>
+      </div>
+    </el-col>
   </el-row>
 </template>
 
@@ -82,16 +82,30 @@ export default {
     margin-left: 10px;
     border-top: 10px solid #606266;
   }
-
-  .container {
-    bottom: 0;
-    z-index: 0;
+  .fixed-table {
     position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
     width: 100%;
-    display: flex;
-    color: #424242;
-    margin-left: 10px;
-    border-top: 10px solid #606266;
+    transition: width 0.28s;
+  }
+  .container {
+    position: fixed;
+    bottom: 0;
+    /* right: 0; */
+    z-index: 0;
+    width: 100%;
+    /* transition: width 0.28s; */
+    /* border: 1px solid blue; */
+    /* bottom: 0; */
+    /* z-index: 0; */
+    /* position: fixed;  */
+    /* width: 100%; */
+    /* display: flex; */
+    /* color: #424242; */
+    /* margin-left: 10px; */
+    /* border-top: 10px solid #606266; */
   }
 
   .container:hover .show-button {
@@ -126,6 +140,7 @@ export default {
     position: fixed;
     display: flex;
     color: #424242;
+    border: 1px solid blue;
     background-color: #fff;
   }
 
@@ -209,6 +224,9 @@ export default {
 
   .el-col {
     border-radius: 4px;
-    left: 150px;
+    /* left: 150px; */
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
   }
 </style>

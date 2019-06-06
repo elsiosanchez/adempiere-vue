@@ -86,9 +86,9 @@ export default {
 </script>
 
 <style scoped >
-  .paneltab {
+  /* .paneltab {
     border: 1px solid blue;
-  }
+  } */
 
   .el-row {
     margin-bottom: 20px;

@@ -1,5 +1,6 @@
 <template>
-  <el-form :label-position="labelPosition">
+  <!-- <el-row :gutter="20"> -->
+  <el-form :label-position="labelPosition" class="bg-purple">
     <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
       <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
       <el-input
@@ -10,51 +11,55 @@
         class="header-search-input"
       />
     </div>
-    <el-table
-      ref="multipleTable"
-      fit
-      max-height="250"
-      border
-      stripe
-      highlight-current-row
-      style="width: 1100px"
-      type="expand"
-      :row-key="keyColumn"
-      :data="getDataDetail"
-      @select="handleSelection"
-    >
-      <el-table-column
-        v-if="isTableSelection"
-        type="selection"
-        :prop="keyColumn"
-        fixed
-      />
-      <template v-for="(item, key) in fieldList">
-        <el-table-column
-          v-if="isDisplayed(item)"
-          :key="key"
-          :label="item.name"
-          :prop="item.columnName"
-          :column-key="item.columnName"
+    <div class="container-tabledetail">
+      <el-col :span="24">
+        <el-table
+          ref="multipleTable"
+          fit
+          stripe
+          highlight-current-row
+          style="width: auto"
+          max-height="250"
+          :row-key="keyColumn"
+          :data="getDataDetail"
+          @select="handleSelection"
         >
-          <template slot-scope="scope">
-            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
-              <field
-                :is-show-label="false"
-                :metadata-field="item"
-                :recorddata-fields="scope.row[item.columnName]"
-                size="small"
-                @keyup.enter.native="confirmEdit(scope.row)"
-              />
-            </template>
-            <span v-else @dblclick="scope.row.edit=!scope.row.edit">
-              {{ scope.row[item.columnName] }}
-            </span>
+          <el-table-column
+            v-if="isTableSelection"
+            type="selection"
+            :prop="keyColumn"
+            fixed
+          />
+          <template v-for="(item, key) in fieldList">
+            <el-table-column
+              v-if="isDisplayed(item)"
+              :key="key"
+              :label="item.name"
+              :prop="item.columnName"
+              :column-key="item.columnName"
+              width="170"
+            >
+              <template slot-scope="scope">
+                <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
+                  <field
+                    :is-show-label="false"
+                    :metadata-field="item"
+                    :recorddata-fields="scope.row[item.columnName]"
+                    size="small"
+                    @keyup.enter.native="confirmEdit(scope.row)"
+                  />
+                </template>
+                <span v-else @dblclick="scope.row.edit=!scope.row.edit">
+                  {{ scope.row[item.columnName] }}
+                </span>
+              </template>
+            </el-table-column>
           </template>
-        </el-table-column>
-      </template>
-    </el-table>
+        </el-table>
+      </el-col>
+    </div>
   </el-form>
+  <!-- </el-row> -->
 </template>
 
 <script>
@@ -307,5 +312,27 @@ export default {
         margin-left: 10px;
       }
     }
+  }
+</style>
+<style scoped>
+.container-tabledetail {
+    bottom: 0;
+    height: 100%;
+    color: #424242;
+    /* border: 4px solid red; */
+    background-color: #fff;
+  }
+  .el-row {
+    border: 1px solid red;
+    margin-bottom: 20px;
+  }
+
+  .el-col {
+    /* border-radius: 4px; */
+    border: 1px solid #d3dce6;
+    /* left: 100px; */
+  }
+  .bg-purple {
+    background: rgb(250, 250, 250);
   }
 </style>
