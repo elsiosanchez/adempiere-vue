@@ -71,6 +71,9 @@ const processControl = {
         parameters: finalParameters.params,
         selection: recordSelection
       }
+      /* if (!processToRun.isReport) {
+        commit('addStartedProcess', processToRun)
+      } */
       // requestProcessActivity({ commit }, process)
       //   .then(response => {
       //     console.log(response)
@@ -78,10 +81,6 @@ const processControl = {
       //     console.log(server)
       //     commit('addStartedProcess', server)
       //   })
-      // if (!processToRun.isReport) {
-      //   commit('addStartedProcess', processToRun)
-      // }
-
       // Run process on server and wait for it for notify
       var processResult = {}
       runProcess(processToRun)
@@ -125,10 +124,12 @@ const processControl = {
         })
         .catch(error => {
           processResult = {
+            action: processToRun.name,
             instanceUuid: '',
             processUuid: processToRun.uuid.trim(),
-            isProcessing: false,
             isError: true,
+            isProcessing: false,
+            isReport: processToRun.isReport,
             summary: '',
             resultTableId: '',
             logs: [],
@@ -205,6 +206,7 @@ const processControl = {
         commit('setReportValues', processOutput)
         commit('addStartedProcess', processOutput)
       } else {
+        commit('addStartedProcess', processOutput)
         commit('setReportValues', processOutput)
       }
     },
@@ -228,10 +230,13 @@ const processControl = {
       var process
       var processList = state.process.map((item) => {
         if (!item.isReport) {
-          process = rootGetters.getProcess(item.uuid)
+          process = rootGetters.getProcess(item.processUuid)
           return {
             ...process,
-            action: 'Run Process'
+            action: item.action,
+            isError: item.isError,
+            logs: item.logs,
+            summary: item.summary
           }
         } else {
           process = rootGetters.getProcess(item.processUuid)
