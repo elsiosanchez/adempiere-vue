@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      value: ''
+      value: this.metadata.value
     }
   },
   watch: {

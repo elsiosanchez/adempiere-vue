@@ -32,6 +32,7 @@ export default {
   },
   data() {
     return {
+      value: this.metadata.value,
       typeInput: 'textarea',
       pattern: undefined
     }

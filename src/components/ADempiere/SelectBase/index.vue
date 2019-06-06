@@ -34,7 +34,7 @@ export default {
   },
   data() {
     return {
-      value: '',
+      value: this.metadata.value,
       loading: false,
       options: [],
       list: [],

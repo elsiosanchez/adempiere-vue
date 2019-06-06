@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      value: Boolean(this.metadata.defaultValue),
+      value: Boolean(this.metadata.value),
       isReadOnly: false,
       isMadatory: false
     }
@@ -39,6 +39,8 @@ export default {
     }
   },
   mounted() {
+    this.handleChange()
+
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,
       containerUuid: this.metadata.containerUuid,

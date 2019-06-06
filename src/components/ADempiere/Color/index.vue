@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.ValueModel,
+      value: this.metadata.value,
       ShowAlphaColor: true
     }
   },
