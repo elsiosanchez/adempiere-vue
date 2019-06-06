@@ -11,6 +11,7 @@
         :visible="isVisibleDialog"
         :metadata="processMetadata"
         :parent-uuid="windowUuid"
+        :parent-panel="panelType"
         @closeDialog="isVisibleDialog=false"
       />
       <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
@@ -56,6 +57,8 @@ export default {
     return {
       windowMetadata: {},
       windowUuid: this.$route.meta.uuid,
+      containerUuid: this.$route.meta.uuid,
+      panelType: 'window',
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       isVisibleDialog: this.$store.state.processControl.visibleDialog,

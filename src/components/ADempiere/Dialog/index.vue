@@ -47,6 +47,10 @@ export default {
       type: Object,
       required: true
     },
+    parentPanel: {
+      type: String,
+      default: undefined
+    },
     reportExportType: {
       type: String,
       default: ''
@@ -74,31 +78,41 @@ export default {
       this.$store.dispatch('setShowDialog', undefined)
     },
     runAction(action) {
-      this.closeDialog()
-      this.$notify.info({
-        title: 'Info',
-        message: 'Processing ' + action.name
-      })
-      this.$store.dispatch('startProcess', {
-        action: action,
-        reportFormat: this.reportExportType,
-        containerUuid: action.uuid
-      })
-      if (action.isReport) {
-        this.$store.subscribeAction({
-          after: (action, state) => {
-            if (action.type === 'finishProcess') {
-              this.$router.push({
-                name: 'Report Viewer',
-                params: {
-                  processUuid: action.payload.processUuid,
-                  instanceUuid: action.payload.instanceUuid,
-                  fileName: action.payload.output.fileName
-                }
-              })
-              this.$store.dispatch('tagsView/delView', this.$route)
+      var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
+      if ((finalParameters.fields > 0 && finalParameters.params.length > 0) || finalParameters.fields === 0) {
+        this.closeDialog()
+        this.$notify.info({
+          title: 'Info',
+          message: 'Processing ' + action.name
+        })
+        this.$store.dispatch('startProcess', {
+          action: action,
+          reportFormat: this.reportExportType,
+          containerUuid: action.uuid,
+          parentUuid: this.parentUuid,
+          parentPanel: this.parentPanel
+        })
+        if (action.isReport) {
+          this.$store.subscribeAction({
+            after: (action, state) => {
+              if (action.type === 'finishProcess') {
+                this.$router.push({
+                  name: 'Report Viewer',
+                  params: {
+                    processUuid: action.payload.processUuid,
+                    instanceUuid: action.payload.instanceUuid,
+                    fileName: action.payload.output.fileName
+                  }
+                })
+                this.$store.dispatch('tagsView/delView', this.$route)
+              }
             }
-          }
+          })
+        }
+      } else {
+        this.$notify.info({
+          title: 'Info',
+          message: 'Some params empty.'
         })
       }
     }

@@ -1,6 +1,11 @@
 <template>
   <div v-if="isLoading">
-    <context-menu :report="processMetadata.isReport" class="sticky-submenu" />
+    <context-menu
+      class="sticky-submenu"
+      :parent-uuid="containerUuid"
+      :parent-panel="panelType"
+      :report="processMetadata.isReport"
+    />
     <el-row :gutter="20">
       <el-col :span="24">
         <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
@@ -47,6 +52,7 @@ export default {
     return {
       processMetadata: {},
       processUuid: this.$route.meta.uuid,
+      containerUuid: this.$route.meta.uuid,
       isLoading: false,
       recordUuid: this.$route.params.uuidRecord,
       panelType: 'process'

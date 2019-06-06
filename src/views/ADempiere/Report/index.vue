@@ -1,18 +1,21 @@
 <template>
   <div v-if="isLoading">
-    <sticky class="sticky-submenu">
-      <context-menu />
-    </sticky>
+    <context-menu
+      class="sticky-submenu"
+      :parent-uuid="containerUuid"
+      :parent-panel="panelType"
+      :report="reportMetadata.isReport"
+    />
     <el-row :gutter="20">
       <el-col :span="24">
-        <h2 v-show="checkValue(processMetadata.description)" class="warn-content text-center">
-          <div>{{ processMetadata.description }}  </div>
+        <h2 v-show="checkValue(reportMetadata.description)" class="warn-content text-center">
+          <div>{{ reportMetadata.description }}  </div>
         </h2>
-        <code v-show="checkValue(processMetadata.help)" v-html="processMetadata.help" />
+        <code v-show="checkValue(reportMetadata.help)" v-html="reportMetadata.help" />
         <panel
-          :position-tab="processMetadata.accesLevel"
-          :container-uuid="metadataProcessUuid"
-          :metadata-tab="processMetadata"
+          :position-tab="reportMetadata.accesLevel"
+          :container-uuid="containerUuid"
+          :metadata-tab="reportMetadata"
           :is-edit="isEdit"
           panel-type="report"
         />
@@ -30,21 +33,15 @@
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Sticky from '@/components/Sticky'
 import Panel from '@/components/ADempiere/Panel'
 
 export default {
   name: 'Report',
   components: {
     Panel,
-    ContextMenu,
-    Sticky
+    ContextMenu
   },
   props: {
-    metadataProcessUuid: {
-      type: String,
-      default: ''
-    },
     isEdit: {
       type: Boolean,
       default: false
@@ -52,10 +49,9 @@ export default {
   },
   data() {
     return {
-      processMetadata: {},
-      processUUID: this.$route.meta.uuid,
-      isLoading: false,
-      uuidRecord: this.$route.params.uuidRecord
+      reportMetadata: {},
+      containerUuid: this.$route.meta.uuid,
+      isLoading: false
     }
   },
   beforeMount() {
@@ -71,7 +67,7 @@ export default {
       if (typeof process === 'undefined') {
         this.$store.dispatch('getProcessAPI', uuid)
           .then(response => {
-            this.processMetadata = response
+            this.reportMetadata = response
             this.isLoading = true
           })
           .catch(err => {
@@ -80,7 +76,7 @@ export default {
           })
       } else {
         this.isLoading = true
-        this.processMetadata = process
+        this.reportMetadata = process
       }
     },
     checkValue(text) {
@@ -89,9 +85,9 @@ export default {
       }
     },
     htmlDecode(text) {
-      var processMetadata = document.createElement('div')
-      processMetadata.innerHTML = text
-      return processMetadata.childNodes[0].nodeValue
+      var reportMetadata = document.createElement('div')
+      reportMetadata.innerHTML = text
+      return reportMetadata.childNodes[0].nodeValue
     }
   }
 }

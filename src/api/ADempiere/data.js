@@ -76,13 +76,20 @@ export function runProcess(process) {
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
   processRequest.setReportexporttype(process.reportExportType)
-  if (process.parameters !== undefined) {
+  if (process.parameters !== undefined && process.parameters.length > 0) {
     process.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
       processRequest.addParameters(convertedParameter)
     })
   }
-  // processRequest.setParametersList(convertParameter())
+  /*
+  if (process.selection !== undefined && process.selection.length > o) {
+    process.selection.forEach(record => {
+      const record = Instance.call(this).convertParameterList(record)
+      processRequest.addParameters(convertedParameter)
+    })
+  }
+  */
   //  Run Process
   return Instance.call(this).requestProcess(processRequest)
 }
@@ -108,6 +115,7 @@ export function getBrowserSearch(browser) {
   criteria.setWhereclause(browser.whereClause)
   criteria.setOrderbyclause(browser.orderByClause)
   browserRequest.setCriteria(criteria)
+  /* isQueryCriteria fields parameters */
   if (browser.parameters !== undefined) {
     browser.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)

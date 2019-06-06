@@ -82,6 +82,14 @@ export default {
   },
   mixins: [ResizeMixin],
   props: {
+    parentUuid: {
+      type: String,
+      default: undefined
+    },
+    parentPanel: {
+      type: String,
+      default: undefined
+    },
     report: {
       type: Boolean,
       default: false
@@ -185,10 +193,12 @@ export default {
         //   message: 'Processing ' + action.name
         // })
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
-        if (finalParameters.length > 0) {
+        if ((finalParameters.fields > 0 && finalParameters.params.length > 0) || finalParameters.fields === 0) {
           this.$store.dispatch(action.action, {
             action: action,
-            containerUuid: this.$route.meta.uuid
+            containerUuid: this.$route.meta.uuid, // EVALUATE IF IS action.uuid
+            parentUuid: this.parentUuid,
+            parentPanel: this.parentPanel
           })
           if (action.isReport) {
             this.$store.subscribeAction({

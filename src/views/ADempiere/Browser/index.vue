@@ -1,10 +1,14 @@
 <template>
   <div v-if="isLoading">
-    <context-menu class="sticky-submenu" />
+    <context-menu
+      class="sticky-submenu"
+      :parent-uuid="containerUuid"
+      :parent-panel="panelType"
+    />
     <modal
       :visible="isVisisbleDialog"
       :metadata="processMetadata"
-      :parent-uuid="browserUuid"
+      :parent-uuid="containerUuid"
       @closeDialog="isVisisbleDialog=true"
     />
     <el-row :gutter="20">
@@ -14,7 +18,7 @@
         </h3>
         <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
         <panel
-          :container-uuid="browserUuid"
+          :container-uuid="containerUuid"
           :metadata="browserMetadata"
           :panel-type="panelType"
         />
@@ -22,7 +26,7 @@
           :show-detail="true"
         >
           <data-table
-            :container-uuid="browserUuid"
+            :container-uuid="containerUuid"
             :panel-type="panelType"
           />
         </detail>
@@ -65,6 +69,7 @@ export default {
     return {
       browserMetadata: {},
       browserUuid: this.$route.meta.uuid,
+      containerUuid: this.$route.meta.uuid,
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
@@ -95,7 +100,7 @@ export default {
     isEmptyValue,
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
-        containerUuid: this.browserUuid
+        containerUuid: this.containerUuid
       })
     },
     getBrowser(uuid = null) {

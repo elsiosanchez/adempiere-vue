@@ -117,9 +117,10 @@ const data = {
     getParamsProcessToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
       var fieldList = rootGetters.getPanelParameters(containerUuid, true)
       var parameters = []
-      if (fieldList.length > 0) {
+
+      if (fieldList.fields > 0) {
         var fieldListRange = []
-        parameters = fieldList.map(fieldItem => {
+        parameters = fieldList.params.map(fieldItem => {
           if (fieldItem.isRange) {
             fieldListRange.push({
               columnName: fieldItem.columnName + '_To',
@@ -133,7 +134,10 @@ const data = {
         })
         parameters = parameters.concat(fieldListRange)
       }
-      return parameters
+      return {
+        params: parameters,
+        fields: fieldList.fields
+      }
     },
     /**
      * Getter converter selection data record in format

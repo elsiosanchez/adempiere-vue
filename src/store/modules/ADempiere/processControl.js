@@ -52,10 +52,11 @@ const processControl = {
         reportExportType = params.action.reportExportType
       }
       var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
-      // if (finalParameters.length < 1) {
-      //   console.info('Parameters empty')
-      //   return
-      // }
+
+      var recordSelection = []
+      if (typeof params.parentUuid !== undefined) {
+        recordSelection = rootGetters.getSelectionToServer(params.parentUuid)
+      }
 
       var processToRun = {
         uuid: params.action.uuid,
@@ -67,7 +68,8 @@ const processControl = {
         showHelp: params.action.showHelp,
         isDirectPrint: params.action.isDirectPrint,
         reportExportType: reportExportType,
-        parameters: finalParameters
+        parameters: finalParameters.params,
+        selection: recordSelection
       }
       // requestProcessActivity({ commit }, process)
       //   .then(response => {
