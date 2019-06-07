@@ -82,14 +82,14 @@ export function runProcess(process) {
       processRequest.addParameters(convertedParameter)
     })
   }
-  /*
-  if (process.selection !== undefined && process.selection.length > o) {
+
+  if (process.selection !== undefined && process.selection.length > 0) {
     process.selection.forEach(record => {
-      const record = Instance.call(this).convertParameterList(record)
-      processRequest.addParameters(convertedParameter)
+      const convertedRecord = Instance.call(this).convertSelection(record)
+      processRequest.addSelections(convertedRecord)
     })
   }
-  */
+
   //  Run Process
   return Instance.call(this).requestProcess(processRequest)
 }
