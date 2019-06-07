@@ -46,7 +46,7 @@
             <el-collapse-transition>
               <div v-show="showPanel">
                 <el-button
-                  class="el-icon-arrow-up button-bottom btn"
+                  class="el-icon-arrow-down button-bottom btn"
                   :circle="true"
                   @click="handleChange()"
                 />
@@ -232,6 +232,9 @@ export default {
     width: calc(100% - 200px);
     transition: width 0.28s;
   }
+  .container-up{
+    right: 50%;
+  }
   .show {
     position: absolute;
     bottom: 0;
@@ -246,6 +249,10 @@ export default {
   .button-bottom {
     bottom: 50%;
     z-index: 2;
+    position: relative;
+    margin: 0 auto;
+    left: 50%;
+    right: 50%;
   }
   .button-up {
     bottom: 0;
