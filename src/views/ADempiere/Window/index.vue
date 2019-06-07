@@ -14,6 +14,18 @@
         :parent-panel="panelType"
         @closeDialog="isVisibleDialog=false"
       />
+      <!-- <el-container>
+        <el-main>
+          <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
+            <tab-children
+              :window-uuid="windowUuid"
+              :tabs-list="windowMetadata.tabsListChildren"
+            />
+          </detail>
+        </el-main>
+      </el-container> -->
+    </el-row>
+    <el-row :gutter="20">
       <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
         <tab-children
           :window-uuid="windowUuid"
@@ -112,6 +124,19 @@ export default {
 </script>
 
 <style scoped >
+.el-tabs__header {
+    padding: 0;
+    position: relative;
+    margin: 0 0 15px;
+    width: 90%;
+}
+.el-tabs--border-card {
+    width: -webkit-fill-available;
+    background: #FFFFFF;
+    border: 1px solid #DCDFE6;
+    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
+}
   .avatar {
     width: 54px;
     height: 28px;
@@ -157,7 +182,15 @@ export default {
 
   .el-col {
     border-radius: 4px;
-    left: 150px;
+    border: 5px solid black;
+    left: 10px;
+  }
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    width: 100%;
+    /* line-height: 160px;   */
   }
 
   .sticky-submenu {
