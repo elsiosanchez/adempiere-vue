@@ -13,12 +13,10 @@
     <el-table
       ref="multipleTable"
       fit
-      max-height="250"
-      border
+      height="200"
       stripe
       highlight-current-row
-      style="width: 1100px"
-      type="expand"
+      style="width: 100%"
       :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"
@@ -36,6 +34,8 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
+          min-width="120"
+          width="270"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">

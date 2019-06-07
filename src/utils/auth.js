@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'GardenWorld Admin-token'
+const TokenKey = 'sessionuuid'
 const currentRoleKey = 'Admin-Token'
 
 export function getToken() {

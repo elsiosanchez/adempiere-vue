@@ -5,6 +5,7 @@
         :window-uuid="windowUuid"
         :tabs-list="windowMetadata.tabsListParent"
         :is-edit="isEdit"
+        class="tab-window"
       />
       <submenu class="sticky-submenu" />
       <modal
@@ -14,12 +15,59 @@
         :parent-panel="panelType"
         @closeDialog="isVisibleDialog=false"
       />
-      <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-        <tab-children
-          :window-uuid="windowUuid"
-          :tabs-list="windowMetadata.tabsListChildren"
-        />
-      </detail>
+      <!-- <el-container>
+        <el-main>
+          <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
+            <tab-children
+              :window-uuid="windowUuid"
+              :tabs-list="windowMetadata.tabsListChildren"
+            />
+          </detail>
+        </el-main>
+      </el-container> -->
+      <!-- <el-col :span="24"> -->
+      <!-- <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
+          <tab-children
+            :window-uuid="windowUuid"
+            :tabs-list="windowMetadata.tabsListChildren"
+          />
+        </detail> -->
+      <div v-if="this.$store.state.app.sidebar.opened">
+        <div class="container">
+          <div class="show">
+            <el-button
+              class="el-icon-arrow-up button-up btn"
+              :circle="true"
+              @click="handleChange()"
+            />
+
+          </div>
+          <div class="container-panel-open">
+            <el-collapse-transition>
+              <div v-show="showPanel">
+                <el-button
+                  class="el-icon-arrow-down button-bottom btn"
+                  :circle="true"
+                  @click="handleChange()"
+                />
+                <tab-children
+                  :window-uuid="windowUuid"
+                  :tabs-list="windowMetadata.tabsListChildren"
+                />
+              </div>
+            </el-collapse-transition>
+          </div>
+        </div>
+      </div>
+      <div v-else-if="!this.$store.state.app.sidebar.opened">
+        <div class="container-panel">
+          <tab-children
+            :window-uuid="windowUuid"
+            :tabs-list="windowMetadata.tabsListChildren"
+          />
+        </div>
+      </div>
+      <!-- </el-col> -->
     </el-row>
   </div>
   <div v-else style="padding: 20px 100px">
@@ -32,7 +80,7 @@
 <script>
 import Tab from '@/components/ADempiere/Tab'
 import TabChildren from '@/components/ADempiere/Tab/tabChildren'
-import Detail from '@/components/ADempiere/Panel/detail'
+// import Detail from '@/components/ADempiere/Panel/detail'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import Submenu from '@/components/ADempiere/ContextMenu'
@@ -43,7 +91,7 @@ export default {
   components: {
     Tab,
     TabChildren,
-    Detail,
+    // Detail,
     Submenu,
     Modal
   },
@@ -59,6 +107,7 @@ export default {
       windowUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
       panelType: 'window',
+      showPanel: true,
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       isVisibleDialog: this.$store.state.processControl.visibleDialog,
@@ -87,6 +136,9 @@ export default {
     this.getWindow(this.windowUuid)
   },
   methods: {
+    handleChange() {
+      this.showPanel = !this.showPanel
+    },
     getWindow(uuid = null) {
       if (!uuid) {
         uuid = this.windowUuid
@@ -112,6 +164,44 @@ export default {
 </script>
 
 <style scoped >
+.container {
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 200px);
+    transition: width 0.28s;
+    position: fixed;
+    height: 200px;
+    display: flex;
+    color: #424242;
+}
+
+	.show {
+  position: absolute;
+  bottom: 0;
+  color: #FFF;
+  width: 100%;
+  height: 300px;
+  transition: all 0.5s ease-in;
+  display: flex;
+
+}
+  .container:hover .show{
+    height: 30px;
+  }
+
+  .btn{
+    animation-name: btn;
+    transition-delay: 0.6s;
+    visibility: hidden;
+  }
+  .container:hover .btn{
+    visibility: visible;
+  }
+  .btn-base :hover {
+    box-shadow: 5px #5a5a5a;
+  }
+
   .avatar {
     width: 54px;
     height: 28px;
@@ -123,41 +213,81 @@ export default {
     height: 5px;
     line-height: 57px;
   }
-
-  .transi-box {
-    bottom: 0;
-    width: calc(100% - 170px);
-    position: fixed;
-    border-radius: 4px;
-    background-color: #FFF;
-    text-align: center;
-    color: #FFF;
-    box-sizing: border-box;
-    height: 39%;
+  .tab-window {
+    z-index: 9;
   }
-
-  .transi-box2 {
-    margin-bottom: 0px;
-    width: calc(100% - 209px);
+  .container-panel {
     position: fixed;
     bottom: 0;
-    border-radius: 4px;
-    background-color: #FFF;
-    text-align: center;
-    color: #FFF;
-    height: 39%;
-
-    box-sizing: border-box;
-    margin-right: 2px;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 54px);
+    transition: width 0.28s;
   }
-
+  .container-panel-open {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 200px);
+    transition: width 0.28s;
+  }
+  .container-up{
+    right: 50%;
+  }
+  .show {
+    position: absolute;
+    bottom: 0;
+    color: #FFF;
+    width: 100%;
+    height: 0px;
+    transition: all 0.5s ease-in;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .button-bottom {
+    bottom: 50%;
+    z-index: 2;
+    position: relative;
+    margin: 0 auto;
+    left: 50%;
+    right: 50%;
+  }
+  .button-up {
+    bottom: 0;
+  }
+  .btn-base {
+    width: 40px;
+    right: 50%;
+    position: fixed;
+    background: #ffffff;
+    color: #606266;
+    -webkit-appearance: none;
+    text-align: center;
+    outline: 0;
+    font-size: 14px;
+  }
+  .btn-base :hover {
+    box-shadow: 5px #5a5a5a;
+  }
   .el-row {
     margin-bottom: 20px;
+    /* border: 2px solid black; */
+
   }
 
   .el-col {
     border-radius: 4px;
-    left: 150px;
+    /* border: 5px solid rgb(247, 0, 41); */
+    left: 10px;
+  }
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    width: 100%;
+    /* line-height: 160px;   */
   }
 
   .sticky-submenu {
