@@ -13,10 +13,10 @@
     <el-table
       ref="multipleTable"
       fit
-      height="250"
+      height="200"
       stripe
       highlight-current-row
-      style="width: 90%"
+      style="width: 100%"
       :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"

@@ -10,11 +10,15 @@
         :name="String(key)"
         :lazy="true"
       >
-        <data-table
-          :parent-uuid="windowUuid"
-          :container-uuid="item.uuid"
-          :panel-type="panelType"
-        />
+        <el-col :span="24">
+          <div class="paneltab">
+            <data-table
+              :parent-uuid="windowUuid"
+              :container-uuid="item.uuid"
+              :panel-type="panelType"
+            />
+          </div>
+        </el-col>
       </el-tab-pane>
     </template>
   </el-tabs>
@@ -100,7 +104,7 @@ export default {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
 }
   .paneltab {
-    border: 1px solid blue;
+    border: 1px solid #FFFFFF;
   }
 
   .el-row {
