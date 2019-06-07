@@ -68,20 +68,37 @@ export function zeroPad(number, pad = 2) {
  * @param {string} type Type value of return
  * @returns {object|string}
  */
-export function clientDateTime(type = '') {
-  // get current date from client
-  const date = new Date() // instance the objet Data
-  const currentDate = date.getFullYear() + '-' + zeroPad(date.getMonth() + 1) + '-' + zeroPad(date.getDate())
-  const currentTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+export function clientDateTime(date = null, type = '') {
+  if (typeof date === 'string') {
+    // instance the objet Data with date or time send
+    date = new Date(date)
+  } else {
+    // instance the objet Data with current date from client
+    date = new Date()
+  }
+
+  const currentDate = date.getFullYear() +
+    '-' + zeroPad(date.getMonth() + 1) +
+    '-' + zeroPad(date.getDate())
+
+  const currentTime = date.getHours() +
+    ':' + date.getMinutes() +
+    ':' + date.getSeconds()
+
   const currentDateTime = {
     date: currentDate,
     time: currentTime
   }
 
   if (type.toLowerCase() === 't') {
+    // time format HH:II:SS
     return currentDateTime.time
   } else if (type.toLowerCase() === 'd') {
+    // date format YYYY-MM-DD
     return currentDateTime.date
+  } else if (type.toLocaleLowerCase() === 'o') {
+    // object format
+    return currentDateTime
   }
   return currentDateTime.date + ' ' + currentDateTime.time
 }
