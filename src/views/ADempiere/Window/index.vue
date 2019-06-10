@@ -32,57 +32,59 @@
             :tabs-list="windowMetadata.tabsListChildren"
           />
         </detail> -->
-      <div v-if="this.$store.state.app.sidebar.opened">
-        <div class="container">
-          <div class="show">
-            <el-button
-              class="el-icon-arrow-up button-up btn"
-              :circle="true"
-              @click="handleChange()"
-            />
+      <div v-if="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
+        <div v-if="this.$store.state.app.sidebar.opened">
+          <div class="container">
+            <div class="show">
+              <el-button
+                class="el-icon-arrow-up button-up btn"
+                :circle="true"
+                @click="handleChange()"
+              />
 
-          </div>
-          <div class="container-panel-open">
-            <el-collapse-transition>
-              <div v-show="showPanel">
-                <el-button
-                  class="el-icon-arrow-down button-bottom btn"
-                  :circle="true"
-                  @click="handleChange()"
-                />
-                <tab-children
-                  :window-uuid="windowUuid"
-                  :tabs-list="windowMetadata.tabsListChildren"
-                />
-              </div>
-            </el-collapse-transition>
+            </div>
+            <div class="container-panel-open">
+              <el-collapse-transition>
+                <div v-show="showPanel">
+                  <el-button
+                    class="el-icon-arrow-down button-bottom btn"
+                    :circle="true"
+                    @click="handleChange()"
+                  />
+                  <tab-children
+                    :window-uuid="windowUuid"
+                    :tabs-list="windowMetadata.tabsListChildren"
+                  />
+                </div>
+              </el-collapse-transition>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-else-if="!this.$store.state.app.sidebar.opened">
-        <div class="container">
-          <div class="show">
-            <el-button
-              class="el-icon-arrow-up button-up btn"
-              :circle="true"
-              @click="handleChange()"
-            />
+        <div v-else-if="!this.$store.state.app.sidebar.opened">
+          <div class="container">
+            <div class="show">
+              <el-button
+                class="el-icon-arrow-up button-up btn"
+                :circle="true"
+                @click="handleChange()"
+              />
 
-          </div>
-          <div class="container-panel">
-            <el-collapse-transition>
-              <div v-show="showPanel">
-                <el-button
-                  class="el-icon-arrow-down button-bottom btn"
-                  :circle="true"
-                  @click="handleChange()"
-                />
-                <tab-children
-                  :window-uuid="windowUuid"
-                  :tabs-list="windowMetadata.tabsListChildren"
-                />
-              </div>
-            </el-collapse-transition>
+            </div>
+            <div class="container-panel">
+              <el-collapse-transition>
+                <div v-show="showPanel">
+                  <el-button
+                    class="el-icon-arrow-down button-bottom btn"
+                    :circle="true"
+                    @click="handleChange()"
+                  />
+                  <tab-children
+                    :window-uuid="windowUuid"
+                    :tabs-list="windowMetadata.tabsListChildren"
+                  />
+                </div>
+              </el-collapse-transition>
+            </div>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@
     :minlength="metadata.MinLength"
     :maxlength="metadata.MaxLength"
     :type="typeInput"
-    :placeholder="placeholder"
+    :placeholder="metadata.help"
     @blur="validateInput"
     @change="handleChange"
   />
@@ -30,10 +30,6 @@ export default {
     typeInput: {
       type: String,
       default: 'text'
-    },
-    placeholder: {
-      type: String,
-      default: 'Please input'
     },
     validateInput: {
       type: Function,

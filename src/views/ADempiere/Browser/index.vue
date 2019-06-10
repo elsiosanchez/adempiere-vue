@@ -17,28 +17,34 @@
           <div>{{ browserMetadata.description }}</div>
         </h3>
         <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
-        <panel
-          :container-uuid="containerUuid"
-          :metadata="browserMetadata"
-          :panel-type="panelType"
-        />
+        <el-collapse v-model="activeNames">
+          <el-collapse-item :title="browserMetadata.value" name="1">
+            <panel
+              :container-uuid="containerUuid"
+              :metadata="browserMetadata"
+              :panel-type="panelType"
+            />
+          </el-collapse-item>
+        </el-collapse>
       </el-col>
-      <div v-if="this.$store.state.app.sidebar.opened">
-        <div class="container-panel-open">
-          <data-table
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-          />
+      <el-col :span="24">
+        <div v-if="this.$store.state.app.sidebar.opened">
+          <div class="container-panel-open">
+            <data-table
+              :container-uuid="containerUuid"
+              :panel-type="panelType"
+            />
+          </div>
         </div>
-      </div>
-      <div v-else-if="!this.$store.state.app.sidebar.opened">
-        <div class="container-panel">
-          <data-table
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-          />
+        <div v-else-if="!this.$store.state.app.sidebar.opened">
+          <div class="container-panel">
+            <data-table
+              :container-uuid="containerUuid"
+              :panel-type="panelType"
+            />
+          </div>
         </div>
-      </div>
+      </el-col>
     </el-row>
   </div>
   <div v-else style="padding: 20px 100px">
@@ -79,6 +85,7 @@ export default {
       browserUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
       isLoading: false,
+      activeNames: [],
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
@@ -152,13 +159,13 @@ export default {
   }
 
   .container-panel-open {
-    position: fixed;
+    /* position: fixed; */
     bottom: 0;
     right: 0;
     border: 1px solid #99a9bf;
     background: #e5e9f2;
     z-index: 0;
-    width: calc(100% - 210px);
+    /* width: calc(100% - 210px); */
     transition: width 0.28s;
   }
   .sticky-submenu {
