@@ -23,11 +23,21 @@
           :panel-type="panelType"
         />
       </el-col>
-      <div class="container-panel">
-        <data-table
-          :container-uuid="containerUuid"
-          :panel-type="panelType"
-        />
+      <div v-if="this.$store.state.app.sidebar.opened">
+        <div class="container-panel-open">
+          <data-table
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+          />
+        </div>
+      </div>
+      <div v-else-if="!this.$store.state.app.sidebar.opened">
+        <div class="container-panel">
+          <data-table
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+          />
+        </div>
       </div>
     </el-row>
   </div>
@@ -130,12 +140,25 @@ export default {
     margin: 10px 0px !important;
   }
 
-.container-panel {
+  .container-panel {
     position: fixed;
     bottom: 0;
     right: 0;
     z-index: 0;
     width: calc(100% - 54px);
+    transition: width 0.28s;
+    border: 1px solid #99a9bf;
+    background: #e5e9f2;
+  }
+
+  .container-panel-open {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border: 1px solid #99a9bf;
+    background: #e5e9f2;
+    z-index: 0;
+    width: calc(100% - 210px);
     transition: width 0.28s;
   }
   .sticky-submenu {
