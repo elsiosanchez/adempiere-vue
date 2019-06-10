@@ -1,5 +1,5 @@
 <template>
-  <div v-if="processListData.length > 0" class="wrapper">
+  <div v-if="processListData.length > 0" class="app-container">
     <h3 class="warn-content text-center">
       Process Activity
     </h3>
@@ -25,7 +25,18 @@
               >
                 <el-button type="text" icon="el-icon-printer">{{ 'See Report' }}</el-button>
               </router-link>
-              <span slot="reference" type="text" class="name-wrapper">{{ scope.row[item] }}</span>
+              <span v-if="scope.row[item]" slot="reference" class="name-wrapper">
+                <el-tag v-if="scope.row[item]==='Completed'" slot="reference" type="success">
+                  {{ scope.row[item] }}
+                </el-tag>
+                <el-tag v-else-if="scope.row[item]==='Error'" slot="reference" type="danger">
+                  {{ scope.row[item] }}
+                </el-tag>
+                <el-tag v-else-if="scope.row[item]==='Processing'" slot="reference" type="info">
+                  {{ scope.row[item] }}
+                </el-tag>
+                <span v-else>{{ scope.row[item] }}</span>
+              </span>
               <el-popover title="Log Info or Summary" trigger="click" style="max-width: 300px;">
                 <template v-for="(log, index) in scope.row.Report.logs">
                   <div :key="index">
@@ -65,8 +76,7 @@ export default {
     return {
       errGif: errGif + '?' + +new Date(),
       tableColumns: ['Name', 'Description', 'Action', 'Status'],
-      showDialog: false,
-      status: ''
+      showDialog: false
     }
   },
   computed: {
@@ -125,7 +135,6 @@ export default {
 <style>
   .table {
     width: 100%;
-    padding: 15px;
   }
 
   .name-wrapper {
