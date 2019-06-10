@@ -3,16 +3,17 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
   state: {
-    recordSelection: [],
-    dataSelection: [],
-    dataRecord: []
+    recordSelection: []
   },
   mutations: {
     recordSelection(state, payload) {
-      if (payload.index > -1) {
+      if (payload.index > -1 && typeof payload.index !== 'undefined') {
         state.recordSelection.splice(payload.index, 1)
       }
       state.recordSelection.push(payload)
+    },
+    deleteRecortContainer(state, payload) {
+      state.recordSelection = payload
     }
   },
   actions: {
@@ -24,6 +25,12 @@ const data = {
         ...parameters,
         index: index
       })
+    },
+    deleteRecortContainer({ commit, state }, containerUuid) {
+      var record = state.recordSelection.filter(itemRecord => {
+        return itemRecord.containerUuid !== containerUuid
+      })
+      commit('deleteRecortContainer', record)
     },
     getObject: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {

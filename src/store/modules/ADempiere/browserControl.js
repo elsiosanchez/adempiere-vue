@@ -11,25 +11,30 @@ const browserControl = {
     }
   },
   actions: {
-    getBrowserSearch({ commit, dispatch, rootGetters }, browserUuid) {
+    /**
+     *
+     * @param {string} params.containerUuid, browsert to search record data
+     * @param {boolean} params.clearSelection, clear selection after search
+     */
+    getBrowserSearch({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         // parameters isQueryCriteria
-        var finalParameters = rootGetters.getParamsProcessToServer(browserUuid)
+        var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
         if (finalParameters.params.length > 0) {
-          var browser = rootGetters.getBrowser(browserUuid)
+          var browser = rootGetters.getBrowser(params.containerUuid)
           var parsedQuery = parseContext({
-            parentUuid: browserUuid,
-            containerUuid: browserUuid,
+            parentUuid: params.containerUuid,
+            containerUuid: params.containerUuid,
             value: browser.query
           })
           var parsedWhereClause = parseContext({
-            parentUuid: browserUuid,
-            containerUuid: browserUuid,
+            parentUuid: params.containerUuid,
+            containerUuid: params.containerUuid,
             value: browser.whereClause
           })
 
           var browserSearchQueryParameters = {
-            uuid: browserUuid,
+            uuid: params.containerUuid,
             query: parsedQuery,
             whereClause: parsedWhereClause,
             orderByClause: browser.orderByClause,
@@ -48,9 +53,13 @@ const browserControl = {
                 return values
               })
 
-              var selection = rootGetters.getDataRecordSelection(browserUuid)
-              commit('recordSelection', {
-                containerUuid: browserUuid,
+              var selection = []
+              if (!params.clearSelection) {
+                selection = rootGetters.getDataRecordSelection(params.containerUuid)
+              }
+
+              dispatch('recordSelection', {
+                containerUuid: params.containerUuid,
                 record: record,
                 selection: selection
               })

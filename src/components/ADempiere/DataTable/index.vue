@@ -178,10 +178,10 @@ export default {
         type: 'success'
       })
     },
-    handleSelection(row, index) {
+    handleSelection(rows, rowIndex) {
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
-        selection: row,
+        selection: rows,
         record: this.getDataDetail
       })
     },

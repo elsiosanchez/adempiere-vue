@@ -87,7 +87,10 @@ const panel = {
       })
       // Updated record result
       if (panel.panelType === 'browser') {
-        dispatch('getBrowserSearch', panel.uuid)
+        dispatch('getBrowserSearch', {
+          containerUuid: panel.uuid,
+          clearSelection: true
+        })
       }
     },
     notifyPanelChange({ state, dispatch }, payload) {
@@ -167,8 +170,13 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-      if (panel.panelType === 'browser') {
-        dispatch('getBrowserSearch', payload.containerUuid)
+      var isMandatory = field.isMandatory && field.isMandatoryFromLogic
+      var isDisplayed = field.isDisplayed && field.isDisplayedFromLogic && (isMandatory || field.isShowedFromUser)
+      if (panel.panelType === 'browser' && isDisplayed) {
+        dispatch('getBrowserSearch', {
+          containerUuid: payload.containerUuid,
+          clearSelection: true
+        })
       }
     },
     getPanelAndFields({ dispatch }, payload) {
