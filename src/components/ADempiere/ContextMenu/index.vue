@@ -187,6 +187,7 @@ export default {
       })
     },
     runAction(action) {
+      console.log(action.type)
       if (action.type === 'action') {
         // this.$notify.info({
         //   title: 'Info',
@@ -226,6 +227,32 @@ export default {
           })
         }
       } else if (action.type === 'process') {
+        this.$store.subscribeAction({
+          after: (action, state) => {
+            console.log(action)
+
+            if (action.type === 'startProcess') {
+              this.$notify.info({
+                title: 'Info',
+                message: 'Processing'
+              })
+            }
+            if (action.type === 'finishProcess') {
+              if (action.payload.isError) {
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'The process was not executed'
+                })
+              } else {
+                this.$notify({
+                  title: 'Success',
+                  message: 'process executed, see process activity',
+                  type: 'success'
+                })
+              }
+            }
+          }
+        })
         this.showModal(action)
       }
     }

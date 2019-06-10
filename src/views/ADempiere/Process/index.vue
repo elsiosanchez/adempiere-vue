@@ -60,7 +60,7 @@ export default {
   },
   beforeMount() {
     this.getProcess(this.$route.meta.uuid)
-    this.subscribeAction()
+    // this.subscribeAction()
   },
   methods: {
     isEmptyValue,
@@ -84,33 +84,35 @@ export default {
         this.isLoading = true
         this.processMetadata = process
       }
-    },
-    subscribeAction() {
-      this.$store.subscribeAction({
-        after: (action, state) => {
-          if (action.type === 'startProcess') {
-            this.$notify.info({
-              title: 'Info',
-              message: 'Processing'
-            })
-          }
-          if (action.type === 'finishProcess') {
-            if (action.payload.isError) {
-              this.$notify.error({
-                title: 'Error',
-                message: 'The process was not executed'
-              })
-            } else {
-              this.$notify({
-                title: 'Success',
-                message: 'process executed, see process activity',
-                type: 'success'
-              })
-            }
-          }
-        }
-      })
     }
+    // subscribeAction() {
+    //   // console.log(action.type)
+    //   this.$store.subscribeAction({
+    //     after: (action, state) => {
+    //       console.log(action)
+    //       if (action.type === 'startProcess') {
+    //         this.$notify.info({
+    //           title: 'Info',
+    //           message: 'Processing'
+    //         })
+    //       }
+    //       if (action.type === 'finishProcess') {
+    //         if (action.payload.isError) {
+    //           this.$notify.error({
+    //             title: 'Error',
+    //             message: 'The process was not executed'
+    //           })
+    //         } else {
+    //           this.$notify({
+    //             title: 'Success',
+    //             message: 'process executed, see process activity',
+    //             type: 'success'
+    //           })
+    //         }
+    //       }
+    //     }
+    //   })
+    // }
   }
 }
 </script>
