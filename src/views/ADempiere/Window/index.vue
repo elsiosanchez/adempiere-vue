@@ -60,11 +60,30 @@
         </div>
       </div>
       <div v-else-if="!this.$store.state.app.sidebar.opened">
-        <div class="container-panel">
-          <tab-children
-            :window-uuid="windowUuid"
-            :tabs-list="windowMetadata.tabsListChildren"
-          />
+        <div class="container">
+          <div class="show">
+            <el-button
+              class="el-icon-arrow-up button-up btn"
+              :circle="true"
+              @click="handleChange()"
+            />
+
+          </div>
+          <div class="container-panel">
+            <el-collapse-transition>
+              <div v-show="showPanel">
+                <el-button
+                  class="el-icon-arrow-down button-bottom btn"
+                  :circle="true"
+                  @click="handleChange()"
+                />
+                <tab-children
+                  :window-uuid="windowUuid"
+                  :tabs-list="windowMetadata.tabsListChildren"
+                />
+              </div>
+            </el-collapse-transition>
+          </div>
         </div>
       </div>
       <!-- </el-col> -->

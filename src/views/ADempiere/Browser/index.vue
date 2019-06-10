@@ -22,15 +22,13 @@
           :metadata="browserMetadata"
           :panel-type="panelType"
         />
-        <detail
-          :show-detail="true"
-        >
-          <data-table
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-          />
-        </detail>
       </el-col>
+      <div class="container-panel">
+        <data-table
+          :container-uuid="containerUuid"
+          :panel-type="panelType"
+        />
+      </div>
     </el-row>
   </div>
   <div v-else style="padding: 20px 100px">
@@ -45,7 +43,7 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-import Detail from '@/components/ADempiere/Panel/detail'
+// import Detail from '@/components/ADempiere/Panel/detail'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
@@ -54,7 +52,7 @@ export default {
   name: 'Browser',
   components: {
     Panel,
-    Detail,
+    // Detail,
     DataTable,
     ContextMenu,
     Modal
@@ -132,6 +130,14 @@ export default {
     margin: 10px 0px !important;
   }
 
+.container-panel {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 54px);
+    transition: width 0.28s;
+  }
   .sticky-submenu {
     position: absolute !important;
     right: 10px;
