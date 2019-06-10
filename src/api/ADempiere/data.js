@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie'
+import { getLanguage } from '@/lang/index'
 import { getToken } from '@/utils/auth'
 import DataRecord from '@adempiere/grpc-data-client'
 import { HOST_GRPC_DATA } from './constants'
@@ -8,7 +8,7 @@ function Instance() {
   return new DataRecord(
     HOST_GRPC_DATA,
     getToken(),
-    Cookies.get('language') || 'en_US'
+    getLanguage() || 'en_US'
   )
 }
 

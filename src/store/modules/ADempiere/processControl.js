@@ -53,9 +53,9 @@ const processControl = {
       }
       var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
 
-      var recordSelection = []
+      var selection = []
       if (typeof params.parentUuid !== undefined) {
-        recordSelection = rootGetters.getSelectionToServer(params.parentUuid)
+        selection = rootGetters.getSelectionToServer(params.parentUuid)
       }
 
       var processToRun = {
@@ -69,7 +69,7 @@ const processControl = {
         isDirectPrint: params.action.isDirectPrint,
         reportExportType: reportExportType,
         parameters: finalParameters.params,
-        selection: recordSelection
+        selection: selection
       }
       /* if (!processToRun.isReport) {
         commit('addStartedProcess', processToRun)
