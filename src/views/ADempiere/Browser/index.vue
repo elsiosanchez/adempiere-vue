@@ -18,7 +18,7 @@
         </h3>
         <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
         <el-collapse v-model="activeNames">
-          <el-collapse-item :title="browserMetadata.value" name="1">
+          <el-collapse-item :title="browserMetadata.name" name="1">
             <panel
               :container-uuid="containerUuid"
               :metadata="browserMetadata"
