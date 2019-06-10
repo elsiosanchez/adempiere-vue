@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie'
+import { getLanguage } from '@/lang/index'
 import { getToken } from '@/utils/auth'
 import DataRecord from '@adempiere/grpc-data-client'
 import { HOST_GRPC_DATA } from './constants'
@@ -8,7 +8,7 @@ function Instance() {
   return new DataRecord(
     HOST_GRPC_DATA,
     getToken(),
-    Cookies.get('language') || 'en_US'
+    getLanguage() || 'en_US'
   )
 }
 
@@ -76,13 +76,20 @@ export function runProcess(process) {
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
   processRequest.setReportexporttype(process.reportExportType)
-  if (process.parameters !== undefined) {
+  if (process.parameters !== undefined && process.parameters.length > 0) {
     process.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
       processRequest.addParameters(convertedParameter)
     })
   }
-  // processRequest.setParametersList(convertParameter())
+
+  if (process.selection !== undefined && process.selection.length > 0) {
+    process.selection.forEach(record => {
+      const convertedRecord = Instance.call(this).convertSelection(record)
+      processRequest.addSelections(convertedRecord)
+    })
+  }
+
   //  Run Process
   return Instance.call(this).requestProcess(processRequest)
 }
@@ -108,6 +115,7 @@ export function getBrowserSearch(browser) {
   criteria.setWhereclause(browser.whereClause)
   criteria.setOrderbyclause(browser.orderByClause)
   browserRequest.setCriteria(criteria)
+  /* isQueryCriteria fields parameters */
   if (browser.parameters !== undefined) {
     browser.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)

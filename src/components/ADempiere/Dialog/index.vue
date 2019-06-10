@@ -1,15 +1,27 @@
 <template>
-  <el-dialog :title="metadata.name" :visible="visibleDialog" :show-close="false" :width="width+'%'">
+  <el-dialog
+    :title="metadata.name"
+    :visible="isVisibleDialog"
+    :show-close="false"
+    :width="width+'%'"
+    :close-on-press-escape="true"
+    :close-on-click-modal="true"
+  >
     {{ metadata.description }}
     <panel
       :parent-uuid="parentUuid"
       :container-uuid="metadata.uuid"
       :metadata="metadata"
+      :is-view="false"
       :panel-type="'process'"
     />
     <span slot="footer" class="dialog-footer">
-      <el-button @click="closeDialog">Cancel</el-button>
-      <el-button type="primary" @click="runAction(metadata)">Confirm</el-button>
+      <el-button @click="closeDialog">
+        Cancel
+      </el-button>
+      <el-button type="primary" @click="runAction(metadata)">
+        Confirm
+      </el-button>
     </span>
   </el-dialog>
 </template>
@@ -35,6 +47,10 @@ export default {
       type: Object,
       required: true
     },
+    parentPanel: {
+      type: String,
+      default: undefined
+    },
     reportExportType: {
       type: String,
       default: ''
@@ -53,7 +69,7 @@ export default {
       }
       return 50
     },
-    visibleDialog() {
+    isVisibleDialog() {
       return this.$store.state.processControl.visibleDialog
     }
   },
@@ -62,31 +78,41 @@ export default {
       this.$store.dispatch('setShowDialog', undefined)
     },
     runAction(action) {
-      this.closeDialog()
-      this.$notify.info({
-        title: 'Info',
-        message: 'Processing ' + action.name
-      })
-      this.$store.dispatch('startProcess', {
-        action: action,
-        reportFormat: this.reportExportType,
-        containerUuid: action.uuid
-      })
-      if (action.isReport) {
-        this.$store.subscribeAction({
-          after: (action, state) => {
-            if (action.type === 'finishProcess') {
-              this.$router.push({
-                name: 'Report Viewer',
-                params: {
-                  processUuid: action.payload.processUuid,
-                  instanceUuid: action.payload.instanceUuid,
-                  fileName: action.payload.output.fileName
-                }
-              })
-              this.$store.dispatch('tagsView/delView', this.$route)
+      var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
+      if ((finalParameters.fields > 0 && finalParameters.params.length > 0) || finalParameters.fields === 0) {
+        this.closeDialog()
+        this.$notify.info({
+          title: 'Info',
+          message: 'Processing ' + action.name
+        })
+        this.$store.dispatch('startProcess', {
+          action: action,
+          reportFormat: this.reportExportType,
+          containerUuid: action.uuid,
+          parentUuid: this.parentUuid,
+          parentPanel: this.parentPanel
+        })
+        if (action.isReport) {
+          this.$store.subscribeAction({
+            after: (action, state) => {
+              if (action.type === 'finishProcess') {
+                this.$router.push({
+                  name: 'Report Viewer',
+                  params: {
+                    processUuid: action.payload.processUuid,
+                    instanceUuid: action.payload.instanceUuid,
+                    fileName: action.payload.output.fileName
+                  }
+                })
+                this.$store.dispatch('tagsView/delView', this.$route)
+              }
             }
-          }
+          })
+        }
+      } else {
+        this.$notify.info({
+          title: 'Info',
+          message: 'Some params empty.'
         })
       }
     }

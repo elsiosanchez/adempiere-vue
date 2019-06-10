@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.defaultValue,
+      value: this.metadata.value,
       showControls: true
     }
   },

@@ -1,11 +1,15 @@
 <template>
-  <div v-if="loading">
-    <context-menu class="sticky-submenu" />
+  <div v-if="isLoading">
+    <context-menu
+      class="sticky-submenu"
+      :parent-uuid="containerUuid"
+      :parent-panel="panelType"
+    />
     <modal
-      :visible="visibleDialog"
+      :visible="isVisisbleDialog"
       :metadata="processMetadata"
-      :parent-uuid="browserUuid"
-      @closeDialog="visibleDialog=true"
+      :parent-uuid="containerUuid"
+      @closeDialog="isVisisbleDialog=true"
     />
     <el-row :gutter="20">
       <el-col :span="24">
@@ -14,7 +18,7 @@
         </h3>
         <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
         <panel
-          :container-uuid="browserUuid"
+          :container-uuid="containerUuid"
           :metadata="browserMetadata"
           :panel-type="panelType"
         />
@@ -22,7 +26,7 @@
           :show-detail="true"
         >
           <data-table
-            :container-uuid="browserUuid"
+            :container-uuid="containerUuid"
             :panel-type="panelType"
           />
         </detail>
@@ -64,12 +68,11 @@ export default {
   data() {
     return {
       browserMetadata: {},
-      showPanel: true,
-      ocultar: true,
       browserUuid: this.$route.meta.uuid,
-      loading: false,
+      containerUuid: this.$route.meta.uuid,
+      isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
-      visibleDialog: this.$store.state.processControl.visibleDialog,
+      isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
       panelType: 'browser'
     }
@@ -78,7 +81,7 @@ export default {
     this.$store.subscribe(mutation => {
       if (mutation.type === 'setShowDialog') {
         if (typeof mutation.payload !== 'undefined') {
-          this.visibleDialog = true
+          this.isVisisbleDialog = true
           this.processMetadata = mutation.payload
         }
       }
@@ -97,7 +100,7 @@ export default {
     isEmptyValue,
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
-        containerUuid: this.browserUuid
+        containerUuid: this.containerUuid
       })
     },
     getBrowser(uuid = null) {
@@ -109,14 +112,14 @@ export default {
         this.$store.dispatch('getBrowserFromServer', uuid)
           .then(response => {
             this.browserMetadata = response
-            this.loading = true
+            this.isLoading = true
           })
           .catch(err => {
-            this.loading = true
+            this.isLoading = true
             console.log('Dictionary browse - Error ' + err.code + ': ' + err.message)
           })
       } else {
-        this.loading = true
+        this.isLoading = true
         this.browserMetadata = browser
       }
     }

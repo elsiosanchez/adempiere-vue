@@ -108,7 +108,7 @@ export default {
 
       for (const router of routes) {
         // skip hidden router
-        if (router.hidden) { continue }
+        // if (router.hidden) { continue }
 
         const data = {
           path: path.resolve(basePath, router.path),
@@ -117,7 +117,7 @@ export default {
 
         if (router.meta && router.meta.title) {
           // generate internationalized title
-          const i18ntitle = i18n.t(`route.${router.meta.title}`)
+          const i18ntitle = i18n.t(router.meta.title)
 
           data.title = [...data.title, i18ntitle]
 

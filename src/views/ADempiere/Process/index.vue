@@ -1,6 +1,11 @@
 <template>
-  <div v-if="loading">
-    <context-menu :report="processMetadata.isReport" class="sticky-submenu" />
+  <div v-if="isLoading">
+    <context-menu
+      class="sticky-submenu"
+      :parent-uuid="containerUuid"
+      :parent-panel="panelType"
+      :report="processMetadata.isReport"
+    />
     <el-row :gutter="20">
       <el-col :span="24">
         <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
@@ -47,13 +52,15 @@ export default {
     return {
       processMetadata: {},
       processUuid: this.$route.meta.uuid,
-      loading: false,
+      containerUuid: this.$route.meta.uuid,
+      isLoading: false,
       recordUuid: this.$route.params.uuidRecord,
       panelType: 'process'
     }
   },
   beforeMount() {
     this.getProcess(this.$route.meta.uuid)
+    this.subscribeAction()
   },
   methods: {
     isEmptyValue,
@@ -68,15 +75,41 @@ export default {
           type: this.panelType
         }).then(response => {
           this.processMetadata = response
-          this.loading = true
+          this.isLoading = true
         }).catch(err => {
-          this.loading = true
+          this.isLoading = true
           console.log('Dictionary Process - Error ' + err.code + ': ' + err.message)
         })
       } else {
-        this.loading = true
+        this.isLoading = true
         this.processMetadata = process
       }
+    },
+    subscribeAction() {
+      this.$store.subscribeAction({
+        after: (action, state) => {
+          if (action.type === 'startProcess') {
+            this.$notify.info({
+              title: 'Info',
+              message: 'Processing'
+            })
+          }
+          if (action.type === 'finishProcess') {
+            if (action.payload.isError) {
+              this.$notify.error({
+                title: 'Error',
+                message: 'The process was not executed'
+              })
+            } else {
+              this.$notify({
+                title: 'Success',
+                message: 'process executed, see process activity',
+                type: 'success'
+              })
+            }
+          }
+        }
+      })
     }
   }
 }

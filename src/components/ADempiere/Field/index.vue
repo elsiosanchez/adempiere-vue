@@ -12,7 +12,7 @@
         :value-model="recordDataFields"
         :required="isMandatory()"
         :readonly="!isReadOnly()"
-        :load-record="loadRecord"
+        :load-record="isLoadRecord"
       />
     </el-form-item>
   </el-col>
@@ -49,7 +49,7 @@ export default {
       type: Object,
       default: () => ({})
     },
-    loadRecord: {
+    isLoadRecord: {
       type: Boolean,
       default: false
     },
@@ -61,7 +61,7 @@ export default {
       type: Number,
       default: undefined
     },
-    label: {
+    isShowlabel: {
       type: Boolean,
       default: true
     }
@@ -126,7 +126,7 @@ export default {
       return this.field.isMandatory && this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
-      if (!this.label) {
+      if (!this.isShowlabel) {
         return undefined
       }
       if (this.verifyIsFieldOnly(this.field.displayType)) {

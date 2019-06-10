@@ -5,6 +5,8 @@
       :filterable="true"
       placeholder="Filtrable Items"
       multiple
+      collapse-tags
+      clearable
       :automatic-dropdown="true"
       value-key="key"
       @change="addField"
@@ -43,7 +45,8 @@ export default {
   },
   methods: {
     isDisplayed(field) {
-      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedFromUser || field.isMandatory || field.isMandatoryFromLogic || field.isDisplayedFromLogic)
+      var isMandatory = field.isMandatory || field.isMandatoryFromLogic
+      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedFromUser || field.isDisplayedFromLogic || isMandatory)
       if (field.isShowedFromUser) {
         this.newFields.push(field.columnName)
       }

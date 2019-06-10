@@ -13,8 +13,9 @@ const browserControl = {
   actions: {
     getBrowserSearch({ commit, dispatch, rootGetters }, browserUuid) {
       return new Promise((resolve, reject) => {
+        // parameters isQueryCriteria
         var finalParameters = rootGetters.getParamsProcessToServer(browserUuid)
-        if (finalParameters.length > 0) {
+        if (finalParameters.params.length > 0) {
           var browser = rootGetters.getBrowser(browserUuid)
           var parsedQuery = parseContext({
             parentUuid: browserUuid,
@@ -32,7 +33,7 @@ const browserControl = {
             query: parsedQuery,
             whereClause: parsedWhereClause,
             orderByClause: browser.orderByClause,
-            parameters: finalParameters
+            parameters: finalParameters.params
           }
           // Add validation compare browserSearchQueryParameters
           getBrowserSearch(browserSearchQueryParameters)

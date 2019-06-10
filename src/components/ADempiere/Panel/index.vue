@@ -1,11 +1,15 @@
 <template>
   <div class="wrapper">
     <el-form
+      v-if="isLoadPanel"
       v-model="dataRecords"
       :label-position="labelPosition"
       label-width="200px"
     >
-      <template v-if="typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'">
+      <template
+        v-if="typeof firstGroup !== 'undefined' &&
+          typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'"
+      >
         <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
           <div
             v-if="checkInGroup(firstGroup.groupFinal)
@@ -43,7 +47,7 @@
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
                     :metadata-field="subItem"
-                    :load-record="loadRecord"
+                    :is-load-record="isLoadRecord"
                     :recorddata-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
@@ -95,7 +99,7 @@
                         :parent-uuid="parentUuid"
                         :container-uuid="containerUuid"
                         :metadata-field="subItem"
-                        :load-record="loadRecord"
+                        :is-load-record="isLoadRecord"
                         :recorddata-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
@@ -109,6 +113,11 @@
         </template>
       </div>
     </el-form>
+    <div v-else>
+      <h3>
+        Loading fields...
+      </h3>
+    </div>
   </div>
 </template>
 
@@ -151,6 +160,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isView: {
+      type: Boolean,
+      default: true
+    },
     panelType: {
       type: String,
       default: 'window'
@@ -161,14 +174,10 @@ export default {
       fieldList: [],
       dataRecords: {},
       labelPosition: 'top',
-      lineNumber: 1,
       gutterRow: 0,
       sizesFields: SizeField,
-      minSizeColumns: 3,
-      preSizeColumns: 12,
-      maxSizeColumns: 24,
-      loadPanel: false,
-      loadRecord: false,
+      isLoadPanel: false,
+      isLoadRecord: false,
       uuidRecord: this.$route.params.uuidRecord,
       fieldGroups: [],
       firstGroup: {},
@@ -242,10 +251,13 @@ export default {
     generatePanel(fieldList) {
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
-      this.firstGroup = this.fieldGroups[0]
+      this.firstGroup = undefined
+      if (this.fieldGroups[0]) {
+        this.firstGroup = this.fieldGroups[0]
+        this.size = this.firstGroup.metadataFields.length
+      }
       this.fieldGroups.shift()
-      this.size = this.firstGroup.metadataFields.length
-      this.loadPanel = true
+      this.isLoadPanel = true
       if (this.isEdit && this.panelType === 'window') {
         this.getData(this.tableName)
       }
@@ -271,7 +283,7 @@ export default {
         console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }
-      // if (this.loadRecord === false) {
+      // if (this.isLoadRecord === false) {
       this.$store.dispatch('getObject', {
         table: table,
         recordUuid: uuidRecord,

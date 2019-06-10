@@ -14,7 +14,7 @@
         </div>
         <el-collapse-transition class="paneltab">
           <div v-show="showPanel">
-            <div v-if="this.$store.state.app.sidebar.opened">
+            <div>
               <div class="container-table">
                 <div class="show-container">
                   <el-button
