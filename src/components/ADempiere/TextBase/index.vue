@@ -4,6 +4,7 @@
     :pattern="pattern"
     :minlength="metadata.MinLength"
     :maxlength="metadata.MaxLength"
+    :rows="5"
     :type="typeInput"
     :placeholder="metadata.help"
     @blur="validateInput"
