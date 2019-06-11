@@ -62,6 +62,9 @@ export default {
     if (this.metadata.isShowedFromUser) {
       this.getData()
     }
+    if (this.metadata.value !== '') {
+      this.getData()
+    }
   },
   mounted() {
     this.$store.dispatch('setContext', {

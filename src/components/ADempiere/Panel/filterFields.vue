@@ -6,8 +6,6 @@
       placeholder="Filtrable Items"
       multiple
       collapse-tags
-      clearable
-      :automatic-dropdown="true"
       value-key="key"
       @change="addField"
     >

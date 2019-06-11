@@ -1,6 +1,7 @@
 <template>
   <el-input
     v-model="value"
+    :rows="5"
     :pattern="pattern"
     :minlength="metadata.MinLength"
     :maxlength="metadata.MaxLength"

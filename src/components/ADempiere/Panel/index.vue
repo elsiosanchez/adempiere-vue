@@ -26,16 +26,16 @@
                   {{ determinateGroup(firstGroup.groupFinal, 'header') }}
                 </span>
                 <el-popover
-                  placement="top"
+                  placement="left"
                   title="Selected fields"
-                  width="200"
+                  width="250"
                   trigger="click"
                 >
                   <filter-fields
                     :container-uuid="containerUuid"
                     :panel-type="panelType"
                   />
-                  <el-button slot="reference" style="float: right; padding: 3px 0">
+                  <el-button slot="reference" type="text" style="float: right; padding: 3px 0">
                     Add Optional Fields
                   </el-button>
                 </el-popover>
@@ -78,16 +78,16 @@
                       {{ determinateGroup(item.groupFinal, 'header') }}
                     </span>
                     <el-popover
-                      placement="top"
+                      placement="left"
                       title="Selected fields"
-                      width="200"
+                      width="250"
                       trigger="click"
                     >
                       <filter-fields
                         :container-uuid="containerUuid"
                         :panel-type="panelType"
                       />
-                      <el-button slot="reference" style="float: right; padding: 3px 0">
+                      <el-button slot="reference" type="text" style="float: right; padding: 3px 0">
                         Add Optional Fields
                       </el-button>
                     </el-popover>
