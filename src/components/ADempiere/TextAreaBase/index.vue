@@ -4,6 +4,7 @@
     :load-record="loadRecord"
     :value-model="valueModel"
     :pattern="pattern"
+    :placeholder="metadata.help"
     :type-input="typeInput"
   />
 </template>

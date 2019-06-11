@@ -4,7 +4,7 @@
     :format="formatView"
     :value-format="formatSend"
     :type="typePicker"
-    placeholder="Pick a day"
+    :placeholder="metadata.help"
     range-separator="To"
     start-placeholder="Start date"
     end-placeholder="End date"

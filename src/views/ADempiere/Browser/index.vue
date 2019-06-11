@@ -17,19 +17,33 @@
           <div>{{ browserMetadata.description }}</div>
         </h3>
         <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
-        <panel
-          :container-uuid="containerUuid"
-          :metadata="browserMetadata"
-          :panel-type="panelType"
-        />
-        <detail
-          :show-detail="true"
-        >
-          <data-table
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-          />
-        </detail>
+        <el-collapse v-model="activeNames">
+          <el-collapse-item :title="browserMetadata.name" name="1">
+            <panel
+              :container-uuid="containerUuid"
+              :metadata="browserMetadata"
+              :panel-type="panelType"
+            />
+          </el-collapse-item>
+        </el-collapse>
+      </el-col>
+      <el-col :span="24">
+        <div v-if="this.$store.state.app.sidebar.opened">
+          <div class="container-panel-open">
+            <data-table
+              :container-uuid="containerUuid"
+              :panel-type="panelType"
+            />
+          </div>
+        </div>
+        <div v-else-if="!this.$store.state.app.sidebar.opened">
+          <div class="container-panel">
+            <data-table
+              :container-uuid="containerUuid"
+              :panel-type="panelType"
+            />
+          </div>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -45,16 +59,15 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-import Detail from '@/components/ADempiere/Panel/detail'
+// import Detail from '@/components/ADempiere/Panel/detail'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
-
 export default {
   name: 'Browser',
   components: {
     Panel,
-    Detail,
+    // Detail,
     DataTable,
     ContextMenu,
     Modal
@@ -71,6 +84,7 @@ export default {
       browserUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
       isLoading: false,
+      activeNames: [],
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
@@ -131,7 +145,26 @@ export default {
   .warn-content{
     margin: 10px 0px !important;
   }
-
+  .container-panel {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 54px);
+    transition: width 0.28s;
+    border: 1px solid #99a9bf;
+    background: #e5e9f2;
+  }
+  .container-panel-open {
+    /* position: fixed; */
+    bottom: 0;
+    right: 0;
+    border: 1px solid #99a9bf;
+    background: #e5e9f2;
+    z-index: 0;
+    /* width: calc(100% - 210px); */
+    transition: width 0.28s;
+  }
   .sticky-submenu {
     position: absolute !important;
     right: 10px;

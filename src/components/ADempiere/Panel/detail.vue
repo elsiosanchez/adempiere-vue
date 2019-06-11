@@ -82,7 +82,6 @@ export default {
     margin-left: 10px;
     border-top: 10px solid #606266;
   }
-
   .container {
     bottom: 0;
     z-index: 0;
@@ -93,16 +92,13 @@ export default {
     margin-left: 10px;
     border-top: 10px solid #606266;
   }
-
   .container:hover .show-button {
     visibility: visible;
     height: 50%;
   }
-
   .container:hover button {
     visibility: visible;
   }
-
   .show-button {
     visibility: hidden;
     position: absolute;
@@ -112,12 +108,10 @@ export default {
     transition: all 0.5s ease-in;
     display: flex;
   }
-
   .buttonp {
     visibility: hidden;
     transition: all .5s ease-in;
   }
-
   .container-table {
     bottom: 0;
     height: 50%;
@@ -128,18 +122,15 @@ export default {
     color: #424242;
     background-color: #fff;
   }
-
   .container-table:hover .show-container {
     visibility: visible;
   }
-
   .container-table:hover .buttonp2 {
     visibility: visible;
   }
   .container-table:hover .transi-box-menu-menu-hiden {
     visibility: visible;
   }
-
   .show-container {
     visibility: hidden;
     position: absolute;
@@ -150,7 +141,6 @@ export default {
     transition: all 0.5s ease-in;
     display: flex;
   }
-
   .buttonp2 {
     visibility: visible;
     transition: all .5s ease-in;
@@ -176,7 +166,6 @@ export default {
     bottom: 50%;
     z-index: 2;
   }
-
   .transi-box-menu {
     bottom: 0;
     width: calc(100% - 170px);
@@ -188,7 +177,6 @@ export default {
     box-sizing: border-box;
     height: 50%;
   }
-
   .transi-box-menu-menu-hiden {
     margin-bottom: 0px;
     width: calc(100% + 10px);
@@ -202,11 +190,9 @@ export default {
     box-sizing: border-box;
     margin-right: 2px;
   }
-
   .el-row {
     margin-bottom: 20px;
   }
-
   .el-col {
     border-radius: 4px;
     left: 150px;

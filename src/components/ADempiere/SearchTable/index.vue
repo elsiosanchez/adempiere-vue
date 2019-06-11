@@ -2,7 +2,7 @@
   <el-autocomplete
     v-model="state"
     :fetch-suggestions="querySearchAsync"
-    placeholder="Please input"
+    :placeholder="metadata.help"
     @select="handleSelect"
   />
 </template>

@@ -5,7 +5,7 @@
     :minlength="metadata.MinLength"
     :maxlength="metadata.MaxLength"
     :type="typeInput"
-    :placeholder="placeholder"
+    :placeholder="metadata.help"
     @blur="validateInput"
     @change="handleChange"
   />

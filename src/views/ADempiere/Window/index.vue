@@ -32,39 +32,60 @@
             :tabs-list="windowMetadata.tabsListChildren"
           />
         </detail> -->
-      <div v-if="this.$store.state.app.sidebar.opened">
-        <div class="container">
-          <div class="show">
-            <el-button
-              class="el-icon-arrow-up button-up btn"
-              :circle="true"
-              @click="handleChange()"
-            />
+      <div v-if="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
+        <div v-if="this.$store.state.app.sidebar.opened">
+          <div class="container">
+            <div class="show">
+              <el-button
+                class="el-icon-arrow-up button-up btn"
+                :circle="true"
+                @click="handleChange()"
+              />
 
-          </div>
-          <div class="container-panel-open">
-            <el-collapse-transition>
-              <div v-show="showPanel">
-                <el-button
-                  class="el-icon-arrow-down button-bottom btn"
-                  :circle="true"
-                  @click="handleChange()"
-                />
-                <tab-children
-                  :window-uuid="windowUuid"
-                  :tabs-list="windowMetadata.tabsListChildren"
-                />
-              </div>
-            </el-collapse-transition>
+            </div>
+            <div class="container-panel-open">
+              <el-collapse-transition>
+                <div v-show="showPanel">
+                  <el-button
+                    class="el-icon-arrow-down button-bottom btn"
+                    :circle="true"
+                    @click="handleChange()"
+                  />
+                  <tab-children
+                    :window-uuid="windowUuid"
+                    :tabs-list="windowMetadata.tabsListChildren"
+                  />
+                </div>
+              </el-collapse-transition>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-else-if="!this.$store.state.app.sidebar.opened">
-        <div class="container-panel">
-          <tab-children
-            :window-uuid="windowUuid"
-            :tabs-list="windowMetadata.tabsListChildren"
-          />
+        <div v-else-if="!this.$store.state.app.sidebar.opened">
+          <div class="container">
+            <div class="show">
+              <el-button
+                class="el-icon-arrow-up button-up btn"
+                :circle="true"
+                @click="handleChange()"
+              />
+
+            </div>
+            <div class="container-panel">
+              <el-collapse-transition>
+                <div v-show="showPanel">
+                  <el-button
+                    class="el-icon-arrow-down button-bottom btn"
+                    :circle="true"
+                    @click="handleChange()"
+                  />
+                  <tab-children
+                    :window-uuid="windowUuid"
+                    :tabs-list="windowMetadata.tabsListChildren"
+                  />
+                </div>
+              </el-collapse-transition>
+            </div>
+          </div>
         </div>
       </div>
       <!-- </el-col> -->
@@ -85,7 +106,6 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 // the submenu and sticky must be placed in the layout
 import Submenu from '@/components/ADempiere/ContextMenu'
 import Modal from '@/components/ADempiere/Dialog'
-
 export default {
   name: 'Window',
   components: {
@@ -175,7 +195,6 @@ export default {
     display: flex;
     color: #424242;
 }
-
 	.show {
   position: absolute;
   bottom: 0;
@@ -184,12 +203,10 @@ export default {
   height: 300px;
   transition: all 0.5s ease-in;
   display: flex;
-
 }
   .container:hover .show{
     height: 30px;
   }
-
   .btn{
     animation-name: btn;
     transition-delay: 0.6s;
@@ -201,7 +218,6 @@ export default {
   .btn-base :hover {
     box-shadow: 5px #5a5a5a;
   }
-
   .avatar {
     width: 54px;
     height: 28px;
@@ -274,9 +290,7 @@ export default {
   .el-row {
     margin-bottom: 20px;
     /* border: 2px solid black; */
-
   }
-
   .el-col {
     border-radius: 4px;
     /* border: 5px solid rgb(247, 0, 41); */
@@ -289,7 +303,6 @@ export default {
     width: 100%;
     /* line-height: 160px;   */
   }
-
   .sticky-submenu {
     position: absolute !important;
     right: 10px;

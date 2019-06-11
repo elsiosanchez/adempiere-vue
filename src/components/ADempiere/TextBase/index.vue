@@ -1,12 +1,11 @@
 <template>
   <el-input
     v-model="value"
-    :rows="5"
     :pattern="pattern"
     :minlength="metadata.MinLength"
     :maxlength="metadata.MaxLength"
     :type="typeInput"
-    :placeholder="placeholder"
+    :placeholder="metadata.help"
     @blur="validateInput"
     @change="handleChange"
   />
@@ -32,10 +31,6 @@ export default {
       type: String,
       default: 'text'
     },
-    placeholder: {
-      type: String,
-      default: 'Please input'
-    },
     validateInput: {
       type: Function,
       default: () => undefined
@@ -47,7 +42,7 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.value,
+      value: this.metadata.defaultValue,
       isReadOnly: false,
       patternFileName: '[A-Za-zñÑ0-9-_]{1,}',
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
