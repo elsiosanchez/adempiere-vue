@@ -37,18 +37,35 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        commit('SET_CURRENTROLE', data.currentRole)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      login({ username: username.trim(), password: password })
+        .then(response => {
+          var role = response.getRole()
+
+          var data = {
+            id: response.getId(),
+            token: response.getUuid(),
+            name: response.getUserinfo().getName(),
+            avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
+            currentRole: {
+              id: role.getId(),
+              uuid: role.getUuid(),
+              name: role.getName(),
+              desctipcion: role.getDescription(),
+              clientId: role.getClientid(),
+              clientName: role.getClientname(),
+              organizationsList: role.getOrganizationsList()
+            }
+          }
+
+          commit('SET_TOKEN', data.token)
+          commit('SET_CURRENTROLE', data.currentRole.name)
+          setToken(data.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
-
   // get user info
   getInfo({ commit, state, rootGetters }) {
     return new Promise((resolve, reject) => {
@@ -73,7 +90,6 @@ const actions = {
       })
     })
   },
-
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
@@ -88,7 +104,6 @@ const actions = {
       })
     })
   },
-
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
@@ -98,7 +113,6 @@ const actions = {
       resolve()
     })
   },
-
   // dynamically modify permissions
   changeRoles({ commit, dispatch }, role) {
     commit('SET_CURRENTROLE', role)
