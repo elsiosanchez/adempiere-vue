@@ -283,7 +283,9 @@ export default {
       cursor: pointer;
       font-size: 18px;
       color: #000;
+      position: fixed;
       vertical-align: middle;
+      left: 224px;
     }
     .header-search-input {
       font-size: 16px;
@@ -307,7 +309,7 @@ export default {
     &.show-input-seacrh {
       .header-search-input {
         width: 210px;
-        margin-left: 10px;
+        margin-left: 50px;
       }
     }
   }

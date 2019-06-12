@@ -18,28 +18,18 @@
             :style="determinateGroup(firstGroup.groupFinal, 'style')"
             class="card"
           >
+            <div class="select-filter">
+              <span>
+                {{ determinateGroup(firstGroup.groupFinal, 'header') }}
+              </span>
+              <filter-fields
+                :container-uuid="containerUuid"
+                :panel-type="panelType"
+              />
+            </div>
             <el-card
               shadow="hover"
             >
-              <div slot="header" class="clearfix">
-                <span>
-                  {{ determinateGroup(firstGroup.groupFinal, 'header') }}
-                </span>
-                <el-popover
-                  placement="left"
-                  title="Selected fields"
-                  width="250"
-                  trigger="click"
-                >
-                  <filter-fields
-                    :container-uuid="containerUuid"
-                    :panel-type="panelType"
-                  />
-                  <el-button slot="reference" type="text" style="float: right; padding: 3px 0">
-                    Add Optional Fields
-                  </el-button>
-                </el-popover>
-              </div>
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
                   <field
@@ -73,7 +63,7 @@
                 <el-card
                   shadow="hover"
                 >
-                  <div slot="header" class="clearfix">
+                  <div slot="header" class="-filter">
                     <span>
                       {{ determinateGroup(item.groupFinal, 'header') }}
                     </span>
@@ -558,7 +548,16 @@ export default {
     perspective: 1000;
     backface-visibility: hidden;
   }
-
+ .select-filter {
+    /* padding: 10px; */
+       /* padding: 10px; */
+    /* margin: 0 0 1em; */
+    position: fixed;
+    width: 26% !important;
+    top: 11px;
+    left: 70%;
+    /* perspective: 1000; */
+  }
   .el-card {
     width: 100% !important;
   }

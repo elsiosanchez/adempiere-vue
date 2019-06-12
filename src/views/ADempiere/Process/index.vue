@@ -11,7 +11,12 @@
         <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
           {{ processMetadata.name }}
         </h3>
-        <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" />
+        <el-collapse v-model="activeNames">
+          <el-collapse-item title="Help" name="1">
+            <div v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" />
+          </el-collapse-item>
+        </el-collapse>
+        <!-- <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" /> -->
         <panel
           :position-tab="processMetadata.accesLevel"
           :container-uuid="processUuid"
@@ -55,6 +60,7 @@ export default {
       containerUuid: this.$route.meta.uuid,
       isLoading: false,
       recordUuid: this.$route.params.uuidRecord,
+      activeNames: [],
       panelType: 'process'
     }
   },
@@ -120,6 +126,13 @@ export default {
     margin: 0px 0px !important;
     padding-top: 39px !important;
   }
+  /* .el-collapse {
+    border-top: 1px solid #e6ebf5;
+    border-bottom: 1px solid #e6ebf5;
+    position: relative;
+    width: 100%;
+    left: 14px;
+  } */
   .sticky-submenu {
     position: absolute !important;
     right: 0;

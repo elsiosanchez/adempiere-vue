@@ -17,7 +17,7 @@
           <div>{{ browserMetadata.description }}</div>
         </h3>
         <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
-        <el-collapse v-model="activeNames">
+        <el-collapse v-model="activeNames" class="container-collasep-open">
           <el-collapse-item :title="browserMetadata.name" name="1">
             <panel
               :container-uuid="containerUuid"
@@ -145,6 +145,13 @@ export default {
   .warn-content{
     margin: 10px 0px !important;
   }
+  /* .el-collapse {
+     border-top: 1px solid #e6ebf5;
+    border-bottom: 1px solid #e6ebf5;
+    position: relative;
+    width: 100%;
+    left: 14px;
+  } */
   .container-panel {
     position: fixed;
     bottom: 0;
@@ -152,15 +159,25 @@ export default {
     z-index: 0;
     width: calc(100% - 54px);
     transition: width 0.28s;
-    border: 1px solid #99a9bf;
-    background: #e5e9f2;
+    border: 1px solid #e5e9f2;
+    /* background: #e5e9f2; */
   }
   .container-panel-open {
     /* position: fixed; */
     bottom: 0;
     right: 0;
-    border: 1px solid #99a9bf;
-    background: #e5e9f2;
+    border: 1px solid #e5e9f2;
+    /* background: #e5e9f2; */
+    z-index: 0;
+    /* width: calc(100% - 210px); */
+    transition: width 0.28s;
+  }
+  .container-collasep-open {
+    /* position: fixed; */
+    bottom: 0;
+    right: 0;
+    border: 1px solid #e5e9f2;
+    /* background: #e5e9f2; */
     z-index: 0;
     /* width: calc(100% - 210px); */
     transition: width 0.28s;
