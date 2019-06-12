@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
@@ -8,6 +8,7 @@ const state = {
   avatar: '',
   introduction: '',
   currentRole: '',
+  currentUuid: getCurrentRole(),
   roles: []
 }
 
@@ -52,14 +53,14 @@ const actions = {
               name: role.getName(),
               desctipcion: role.getDescription(),
               clientId: role.getClientid(),
-              clientName: role.getClientname(),
-              organizationsList: role.getOrganizationsList()
+              clientName: role.getClientname()
             }
           }
 
           commit('SET_TOKEN', data.token)
           commit('SET_CURRENTROLE', data.currentRole.name)
           setToken(data.token)
+          setCurrentRole(data.currentRole.uuid)
           resolve()
         }).catch(error => {
           reject(error)
@@ -78,9 +79,21 @@ const actions = {
         if (!response.roles || response.roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
+
+        var currentRole = {}
+        var name = rootGetters.currentRole
+        if (typeof name !== undefined && name !== '') {
+          currentRole.name = name
+        } else {
+          var rol = response.roles.find(itemRol => {
+            return itemRol.uuid === getCurrentRole()
+          })
+          currentRole.name = rol.name
+        }
+
         commit('SET_ROLES', response.roles)
         commit('SET_NAME', response.name)
-        // commit('SET_CURRENTROLE', rootGetters.currentRole)
+        commit('SET_CURRENTROLE', currentRole.name)
         commit('SET_AVATAR', response.avatar)
         commit('SET_INTRODUCTION', response.introduction)
         resolve(response)
@@ -96,6 +109,7 @@ const actions = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
+        removeCurrentRole()
         resetRouter()
         resolve()
       }).catch(error => {
@@ -131,9 +145,16 @@ const actions = {
   }
 }
 
+const getters = {
+  getCurrentRole: (state) => {
+    return state.currentRole
+  }
+}
+
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
+  getters
 }

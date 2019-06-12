@@ -28,13 +28,14 @@ export function getInfo(token) {
           uuid: itemRol.getUuid(),
           name: itemRol.getName(),
           description: itemRol.getDescription(),
-          clientName: itemRol.getClientname(),
-          clientId: itemRol.getClientid()
+          clientId: itemRol.getClientid(),
+          clientName: itemRol.getClientname()
         }
       })
 
       const response = {
         name: session.getUserinfo().getName(),
+        comments: session.getUserinfo().getComments(),
         description: session.getUserinfo().getDescription(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
