@@ -14,9 +14,9 @@
       ref="multipleTable"
       fit
       height="200"
+      style="width: 100%"
       stripe
       highlight-current-row
-      style="width: 100%"
       :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"
@@ -26,6 +26,7 @@
         type="selection"
         :prop="keyColumn"
         fixed
+        min-width="50"
       />
       <template v-for="(item, key) in fieldList">
         <el-table-column
@@ -34,8 +35,7 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
-          min-width="120"
-          width="270"
+          width="150"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
@@ -59,7 +59,6 @@
 
 <script>
 import Field from '@/components/ADempiere/Field'
-
 export default {
   name: 'DataTable',
   components: {
@@ -91,11 +90,13 @@ export default {
   },
   data() {
     return {
+      loading: true,
       labelPosition: 'top',
       searchTable: '', // text from search
       showSearch: false, // show input from search,
       panel: {},
       fieldList: [],
+      isLoaded: false,
       keyColumn: '', // column as isKey in fieldList
       tableData: this.getDataDetail,
       multipleSelection: this.getDataSelection,
@@ -114,6 +115,11 @@ export default {
     }
   },
   watch: {
+    isLoaded: function() {
+      if (typeof this.tableName !== 'undefined') {
+        this.getData(this.tableName)
+      }
+    },
     showSearch(value) {
       if (value) {
         document.body.addEventListener('click', this.close)
@@ -139,7 +145,6 @@ export default {
       } else {
         this.showSearch = !this.showSearch
       }
-
       if (this.showSearch) {
         this.$refs.headerSearchInput && this.$refs.headerSearchInput.focus()
       }
@@ -178,10 +183,10 @@ export default {
         type: 'success'
       })
     },
-    handleSelection(rows, rowIndex) {
+    handleSelection(row, index) {
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
-        selection: rows,
+        selection: row,
         record: this.getDataDetail
       })
     },
@@ -234,6 +239,7 @@ export default {
           this.generatePanel()
         }).catch(err => {
           console.warn('Field Load Error ' + err.code + ': ' + err.message)
+          this.isLoaded = false
         })
       } else {
         this.panel = panel
@@ -244,6 +250,7 @@ export default {
       var panel = this.panel
       this.keyColumn = panel.keyColumn
       this.fieldList = this.sortFields(panel.fieldList)
+      this.isLoaded = true
       // this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
       if (this.isEdit && this.panelType === 'window') {
         this.getData(this.tableName)
@@ -272,14 +279,14 @@ export default {
 <style lang="scss" scoped>
   .search-detail {
     font-size: 0 !important;
-
     .search-icon {
       cursor: pointer;
       font-size: 18px;
       color: #000;
+      position: fixed;
       vertical-align: middle;
+      left: 224px;
     }
-
     .header-search-input {
       font-size: 16px;
       transition: width 0.2s;
@@ -289,7 +296,6 @@ export default {
       border-radius: 0;
       display: inline-block;
       vertical-align: middle;
-
       /deep/ .el-input__inner {
         border-radius: 0;
         border: 0;
@@ -300,11 +306,10 @@ export default {
         vertical-align: middle;
       }
     }
-
     &.show-input-seacrh {
       .header-search-input {
         width: 210px;
-        margin-left: 10px;
+        margin-left: 50px;
       }
     }
   }
