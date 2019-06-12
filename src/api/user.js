@@ -13,6 +13,7 @@ function Instance() {
 // Make login by UserName and password, this function can return user data for show
 export function login(loginValues) {
   return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language).then(session => {
+    console.log(session.getRole())
     const response = {
       data: {
         token: session.getUuid(),
@@ -37,19 +38,42 @@ export function getInfo(token) {
       return {
         id: roles.getId(),
         uuid: roles.getUuid(),
-        name: roles.getName()
+        name: roles.getName(),
+        description: roles.getDescription(),
+        clientName: roles.getClientname(),
+        clientId: roles.getClientid()
       }
     })
+    // console.log(session.getRolesList().getName())
+    console.log(session)
+    console.log(session.getUserinfo())
     rolList.forEach(element => {
       roles.push(element.name)
     })
     const response = {
+
       data: {
         name: session.getUserinfo().getName(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
         roles: rolList
+      }
+    }
+    return response
+  }).catch(error => {
+    console.log(error)
+  })
+}
+// change role
+export function changeRole(token) {
+  return Instance.call(this).requestChangeRole(token).then(session => {
+    console.log(session.getRoleuuid())
+    const response = {
+      data: {
+        token: session.getUuid(),
+        // TODO: Add from ADempiere
+        roleUuid: session.getRoleuuid()
       }
     }
     return response

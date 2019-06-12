@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, changeRole } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -38,7 +38,11 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
+        console.log(username)
+        console.log(password)
+        console.log(userInfo)
         const { data } = response
+        console.log(data)
         commit('SET_TOKEN', data.token)
         commit('SET_CURRENTROLE', data.currentRole)
         setToken(data.token)
@@ -73,13 +77,37 @@ const actions = {
       })
     })
   },
+  // change role
+  changeRole({ commit, state, rootGetters }, userInfo) {
+    const { username, password } = userInfo
+    return new Promise((resolve, reject) => {
+      changeRole({ username: username, password: password }).then(response => {
+        const { data } = response
+        console.log(data)
+        commit('SET_TOKEN', data.token)
+        commit('SET_CURRENTROLE', data.role)
+        setToken(data.token)
+        resolve()
+        // state.token).then(response => {
+        // const { role } = data
+        // console.log(data)
+        // // commit('SET_TOKEN', data.token)
+        // commit('SET_ROLES', role)
+        // // setToken(data.token)
+        // resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ commit, state, rootGetters }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
+        commit('SET_CURRENTROLE', rootGetters.currentRole)
+        commit('SET_ROLES', '')
         removeToken()
         resetRouter()
         resolve()
@@ -101,20 +129,24 @@ const actions = {
 
   // dynamically modify permissions
   changeRoles({ commit, dispatch }, role) {
+    console.log(getToken())
+    console.log(role)
     commit('SET_CURRENTROLE', role)
-    // return new Promise(async resolve => {
-    //   const token = role
-    //   commit('SET_TOKEN', token)
-    //   // commit('SET_CURRENTROLE',)
-    //   setToken(token)
-    //   // const { roles } = await dispatch('getInfo')
 
-    //   // // // generate accessible routes map based on   roles
-    //   // const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+    return new Promise(async resolve => {
+      const token = role
+      commit('SET_TOKEN', token)
+      //   // commit('SET_CURRENTROLE',)
+      // setToken(token)
+      console.log(token)
+      // const { roles } = await dispatch('getInfo')
+
+      // // // generate accessible routes map based on   roles
+      // const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
 
     //   // // // dynamically add accessible routes
-    //   // router.addRoutes(accessRoutes)
-    // })
+    // router.addRoutes(accessRoutes)
+    })
   }
 }
 
