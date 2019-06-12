@@ -124,7 +124,7 @@ const data = {
     getParamsProcessToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
       var fieldList = rootGetters.getPanelParameters(containerUuid, true)
       var parameters = []
-
+      var fieldsMandatory = []
       if (fieldList.fields > 0) {
         var fieldListRange = []
         parameters = fieldList.params.map(fieldItem => {
@@ -133,6 +133,9 @@ const data = {
               columnName: fieldItem.columnName + '_To',
               value: fieldItem.valueTo
             })
+          }
+          if (fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) {
+            fieldsMandatory.push(fieldItem)
           }
           return {
             columnName: fieldItem.columnName,
@@ -143,7 +146,8 @@ const data = {
       }
       return {
         params: parameters,
-        fields: fieldList.fields
+        fields: fieldList.fields,
+        fieldsMandatory: fieldsMandatory.length
       }
     },
     /**

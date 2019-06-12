@@ -79,12 +79,13 @@ export default {
     },
     runAction(action) {
       var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
-      if ((finalParameters.fields > 0 && finalParameters.params.length > 0) || finalParameters.fields === 0) {
+      if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
         this.closeDialog()
         this.$notify.info({
           title: 'Info',
           message: 'Processing ' + action.name
         })
+
         this.$store.dispatch('startProcess', {
           action: action,
           reportFormat: this.reportExportType,
@@ -109,6 +110,10 @@ export default {
             }
           })
         }
+        this.$store.dispatch('tagsView/delView', this.$route)
+          .then(({ visitedViews }) => {
+            this.$router.push('/')
+          })
       } else {
         this.$notify.info({
           title: 'Info',

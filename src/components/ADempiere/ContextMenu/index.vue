@@ -193,7 +193,7 @@ export default {
         //   message: 'Processing ' + action.name
         // })
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
-        if ((finalParameters.fields > 0 && finalParameters.params.length > 0) || finalParameters.fields === 0) {
+        if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
           this.$store.dispatch(action.action, {
             action: action,
             containerUuid: this.$route.meta.uuid, // EVALUATE IF IS action.uuid
@@ -213,12 +213,14 @@ export default {
                         fileName: action.payload.output.fileName
                       }
                     })
-                    this.$store.dispatch('tagsView/delView', this.$route)
                   }
                 }
               }
             })
+          } else {
+            this.$router.push('/')
           }
+          this.$store.dispatch('tagsView/delView', this.$route)
         } else {
           this.$notify.info({
             title: 'Info',

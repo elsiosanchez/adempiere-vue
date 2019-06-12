@@ -59,7 +59,7 @@ export default {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
     }
-    if (this.metadata.isShowedFromUser) {
+    if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
       this.getData()
     }
     if (this.metadata.value !== '') {
