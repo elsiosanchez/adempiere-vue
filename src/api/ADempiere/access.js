@@ -21,24 +21,26 @@ export function getInfo(token) {
   return Instance.call(this).requestUserInfoFromSession(token)
     .then(session => {
       var roles = []
-      var rolList = session.getRolesList().map((roles) => {
+      var rolesList = session.getRolesList().map(itemRol => {
+        roles.push(itemRol.getName())
         return {
-          id: roles.getId(),
-          uuid: roles.getUuid(),
-          name: roles.getName()
+          id: itemRol.getId(),
+          uuid: itemRol.getUuid(),
+          name: itemRol.getName(),
+          description: itemRol.getDescription(),
+          clientName: itemRol.getClientname(),
+          clientId: itemRol.getClientid()
         }
       })
-      rolList.forEach(element => {
-        roles.push(element.name)
-      })
+
       const response = {
-        data: {
-          name: session.getUserinfo().getName(),
-          // TODO: Add from ADempiere
-          avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-          introduction: session.getUserinfo().getDescription(),
-          roles: rolList
-        }
+        name: session.getUserinfo().getName(),
+        description: session.getUserinfo().getDescription(),
+        // TODO: Add from ADempiere
+        avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
+        introduction: session.getUserinfo().getDescription(),
+        roles: rolesList,
+        rolesList: rolesList
       }
       return response
     }).catch(error => {
