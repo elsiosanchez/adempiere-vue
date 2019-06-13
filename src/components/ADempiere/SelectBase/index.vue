@@ -1,7 +1,6 @@
 <template>
   <el-select
     v-model="value"
-    :metadata="metadata"
     :filterable="true"
     :placeholder="metadata.help"
     value-key="key"

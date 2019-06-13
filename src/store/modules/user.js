@@ -1,4 +1,5 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, changeRole } from '@/api/user'
+import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -44,21 +45,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
         .then(response => {
-          var role = response.getRole()
-
           var data = {
             id: response.getId(),
             token: response.getUuid(),
             name: response.getUserinfo().getName(),
             avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-            currentRole: {
-              id: role.getId(),
-              uuid: role.getUuid(),
-              name: role.getName(),
-              desctipcion: role.getDescription(),
-              clientId: role.getClientid(),
-              clientName: role.getClientname()
-            }
+            currentRole: convertRoleFromGRPC(response.getRole())
           }
 
           commit('SET_TOKEN', data.token)
@@ -126,8 +118,35 @@ const actions = {
     })
   },
   // dynamically modify permissions
-  changeRoles({ commit, dispatch }, role) {
-    commit('SET_CURRENTROLE', role)
+  changeRoles({ commit, state }, roleUuid) {
+    /**
+     * @param {string} attributes.sessionUuid
+     * @param {string} attributes.roleUuid
+     * @param {string} attributes.organizationUuid
+     * @param {string} attributes.warehouseUuid
+     */
+    return new Promise((resolve, reject) => {
+      changeRole({
+        sessionUuid: getToken(),
+        roleUuid: roleUuid,
+        organizationUuid: null,
+        warehouseUuid: null
+      }).then(response => {
+        var role = convertRoleFromGRPC(response.getRole())
+        commit('SET_ROL', role)
+
+        commit('SET_CURRENTROLE', role.name)
+        setCurrentRole(role.uuid)
+        commit('SET_TOKEN', response.getUuid())
+        setToken(response.getUuid())
+        resolve({
+          ...role,
+          sessionUuid: response.getUuid()
+        })
+      }).catch(error => {
+        reject(error)
+      })
+    })
     // return new Promise(async resolve => {
     //   const token = role
     //   commit('SET_TOKEN', token)
@@ -150,6 +169,12 @@ const getters = {
   },
   getRoles: (state) => {
     return state.roles
+  },
+  getRol: (state) => {
+    return state.rol
+  },
+  getState: () => {
+    return state
   }
 }
 

@@ -273,3 +273,15 @@ export function parseContext(context) {
 
   return outStr
 }	//	parseContext
+
+export function convertRoleFromGRPC(roleGRPC) {
+  return {
+    id: roleGRPC.getId(),
+    uuid: roleGRPC.getUuid(),
+    name: roleGRPC.getName(),
+    desctiption: roleGRPC.getDescription(),
+    clientId: roleGRPC.getClientid(),
+    clientName: roleGRPC.getClientname(),
+    organizationsList: roleGRPC.getOrganizationsList()
+  }
+}
