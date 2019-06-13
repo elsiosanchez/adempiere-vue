@@ -8,7 +8,8 @@ const state = {
   avatar: '',
   introduction: '',
   currentRole: '',
-  currentUuid: getCurrentRole(),
+  rol: {},
+  currentRolUuid: getCurrentRole(),
   roles: []
 }
 
@@ -30,6 +31,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_ROL: (state, rol) => {
+    state.rol = rol
   }
 }
 
@@ -59,6 +63,7 @@ const actions = {
 
           commit('SET_TOKEN', data.token)
           commit('SET_CURRENTROLE', data.currentRole.name)
+          commit('SET_ROL', data.currentRole)
           setToken(data.token)
           setCurrentRole(data.currentRole.uuid)
           resolve()
@@ -68,7 +73,7 @@ const actions = {
     })
   },
   // get user info
-  getInfo({ commit, state, rootGetters }) {
+  getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         if (!response) {
@@ -80,20 +85,14 @@ const actions = {
           reject('getInfo: roles must be a non-null array!')
         }
 
-        var currentRole = {}
-        var name = rootGetters.currentRole
-        if (typeof name !== undefined && name !== '') {
-          currentRole.name = name
-        } else {
-          var rol = response.roles.find(itemRol => {
-            return itemRol.uuid === getCurrentRole()
-          })
-          currentRole.name = rol.name
-        }
+        var rol = response.roles.find(itemRol => {
+          return itemRol.uuid === getCurrentRole()
+        })
 
         commit('SET_ROLES', response.roles)
         commit('SET_NAME', response.name)
-        commit('SET_CURRENTROLE', currentRole.name)
+        commit('SET_ROL', rol)
+        commit('SET_CURRENTROLE', rol.name)
         commit('SET_AVATAR', response.avatar)
         commit('SET_INTRODUCTION', response.introduction)
         resolve(response)
@@ -148,6 +147,9 @@ const actions = {
 const getters = {
   getCurrentRole: (state) => {
     return state.currentRole
+  },
+  getRoles: (state) => {
+    return state.roles
   }
 }
 

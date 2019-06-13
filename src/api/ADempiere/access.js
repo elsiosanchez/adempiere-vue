@@ -13,7 +13,21 @@ function Instance() {
 
 // Make login by UserName and password, this function can return user data for show
 export function login(loginValues) {
-  return Instance.call(this).requestLoginDefault(loginValues.username, loginValues.password, loginValues.language)
+  if (typeof loginValues.role !== 'undefined' && loginValues.role.trim() !== '') {
+    return Instance.call(this).requestLogin(
+      loginValues.username,
+      loginValues.password,
+      loginValues.role,
+      null,
+      loginValues.language
+    )
+  } else {
+    return Instance.call(this).requestLoginDefault(
+      loginValues.username,
+      loginValues.password,
+      loginValues.language
+    )
+  }
 }
 
 // Get User Info from session Uuid or token
@@ -57,4 +71,15 @@ export function logout(sessionUuid) {
 // Get User menu from server
 export function getMenu(sessionUuid) {
   return Instance.call(this).requestUserMenuFromSession(sessionUuid)
+}
+
+/**
+ *
+ * @param {string} attributes.sessionUuid
+ * @param {string} attributes.roleUuid
+ * @param {string} attributes.organizationUuid
+ * @param {string} attributes.warehouseUuid
+ */
+export function changeRole(attributes) {
+  return Instance.call(this).requestChangeRole(attributes)
 }
