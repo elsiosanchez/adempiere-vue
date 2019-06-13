@@ -62,7 +62,12 @@ export default {
     if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
       this.getData()
     }
-    if (this.metadata.value !== '') {
+    if (this.metadata.value !== '' && this.valueModel !== '') {
+      this.metadata.value = this.valueModel
+      this.getData()
+    }
+    if (this.valueModel !== '') {
+      this.value = this.valueModel
       this.getData()
     }
   },
@@ -77,7 +82,9 @@ export default {
   methods: {
     parseContext,
     getData() {
-      this.value = this.metadata.value
+      if (this.metadata.value !== '') {
+        this.value = this.metadata.value
+      }
       var parsedDirectQuery = this.parseContext({
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,

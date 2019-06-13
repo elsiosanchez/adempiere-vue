@@ -60,6 +60,11 @@ export default {
   created() {
     this.checkValueFormat()
   },
+  beforeMount() {
+    if (this.valueModel !== '') {
+      this.value = this.valueModel
+    }
+  },
   mounted() {
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,

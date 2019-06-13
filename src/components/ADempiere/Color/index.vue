@@ -35,6 +35,11 @@ export default {
       this.value = this.valueModel
     }
   },
+  beforeMount() {
+    if (this.valueModel !== '') {
+      this.value = this.valueModel
+    }
+  },
   mounted() {
     this.$store.dispatch('setContext', {
       parentUuid: this.metadata.parentUuid,

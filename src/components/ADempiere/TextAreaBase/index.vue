@@ -37,6 +37,11 @@ export default {
       typeInput: 'textarea',
       pattern: undefined
     }
+  },
+  beforeMount() {
+    if (this.valueModel !== '') {
+      this.value = this.valueModel
+    }
   }
 }
 </script>

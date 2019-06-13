@@ -40,9 +40,10 @@
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
               <field
+                :is-data-table="true"
                 :is-show-label="false"
                 :metadata-field="item"
-                :recorddata-fields="scope.row[item.columnName]"
+                :record-data-fields="scope.row[item.columnName]"
                 size="small"
                 @keyup.enter.native="confirmEdit(scope.row)"
               />

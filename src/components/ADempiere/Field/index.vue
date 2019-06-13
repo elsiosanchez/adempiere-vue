@@ -61,9 +61,13 @@ export default {
       type: Number,
       default: undefined
     },
-    isShowlabel: {
+    isShowLabel: {
       type: Boolean,
       default: true
+    },
+    isDataTable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -115,7 +119,7 @@ export default {
       return span
     },
     isDisplayed() {
-      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser)
+      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.isDataTable)
       //  Verify for displayed and is active
       return this.field.isActive && isDisplayed
     },
@@ -126,7 +130,7 @@ export default {
       return this.field.isMandatory && this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
-      if (!this.isShowlabel) {
+      if (!this.isShowLabel) {
         return undefined
       }
       if (this.verifyIsFieldOnly(this.field.displayType)) {
