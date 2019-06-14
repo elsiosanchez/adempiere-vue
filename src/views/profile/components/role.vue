@@ -1,16 +1,17 @@
 <template>
   <el-form>
     <el-form-item label="Current Rol">
-      Current Rol: {{ getRol.name }}
+      {{ getRol.name }}
     </el-form-item>
+
     <el-form-item label="Client Name">
       {{ getRol.clientName }}
     </el-form-item>
+
     <el-form-item label="Description">
-      Description: {{ getRol.description }}
+      {{ getRol.description }}
     </el-form-item>
 
-    {{ value }}
     <el-form-item label="Change Rol">
       <el-select
         v-model="value"
@@ -27,7 +28,6 @@
       </el-select>
     </el-form-item>
   </el-form>
-
 </template>
 
 <script>
