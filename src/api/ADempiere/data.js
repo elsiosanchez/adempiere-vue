@@ -129,7 +129,10 @@ export function getBrowserSearch(browser) {
 
 // Request a Process Activity list
 export function requestProcessActivity() {
-  var processActivityRequest = Instance.call(this).getProcessActivityRequest()
   //  Get Process Activity
-  return Instance.call(this).requestProcessActivity(processActivityRequest)
+  return Instance.call(this).requestProcessActivity()
+}
+
+export function getRecentItems() {
+  return Instance.call(this).requestRecentItems()
 }

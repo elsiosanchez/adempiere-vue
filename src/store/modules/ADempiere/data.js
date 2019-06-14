@@ -1,9 +1,10 @@
-import { getObject, getObjectListFromCriteria } from '@/api/ADempiere/data'
+import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere/data'
 import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
   state: {
-    recordSelection: []
+    recordSelection: [],
+    recentItems: []
   },
   mutations: {
     recordSelection(state, payload) {
@@ -14,6 +15,9 @@ const data = {
     },
     deleteRecortContainer(state, payload) {
       state.recordSelection = payload
+    },
+    setRecentItems(state, payload) {
+      state.recentItems = payload
     }
   },
   actions: {
@@ -85,6 +89,31 @@ const data = {
           })
           .catch(error => {
             console.log('Error getting data with criteria' + error)
+            reject(error)
+          })
+      })
+    },
+    getRecentItemsFromServer: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        getRecentItems()
+          .then(response => {
+            var recentItemsList = response.getRecentitemsList()
+            var recentItems = recentItemsList.map(item => {
+              var tabUuid = item.getTabuuid()
+              return {
+                displayName: item.getDisplayname(),
+                menuUuid: item.getMenuuuid(),
+                menuName: item.getMenuname(),
+                windowUuid: item.getWindowuuid(),
+                tableId: item.getTableid(),
+                recordId: item.getRecordid(),
+                tabUuid: tabUuid
+              }
+            })
+            commit('setRecentItems', recentItems)
+            resolve(recentItems)
+          })
+          .catch(error => {
             reject(error)
           })
       })
@@ -194,6 +223,9 @@ const data = {
         })
       }
       return selectionToServer
+    },
+    getRecentItems: (state) => {
+      return state.recentItems
     }
   }
 }

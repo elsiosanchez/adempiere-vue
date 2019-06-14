@@ -10,6 +10,9 @@
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
+              <el-tab-pane label="Recent Items" name="recentItems">
+                <recent-items />
+              </el-tab-pane>
               <el-tab-pane label="Activity" name="activity">
                 <activity />
               </el-tab-pane>
@@ -37,15 +40,16 @@ import UserCard from './components/UserCard'
 import Activity from './components/Activity'
 import Timeline from './components/Timeline'
 import Account from './components/Account'
+import RecentItems from '@/views/profile/components/recentItems'
 import Role from '@/views/profile/components/role'
 
 export default {
   name: 'Profile',
-  components: { UserCard, Activity, Timeline, Account, Role },
+  components: { UserCard, Activity, Timeline, Account, Role, RecentItems },
   data() {
     return {
       user: {},
-      activeTab: 'activity'
+      activeTab: 'recentItems'
     }
   },
   computed: {
