@@ -7,7 +7,7 @@
         ref="headerSearchInput"
         v-model="searchTable"
         size="mini"
-        placeholder="Search"
+        :placeholder="$t('table.search')"
         class="header-search-input"
       />
     </div>
