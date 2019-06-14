@@ -69,7 +69,7 @@ export default {
   },
   beforeMount() {
     this.getProcess(this.$route.meta.uuid)
-    this.subscribeAction()
+    // this.subscribeAction()
   },
   methods: {
     isEmptyValue,

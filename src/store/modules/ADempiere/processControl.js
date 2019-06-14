@@ -2,6 +2,7 @@ import {
   runProcess,
   requestProcessActivity
 } from '@/api/ADempiere/data'
+import { showNotification } from '@/utils/ADempiere/notification'
 
 const processControl = {
   state: {
@@ -61,6 +62,7 @@ const processControl = {
       var processToRun = {
         uuid: params.action.uuid,
         name: params.action.name,
+        processName: params.processName,
         description: params.action.description,
         help: params.action.help,
         isReport: params.action.isReport,
@@ -71,6 +73,12 @@ const processControl = {
         parameters: finalParameters.params,
         selection: selection
       }
+      var notificationParams = {
+        title: 'Processing',
+        message: processToRun.processName,
+        type: 'info'
+      }
+      showNotification(notificationParams)
       /* if (!processToRun.isReport) {
         commit('addStartedProcess', processToRun)
       } */
@@ -120,6 +128,7 @@ const processControl = {
             instanceUuid: response.getInstanceuuid().trim(),
             pdf: link.href,
             processUuid: processToRun.uuid.trim(),
+            processName: processToRun.processName,
             isError: response.getIserror(),
             isProcessing: response.getIsprocessing(),
             isReport: processToRun.isReport,
@@ -211,9 +220,21 @@ const processControl = {
         typeof processOutput.instanceUuid !== 'undefined' &&
         typeof processOutput.processUuid !== 'undefined' &&
         typeof processOutput.output !== 'undefined') {
+        var notificationParams = {
+          title: 'Succes',
+          message: processOutput.processName + ' executed, see process activity',
+          type: 'success'
+        }
+        showNotification(notificationParams)
         commit('setReportValues', processOutput)
         commit('addStartedProcess', processOutput)
       } else {
+        notificationParams = {
+          title: 'Error',
+          message: 'The process ' + processOutput.processName + ' was not executed',
+          type: 'error'
+        }
+        showNotification(notificationParams)
         commit('addStartedProcess', processOutput)
         commit('setReportValues', processOutput)
       }
