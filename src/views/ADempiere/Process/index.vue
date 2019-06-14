@@ -13,19 +13,17 @@
             {{ processMetadata.name }}
           </h3>
           <el-collapse v-model="activeNames">
-            <el-collapse-item title="Search Criteria" name="1">
-              <panel
-                :position-tab="processMetadata.accesLevel"
-                :container-uuid="processUuid"
-                :metadata="processMetadata"
-                :is-edit="isEdit"
-                :panel-type="panelType"
-              />
-            </el-collapse-item>
             <el-collapse-item title="Help" name="2" aling="center">
               <div v-show="!isEmptyValue(processMetadata.help)" class="content-help" v-html="processMetadata.help" />
               <div v-show="isEmptyValue(processMetadata.help)" class="content-help"> Does not contain help </div>
             </el-collapse-item>
+            <panel
+              :position-tab="processMetadata.accesLevel"
+              :container-uuid="processUuid"
+              :metadata="processMetadata"
+              :is-edit="isEdit"
+              :panel-type="panelType"
+            />
           </el-collapse>
         </el-card>
         <!-- <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" /> -->
