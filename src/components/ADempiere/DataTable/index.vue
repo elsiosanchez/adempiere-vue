@@ -1,12 +1,13 @@
 <template>
   <el-form :label-position="labelPosition">
-    <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
-      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+    <br>
+    <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" class="search-detail" align="right">
+      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" @submit.prevent.native="false" />
       <el-input
         ref="headerSearchInput"
         v-model="searchTable"
         size="mini"
-        placeholder="Type to search"
+        placeholder="Search"
         class="header-search-input"
       />
     </div>
@@ -280,16 +281,24 @@ export default {
 <style lang="scss" scoped>
   .search-detail {
     font-size: 0 !important;
+    width: 98%;
     .search-icon {
+      // cursor: pointer;
+      // font-size: 18px;
+      // vertical-align: middle;
       cursor: pointer;
       font-size: 18px;
       color: #000;
-      position: fixed;
+      position: absolute;
       vertical-align: middle;
-      left: 224px;
+      // left: 2px;
+    }
+    .container-table {
+      width: 100%;
+      height: 90%;
     }
     .header-search-input {
-      font-size: 16px;
+      font-size: 12px;
       transition: width 0.2s;
       width: 0;
       overflow: hidden;
@@ -297,6 +306,7 @@ export default {
       border-radius: 0;
       display: inline-block;
       vertical-align: middle;
+
       /deep/ .el-input__inner {
         border-radius: 0;
         border: 0;
@@ -309,8 +319,8 @@ export default {
     }
     &.show-input-seacrh {
       .header-search-input {
-        width: 210px;
-        margin-left: 50px;
+        width: 200px;
+        margin-left: 22px;
       }
     }
   }

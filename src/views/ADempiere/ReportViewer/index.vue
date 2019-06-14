@@ -11,6 +11,11 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="pdfLink" />
+        <iframe v-else-if="reportFormatValue === 'csv'" class="content" :src="pdfLink" />
+        <iframe v-else-if="reportFormatValue === 'ps'" class="content" :src="pdfLink" />
+        <iframe v-else-if="reportFormatValue === 'xml'" class="content" :src="pdfLink" />
+        <iframe v-else-if="reportFormatValue === 'ssv'" class="content" :src="pdfLink" />
+        <iframe v-else-if="reportFormatValue === 'arxml'" class="content" :src="pdfLink" />
         <div v-else-if="reportFormatValue === 'html'" class="content-html">
           <el-scrollbar wrap-class="scroll">
             <div v-html="reportContentValue" />
@@ -21,12 +26,12 @@
             <pre v-text="reportContentValue" />
           </el-scrollbar>
         </div>
-        <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'">
-          <el-table :data="reportContentValue" border highlight-current-row class="content-excel">
-            <pre>{{ reportContentValue }}</pre>
-            <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
-          </el-table>
-        </div>
+        <!-- <div v-else-if="reportFormatValue === 'csv'" class="content-csv" :src="pdfLink">
+          <el-scrollbar wrap-class="scroll">
+            <pre v-text="reportContentValue" />
+          </el-scrollbar>
+        </div> -->
+        <iframe v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" :src="pdfLink" />
       </el-col>
     </el-row>
     <modal
@@ -56,7 +61,7 @@ export default {
   },
   data() {
     return {
-      pdfLink: '',
+      pdfLink: this.$store.getters.getProcessResult.pdf,
       reportFormat: '',
       reportContent: ``,
       reportHeader: '',
@@ -80,6 +85,7 @@ export default {
   },
   created() {
     this.getCachedReport(this.$route.params.instanceUuid)
+    console.log(this.$store.getters.getProcessResult.pdf)
   },
   mounted() {
     this.reloadContextMenu()
@@ -123,6 +129,10 @@ export default {
     padding: 10px;
 	}
   .content-txt{
+		width: 100%;
+    padding: 10px;
+	}
+  .content-csv{
 		width: 100%;
     padding: 10px;
 	}

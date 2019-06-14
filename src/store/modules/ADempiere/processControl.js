@@ -108,9 +108,17 @@ const processControl = {
           } else {
             logList = []
           }
+          var mime = require('mime-types')
+          console.log(mime)
+          var blob = new Blob([response.getOutput().getOutputstream()], { type: mime.lookup(response.getOutput().getReportexporttype()) })
+          var link = document.createElement('a')
+          console.log(blob)
+          link.href = window.URL.createObjectURL(blob)
+          console.log(link.href)
           processResult = {
             action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
+            pdf: link.href,
             processUuid: processToRun.uuid.trim(),
             isError: response.getIserror(),
             isProcessing: response.getIsprocessing(),

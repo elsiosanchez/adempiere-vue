@@ -18,18 +18,15 @@
             :style="determinateGroup(firstGroup.groupFinal, 'style')"
             class="card"
           >
-            <div class="select-filter">
-              <span>
-                {{ determinateGroup(firstGroup.groupFinal, 'header') }}
-              </span>
-              <filter-fields
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-              />
-            </div>
             <el-card
               shadow="hover"
             >
+              <div class="select-filter">
+                <filter-fields
+                  :container-uuid="containerUuid"
+                  :panel-type="panelType"
+                />
+              </div>
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
                   <field
@@ -41,6 +38,7 @@
                     :recorddata-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
+                    :is-group="false"
                   />
                 </template>
               </el-row>
@@ -63,24 +61,16 @@
                 <el-card
                   shadow="hover"
                 >
-                  <div slot="header" class="-filter">
+                  <div slot="header" class="clearfix">
                     <span>
                       {{ determinateGroup(item.groupFinal, 'header') }}
                     </span>
-                    <el-popover
-                      placement="left"
-                      title="Selected fields"
-                      width="250"
-                      trigger="click"
-                    >
+                    <div class="select-filter-header">
                       <filter-fields
                         :container-uuid="containerUuid"
                         :panel-type="panelType"
                       />
-                      <el-button slot="reference" type="text" style="float: right; padding: 3px 0">
-                        Add Optional Fields
-                      </el-button>
-                    </el-popover>
+                    </div>
                   </div>
                   <el-row :gutter="gutterRow">
                     <template v-for="(subItem, subKey) in item.metadataFields">
@@ -93,6 +83,7 @@
                         :recorddata-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
+                        :is-group="true"
                       />
                     </template>
                   </el-row>
@@ -529,17 +520,16 @@ export default {
   .cards {
     column-count: 2;  /*numbers of columns */
     column-gap: 1em;
-    margin-top: 10px;
+
   }
 
   .cards-not-group {
     column-count: 1; /* numbers of columns */
     column-gap: 1em;
-    margin-top: 10px;
+
   }
 
   .card {
-    padding: 10px;
     margin: 0 0 1em;
     width: 100% !important;
     cursor: pointer;
@@ -549,14 +539,16 @@ export default {
     backface-visibility: hidden;
   }
  .select-filter {
-    /* padding: 10px; */
-       /* padding: 10px; */
-    /* margin: 0 0 1em; */
-    position: fixed;
-    width: 26% !important;
-    top: 11px;
-    left: 70%;
-    /* perspective: 1000; */
+    width: 20% !important;
+    position: absolute;
+    left: 80%;
+    top: 0%;
+  }
+  .select-filter-header {
+    width: 39% !important;
+    position: absolute;
+    left: 61%;
+    top: 0%;
   }
   .el-card {
     width: 100% !important;

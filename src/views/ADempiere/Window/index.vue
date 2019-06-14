@@ -191,7 +191,7 @@ export default {
     width: calc(100% - 200px);
     transition: width 0.28s;
     position: fixed;
-    height: 200px;
+    height: 20px;
     display: flex;
     color: #424242;
 }
@@ -215,6 +215,13 @@ export default {
   .container:hover .btn{
     visibility: visible;
   }
+  .el-tabs__content {
+    overflow: hidden;
+    position: relative;
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
   .btn-base :hover {
     box-shadow: 5px #5a5a5a;
   }
@@ -238,11 +245,13 @@ export default {
     right: 0;
     z-index: 0;
     width: calc(100% - 54px);
+    /* height: 40%; */
     transition: width 0.28s;
   }
   .container-panel-open {
     position: fixed;
     bottom: 0;
+    /* height: calc(100% - (20px + 30px)); */
     right: 0;
     z-index: 0;
     width: calc(100% - 200px);
