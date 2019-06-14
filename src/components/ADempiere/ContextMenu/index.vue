@@ -1,6 +1,6 @@
 <template>
   <div :class="isMobileClassmenu()">
-    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="click" unique-opened>
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
       <el-submenu v-if="device==='mobile'" class="el-menu-item" index="1">
         <template slot="title">
           <i class="el-icon-more" />
@@ -198,7 +198,8 @@ export default {
             action: action,
             containerUuid: this.$route.meta.uuid, // EVALUATE IF IS action.uuid
             parentUuid: this.parentUuid,
-            parentPanel: this.parentPanel
+            parentPanel: this.parentPanel,
+            processName: this.$route.meta.title
           })
           if (action.isReport) {
             this.$store.subscribeAction({
