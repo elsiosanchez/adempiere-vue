@@ -187,4 +187,7 @@ export default {
     right: 10px;
     top: 0;
   }
+  .el-collapse-item__header {
+    height: 39px !important;
+  }
 </style>
