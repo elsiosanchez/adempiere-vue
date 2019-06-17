@@ -5,7 +5,7 @@
     :value-format="formatSend"
     :type="typePicker"
     :placeholder="metadata.help"
-    range-separator="To"
+    range-separator="-"
     start-placeholder="Start date"
     end-placeholder="End date"
     unlink-panels
