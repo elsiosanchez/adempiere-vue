@@ -250,13 +250,35 @@ export default {
   transition: all 0.5s ease-in;
   display: flex;
 }
+.container-open {
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    transition: width 0.28s;
+    position: fixed;
+    height: 20px;
+    display: flex;
+    color: #424242;
+}
+	.show-open {
+  position: absolute;
+  bottom: 0;
+  color: #FFF;
+  width: 100%;
+  height: 300px;
+  transition: all 0.5s ease-in;
+  display: flex;
+}
   .container:hover .show{
     height: 30px;
   }
   .btn{
     animation-name: btn;
+    position: relative;
     transition-delay: 0.6s;
     visibility: hidden;
+    /* right: 50%; */
   }
   .container:hover .btn{
     visibility: visible;
@@ -303,13 +325,6 @@ export default {
     height: 60%;
     transition: width 0.28s;
   }
-  .container-mobile{
-    position: relative;
-    z-index: 1;
-    height: 39px !important;
-    width: 39px !important;
-    float: right;
-  }
   .container-panel-mobile {
     position: fixed;
     bottom: 0;
@@ -347,15 +362,15 @@ export default {
     z-index: 2;
     position: relative;
     margin: 0 auto;
-    left: 50%;
-    right: 50%;
+    left: 47%;
   }
   .button-up {
     bottom: 0;
+    position: relative;
+    margin: 0 auto;
   }
   .btn-base {
     width: 40px;
-    right: 50%;
     position: fixed;
     background: #ffffff;
     color: #606266;
