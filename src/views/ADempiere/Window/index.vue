@@ -234,7 +234,7 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 0;
-    width: calc(100% - 200px);
+    width: calc(111% - 200px);
     transition: width 0.28s;
     position: fixed;
     height: 20px;

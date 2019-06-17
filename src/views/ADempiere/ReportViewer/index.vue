@@ -10,12 +10,7 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="24">
-        <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="pdfLink" />
-        <iframe v-else-if="reportFormatValue === 'csv'" class="content" :src="pdfLink" />
-        <iframe v-else-if="reportFormatValue === 'ps'" class="content" :src="pdfLink" />
-        <iframe v-else-if="reportFormatValue === 'xml'" class="content" :src="pdfLink" />
-        <iframe v-else-if="reportFormatValue === 'ssv'" class="content" :src="pdfLink" />
-        <iframe v-else-if="reportFormatValue === 'arxml'" class="content" :src="pdfLink" />
+        <iframe v-if="reportFormatValue === 'pdf' || reportFormatValue === 'csv' || reportFormatValue === 'ps'|| reportFormatValue === 'xml' || reportFormatValue === 'ssv' || reportFormatValue === 'arxml' || reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" class="content" :src="url" />
         <div v-else-if="reportFormatValue === 'html'" class="content-html">
           <el-scrollbar wrap-class="scroll">
             <div v-html="reportContentValue" />
@@ -26,12 +21,6 @@
             <pre v-text="reportContentValue" />
           </el-scrollbar>
         </div>
-        <!-- <div v-else-if="reportFormatValue === 'csv'" class="content-csv" :src="pdfLink">
-          <el-scrollbar wrap-class="scroll">
-            <pre v-text="reportContentValue" />
-          </el-scrollbar>
-        </div> -->
-        <iframe v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" :src="pdfLink" />
       </el-col>
     </el-row>
     <modal
@@ -61,7 +50,7 @@ export default {
   },
   data() {
     return {
-      pdfLink: this.$store.getters.getProcessResult.pdf,
+      url: this.$store.getters.getProcessResult.url,
       reportFormat: '',
       reportContent: ``,
       reportHeader: '',
