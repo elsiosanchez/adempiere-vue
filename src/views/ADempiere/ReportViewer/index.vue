@@ -13,7 +13,10 @@
         <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="pdfLink" />
         <div v-else-if="reportFormatValue === 'html'" class="content-html">
           <el-scrollbar wrap-class="scroll">
-            <div v-html="reportContentValue" />
+            <div
+              class="el-table el-table--fit el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
+              v-html="reportContentValue"
+            />
           </el-scrollbar>
         </div>
         <div v-else-if="reportFormatValue === 'txt'" class="content-txt">
@@ -113,12 +116,12 @@ export default {
 </script>
 
 <style scoped >
-	.content{
+	.content {
 		width: 100%;
 		height: 500px;
 		padding: 10px;
 	}
-	.content-html{
+	.content-html {
 		width: 100%;
     padding: 10px;
 	}

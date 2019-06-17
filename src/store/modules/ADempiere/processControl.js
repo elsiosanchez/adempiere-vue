@@ -210,8 +210,7 @@ const processControl = {
     finishProcess({ commit }, processOutput) {
       if (!processOutput.isError &&
         typeof processOutput.instanceUuid !== 'undefined' &&
-        typeof processOutput.processUuid !== 'undefined' &&
-        typeof processOutput.output !== 'undefined') {
+        typeof processOutput.processUuid !== 'undefined') {
         var notificationParams = {
           title: 'Succes',
           message: processOutput.processName + ' executed, see process activity',
