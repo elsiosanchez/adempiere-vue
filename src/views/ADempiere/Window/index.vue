@@ -33,7 +33,33 @@
           />
         </detail> -->
       <div v-if="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-        <div v-if="this.$store.state.app.sidebar.opened">
+        <div v-if="this.$store.state.app.device === 'mobile'">
+          <div class="container">
+            <div class="show">
+              <el-button
+                class="el-icon-arrow-up button-up btn"
+                :circle="true"
+                @click="handleChange()"
+              />
+            </div>
+            <div class="container-panel-mobile">
+              <el-collapse-transition>
+                <div v-show="showPanel">
+                  <el-button
+                    class="el-icon-arrow-down button-bottom btn"
+                    :circle="true"
+                    @click="handleChange()"
+                  />
+                  <tab-children
+                    :window-uuid="windowUuid"
+                    :tabs-list="windowMetadata.tabsListChildren"
+                  />
+                </div>
+              </el-collapse-transition>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="this.$store.state.app.sidebar.opened">
           <div class="container">
             <div class="show">
               <el-button
@@ -68,7 +94,6 @@
                 :circle="true"
                 @click="handleChange()"
               />
-
             </div>
             <div class="container-panel">
               <el-collapse-transition>
@@ -140,6 +165,20 @@ export default {
      */
     getTabList() {
       return this.$store.getters.getTabsList(this.windowUuid)
+    },
+    sidebar() {
+      return this.$store.state.app.sidebar
+    },
+    device() {
+      return this.$store.state.app.device
+    },
+    classObj() {
+      return {
+        hideSidebar: !this.sidebar.opened,
+        openSidebar: this.sidebar.opened,
+        withoutAnimation: this.sidebar.withoutAnimation,
+        mobile: this.device === 'mobile'
+      }
     }
   },
   beforeCreate() {
@@ -156,6 +195,13 @@ export default {
     this.getWindow(this.windowUuid)
   },
   methods: {
+    isMobileClassmenu() {
+      const cssClass = 'container-submenu'
+      if (this.device === 'mobile') {
+        return cssClass + '-mobile'
+      }
+      return cssClass
+    },
     handleChange() {
       this.showPanel = !this.showPanel
     },
@@ -246,6 +292,31 @@ export default {
     z-index: 0;
     width: calc(100% - 54px);
     /* height: 40%; */
+    transition: width 0.28s;
+  }
+  .container-panel-movil {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    height: 60%;
+    transition: width 0.28s;
+  }
+  .container-mobile{
+    position: relative;
+    z-index: 1;
+    height: 39px !important;
+    width: 39px !important;
+    float: right;
+  }
+  .container-panel-mobile {
+    position: fixed;
+    bottom: 0;
+    /* height: calc(100% - (20px + 30px)); */
+    right: 0;
+    z-index: 0;
+    width: 100%;
     transition: width 0.28s;
   }
   .container-panel-open {
