@@ -182,7 +182,7 @@ export default {
     border: 1px solid #e5e9f2;
     height: -webkit-fill-available;
     /* background: #e5e9f2; */
-    /* height:-webkit-calc(100% - 100px); */
+    height:-webkit-calc(100% - 100px);
     z-index: 0;
     /* width: calc(100% - 210px); */
     transition: width 0.28s;
