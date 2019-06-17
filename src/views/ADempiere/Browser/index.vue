@@ -226,7 +226,7 @@ export default {
     width: 100% !important;
     height: 200% !important;
   }
-   .el-collapse-item__header {
+  .el-collapse-item__header {
     height: 39px !important;
   }
 </style>
