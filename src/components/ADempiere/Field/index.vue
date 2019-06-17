@@ -4,7 +4,14 @@
     this v-show is to indicate that if the field is not shown,
     therefore you should not leave the column size spacing of your
     <el-col></el-col> container-->
-  <el-col v-show="isDisplayed()" :span="getSpan()">
+  <el-col
+    v-show="isDisplayed()"
+    :xs="sizeFieldResponsive.xs"
+    :sm="sizeFieldResponsive.sm"
+    :md="sizeFieldResponsive.md"
+    :lg="sizeFieldResponsive.lg"
+    :xl="sizeFieldResponsive.xl"
+  >
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
       <component
         :is="afterLoader"
@@ -20,6 +27,7 @@
 
 <script>
 import { FIELD_ONLY, FIELD_RANGE } from '@/components/ADempiere/Field/references'
+import { FIELD_DISPLAY_SIZES } from '@/components/ADempiere/Field/fieldSize'
 
 /**
  * This is the base component for linking the components according to the
@@ -68,12 +76,17 @@ export default {
     isDataTable: {
       type: Boolean,
       default: false
+    },
+    inGroup: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       fieldOnly: FIELD_ONLY,
       fieldRange: FIELD_RANGE,
+      fieldDisplaySizes: FIELD_DISPLAY_SIZES,
       field: {}
     }
   },
@@ -92,6 +105,30 @@ export default {
           this.isReadOnly = false
         }
       }
+    },
+    sizeFieldResponsive() {
+      var sizeFieldFromType = this.fieldDisplaySizes.find(item => {
+        return item.type === this.field.componentPath
+      })
+      var sizeField = sizeFieldFromType.size
+      if (this.inGroup && this.getWidth >= 992) {
+        var newSizes = {}
+        newSizes.xs = sizeField.xs * 2
+        newSizes.sm = sizeField.sm * 2
+        if (this.getWidth <= 1199) {
+          newSizes.md = sizeField.md * 2 - 4
+        } else {
+          newSizes.md = sizeField.md * 2
+        }
+        newSizes.lg = sizeField.lg * 2
+        newSizes.xl = sizeField.xl * 2
+
+        return newSizes
+      }
+      return sizeField
+    },
+    getWidth() {
+      return this.$store.getters.getWidth()
     }
   },
   watch: {

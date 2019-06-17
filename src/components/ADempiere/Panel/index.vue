@@ -42,6 +42,7 @@
                     :recorddata-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
+                    :in-group="false"
                   />
                 </template>
               </el-row>
@@ -96,6 +97,7 @@
                         :recorddata-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
+                        :in-group="true"
                       />
                     </template>
                   </el-row>
