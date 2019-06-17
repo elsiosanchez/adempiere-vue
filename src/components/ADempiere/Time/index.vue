@@ -5,7 +5,7 @@
     :picker-options="{
       selectableRange: metadata.Range
     }"
-    placeholder="Select time"
+    :placeholder="metadata.help"
     @change="handleChange"
   />
 </template>
