@@ -45,11 +45,11 @@
                 :is-show-label="false"
                 :metadata-field="item"
                 :record-data-fields="scope.row[item.columnName]"
-                size="small"
+                size="mini"
                 @keyup.enter.native="confirmEdit(scope.row)"
               />
             </template>
-            <span v-else @dblclick="scope.row.edit=!scope.row.edit">
+            <span v-else>
               {{ scope.row[item.columnName] }}
             </span>
           </template>
@@ -175,9 +175,6 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleDblClick(row) {
-      row.edit = !row.edit
-    },
     confirmEdit(row, newValue, value) {
       row.edit = false
       this.$message({
@@ -186,6 +183,7 @@ export default {
       })
     },
     handleSelection(row, index) {
+      index.edit = !index.edit
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: row,

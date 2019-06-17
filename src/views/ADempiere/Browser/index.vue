@@ -201,31 +201,6 @@ export default {
     right: 10px;
     top: 0;
   }
-  .cards {
-    column-count: 2;  /*numbers of columns */
-    column-gap: 1em;
-    margin-top: 10px;
-  }
-  .cards-not-group {
-    column-count: 1; /* numbers of columns */
-    column-gap: 1em;
-    margin-top: 10px;
-  }
-
-  .card {
-    padding: 10px;
-    margin: 0 0 1em;
-    width: 100% !important;
-    cursor: pointer;
-    transition: all 100ms ease-in-out;
-    display: inline-block;
-    perspective: 1000;
-    backface-visibility: hidden;
-  }
-  .el-card {
-    width: 100% !important;
-    height: 200% !important;
-  }
   .el-collapse-item__header {
     height: 39px !important;
   }
