@@ -25,6 +25,7 @@
               <filter-fields
                 :container-uuid="containerUuid"
                 :panel-type="panelType"
+                :group-field="firstGroup.groupFinal"
               />
             </div>
             <el-card
@@ -76,6 +77,8 @@
                       <filter-fields
                         :container-uuid="containerUuid"
                         :panel-type="panelType"
+                        :group-field="item.groupFinal"
+                        :is-first-group="false"
                       />
                       <el-button slot="reference" type="text" style="float: right; padding: 3px 0">
                         Add Optional Fields
@@ -348,9 +351,7 @@ export default {
      */
     sortAndGroup(arrFields) {
       return this.groupFields(
-        this.assignedGroup(
-          this.sortFields(arrFields)
-        )
+        this.sortFields(arrFields)
       )
     },
     /**
@@ -373,55 +374,6 @@ export default {
       return arr
     },
     /**
-     * [assignedGroup description]
-     * @param  {array} arr [description]
-     * @return {array} arrGroup [description]
-     */
-    assignedGroup(arr) {
-      if (typeof arr[0] === 'undefined') {
-        return arr
-      }
-
-      let firstChangeGroup = false
-      let currentGroup = ''
-      let typeGroup = ''
-      if (arr[0].fieldGroup.name === '' ||
-        arr[0].fieldGroup.name === null) {
-        currentGroup = ''
-        typeGroup = ''
-      }
-
-      arr.forEach(fieldElement => {
-        // change the first field group, change the band
-        if (!firstChangeGroup) {
-          if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
-            fieldElement.fieldGroup.name !== null &&
-            fieldElement.fieldGroup.name !== '' &&
-            currentGroup !== fieldElement.fieldGroup.name &&
-            fieldElement.isDisplayed) {
-            firstChangeGroup = true
-          }
-        }
-        //  if you change the field group for the first time and it is different
-        //  from 0, updates the field group, since it is another field group and
-        //  assigns the following field items to the current field group whose
-        //  field group is '' or null
-        if (firstChangeGroup) {
-          if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
-            fieldElement.fieldGroup.name !== null &&
-            fieldElement.fieldGroup.name !== '') {
-            currentGroup = fieldElement.fieldGroup.name
-            typeGroup = fieldElement.fieldGroup.fieldGroupType
-          }
-        }
-
-        fieldElement.GroupAssigned = currentGroup
-        fieldElement.TypeGroup = typeGroup
-      })
-
-      return arr
-    },
-    /**
      * Group the arrangement into groups of columns that they contain, it must
      * be grouped after having the order
      * @param {array} array
@@ -432,10 +384,10 @@ export default {
         return
       }
 
-      // reduce, create array with number GroupAssigned element comun
+      // reduce, create array with number groupAssigned element comun
       var res = arr.reduce((res, currentValue) => {
-        if (res.indexOf(currentValue.GroupAssigned) === -1) {
-          res.push(currentValue.GroupAssigned)
+        if (res.indexOf(currentValue.groupAssigned) === -1) {
+          res.push(currentValue.groupAssigned)
         }
         return res
       }, [])
@@ -443,7 +395,7 @@ export default {
           return {
             groupFinal: _group,
             metadataFields: arr.filter((_el) => {
-              return _el.GroupAssigned === _group
+              return _el.groupAssigned === _group
             })
               .map((_el) => {
                 return _el
@@ -454,7 +406,7 @@ export default {
       // count and add the field numbers according to your group
       Object.keys(res).forEach(key => {
         let count = 0
-        const typeG = res[key].metadataFields[0].TypeGroup
+        const typeG = res[key].metadataFields[0].typeGroupAssigned
 
         res[key].numberFields = res[key].metadataFields.length
         res[key].typeGroup = typeG

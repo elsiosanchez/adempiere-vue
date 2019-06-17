@@ -30,6 +30,14 @@ export default {
     panelType: {
       type: String,
       default: 'window'
+    },
+    groupField: {
+      type: String,
+      default: 'window'
+    },
+    isFirstGroup: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -67,7 +75,7 @@ export default {
     },
     generatePanel(fieldList) {
       this.fieldListOptional = fieldList.filter((item) => {
-        if (!item.isMandatory) {
+        if (!item.isMandatory && this.groupField === item.groupAssigned) {
           return this.isDisplayed(item)
         }
       })

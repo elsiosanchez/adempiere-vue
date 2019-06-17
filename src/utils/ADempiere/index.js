@@ -285,3 +285,48 @@ export function convertRoleFromGRPC(roleGRPC) {
     organizationsList: roleGRPC.getOrganizationsList()
   }
 }
+
+/**
+ * [assignedGroup]
+ * @param  {array} fieldList Field of List with
+ * @return {array} fieldList
+ */
+export function assignedGroup(fieldList) {
+  if (typeof fieldList === 'undefined' || fieldList.length <= 0) {
+    return fieldList
+  }
+
+  let firstChangeGroup = false
+  let currentGroup = ''
+  let typeGroup = ''
+
+  fieldList.forEach(fieldElement => {
+    // change the first field group, change the band
+    if (!firstChangeGroup) {
+      if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
+        fieldElement.fieldGroup.name !== null &&
+        fieldElement.fieldGroup.name !== '' &&
+        currentGroup !== fieldElement.fieldGroup.name &&
+        fieldElement.isDisplayed) {
+        firstChangeGroup = true
+      }
+    }
+    //  if you change the field group for the first time and it is different
+    //  from 0, updates the field group, since it is another field group and
+    //  assigns the following field items to the current field group whose
+    //  field group is '' or null
+    if (firstChangeGroup) {
+      if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
+        fieldElement.fieldGroup.name !== null &&
+        fieldElement.fieldGroup.name !== '') {
+        currentGroup = fieldElement.fieldGroup.name
+        typeGroup = fieldElement.fieldGroup.fieldGroupType
+      }
+    }
+
+    fieldElement.groupAssigned = currentGroup
+    fieldElement.typeGroupAssigned = typeGroup
+  })
+
+  return fieldList
+}

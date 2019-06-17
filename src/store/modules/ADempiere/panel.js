@@ -7,6 +7,7 @@
 // - Smart Browser: Can have a search panel, table panel and process panel
 import evaluator from '@/utils/ADempiere/evaluator.js'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
+import { assignedGroup } from '@/utils/ADempiere'
 
 const panel = {
   state: {
@@ -65,6 +66,8 @@ const panel = {
 
       params.keyColumn = keyColumn
       params.selectionColumn = selectionColumn
+
+      params.fieldList = assignedGroup(params.fieldList)
       commit('addPanel', params)
     },
     addFields({ commit }, payload) {
