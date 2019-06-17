@@ -20,7 +20,7 @@
           <a href="url.ps">Download Brochure</a>
         </div>
         <div v-else-if="reportFormatValue === 'xml'" class="content" :src="url">
-          <a href="url" download="download-file.csv">
+          <a href="url" download="download-file.xml">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
