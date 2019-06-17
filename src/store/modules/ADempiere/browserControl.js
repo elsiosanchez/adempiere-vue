@@ -1,5 +1,6 @@
 import { getBrowserSearch } from '@/api/ADempiere/data'
 import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
+import { showNotification } from '@/utils/ADempiere/notification'
 
 const browserControl = {
   state: {
@@ -43,6 +44,12 @@ const browserControl = {
           // Add validation compare browserSearchQueryParameters
           getBrowserSearch(browserSearchQueryParameters)
             .then(response => {
+              var notificationParams = {
+                title: 'Successful',
+                message: 'The search has been made',
+                type: 'success'
+              }
+              showNotification(notificationParams)
               const recordList = response.getRecordsList()
               var record = recordList.map(itemRecord => {
                 const map = itemRecord.getValuesMap()
@@ -66,6 +73,12 @@ const browserControl = {
               resolve(record)
             })
             .catch(err => {
+              var notificationParams = {
+                title: 'Error',
+                message: 'The search has not been completed',
+                type: 'error'
+              }
+              showNotification(notificationParams)
               reject(err)
             })
         }

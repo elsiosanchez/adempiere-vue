@@ -10,9 +10,7 @@
             Relations
           </template>
           <el-scrollbar wrap-class="scroll">
-            <el-menu-item v-for="(relation, index) in relations" :key="index" :index="relation.meta.uuid" @click="handleClick(relation)">
-              {{ relation.meta.title }}
-            </el-menu-item>
+            <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
         <el-menu-item v-else disabled :index="indexMenu() + '1'">
@@ -188,10 +186,6 @@ export default {
     },
     runAction(action) {
       if (action.type === 'action') {
-        // this.$notify.info({
-        //   title: 'Info',
-        //   message: 'Processing ' + action.name
-        // })
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
         if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
           this.$store.dispatch(action.action, {

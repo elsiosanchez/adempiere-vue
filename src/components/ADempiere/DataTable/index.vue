@@ -17,7 +17,9 @@
       height="200"
       style="width: 100%"
       stripe
+      border
       highlight-current-row
+      :row-style="rowStyle"
       :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"
@@ -102,7 +104,8 @@ export default {
       keyColumn: '', // column as isKey in fieldList
       tableData: this.getDataDetail,
       multipleSelection: this.getDataSelection,
-      edit: false
+      edit: false,
+      rowStyle: { height: '52px' }
     }
   },
   computed: {

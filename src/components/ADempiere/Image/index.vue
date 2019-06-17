@@ -24,14 +24,15 @@ export default {
       type: Boolean,
       default: false
     },
-    value: {
+    valueModel: {
       type: String,
       default: ''
     }
   },
   data() {
     return {
-      imageUrl: ''
+      imageUrl: '',
+      value: ''
     }
   },
   watch: {
