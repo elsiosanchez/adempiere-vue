@@ -2,7 +2,10 @@
   <div v-if="loading">
     <el-row :gutter="20">
       <el-col :span="12">
-        <h3 class="text-center">{{ reportHeader }}</h3>
+        <div class="container">
+          <h3 class="text-center">{{ reportHeader }}</h3>
+        </div>
+
       </el-col>
       <el-col :span="12">
         <context-menu />
@@ -159,4 +162,9 @@ export default {
     width: 100%;
     margin-top:20px;
   }
+  .container{
+    width: 200%;
+    /* left: 50%; */
+  }
 </style>
+
