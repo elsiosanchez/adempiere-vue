@@ -116,14 +116,16 @@ const processControl = {
           } else {
             logList = []
           }
+          var extencion = response.getOutput().getReportexporttype()
           var mime = require('mime-types')
-          var blob = new Blob([response.getOutput().getOutputstream()], { type: mime.lookup(response.getOutput().getReportexporttype()) })
+          var blob = new Blob([response.getOutput().getOutputstream()], { type: mime.lookup(extencion) })
           var link = document.createElement('a')
           link.href = window.URL.createObjectURL(blob)
           processResult = {
             action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
             url: link.href,
+            download: link.download,
             processUuid: processToRun.uuid.trim(),
             processName: processToRun.processName,
             isError: response.getIserror(),

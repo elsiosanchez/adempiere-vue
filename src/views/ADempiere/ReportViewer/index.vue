@@ -10,7 +10,30 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="24">
-        <iframe v-if="reportFormatValue === 'pdf' || reportFormatValue === 'csv' || reportFormatValue === 'ps'|| reportFormatValue === 'xml' || reportFormatValue === 'ssv' || reportFormatValue === 'arxml' || reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" class="content" :src="url" />
+        <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="url" />
+        <div v-else-if="reportFormatValue === 'csv'" class="content" :src="url">
+          <a href="url" download="download-file.csv">
+            <el-button icon="el-icon-download">Download File</el-button>
+          </a>
+        </div>
+        <div v-else-if="reportFormatValue === 'ps'" class="content" :src="url">
+          <a href="url.ps">Download Brochure</a>
+        </div>
+        <div v-else-if="reportFormatValue === 'xml'" class="content" :src="url">
+          <a href="url" download="download-file.csv">
+            <el-button icon="el-icon-download">Download File</el-button>
+          </a>
+        </div>
+        <div v-else-if="reportFormatValue === 'ssv'" class="content" :src="url">
+          <a href="url" download="download-file.ssv">
+            <el-button icon="el-icon-download">Download File</el-button>
+          </a>
+        </div>
+        <div v-else-if="reportFormatValue === 'arxml'" class="content" :src="url">
+          <a href="url" download="download-file.arxml">
+            <el-button icon="el-icon-download">Download File</el-button>
+          </a>
+        </div>
         <div v-else-if="reportFormatValue === 'html'" class="content-html">
           <el-scrollbar wrap-class="scroll">
             <div v-html="reportContentValue" />
@@ -20,6 +43,11 @@
           <el-scrollbar wrap-class="scroll">
             <pre v-text="reportContentValue" />
           </el-scrollbar>
+        </div>
+        <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" :src="url">
+          <a href="url" download="download-file.xls">
+            <el-button icon="el-icon-download">Download File</el-button>
+          </a>
         </div>
       </el-col>
     </el-row>
@@ -74,7 +102,6 @@ export default {
   },
   created() {
     this.getCachedReport(this.$route.params.instanceUuid)
-    console.log(this.$store.getters.getProcessResult.pdf)
   },
   mounted() {
     this.reloadContextMenu()
