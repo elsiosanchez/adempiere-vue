@@ -14,27 +14,27 @@
       <el-col :span="24">
         <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="url" />
         <div v-else-if="reportFormatValue === 'csv'" class="content" :src="url">
-          <a href="url" :download="name">
+          <a :href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'ps'" class="content" :src="url">
-          <a href="url.ps" :download="name">
+          <a :href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'xml'" class="content" :src="url">
-          <a href="url" :download="name">
+          <a :href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'ssv'" class="content" :src="url">
-          <a href="url" :download="name">
+          <a :href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'arxml'" class="content" :src="url">
-          <a href="url" download="Report.arxml">
+          <a :href="url" download="Report.arxml">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
@@ -52,7 +52,7 @@
           </el-scrollbar>
         </div>
         <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" :src="url">
-          <a href="url" :download="name">
+          <a :href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>

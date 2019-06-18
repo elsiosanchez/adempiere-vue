@@ -117,10 +117,10 @@ const processControl = {
           } else {
             logList = []
           }
-          // var extension = response.getOutput().getMimetype()
+          var extension = response.getOutput().getReportexporttype()
           // console.log(extension)
-          // var mime = require('mime-types')
-          var blob = new Blob([response.getOutput().getOutputstream()], { type: response.getOutput().getMimetype() })
+          var mime = require('mime-types')
+          var blob = new Blob([response.getOutput().getOutputstream()], { type: mime.lookup(extension) })
           var link = document.createElement('a')
           link.href = window.URL.createObjectURL(blob)
           processResult = {
