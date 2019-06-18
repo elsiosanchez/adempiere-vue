@@ -41,7 +41,7 @@
         <div v-else-if="reportFormatValue === 'html'" class="content-html">
           <el-scrollbar wrap-class="scroll">
             <div
-              class="el-table el-table--fit el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
+              class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
               v-html="reportContentValue"
             />
           </el-scrollbar>
