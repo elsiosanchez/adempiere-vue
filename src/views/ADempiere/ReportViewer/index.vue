@@ -1,34 +1,22 @@
 <template>
   <div v-if="loading">
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <h3 class="text-center">{{ reportHeader }}</h3>
-      </el-col>
-      <el-col :span="12">
-        <context-menu />
-      </el-col>
-    </el-row>
+    <context-menu />
     <el-row :gutter="20">
       <el-col :span="24">
-        <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="pdfLink" />
-        <div v-else-if="reportFormatValue === 'html'" class="content-html">
-          <el-scrollbar wrap-class="scroll">
-            <div
-              class="el-table el-table--fit el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
-              v-html="reportContentValue"
-            />
-          </el-scrollbar>
-        </div>
-        <div v-else-if="reportFormatValue === 'txt'" class="content-txt">
-          <el-scrollbar wrap-class="scroll">
-            <pre v-text="reportContentValue" />
-          </el-scrollbar>
-        </div>
-        <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'">
-          <el-table :data="reportContentValue" border highlight-current-row class="content-excel">
-            <pre>{{ reportContentValue }}</pre>
-            <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
-          </el-table>
+        <div class="container-report">
+          <h3 class="text-center">{{ reportHeader }}</h3>
+          <iframe v-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content" :src="url" width="100%" height="500" />
+          <div v-else-if="reportFormatValue === 'html'" class="content-html">
+            <a :href="url" :download="name">
+              <el-button icon="el-icon-download">Download File</el-button>
+            </a>
+            <el-scrollbar wrap-class="scroll">
+              <div
+                class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
+                v-html="reportContentValue"
+              />
+            </el-scrollbar>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -59,7 +47,8 @@ export default {
   },
   data() {
     return {
-      pdfLink: '',
+      url: this.$store.getters.getProcessResult.url,
+      name: [],
       reportFormat: '',
       reportContent: ``,
       reportHeader: '',
@@ -98,6 +87,7 @@ export default {
         this.reportFormat = reportResult.output.reportExportType
         this.reportContent = reportResult.output.output
         this.reportHeader = reportResult.output.name
+        this.name = reportResult.output.fileName
         this.loading = true
       }
     },
@@ -116,9 +106,9 @@ export default {
 </script>
 
 <style scoped >
-	.content {
+	.ontent {
 		width: 100%;
-		height: 500px;
+    height: -webkit-fill-available;
 		padding: 10px;
 	}
 	.content-html {
@@ -127,10 +117,19 @@ export default {
 	}
   .content-txt{
 		width: 100%;
+		height: 100%;
     padding: 10px;
 	}
   .content-excel {
     width: 100%;
     margin-top:20px;
   }
+  .container{
+    width: 200%;
+    /* left: 50%; */
+  }
+  .container-report {
+    width: 100%;
+  }
 </style>
+

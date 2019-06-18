@@ -33,7 +33,33 @@
           />
         </detail> -->
       <div v-if="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-        <div v-if="this.$store.state.app.sidebar.opened">
+        <div v-if="this.$store.state.app.device === 'mobile'">
+          <div class="container">
+            <div class="show">
+              <el-button
+                class="el-icon-arrow-up button-up btn"
+                :circle="true"
+                @click="handleChange()"
+              />
+            </div>
+            <div class="container-panel-mobile">
+              <el-collapse-transition>
+                <div v-show="showPanel">
+                  <el-button
+                    class="el-icon-arrow-down button-bottom btn"
+                    :circle="true"
+                    @click="handleChange()"
+                  />
+                  <tab-children
+                    :window-uuid="windowUuid"
+                    :tabs-list="windowMetadata.tabsListChildren"
+                  />
+                </div>
+              </el-collapse-transition>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="this.$store.state.app.sidebar.opened">
           <div class="container">
             <div class="show">
               <el-button
@@ -68,7 +94,6 @@
                 :circle="true"
                 @click="handleChange()"
               />
-
             </div>
             <div class="container-panel">
               <el-collapse-transition>
@@ -140,6 +165,20 @@ export default {
      */
     getTabList() {
       return this.$store.getters.getTabsList(this.windowUuid)
+    },
+    sidebar() {
+      return this.$store.state.app.sidebar
+    },
+    device() {
+      return this.$store.state.app.device
+    },
+    classObj() {
+      return {
+        hideSidebar: !this.sidebar.opened,
+        openSidebar: this.sidebar.opened,
+        withoutAnimation: this.sidebar.withoutAnimation,
+        mobile: this.device === 'mobile'
+      }
     }
   },
   beforeCreate() {
@@ -156,6 +195,13 @@ export default {
     this.getWindow(this.windowUuid)
   },
   methods: {
+    isMobileClassmenu() {
+      const cssClass = 'container-submenu'
+      if (this.device === 'mobile') {
+        return cssClass + '-mobile'
+      }
+      return cssClass
+    },
     handleChange() {
       this.showPanel = !this.showPanel
     },
@@ -188,14 +234,34 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 0;
-    width: calc(100% - 200px);
+    width: calc(111% - 200px);
     transition: width 0.28s;
     position: fixed;
-    height: 200px;
+    height: 20px;
     display: flex;
     color: #424242;
 }
 	.show {
+  position: absolute;
+  bottom: 0;
+  color: #FFF;
+  width: 100%;
+  height: 300px;
+  transition: all 0.5s ease-in;
+  display: flex;
+}
+.container-open {
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    transition: width 0.28s;
+    position: fixed;
+    height: 20px;
+    display: flex;
+    color: #424242;
+}
+	.show-open {
   position: absolute;
   bottom: 0;
   color: #FFF;
@@ -209,12 +275,21 @@ export default {
   }
   .btn{
     animation-name: btn;
+    position: relative;
     transition-delay: 0.6s;
     visibility: hidden;
+    /* right: 50%; */
   }
   .container:hover .btn{
     visibility: visible;
   }
+  .el-tabs__content {
+    overflow: hidden;
+    position: relative;
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
   .btn-base :hover {
     box-shadow: 5px #5a5a5a;
   }
@@ -238,11 +313,31 @@ export default {
     right: 0;
     z-index: 0;
     width: calc(100% - 54px);
+    /* height: 40%; */
+    transition: width 0.28s;
+  }
+  .container-panel-movil {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    height: 60%;
+    transition: width 0.28s;
+  }
+  .container-panel-mobile {
+    position: fixed;
+    bottom: 0;
+    /* height: calc(100% - (20px + 30px)); */
+    right: 0;
+    z-index: 0;
+    width: 100%;
     transition: width 0.28s;
   }
   .container-panel-open {
     position: fixed;
     bottom: 0;
+    /* height: calc(100% - (20px + 30px)); */
     right: 0;
     z-index: 0;
     width: calc(100% - 200px);
@@ -267,15 +362,15 @@ export default {
     z-index: 2;
     position: relative;
     margin: 0 auto;
-    left: 50%;
-    right: 50%;
+    left: 47%;
   }
   .button-up {
     bottom: 0;
+    position: relative;
+    margin: 0 auto;
   }
   .btn-base {
     width: 40px;
-    right: 50%;
     position: fixed;
     background: #ffffff;
     color: #606266;

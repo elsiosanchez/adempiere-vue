@@ -16,16 +16,21 @@
         <h3 v-show="!isEmptyValue(browserMetadata.description)" class="warn-content text-center">
           <div>{{ browserMetadata.description }}</div>
         </h3>
-        <code v-show="!isEmptyValue(browserMetadata.help)" v-html="browserMetadata.help" />
-        <el-collapse v-model="activeNames" class="container-collasep-open">
-          <el-collapse-item :title="browserMetadata.name" name="1">
-            <panel
-              :container-uuid="containerUuid"
-              :metadata="browserMetadata"
-              :panel-type="panelType"
-            />
-          </el-collapse-item>
-        </el-collapse>
+        <el-card class="content-collapse">
+          <el-collapse v-model="activeNames" class="container-collasep-open">
+            <el-collapse-item title="Help" name="2">
+              <div v-show="!isEmptyValue(browserMetadata.help)" class="content-help" v-html="browserMetadata.help" />
+              <div v-show="isEmptyValue(browserMetadata.help)" class="content-help"> This Smart Browser does not contain help </div>
+            </el-collapse-item>
+            <el-collapse-item title="Search Criteria" name="1">
+              <panel
+                :container-uuid="containerUuid"
+                :metadata="browserMetadata"
+                :panel-type="panelType"
+              />
+            </el-collapse-item>
+          </el-collapse>
+        </el-card>
       </el-col>
       <el-col :span="24">
         <div v-if="this.$store.state.app.sidebar.opened">
@@ -152,12 +157,20 @@ export default {
     width: 100%;
     left: 14px;
   } */
+  .content-help{
+    width: 100%;
+    height: 200%;
+    padding-left: 15px !important;
+  }
+  .content-collapse{
+      padding-left: 20 px !important;
+  }
   .container-panel {
-    position: fixed;
+    /* position: fixed; */
     bottom: 0;
     right: 0;
     z-index: 0;
-    width: calc(100% - 54px);
+    /* width: calc(100% - 59px); */
     transition: width 0.28s;
     border: 1px solid #e5e9f2;
     /* background: #e5e9f2; */
@@ -167,7 +180,9 @@ export default {
     bottom: 0;
     right: 0;
     border: 1px solid #e5e9f2;
+    height: -webkit-fill-available;
     /* background: #e5e9f2; */
+    height:-webkit-calc(100% - 100px);
     z-index: 0;
     /* width: calc(100% - 210px); */
     transition: width 0.28s;
@@ -176,7 +191,6 @@ export default {
     /* position: fixed; */
     bottom: 0;
     right: 0;
-    border: 1px solid #e5e9f2;
     /* background: #e5e9f2; */
     z-index: 0;
     /* width: calc(100% - 210px); */

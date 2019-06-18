@@ -41,7 +41,6 @@
                     :recorddata-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
-                    :in-group="false"
                   />
                 </template>
               </el-row>
@@ -64,26 +63,18 @@
                 <el-card
                   shadow="hover"
                 >
-                  <div slot="header" class="-filter">
+                  <div slot="header" class="clearfix">
                     <span>
                       {{ determinateGroup(item.groupFinal, 'header') }}
                     </span>
-                    <el-popover
-                      placement="left"
-                      title="Selected fields"
-                      width="250"
-                      trigger="click"
-                    >
+                    <div class="select-filter-header">
                       <filter-fields
                         :container-uuid="containerUuid"
                         :panel-type="panelType"
                         :group-field="item.groupFinal"
                         :is-first-group="false"
                       />
-                      <el-button slot="reference" type="text" style="float: right; padding: 3px 0">
-                        Add Optional Fields
-                      </el-button>
-                    </el-popover>
+                    </div>
                   </div>
                   <el-row :gutter="gutterRow">
                     <template v-for="(subItem, subKey) in item.metadataFields">
@@ -96,7 +87,6 @@
                         :recorddata-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
-                        :in-group="true"
                       />
                     </template>
                   </el-row>
@@ -501,18 +491,19 @@ export default {
     perspective: 1000;
     backface-visibility: hidden;
   }
-
+  .select-filter {
+    width: 280px !important;
+    position: sticky;
+    left: 84%;
+    top: 0;
+  }
+  .select-filter-header {
+    width: 268px !important;
+    position: absolute;
+    left: 50%;
+    top: 10px;
+}
   .el-card {
     width: 100% !important;
-  }
-
- .select-filter {
-    padding: 10px;
-    /* margin: 0 0 1em; */
-    position: absolute;
-    width: 26% !important;
-    top: 11px;
-    left: 70%;
-    /* perspective: 1000; */
   }
 </style>
