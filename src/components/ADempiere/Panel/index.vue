@@ -31,12 +31,6 @@
             <el-card
               shadow="hover"
             >
-              <div class="select-filter">
-                <filter-fields
-                  :container-uuid="containerUuid"
-                  :panel-type="panelType"
-                />
-              </div>
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
                   <field
@@ -48,7 +42,6 @@
                     :recorddata-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
-                    :in-group="false"
                   />
                 </template>
               </el-row>
@@ -95,7 +88,6 @@
                         :recorddata-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
-                        :in-group="true"
                       />
                     </template>
                   </el-row>
@@ -481,16 +473,17 @@ export default {
   .cards {
     column-count: 2;  /*numbers of columns */
     column-gap: 1em;
-
+    margin-top: 10px;
   }
 
   .cards-not-group {
     column-count: 1; /* numbers of columns */
     column-gap: 1em;
-
+    margin-top: 10px;
   }
 
   .card {
+    padding: 10px;
     margin: 0 0 1em;
     width: 100% !important;
     cursor: pointer;
@@ -499,18 +492,18 @@ export default {
     perspective: 1000;
     backface-visibility: hidden;
   }
- .select-filter {
-    width: 20% !important;
-    position: absolute;
-    left: 80%;
-    top: 0%;
+  .select-filter {
+    width: 280px !important;
+    position: sticky;
+    left: 84%;
+    top: 0;
   }
   .select-filter-header {
-    width: 39% !important;
+    width: 268px !important;
     position: absolute;
-    left: 61%;
-    top: 0%;
-  }
+    left: 50%;
+    top: 10px;
+}
   .el-card {
     width: 100% !important;
   }
