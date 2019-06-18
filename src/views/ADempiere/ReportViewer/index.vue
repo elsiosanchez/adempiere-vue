@@ -1,60 +1,22 @@
 <template>
   <div v-if="loading">
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <div class="container">
-          <h3 class="text-center">{{ reportHeader }}</h3>
-        </div>
-      </el-col>
-      <el-col :span="12">
-        <context-menu />
-      </el-col>
-    </el-row>
+    <context-menu />
     <el-row :gutter="20">
       <el-col :span="24">
-        <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="url" />
-        <div v-else-if="reportFormatValue === 'csv'" class="content" :src="url">
-          <a :href="url" :download="name">
-            <el-button icon="el-icon-download">Download File</el-button>
-          </a>
-        </div>
-        <div v-else-if="reportFormatValue === 'ps'" class="content" :src="url">
-          <a :href="url" :download="name">
-            <el-button icon="el-icon-download">Download File</el-button>
-          </a>
-        </div>
-        <div v-else-if="reportFormatValue === 'xml'" class="content" :src="url">
-          <a :href="url" :download="name">
-            <el-button icon="el-icon-download">Download File</el-button>
-          </a>
-        </div>
-        <div v-else-if="reportFormatValue === 'ssv'" class="content" :src="url">
-          <a :href="url" :download="name">
-            <el-button icon="el-icon-download">Download File</el-button>
-          </a>
-        </div>
-        <div v-else-if="reportFormatValue === 'arxml'" class="content" :src="url">
-          <a :href="url" download="Report.arxml">
-            <el-button icon="el-icon-download">Download File</el-button>
-          </a>
-        </div>
-        <div v-else-if="reportFormatValue === 'html'" class="content-html">
-          <el-scrollbar wrap-class="scroll">
-            <div
-              class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
-              v-html="reportContentValue"
-            />
-          </el-scrollbar>
-        </div>
-        <div v-else-if="reportFormatValue === 'txt'" class="content-txt">
-          <el-scrollbar wrap-class="scroll">
-            <pre v-text="reportContentValue" />
-          </el-scrollbar>
-        </div>
-        <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" :src="url">
-          <a :href="url" :download="name">
-            <el-button icon="el-icon-download">Download File</el-button>
-          </a>
+        <div class="container-report">
+          <h3 class="text-center">{{ reportHeader }}</h3>
+          <iframe v-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content" :src="url" width="100%" height="500" />
+          <div v-else-if="reportFormatValue === 'html'" class="content-html">
+            <a :href="url" :download="name">
+              <el-button icon="el-icon-download">Download File</el-button>
+            </a>
+            <el-scrollbar wrap-class="scroll">
+              <div
+                class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
+                v-html="reportContentValue"
+              />
+            </el-scrollbar>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -144,9 +106,9 @@ export default {
 </script>
 
 <style scoped >
-	.content {
+	.ontent {
 		width: 100%;
-		height: 100%;
+    height: -webkit-fill-available;
 		padding: 10px;
 	}
 	.content-html {
@@ -165,6 +127,9 @@ export default {
   .container{
     width: 200%;
     /* left: 50%; */
+  }
+  .container-report {
+    width: 100%;
   }
 </style>
 
