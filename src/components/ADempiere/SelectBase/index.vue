@@ -3,9 +3,10 @@
     v-model="value"
     :filterable="true"
     :placeholder="metadata.help"
+    :loading="loading"
     value-key="key"
     @change="handleChange"
-    @visible-change="getDataList"
+    @visible-change="getDataLookupList"
   >
     <el-option
       v-for="(item, key) in options"
@@ -44,13 +45,34 @@ export default {
       }
     }
   },
-  watch: {
-    valueModel: function() {
-      this.value = this.valueModel
+  computed: {
+    parsedQuery() {
+      return this.parseContext({
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        value: this.metadata.reference.query
+      })
     },
-    value: function() {
-      if (this.value === -1 || this.value === '-1') {
-        this.value = ''
+    parsedDirectQuery() {
+      return this.parseContext({
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        value: this.metadata.reference.directQuery
+      })
+    }
+  },
+  watch: {
+    // valueModel: function() {
+    //   this.value = this.valueModel
+    // },
+    // value() {
+    //   if (this.value === -1 || this.value === '-1') {
+    //     this.value = ''
+    //   }
+    // }
+    'metadata.isShowedFromUser': function(value) {
+      if (value) {
+        this.getData()
       }
     }
   },
@@ -59,14 +81,9 @@ export default {
       this.options.push(this.blanckOption)
     }
     if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
-      this.getData()
-    }
-    if (this.metadata.value !== '' && this.valueModel !== '') {
-      this.metadata.value = this.valueModel
-      this.getData()
-    }
-    if (this.valueModel !== '') {
-      this.value = this.valueModel
+      if (this.metadata.value === '' && this.valueModel !== '') {
+        this.metadata.value = this.valueModel
+      }
       this.getData()
     }
   },
@@ -84,15 +101,9 @@ export default {
       if (this.metadata.value !== '') {
         this.value = this.metadata.value
       }
-      var parsedDirectQuery = this.parseContext({
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        value: this.metadata.reference.directQuery
-      })
-
       this.$store.dispatch('getLookup', {
         tableName: this.metadata.reference.tableName,
-        directQuery: parsedDirectQuery,
+        directQuery: this.parsedDirectQuery,
         value: this.value
       })
         .then(response => {
@@ -107,26 +118,14 @@ export default {
     /**
      * @param {boolean} show triggers when the pull-down menu appears or disappears
      */
-    getDataList(show) {
-      if (show) {
-        var parsedQuery = this.parseContext({
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          value: this.metadata.reference.query
+    getDataLookupList(showList) {
+      if (showList) {
+        var lookupList = this.$store.getters.getLookupList({
+          parsedQuery: this.parsedQuery,
+          tableName: this.metadata.reference.tableName
         })
-        var lookupList = this.$store.getters.getLookupList(parsedQuery)
         if (typeof lookupList === 'undefined' || lookupList.length < 0) {
-          this.$store.dispatch('getLookupList', {
-            tableName: this.metadata.reference.tableName,
-            query: parsedQuery
-          })
-            .then(response => {
-              this.options = response
-              this.options.unshift(this.blanckOption)
-            })
-            .catch(err => {
-              console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-            })
+          this.remoteMethod()
         } else {
           this.options = lookupList
         }
@@ -140,19 +139,21 @@ export default {
         newValue: this.value
       })
     },
-    remoteMethod(query) {
-      if (query !== '') {
-        this.loading = true
-        setTimeout(() => {
+    remoteMethod() {
+      this.loading = true
+      this.$store.dispatch('getLookupList', {
+        tableName: this.metadata.reference.tableName,
+        query: this.parsedQuery
+      })
+        .then(response => {
           this.loading = false
-          this.options = this.list.filter(item => {
-            return item.label.toLowerCase()
-              .indexOf(query.toLowerCase()) > -1
-          })
-        }, 200)
-      } else {
-        this.options = []
-      }
+          this.options = response
+          this.options.unshift(this.blanckOption)
+        })
+        .catch(err => {
+          this.loading = false
+          console.warn('DataRecord List, Select Base - Error ' + err.code + ': ' + err.message)
+        })
     }
   }
 }

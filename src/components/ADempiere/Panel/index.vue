@@ -15,7 +15,6 @@
             v-if="checkInGroup(firstGroup.groupFinal)
               && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
-            :style="determinateGroup(firstGroup.groupFinal, 'style')"
             class="card"
           >
             <div class="select-filter">
