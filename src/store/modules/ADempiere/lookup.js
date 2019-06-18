@@ -32,6 +32,10 @@ const lookup = {
           })
       })
     },
+    /**
+     * tableName,
+     * query
+     */
     getLookupList: ({ commit }, objectParams) => {
       return new Promise((resolve, reject) => {
         getLookupList(objectParams)
@@ -49,7 +53,8 @@ const lookup = {
             })
             commit('addLoockupList', {
               list: options,
-              parsedQuery: objectParams.parsedQuery
+              tableName: objectParams.tableName,
+              parsedQuery: objectParams.query
             })
             resolve(options)
           })
@@ -60,10 +65,10 @@ const lookup = {
     }
   },
   getters: {
-    getLookupList: (state) => (parsedQuery) => {
-      var lookup = state.lookup.find(
-        item => item.parsedQuery === parsedQuery
-      )
+    getLookupList: (state) => (params) => {
+      var lookup = state.lookup.find(item => {
+        return item.parsedQuery === params.parsedQuery && item.tableName === params.tableName
+      })
       if (typeof lookup === 'undefined') {
         return lookup
       }

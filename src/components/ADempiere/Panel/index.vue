@@ -15,7 +15,6 @@
             v-if="checkInGroup(firstGroup.groupFinal)
               && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
-            :style="determinateGroup(firstGroup.groupFinal, 'style')"
             class="card"
           >
             <div class="select-filter">
@@ -502,17 +501,18 @@ export default {
     perspective: 1000;
     backface-visibility: hidden;
   }
+
+  .el-card {
+    width: 100% !important;
+  }
+
  .select-filter {
-    /* padding: 10px; */
-       /* padding: 10px; */
+    padding: 10px;
     /* margin: 0 0 1em; */
-    position: fixed;
+    position: absolute;
     width: 26% !important;
     top: 11px;
     left: 70%;
     /* perspective: 1000; */
-  }
-  .el-card {
-    width: 100% !important;
   }
 </style>

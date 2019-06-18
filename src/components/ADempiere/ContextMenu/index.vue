@@ -1,5 +1,5 @@
 <template>
-  <div :class="isMobileClassmenu()">
+  <div :class="isMobileClassmenu() + ' container-context-menu'">
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
       <el-submenu v-if="device==='mobile'" class="el-menu-item" index="1">
         <template slot="title">
@@ -231,9 +231,12 @@ export default {
 </script>
 
 <style>
+  .container-context-menu {
+    z-index: 111;
+  }
+
   .container-submenu-mobile{
     position: relative;
-    z-index: 1;
     height: 39px !important;
     width: 39px !important;
     float: right;
@@ -241,7 +244,6 @@ export default {
 
   .container-submenu{
     position: relative;
-    z-index: 1;
     height: 39px !important;
     float: right;
   }
