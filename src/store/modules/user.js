@@ -65,7 +65,7 @@ const actions = {
     })
   },
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         if (!response) {
@@ -80,7 +80,11 @@ const actions = {
         var rol = response.roles.find(itemRol => {
           return itemRol.uuid === getCurrentRole()
         })
-
+        dispatch('getMessagesFromServer', {
+          table: 'AD_Message',
+          criteria: "IsActive = 'Y'"
+        },
+        { root: true })
         commit('SET_ROLES', response.roles)
         commit('SET_NAME', response.name)
         commit('SET_ROL', rol)

@@ -1,3 +1,8 @@
+/* import store from '@/store'
+function translations() {
+  return store.getters.getMessages
+}
+var messages = translations() */
 export default {
   route: {
     dashboard: 'Panel de control',
@@ -6,20 +11,21 @@ export default {
     page401: '401',
     page404: '404',
     profile: 'Perfil',
-    processActivity: 'Actividad de Procesos',
-    role: 'Rol',
-    searchWindow: 'Ventana de Búsqueda',
-    reportViewer: 'Visor de Reportes'
+    ProcessActivity: 'Actividad de Procesos',
+    Role: 'Rol',
+    SearchWindow: 'Ventana de Búsqueda',
+    ReportViewer: 'Visor de Reportes'
   },
   notifications: {
     loading: 'Cargando',
-    searching: 'Searching records in server',
+    searching: 'Buscando registros en el servidor',
     succesful: 'Exitoso',
-    succcessSearch: 'The search has been made',
-    errorSearch: 'The search has not been completed',
-    processing: 'Processing',
-    processExecuted: ' executed, see process activity',
-    processError: ' was not executed'
+    error: 'Error',
+    succcessSearch: 'La búsqueda se ha realizado',
+    errorSearch: 'La búsqueda no se ha completado.',
+    processing: 'Procesando',
+    processExecuted: ' ejecutado, ver actividad de proceso',
+    processError: ' no fue ejecutado'
   },
   navbar: {
     logOut: 'Salir',

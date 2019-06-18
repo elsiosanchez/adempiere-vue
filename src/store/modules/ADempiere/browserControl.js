@@ -45,8 +45,8 @@ const browserControl = {
           getBrowserSearch(browserSearchQueryParameters)
             .then(response => {
               var notificationParams = {
-                title: 'Successful',
-                message: 'The search has been made',
+                title: 'succesful',
+                message: 'succcessSearch',
                 type: 'success'
               }
               showNotification(notificationParams)
@@ -74,8 +74,8 @@ const browserControl = {
             })
             .catch(err => {
               var notificationParams = {
-                title: 'Error',
-                message: 'The search has not been completed',
+                title: 'error',
+                message: 'errorSearch',
                 type: 'error'
               }
               showNotification(notificationParams)
