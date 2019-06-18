@@ -101,6 +101,7 @@ const processControl = {
               description: output.getDescription(),
               fileName: output.getFilename(),
               output: output.getOutput(),
+              mimeType: output.getMimetype(),
               outputStream: output.getOutputstream(),
               reportExportType: output.getReportexporttype()
             }
@@ -116,9 +117,10 @@ const processControl = {
           } else {
             logList = []
           }
-          var extencion = response.getOutput().getReportexporttype()
-          var mime = require('mime-types')
-          var blob = new Blob([response.getOutput().getOutputstream()], { type: mime.lookup(extencion) })
+          // var extension = response.getOutput().getMimetype()
+          // console.log(extension)
+          // var mime = require('mime-types')
+          var blob = new Blob([response.getOutput().getOutputstream()], { type: response.getOutput().getMimetype() })
           var link = document.createElement('a')
           link.href = window.URL.createObjectURL(blob)
           processResult = {

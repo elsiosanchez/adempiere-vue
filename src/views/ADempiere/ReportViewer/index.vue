@@ -5,7 +5,6 @@
         <div class="container">
           <h3 class="text-center">{{ reportHeader }}</h3>
         </div>
-
       </el-col>
       <el-col :span="12">
         <context-menu />
@@ -15,25 +14,27 @@
       <el-col :span="24">
         <iframe v-if="reportFormatValue === 'pdf'" class="content" :src="url" />
         <div v-else-if="reportFormatValue === 'csv'" class="content" :src="url">
-          <a href="url" download="download-file.csv">
+          <a href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'ps'" class="content" :src="url">
-          <a href="url.ps">Download Brochure</a>
+          <a href="url.ps" :download="name">
+            <el-button icon="el-icon-download">Download File</el-button>
+          </a>
         </div>
         <div v-else-if="reportFormatValue === 'xml'" class="content" :src="url">
-          <a href="url" download="download-file.xml">
+          <a href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'ssv'" class="content" :src="url">
-          <a href="url" download="download-file.ssv">
+          <a href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
         <div v-else-if="reportFormatValue === 'arxml'" class="content" :src="url">
-          <a href="url" download="download-file.arxml">
+          <a href="url" download="Report.arxml">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
@@ -51,7 +52,7 @@
           </el-scrollbar>
         </div>
         <div v-else-if="reportFormatValue === 'xls' || reportFormatValue ==='xlsx'" :src="url">
-          <a href="url" download="download-file.xls">
+          <a href="url" :download="name">
             <el-button icon="el-icon-download">Download File</el-button>
           </a>
         </div>
@@ -85,6 +86,7 @@ export default {
   data() {
     return {
       url: this.$store.getters.getProcessResult.url,
+      name: [],
       reportFormat: '',
       reportContent: ``,
       reportHeader: '',
@@ -123,6 +125,7 @@ export default {
         this.reportFormat = reportResult.output.reportExportType
         this.reportContent = reportResult.output.output
         this.reportHeader = reportResult.output.name
+        this.name = reportResult.output.fileName
         this.loading = true
       }
     },
@@ -143,7 +146,7 @@ export default {
 <style scoped >
 	.content {
 		width: 100%;
-		height: 500px;
+		height: 100%;
 		padding: 10px;
 	}
 	.content-html {
@@ -152,10 +155,7 @@ export default {
 	}
   .content-txt{
 		width: 100%;
-    padding: 10px;
-	}
-  .content-csv{
-		width: 100%;
+		height: 100%;
     padding: 10px;
 	}
   .content-excel {
