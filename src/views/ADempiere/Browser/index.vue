@@ -13,14 +13,13 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <h3 v-show="!isEmptyValue(browserMetadata.description)" class="warn-content text-center">
-          <div>{{ browserMetadata.description }}</div>
-        </h3>
         <el-card class="content-collapse">
+          <h3 v-show="!isEmptyValue(browserMetadata.description)" class="warn-content text-center">
+            <div>{{ browserMetadata.description }}</div>
+          </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
-            <el-collapse-item title="Help" name="2">
-              <div v-show="!isEmptyValue(browserMetadata.help)" class="content-help" v-html="browserMetadata.help" />
-              <div v-show="isEmptyValue(browserMetadata.help)" class="content-help"> This Smart Browser does not contain help </div>
+            <el-collapse-item v-if="!isEmptyValue(browserMetadata.help)" title="Help" name="2">
+              <div class="content-help" v-html="browserMetadata.help" />
             </el-collapse-item>
             <el-collapse-item title="Search Criteria" name="1">
               <panel

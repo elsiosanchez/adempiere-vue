@@ -12,19 +12,18 @@
           <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
             {{ processMetadata.name }}
           </h3>
-          <el-collapse v-model="activeNames">
+          <el-collapse v-if="!isEmptyValue(processMetadata.help)" v-model="activeNames">
             <el-collapse-item title="Help" name="2" aling="center">
-              <div v-show="!isEmptyValue(processMetadata.help)" class="content-help" v-html="processMetadata.help" />
-              <div v-show="isEmptyValue(processMetadata.help)" class="content-help"> Does not contain help </div>
+              <div class="content-help" v-html="processMetadata.help" />
             </el-collapse-item>
-            <panel
-              :position-tab="processMetadata.accesLevel"
-              :container-uuid="processUuid"
-              :metadata="processMetadata"
-              :is-edit="isEdit"
-              :panel-type="panelType"
-            />
           </el-collapse>
+          <panel
+            :position-tab="processMetadata.accesLevel"
+            :container-uuid="processUuid"
+            :metadata="processMetadata"
+            :is-edit="isEdit"
+            :panel-type="panelType"
+          />
         </el-card>
         <!-- <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" /> -->
       </el-col>
@@ -152,5 +151,6 @@ export default {
   }
    .content-collapse{
     padding-left: 20 px !important;
+    padding-top: 50 px !important;
   }
 </style>
