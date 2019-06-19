@@ -23,10 +23,6 @@ export default {
       type: Object,
       required: true
     },
-    loadRecord: {
-      type: Boolean,
-      default: false
-    },
     valueModel: {
       type: String,
       default: ''
@@ -43,17 +39,17 @@ export default {
     typePicker() {
       var time = ''
       var range = ''
-      if (this.metadata.displayType === 16) {
+      if (String(this.metadata.displayType) === String(16)) {
         time = 'time'
       }
-      if (this.metadata.isRange) {
+      if (this.metadata.isRange && !this.metadata.inTable) {
         range = 'range'
       }
       return 'date' + time + range
     }
   },
   watch: {
-    valueModel: function() {
+    valueModel() {
       this.value = this.valueModel
     }
   },
@@ -61,17 +57,10 @@ export default {
     this.checkValueFormat()
   },
   beforeMount() {
-    if (this.valueModel !== '') {
+    // enable to dataTable records
+    if (typeof this.valueModel !== 'undefined') {
       this.value = this.valueModel
     }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     clientDateTime,
@@ -100,17 +89,12 @@ export default {
       return (new Date(value)).getTime()
     },
     handleChange(value) {
-      var typeFormat = ''
-      if (this.typePicker.replace('range', '') === 'date') {
-        typeFormat = 'd'
-      }
+      var valueFirst, valueTo
 
-      var valueFirst = clientDateTime(value, typeFormat)
-      var valueTo
-
-      if (this.metadata.isRange || value.isArray) {
-        valueFirst = clientDateTime(value[0], typeFormat)
-        valueTo = clientDateTime(value[1], typeFormat)
+      valueFirst = value
+      if ((this.metadata.isRange && !this.metadata.inTable) || value.isArray) {
+        valueFirst = value[0]
+        valueTo = value[1]
       }
 
       this.$store.dispatch('notifyFieldChange', {

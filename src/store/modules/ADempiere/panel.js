@@ -51,7 +51,7 @@ const panel = {
     }
   },
   actions: {
-    addPanel({ commit }, params) {
+    addPanel({ commit, dispatch }, params) {
       var keyColumn = ''
       var selectionColumn = []
 
@@ -62,6 +62,13 @@ const panel = {
         if (itemField.isSelectionColumn) {
           selectionColumn.push(itemField.columnName)
         }
+
+        dispatch('setContext', {
+          parentUuid: params.parentUuid,
+          containerUuid: params.uuid,
+          columnName: itemField.columnName,
+          value: itemField.value
+        })
       })
 
       params.keyColumn = keyColumn
@@ -70,8 +77,8 @@ const panel = {
       params.fieldList = assignedGroup(params.fieldList)
       commit('addPanel', params)
     },
-    addFields({ commit }, payload) {
-      commit('addFields', payload)
+    addFields({ commit }, params) {
+      commit('addFields', params)
     },
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
@@ -96,32 +103,32 @@ const panel = {
         })
       }
     },
-    notifyPanelChange({ state, dispatch }, payload) {
+    notifyPanelChange({ state, dispatch }, params) {
       state.panel
-        .find(item => item.uuid === payload.containerUuid).fieldList
+        .find(item => item.uuid === params.containerUuid).fieldList
         .filter(field => field.dependentFieldsList !== undefined)
         .forEach((actionField) => {
           dispatch('notifyFieldChange', {
-            parentUuid: payload.parentUuid,
-            containerUuid: payload.containerUuid,
+            parentUuid: params.parentUuid,
+            containerUuid: params.containerUuid,
             columnName: actionField.columnName,
             newValue: actionField.value
           })
         })
     },
-    notifyFieldChange({ commit, state, dispatch, getters }, payload) {
+    notifyFieldChange({ commit, state, dispatch, getters }, params) {
       //  Call context management
       commit('setContext', {
-        ...payload,
-        value: payload.newValue
+        ...params,
+        value: params.newValue
       })
-      var panel = state.panel.find(panelItem => panelItem.uuid === payload.containerUuid)
+      var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
       var fieldList = panel.fieldList
-      var field = fieldList.find(fieldItem => fieldItem.columnName === payload.columnName)
+      var field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
       commit('changeFieldValue', {
         field: field,
-        newValue: payload.newValue,
-        valueTo: payload.valueTo
+        newValue: params.newValue,
+        valueTo: params.valueTo
       })
       //  Change Dependents
       var dependents = fieldList.filter(fieldItem => {
@@ -136,8 +143,8 @@ const panel = {
         if (dependent.displayLogic.trim() !== '') {
           isDisplayedFromLogic = evaluator.evaluateLogic({
             context: getters,
-            parentUuid: payload.parentUuid,
-            containerUuid: payload.containerUuid,
+            parentUuid: params.parentUuid,
+            containerUuid: params.containerUuid,
             logic: dependent.displayLogic,
             type: 'displayed'
           })
@@ -148,8 +155,8 @@ const panel = {
         if (dependent.mandatoryLogic.trim() !== '') {
           isMandatoryFromLogic = evaluator.evaluateLogic({
             context: getters,
-            parentUuid: payload.parentUuid,
-            containerUuid: payload.containerUuid,
+            parentUuid: params.parentUuid,
+            containerUuid: params.containerUuid,
             logic: dependent.mandatoryLogic
           })
         } else {
@@ -159,8 +166,8 @@ const panel = {
         if (dependent.readOnlyLogic.trim() !== '') {
           isReadOnlyFromLogic = evaluator.evaluateLogic({
             context: getters,
-            parentUuid: payload.parentUuid,
-            containerUuid: payload.containerUuid,
+            parentUuid: params.parentUuid,
+            containerUuid: params.containerUuid,
             logic: dependent.readOnlyLogic
           })
         } else {
@@ -177,30 +184,30 @@ const panel = {
       var isDisplayed = field.isDisplayed && field.isDisplayedFromLogic && (isMandatory || field.isShowedFromUser)
       if (panel.panelType === 'browser' && isDisplayed) {
         dispatch('getBrowserSearch', {
-          containerUuid: payload.containerUuid,
+          containerUuid: params.containerUuid,
           clearSelection: true
         })
       }
     },
-    getPanelAndFields({ dispatch }, payload) {
-      if (payload.type === 'process' || payload.type === 'report') {
-        return dispatch('getProcessFromServer', payload.containerUuid)
+    getPanelAndFields({ dispatch }, params) {
+      if (params.type === 'process' || params.type === 'report') {
+        return dispatch('getProcessFromServer', params.containerUuid)
           .then(response => {
             if (response) {
               return response
             }
           })
-      } else if (payload.type === 'browser') {
-        return dispatch('getBrowserFromServer', payload.containerUuid)
+      } else if (params.type === 'browser') {
+        return dispatch('getBrowserFromServer', params.containerUuid)
           .then(response => {
             if (response) {
               return response
             }
           })
-      } else if (payload.type === 'window') {
+      } else if (params.type === 'window') {
         return dispatch('getTabAndFieldFromServer', {
-          parentUuid: payload.parentUuid,
-          containerUuid: payload.containerUuid
+          parentUuid: params.parentUuid,
+          containerUuid: params.containerUuid
         }).then(response => {
           if (response) {
             return response

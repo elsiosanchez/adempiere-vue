@@ -23,8 +23,8 @@ export default {
       default: 'hidden'
     },
     valueModel: {
-      type: [String, Number, Boolean, Array],
-      default: ''
+      type: [String, Number, Boolean],
+      default: undefined
     }
   },
   data() {
@@ -34,22 +34,15 @@ export default {
     }
   },
   watch: {
-    valueModel: function() {
+    valueModel() {
       this.value = this.valueModel
     }
   },
   beforeMount() {
-    if (this.valueModel !== '') {
+    // enable to dataTable records
+    if (typeof this.valueModel !== 'undefined') {
       this.value = this.valueModel
     }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     handleChange() {

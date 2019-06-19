@@ -15,11 +15,16 @@
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
       <component
         :is="afterLoader"
-        :metadata="field"
+        :metadata="{
+          ...field,
+          panelType: panelType,
+          inTable: inTable,
+          // DOM properties
+          required: isMandatory(),
+          readonly: !isReadOnly(),
+          disabled: !field.isActive
+        }"
         :value-model="recordDataFields"
-        :required="isMandatory()"
-        :readonly="!isReadOnly()"
-        :load-record="isLoadRecord"
       />
     </el-form-item>
   </el-col>
@@ -57,10 +62,6 @@ export default {
       type: Object,
       default: () => ({})
     },
-    isLoadRecord: {
-      type: Boolean,
-      default: false
-    },
     recordDataFields: {
       type: [Number, String, Boolean, Array, Object],
       default: undefined
@@ -68,14 +69,6 @@ export default {
     span: {
       type: Number,
       default: undefined
-    },
-    isShowLabel: {
-      type: Boolean,
-      default: true
-    },
-    isDataTable: {
-      type: Boolean,
-      default: false
     },
     inGroup: {
       type: Boolean,
@@ -142,7 +135,7 @@ export default {
     }
   },
   watch: {
-    metadataField: function() {
+    metadataField() {
       this.field = this.metadataField
     }
   },
@@ -166,18 +159,19 @@ export default {
       return span
     },
     isDisplayed() {
-      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.isDataTable)
+      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
       //  Verify for displayed and is active
       return this.field.isActive && isDisplayed
     },
     isReadOnly() {
+      // CHECK ATTRIBUTE isUpdatable
       return this.field.isReadonly && this.field.isReadonlyFromLogic
     },
     isMandatory() {
       return this.field.isMandatory && this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
-      if (!this.isShowLabel) {
+      if (this.inTable) {
         return undefined
       }
       if (this.verifyIsFieldOnly(this.field.displayType)) {

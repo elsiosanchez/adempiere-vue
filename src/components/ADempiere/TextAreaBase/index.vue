@@ -1,7 +1,6 @@
 <template>
   <text-base
     :metadata="metadata"
-    :load-record="loadRecord"
     :value-model="valueModel"
     :pattern="pattern"
     :placeholder="metadata.help"
@@ -21,10 +20,6 @@ export default {
     metadata: {
       type: Object,
       required: true
-    },
-    loadRecord: {
-      type: Boolean,
-      default: false
     },
     valueModel: {
       type: String,

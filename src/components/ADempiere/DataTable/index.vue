@@ -1,7 +1,7 @@
 <template>
   <el-form :label-position="labelPosition">
     <br>
-    <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" class="search-detail" align="right">
+    <div v-show="isSearchable" :class="{ 'show-input-seacrh':showSearch }" class="search-detail" align="right">
       <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" @submit.prevent.native="false" />
       <el-input
         ref="headerSearchInput"
@@ -41,10 +41,8 @@
           min-width="150"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
+            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable && !item.isReadOnly)">
               <field
-                :is-data-table="true"
-                :is-show-label="false"
                 :in-table="true"
                 :metadata-field="{
                   ...item,
@@ -124,7 +122,7 @@ export default {
     }
   },
   watch: {
-    isLoaded: function() {
+    isLoaded() {
       if (typeof this.tableName !== 'undefined') {
         this.getData(this.tableName)
       }

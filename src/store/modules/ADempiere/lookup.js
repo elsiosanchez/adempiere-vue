@@ -70,7 +70,7 @@ const lookup = {
         return item.parsedQuery === params.parsedQuery && item.tableName === params.tableName
       })
       if (typeof lookup === 'undefined') {
-        return lookup
+        return []
       }
       return lookup.list
     }

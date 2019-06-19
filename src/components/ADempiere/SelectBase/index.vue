@@ -28,8 +28,8 @@ export default {
       required: true
     },
     valueModel: {
-      type: [Object, Array, String, Number],
-      default: () => ({})
+      type: [Array, String, Number],
+      default: () => ([])
     }
   },
   data() {
@@ -46,6 +46,13 @@ export default {
     }
   },
   computed: {
+    getterOptions() {
+      var lookupList = this.$store.getters.getLookupList({
+        parsedQuery: this.parsedQuery,
+        tableName: this.metadata.reference.tableName
+      })
+      return lookupList
+    },
     parsedQuery() {
       return this.parseContext({
         parentUuid: this.metadata.parentUuid,
@@ -62,44 +69,37 @@ export default {
     }
   },
   watch: {
-    // valueModel: function() {
+    // valueModel() {
     //   this.value = this.valueModel
     // },
-    // value() {
-    //   if (this.value === -1 || this.value === '-1') {
-    //     this.value = ''
-    //   }
-    // }
-    'metadata.isShowedFromUser': function(value) {
+    'metadata.isShowedFromUser'(value) {
       if (value) {
         this.getData()
       }
     }
   },
+  created() {
+    this.options = this.getterOptions
+  },
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
     }
+
+    // enable to dataTable records
     if (typeof this.metadata.displayColumn !== 'undefined') {
-      this.options.push({
-        key: this.metadata.value,
-        label: this.metadata.displayColumn
-      })
+      var key = this.metadata.value
+      if (typeof this.valueModel !== 'undefined') {
+        key = this.valueModel
+      }
+      if (typeof this.options.find(option => option.label === this.metadata.displayColumn) === 'undefined') {
+        this.options.push({
+          key: key,
+          label: this.metadata.displayColumn
+        })
+      }
+      this.value = key
     }
-    // if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
-    //   if (this.metadata.value === '' && this.valueModel !== '') {
-    //     this.metadata.value = this.valueModel
-    //   }
-    //   this.getData()
-    // }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     parseContext,
@@ -126,14 +126,10 @@ export default {
      */
     getDataLookupList(showList) {
       if (showList) {
-        var lookupList = this.$store.getters.getLookupList({
-          parsedQuery: this.parsedQuery,
-          tableName: this.metadata.reference.tableName
-        })
-        if (typeof lookupList === 'undefined' || lookupList.length < 0) {
-          this.remoteMethod()
+        if (this.getterOptions.length > 0) {
+          this.options = this.getterOptions
         } else {
-          this.options = lookupList
+          this.remoteMethod()
         }
       }
     },
