@@ -9,9 +9,10 @@ const data = {
   mutations: {
     recordSelection(state, payload) {
       if (payload.index > -1 && typeof payload.index !== 'undefined') {
-        state.recordSelection.splice(payload.index, 1)
+        state.recordSelection.splice(payload.index, 1, payload)
+      } else {
+        state.recordSelection.push(payload)
       }
-      state.recordSelection.push(payload)
     },
     deleteRecortContainer(state, payload) {
       state.recordSelection = payload

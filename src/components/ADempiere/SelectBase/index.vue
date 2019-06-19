@@ -80,12 +80,18 @@ export default {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
     }
-    if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
-      if (this.metadata.value === '' && this.valueModel !== '') {
-        this.metadata.value = this.valueModel
-      }
-      this.getData()
+    if (typeof this.metadata.displayColumn !== 'undefined') {
+      this.options.push({
+        key: this.metadata.value,
+        label: this.metadata.displayColumn
+      })
     }
+    // if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
+    //   if (this.metadata.value === '' && this.valueModel !== '') {
+    //     this.metadata.value = this.valueModel
+    //   }
+    //   this.getData()
+    // }
   },
   mounted() {
     this.$store.dispatch('setContext', {

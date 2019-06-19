@@ -80,6 +80,10 @@ export default {
     inGroup: {
       type: Boolean,
       default: false
+    },
+    inTable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -111,8 +115,15 @@ export default {
         return item.type === this.field.componentPath
       })
       var sizeField = sizeFieldFromType.size
-      if (this.inGroup && this.getWidth >= 992) {
-        var newSizes = {}
+      var newSizes = {}
+      if (this.inTable) {
+        newSizes.xs = 24
+        newSizes.sm = 24
+        newSizes.md = 24
+        newSizes.lg = 24
+        newSizes.xl = 24
+        return newSizes
+      } else if (this.inGroup && this.getWidth >= 992) {
         newSizes.xs = sizeField.xs * 2
         newSizes.sm = sizeField.sm * 2
         if (this.getWidth <= 1199) {
@@ -122,7 +133,6 @@ export default {
         }
         newSizes.lg = sizeField.lg * 2
         newSizes.xl = sizeField.xl * 2
-
         return newSizes
       }
       return sizeField

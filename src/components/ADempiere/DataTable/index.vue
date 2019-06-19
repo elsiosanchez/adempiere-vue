@@ -9,18 +9,18 @@
         size="mini"
         :placeholder="$t('table.search')"
         class="header-search-input"
+        clearable
       />
     </div>
     <el-table
       ref="multipleTable"
       fit
-      height="200"
+      height="300"
       style="width: 100%"
       stripe
       border
       highlight-current-row
       :row-style="rowStyle"
-      :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"
     >
@@ -38,21 +38,25 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
-          width="150"
+          min-width="150"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
-                :metadata-field="item"
+                :in-table="true"
+                :metadata-field="{
+                  ...item,
+                  displayColumn: scope.row['DisplayColumn_' + item.columnName]
+                }"
                 :record-data-fields="scope.row[item.columnName]"
                 size="mini"
                 @keyup.enter.native="confirmEdit(scope.row)"
               />
             </template>
             <span v-else>
-              {{ scope.row[item.columnName] }}
+              {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
             </span>
           </template>
         </el-table-column>
@@ -102,8 +106,8 @@ export default {
       fieldList: [],
       isLoaded: false,
       keyColumn: '', // column as isKey in fieldList
-      tableData: this.getDataDetail,
-      multipleSelection: this.getDataSelection,
+      tableData: [],
+      multipleSelection: [],
       edit: false,
       rowStyle: { height: '52px' }
     }
@@ -144,6 +148,9 @@ export default {
     /**
      * ASOCIATE WITH SEARCH INPUT
      */
+    handleChangeInput(value) {
+      this.toggleSelection(this.getDataSelection)
+    },
     click() {
       if (this.searchTable.trim().length > 0) {
         this.showSearch = true
@@ -174,9 +181,6 @@ export default {
       } else {
         this.$refs.multipleTable.clearSelection()
       }
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
     },
     confirmEdit(row, newValue, value) {
       row.edit = false
