@@ -15,11 +15,16 @@
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
       <component
         :is="afterLoader"
-        :metadata="field"
+        :metadata="{
+          ...field,
+          panelType: panelType,
+          inTable: inTable,
+          // DOM properties
+          required: isMandatory(),
+          readonly: !isReadOnly(),
+          disabled: !field.isActive
+        }"
         :value-model="recordDataFields"
-        :required="isMandatory()"
-        :readonly="!isReadOnly()"
-        :load-record="isLoadRecord"
       />
     </el-form-item>
   </el-col>
@@ -57,10 +62,6 @@ export default {
       type: Object,
       default: () => ({})
     },
-    isLoadRecord: {
-      type: Boolean,
-      default: false
-    },
     recordDataFields: {
       type: [Number, String, Boolean, Array, Object],
       default: undefined
@@ -69,15 +70,11 @@ export default {
       type: Number,
       default: undefined
     },
-    isShowLabel: {
-      type: Boolean,
-      default: true
-    },
-    isDataTable: {
+    inGroup: {
       type: Boolean,
       default: false
     },
-    inGroup: {
+    inTable: {
       type: Boolean,
       default: false
     }
@@ -111,8 +108,15 @@ export default {
         return item.type === this.field.componentPath
       })
       var sizeField = sizeFieldFromType.size
-      if (this.inGroup && this.getWidth >= 992) {
-        var newSizes = {}
+      var newSizes = {}
+      if (this.inTable) {
+        newSizes.xs = 24
+        newSizes.sm = 24
+        newSizes.md = 24
+        newSizes.lg = 24
+        newSizes.xl = 24
+        return newSizes
+      } else if (this.inGroup && this.getWidth >= 992) {
         newSizes.xs = sizeField.xs * 2
         newSizes.sm = sizeField.sm * 2
         if (this.getWidth <= 1199) {
@@ -122,7 +126,6 @@ export default {
         }
         newSizes.lg = sizeField.lg * 2
         newSizes.xl = sizeField.xl * 2
-
         return newSizes
       }
       return sizeField
@@ -132,7 +135,7 @@ export default {
     }
   },
   watch: {
-    metadataField: function() {
+    metadataField() {
       this.field = this.metadataField
     }
   },
@@ -156,18 +159,19 @@ export default {
       return span
     },
     isDisplayed() {
-      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.isDataTable)
+      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
       //  Verify for displayed and is active
       return this.field.isActive && isDisplayed
     },
     isReadOnly() {
+      // CHECK ATTRIBUTE isUpdatable
       return this.field.isReadonly && this.field.isReadonlyFromLogic
     },
     isMandatory() {
       return this.field.isMandatory && this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
-      if (!this.isShowLabel) {
+      if (this.inTable) {
         return undefined
       }
       if (this.verifyIsFieldOnly(this.field.displayType)) {

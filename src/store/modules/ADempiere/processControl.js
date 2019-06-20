@@ -101,6 +101,7 @@ const processControl = {
               description: output.getDescription(),
               fileName: output.getFilename(),
               output: output.getOutput(),
+              mimeType: output.getMimetype(),
               outputStream: output.getOutputstream(),
               reportExportType: output.getReportexporttype()
             }
@@ -116,9 +117,20 @@ const processControl = {
           } else {
             logList = []
           }
+          // var extension = response.getOutput().getReportexporttype()
+          // console.log(extension)
+          var blob = new Blob([response.getOutput().getOutputstream()], { type: response.getOutput().getMimetype() })
+          var link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob)
+          link.download = output.fileName
+          if (reportExportType !== 'pdf' && reportExportType !== 'html') {
+            link.click()
+          }
           processResult = {
             action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
+            url: link.href,
+            download: link.download,
             processUuid: processToRun.uuid.trim(),
             processName: processToRun.processName,
             isError: response.getIserror(),
@@ -210,8 +222,7 @@ const processControl = {
     finishProcess({ commit }, processOutput) {
       if (!processOutput.isError &&
         typeof processOutput.instanceUuid !== 'undefined' &&
-        typeof processOutput.processUuid !== 'undefined' &&
-        typeof processOutput.output !== 'undefined') {
+        typeof processOutput.processUuid !== 'undefined') {
         var notificationParams = {
           title: 'Succes',
           message: processOutput.processName + ' executed, see process activity',

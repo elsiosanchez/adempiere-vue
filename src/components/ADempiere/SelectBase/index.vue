@@ -3,9 +3,10 @@
     v-model="value"
     :filterable="true"
     :placeholder="metadata.help"
+    :loading="loading"
     value-key="key"
     @change="handleChange"
-    @visible-change="getDataList"
+    @visible-change="getDataLookupList"
   >
     <el-option
       v-for="(item, key) in options"
@@ -27,8 +28,8 @@ export default {
       required: true
     },
     valueModel: {
-      type: [Object, Array, String, Number],
-      default: () => ({})
+      type: [Array, String, Number],
+      default: () => ([])
     }
   },
   data() {
@@ -44,39 +45,61 @@ export default {
       }
     }
   },
-  watch: {
-    valueModel: function() {
-      this.value = this.valueModel
+  computed: {
+    getterOptions() {
+      var lookupList = this.$store.getters.getLookupList({
+        parsedQuery: this.parsedQuery,
+        tableName: this.metadata.reference.tableName
+      })
+      return lookupList
     },
-    value: function() {
-      if (this.value === -1 || this.value === '-1') {
-        this.value = ''
+    parsedQuery() {
+      return this.parseContext({
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        value: this.metadata.reference.query
+      })
+    },
+    parsedDirectQuery() {
+      return this.parseContext({
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        value: this.metadata.reference.directQuery
+      })
+    }
+  },
+  watch: {
+    // valueModel() {
+    //   this.value = this.valueModel
+    // },
+    'metadata.isShowedFromUser'(value) {
+      if (value) {
+        this.getData()
       }
     }
+  },
+  created() {
+    this.options = this.getterOptions
   },
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
     }
-    if (this.metadata.isShowedFromUser || (this.metadata.isMandatory && this.metadata.isMandatoryFromLogic)) {
-      this.getData()
+
+    // enable to dataTable records
+    if (typeof this.metadata.displayColumn !== 'undefined') {
+      var key = this.metadata.value
+      if (typeof this.valueModel !== 'undefined') {
+        key = this.valueModel
+      }
+      if (typeof this.options.find(option => option.label === this.metadata.displayColumn) === 'undefined') {
+        this.options.push({
+          key: key,
+          label: this.metadata.displayColumn
+        })
+      }
+      this.value = key
     }
-    if (this.metadata.value !== '' && this.valueModel !== '') {
-      this.metadata.value = this.valueModel
-      this.getData()
-    }
-    if (this.valueModel !== '') {
-      this.value = this.valueModel
-      this.getData()
-    }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     parseContext,
@@ -84,15 +107,9 @@ export default {
       if (this.metadata.value !== '') {
         this.value = this.metadata.value
       }
-      var parsedDirectQuery = this.parseContext({
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        value: this.metadata.reference.directQuery
-      })
-
       this.$store.dispatch('getLookup', {
         tableName: this.metadata.reference.tableName,
-        directQuery: parsedDirectQuery,
+        directQuery: this.parsedDirectQuery,
         value: this.value
       })
         .then(response => {
@@ -107,28 +124,12 @@ export default {
     /**
      * @param {boolean} show triggers when the pull-down menu appears or disappears
      */
-    getDataList(show) {
-      if (show) {
-        var parsedQuery = this.parseContext({
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          value: this.metadata.reference.query
-        })
-        var lookupList = this.$store.getters.getLookupList(parsedQuery)
-        if (typeof lookupList === 'undefined' || lookupList.length < 0) {
-          this.$store.dispatch('getLookupList', {
-            tableName: this.metadata.reference.tableName,
-            query: parsedQuery
-          })
-            .then(response => {
-              this.options = response
-              this.options.unshift(this.blanckOption)
-            })
-            .catch(err => {
-              console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-            })
+    getDataLookupList(showList) {
+      if (showList) {
+        if (this.getterOptions.length > 0) {
+          this.options = this.getterOptions
         } else {
-          this.options = lookupList
+          this.remoteMethod()
         }
       }
     },
@@ -140,19 +141,21 @@ export default {
         newValue: this.value
       })
     },
-    remoteMethod(query) {
-      if (query !== '') {
-        this.loading = true
-        setTimeout(() => {
+    remoteMethod() {
+      this.loading = true
+      this.$store.dispatch('getLookupList', {
+        tableName: this.metadata.reference.tableName,
+        query: this.parsedQuery
+      })
+        .then(response => {
           this.loading = false
-          this.options = this.list.filter(item => {
-            return item.label.toLowerCase()
-              .indexOf(query.toLowerCase()) > -1
-          })
-        }, 200)
-      } else {
-        this.options = []
-      }
+          this.options = response
+          this.options.unshift(this.blanckOption)
+        })
+        .catch(err => {
+          this.loading = false
+          console.warn('DataRecord List, Select Base - Error ' + err.code + ': ' + err.message)
+        })
     }
   }
 }

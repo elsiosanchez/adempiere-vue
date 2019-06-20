@@ -20,10 +20,6 @@ export default {
       type: Object,
       required: true
     },
-    loadRecord: {
-      type: Boolean,
-      default: false
-    },
     pattern: {
       type: String,
       default: undefined
@@ -38,34 +34,27 @@ export default {
     },
     valueModel: {
       type: String,
-      default: ''
+      default: undefined
     }
   },
   data() {
     return {
-      value: this.metadata.defaultValue,
+      value: String(this.metadata.value),
       isReadOnly: false,
       patternFileName: '[A-Za-zñÑ0-9-_]{1,}',
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
     }
   },
   watch: {
-    valueModel: function() {
+    valueModel() {
       this.value = this.valueModel
     }
   },
   beforeMount() {
-    if (this.valueModel !== '') {
+    // enable to dataTable records
+    if (typeof this.valueModel !== 'undefined') {
       this.value = this.valueModel
     }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     handleChange() {

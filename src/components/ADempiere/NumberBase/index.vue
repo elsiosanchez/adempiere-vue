@@ -1,11 +1,13 @@
 <template>
-  <el-input
+  <el-input-number
     v-model="value"
-    :pattern="pattern"
-    :minlength="metadata.MinLength"
-    :maxlength="metadata.MaxLength"
     :type="typeInput"
+    :pattern="pattern"
+    :min="minValue"
+    :max="maxValue"
     :placeholder="metadata.help"
+    controls-position="right"
+    :class="'display-type' + metadata.displayType"
     @blur="validateInput"
     @change="handleChange"
   />
@@ -19,54 +21,47 @@ export default {
       type: Object,
       required: true
     },
-    loadRecord: {
-      type: Boolean,
-      default: false
-    },
-    pattern: {
-      type: String,
-      default: undefined
-    },
-    typeInput: {
-      type: String,
-      default: 'number'
-    },
-    placeholder: {
-      type: String,
-      default: 'Please input'
-    },
     validateInput: {
       type: Function,
       default: () => undefined
     },
     valueModel: {
       type: Number,
-      default: 0
+      default: undefined
     }
   },
   data() {
     return {
       value: this.metadata.value,
+      typeInput: 'number',
+      pattern: undefined,
       showControls: true
     }
   },
+  computed: {
+    maxValue() {
+      if (this.metadata.valueMin) {
+        return this.metadata.valueMin
+      }
+      return Infinity
+    },
+    minValue() {
+      if (this.metadata.valueMax) {
+        return this.metadata.valueMax
+      }
+      return -Infinity
+    }
+  },
   watch: {
-    valueModel: function() {
-      this.value = this.valueModel
+    valueModel() {
+      this.value = Number(this.valueModel)
     }
   },
   beforeMount() {
-    if (this.valueModel !== '') {
-      this.value = this.valueModel
+    // enable to dataTable records
+    if (typeof this.valueModel !== 'undefined') {
+      this.value = Number(this.valueModel)
     }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     handleChange() {
@@ -81,14 +76,17 @@ export default {
 }
 </script>
 
-<style scoped>
-  .el-input-number--medium, .el-input-number {
-    width: 100% !important;
+<style scoped lang="scss">
+  /* if is controls width 100% in container */
+  .el-input-number, .el-input {
+    width: 100% !important; /* ADempiere Custom */
   }
-  .el-input-number .el-input__inner{
-    text-align: right;
+
+  /** Amount reference **/
+  .display-type-12 {
+    input, .el-input__inner {
+      text-align: right !important;
+    }
   }
-  .el-input-number.is-controls-right .el-input__inner {
-    padding-right: 15px !important;
-  }
+
 </style>

@@ -1,8 +1,8 @@
 <template>
   <el-color-picker
     v-model="value"
-    :value="metadata.DefaultValue"
-    :show-alpha="ShowAlphaColor"
+    :value="value"
+    :show-alpha="showAlphaColor"
     @change="handleChange"
   />
 </template>
@@ -15,38 +15,27 @@ export default {
       type: Object,
       required: true
     },
-    loadRecord: {
-      type: Boolean,
-      default: false
-    },
     valueModel: {
       type: String,
-      default: ''
+      default: undefined
     }
   },
   data() {
     return {
       value: this.metadata.value,
-      ShowAlphaColor: true
+      showAlphaColor: true
     }
   },
   watch: {
-    valueModel: function() {
+    valueModel() {
       this.value = this.valueModel
     }
   },
   beforeMount() {
-    if (this.valueModel !== '') {
+    // enable to dataTable records
+    if (typeof this.valueModel !== 'undefined') {
       this.value = this.valueModel
     }
-  },
-  mounted() {
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
   },
   methods: {
     handleChange() {

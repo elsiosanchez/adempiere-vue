@@ -44,12 +44,6 @@ const browserControl = {
           // Add validation compare browserSearchQueryParameters
           getBrowserSearch(browserSearchQueryParameters)
             .then(response => {
-              var notificationParams = {
-                title: 'succesful',
-                message: 'succcessSearch',
-                type: 'success'
-              }
-              showNotification(notificationParams)
               const recordList = response.getRecordsList()
               var record = recordList.map(itemRecord => {
                 const map = itemRecord.getValuesMap()
@@ -70,6 +64,12 @@ const browserControl = {
                 record: record,
                 selection: selection
               })
+              var notificationParams = {
+                title: 'Successful',
+                message: 'The search has been made',
+                type: 'success'
+              }
+              showNotification(notificationParams)
               resolve(record)
             })
             .catch(err => {

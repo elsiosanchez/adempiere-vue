@@ -1,25 +1,26 @@
 <template>
   <el-form :label-position="labelPosition">
-    <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" align="rigth" class="search-detail">
-      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+    <br>
+    <div v-show="isSearchable" :class="{ 'show-input-seacrh':showSearch }" class="search-detail" align="right">
+      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" @submit.prevent.native="false" />
       <el-input
         ref="headerSearchInput"
         v-model="searchTable"
         size="mini"
-        placeholder="Type to search"
+        :placeholder="$t('table.search')"
         class="header-search-input"
+        clearable
       />
     </div>
     <el-table
       ref="multipleTable"
       fit
-      height="200"
+      height="300"
       style="width: 100%"
       stripe
       border
       highlight-current-row
       :row-style="rowStyle"
-      :row-key="keyColumn"
       :data="getDataDetail"
       @select="handleSelection"
     >
@@ -37,21 +38,23 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
-          width="150"
+          min-width="150"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
+            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable && !item.isReadOnly)">
               <field
-                :is-data-table="true"
-                :is-show-label="false"
-                :metadata-field="item"
+                :in-table="true"
+                :metadata-field="{
+                  ...item,
+                  displayColumn: scope.row['DisplayColumn_' + item.columnName]
+                }"
                 :record-data-fields="scope.row[item.columnName]"
                 size="mini"
                 @keyup.enter.native="confirmEdit(scope.row)"
               />
             </template>
             <span v-else>
-              {{ scope.row[item.columnName] }}
+              {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
             </span>
           </template>
         </el-table-column>
@@ -101,8 +104,8 @@ export default {
       fieldList: [],
       isLoaded: false,
       keyColumn: '', // column as isKey in fieldList
-      tableData: this.getDataDetail,
-      multipleSelection: this.getDataSelection,
+      tableData: [],
+      multipleSelection: [],
       edit: false,
       rowStyle: { height: '52px' }
     }
@@ -119,7 +122,7 @@ export default {
     }
   },
   watch: {
-    isLoaded: function() {
+    isLoaded() {
       if (typeof this.tableName !== 'undefined') {
         this.getData(this.tableName)
       }
@@ -143,6 +146,9 @@ export default {
     /**
      * ASOCIATE WITH SEARCH INPUT
      */
+    handleChangeInput(value) {
+      this.toggleSelection(this.getDataSelection)
+    },
     click() {
       if (this.searchTable.trim().length > 0) {
         this.showSearch = true
@@ -173,9 +179,6 @@ export default {
       } else {
         this.$refs.multipleTable.clearSelection()
       }
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
     },
     confirmEdit(row, newValue, value) {
       row.edit = false
@@ -281,16 +284,24 @@ export default {
 <style lang="scss" scoped>
   .search-detail {
     font-size: 0 !important;
+    width: 98%;
     .search-icon {
+      // cursor: pointer;
+      // font-size: 18px;
+      // vertical-align: middle;
       cursor: pointer;
       font-size: 18px;
       color: #000;
-      position: fixed;
+      position: absolute;
       vertical-align: middle;
-      left: 224px;
+      // left: 2px;
+    }
+    .container-table {
+      width: 100%;
+      height: 90%;
     }
     .header-search-input {
-      font-size: 16px;
+      font-size: 12px;
       transition: width 0.2s;
       width: 0;
       overflow: hidden;
@@ -298,6 +309,7 @@ export default {
       border-radius: 0;
       display: inline-block;
       vertical-align: middle;
+
       /deep/ .el-input__inner {
         border-radius: 0;
         border: 0;
@@ -310,8 +322,8 @@ export default {
     }
     &.show-input-seacrh {
       .header-search-input {
-        width: 210px;
-        margin-left: 50px;
+        width: 200px;
+        margin-left: 22px;
       }
     }
   }

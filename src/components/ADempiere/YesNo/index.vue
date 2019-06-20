@@ -5,6 +5,7 @@
     active-text="Yes"
     true-value="true"
     false-value="false"
+    :name="metadata.columnName"
     @change="handleChange"
   />
 </template>
@@ -17,13 +18,9 @@ export default {
       type: Object,
       required: true
     },
-    loadRecord: {
-      type: Boolean,
-      default: false
-    },
     valueModel: {
       type: [String, Boolean],
-      default: false
+      default: undefined
     }
   },
   data() {
@@ -38,20 +35,8 @@ export default {
       this.value = this.valueModel
     }
   },
-  beforeMount() {
-    if (this.valueModel !== '') {
-      this.value = this.valueModel
-    }
-  },
   mounted() {
-    this.handleChange()
-
-    this.$store.dispatch('setContext', {
-      parentUuid: this.metadata.parentUuid,
-      containerUuid: this.metadata.containerUuid,
-      columnName: this.metadata.columnName,
-      value: this.value
-    })
+    this.handleChange() // activate logics
   },
   methods: {
     handleChange() {

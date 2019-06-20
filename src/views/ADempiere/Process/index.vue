@@ -8,22 +8,24 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
-          {{ processMetadata.name }}
-        </h3>
-        <el-collapse v-model="activeNames">
-          <el-collapse-item title="Help" name="1">
-            <div v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" />
-          </el-collapse-item>
-        </el-collapse>
+        <el-card class="content-collapse">
+          <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
+            {{ processMetadata.name }}
+          </h3>
+          <el-collapse v-if="!isEmptyValue(processMetadata.help)" v-model="activeNames">
+            <el-collapse-item title="Help" name="2" aling="center">
+              <div class="content-help" v-html="processMetadata.help" />
+            </el-collapse-item>
+          </el-collapse>
+          <panel
+            :position-tab="processMetadata.accesLevel"
+            :container-uuid="processUuid"
+            :metadata="processMetadata"
+            :is-edit="isEdit"
+            :panel-type="panelType"
+          />
+        </el-card>
         <!-- <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" /> -->
-        <panel
-          :position-tab="processMetadata.accesLevel"
-          :container-uuid="processUuid"
-          :metadata="processMetadata"
-          :is-edit="isEdit"
-          :panel-type="panelType"
-        />
       </el-col>
     </el-row>
   </div>
@@ -129,6 +131,11 @@ export default {
     margin: 0px 0px !important;
     padding-top: 39px !important;
   }
+  .content-help{
+    width: 100%;
+    height: 200%;
+    padding-left: 39px !important;
+  }
   /* .el-collapse {
     border-top: 1px solid #e6ebf5;
     border-bottom: 1px solid #e6ebf5;
@@ -136,9 +143,17 @@ export default {
     width: 100%;
     left: 14px;
   } */
+  .el-card {
+    width: 100% !important;
+    height: 200% !important;
+  }
   .sticky-submenu {
     position: absolute !important;
     right: 0;
     top: 0;
+  }
+   .content-collapse{
+    padding-left: 20 px !important;
+    padding-top: 50 px !important;
   }
 </style>
