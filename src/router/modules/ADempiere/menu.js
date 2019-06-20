@@ -105,6 +105,7 @@ function getChildFromAction(menu) {
     name: menu.getUuid(),
     hidden: actionAttributes.hidden,
     meta: {
+      isIndex: false,
       title: menu.getName(),
       uuid: menu.getReferenceuuid(),
       type: actionAttributes.name,
@@ -130,6 +131,7 @@ function getRouteFromMenuItem(menu) {
   var optionMenu = []
   optionMenu = {
     path: '/' + menu.getUuid().replace(/ /g, ''),
+    redirect: '/' + menu.getUuid().replace(/ /g, '') + '/index',
     component: Layout,
     name: menu.getUuid(),
     meta: {
@@ -138,7 +140,21 @@ function getRouteFromMenuItem(menu) {
       icon: actionAttributes.icon,
       noCache: true
     },
-    children: []
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/ADempiere/Summary'),
+        name: menu.getUuid(),
+        hidden: true,
+        meta: {
+          isIndex: true,
+          parentUuid: menu.getUuid(),
+          title: menu.getName(),
+          type: actionAttributes.name,
+          noCache: true
+        }
+      }
+    ]
   }
   return optionMenu
 }
