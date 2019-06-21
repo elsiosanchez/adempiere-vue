@@ -17,6 +17,22 @@ const data = {
     deleteRecortContainer(state, payload) {
       state.recordSelection = payload
     },
+    notifyCellTableChange: (state, payload) => {
+      payload.row[payload.columnName] = payload.value
+      if (typeof payload.displayColumn !== 'undefined') {
+        var key = 'DisplayColumn_' + payload.columnName
+        payload.row[key] = payload.displayColumn
+      }
+    },
+    notifyCellSelectionChange: (state, payload) => {
+      if (typeof payload.row !== 'undefined') {
+        payload.row[payload.columnName] = payload.value
+        if (typeof payload.displayColumn !== 'undefined') {
+          var key = 'DisplayColumn_' + payload.columnName
+          payload.row[key] = payload.displayColumn
+        }
+      }
+    },
     setRecentItems(state, payload) {
       state.recentItems = payload
     }
@@ -66,7 +82,7 @@ const data = {
           })
       })
     },
-    getObjectListFromCriteria: ({ commit, dispatch, rootGetters }, objectParams) => {
+    getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams.table, objectParams.criteria)
           .then(response => {
@@ -89,7 +105,6 @@ const data = {
             resolve(record)
           })
           .catch(error => {
-            console.log('Error getting data with criteria' + error)
             reject(error)
           })
       })
@@ -117,6 +132,30 @@ const data = {
           .catch(error => {
             reject(error)
           })
+      })
+    },
+    notifyCellTableChange: ({ commit, state }, objectParams) => {
+      var recordSelection = state.recordSelection.find(recordItem => {
+        return recordItem.containerUuid === objectParams.containerUuid
+      })
+      var row = recordSelection.record.find(itemRecord => {
+        return itemRecord[objectParams.keyColumn] === objectParams.rowKey
+      })
+      var rowSelection = recordSelection.selection.find(itemRecord => {
+        return itemRecord[objectParams.keyColumn] === objectParams.rowKey
+      })
+
+      commit('notifyCellSelectionChange', {
+        row: rowSelection,
+        value: objectParams.newValue,
+        columnName: objectParams.columnName,
+        displayColumn: objectParams.displayColumn
+      })
+      commit('notifyCellTableChange', {
+        row: row,
+        value: objectParams.newValue,
+        columnName: objectParams.columnName,
+        displayColumn: objectParams.displayColumn
       })
     }
   },
