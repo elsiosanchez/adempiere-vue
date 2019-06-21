@@ -64,6 +64,11 @@
         <el-menu-item index="3">
           References
         </el-menu-item>
+        <el-menu-item :disabled="!isReport" index="4">
+          <a :href="downloads" download="file.html">
+            download
+          </a>
+        </el-menu-item>
       </template>
     </el-menu>
   </div>
@@ -88,7 +93,7 @@ export default {
       type: String,
       default: undefined
     },
-    report: {
+    isReport: {
       type: Boolean,
       default: false
     }
@@ -97,7 +102,9 @@ export default {
     return {
       relations: this.$store.getters.getRelations(this.$route.meta.parentUuid),
       actions: [],
-      references: []
+      references: [],
+      // file: inReport,
+      downloads: this.$store.getters.getProcessResult.url
     }
   },
   computed: {
@@ -124,11 +131,8 @@ export default {
         mobile: this.device === 'mobile'
       }
     },
-    isReport() {
-      if (this.report === true) {
-        return true
-      }
-      return false
+    Report() {
+      return this.$store.getters.getProcessResult.output.reportExportType
     }
   },
   created() {
@@ -216,6 +220,10 @@ export default {
             this.$router.push('/')
           }
           this.$store.dispatch('tagsView/delView', this.$route)
+          if (this.report === true) {
+            return true
+          }
+          return false
         } else {
           this.$notify.info({
             title: 'Info',

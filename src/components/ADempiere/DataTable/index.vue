@@ -38,7 +38,8 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
-          min-width="150"
+          min-width="180"
+          height="80px"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
@@ -288,15 +289,11 @@ export default {
     font-size: 0 !important;
     width: 98%;
     .search-icon {
-      // cursor: pointer;
-      // font-size: 18px;
-      // vertical-align: middle;
       cursor: pointer;
       font-size: 18px;
       color: #000;
       position: absolute;
       vertical-align: middle;
-      // left: 2px;
     }
     .container-table {
       width: 100%;
