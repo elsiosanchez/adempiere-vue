@@ -169,6 +169,7 @@ function convertAction(action) {
   switch (action) {
     case 'B':
       actionAttributes.name = 'workbech'
+      actionAttributes.icon = 'peoples'
       break
     case 'F':
       actionAttributes.name = 'workflow'

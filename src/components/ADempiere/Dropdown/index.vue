@@ -1,15 +1,22 @@
 <template>
-  <div :class="{active:isActive}" class="share-dropdown-menu">
-    <div class="share-dropdown-menu-wrapper">
-      <span class="share-dropdown-menu-title" @click.self="clickTitle">{{ title }}</span>
-      <template v-for="(item, index) in items">
-        <router-link v-if="!item.hidden" :key="index" :to="{name: item.name}" class="share-dropdown-menu-item">
-          <svg-icon :icon-class="item.meta.icon" />
-          {{ item.meta.title }}
-        </router-link>
-      </template>
-    </div>
-  </div>
+  <el-col :span="24">
+    <el-collapse accordion>
+      <el-collapse-item :title="title" name="1" class="collapse-item">
+        <template v-for="(item, index) in items">
+          <div v-if="!item.hidden" :key="index" class="card-panel" @click="redirect(item)">
+            <div class="card-panel-icon-wrapper icon-message">
+              <svg-icon :icon-class="item.meta.icon" class-name="card-panel-icon" />
+            </div>
+            <div class="card-panel-description">
+              <div class="card-panel-text">
+                {{ item.meta.title }}
+              </div>
+            </div>
+          </div>
+        </template>
+      </el-collapse-item>
+    </el-collapse>
+  </el-col>
 </template>
 
 <script>
@@ -33,71 +40,80 @@ export default {
     }
   },
   methods: {
-    clickTitle() {
-      this.isActive = !this.isActive
+    redirect(item) {
+      this.$router.push({ name: item.name })
     }
   }
 }
 </script>
 
-<style lang="scss" >
-$n: 15; //和items.length 相同
-$t: .1s;
-.share-dropdown-menu {
-  width: 200px;
-  position: relative;
-  z-index: 1;
-  &-title {
-    width: 100%;
-    display: block;
-    cursor: pointer;
-    background: #42b983;
-    color: white;
-    height: 50px;
-    line-height: 40px;
-    font-size: 15px;
-    text-align: center;
-    z-index: 2;
-    transform: translate3d(0,0,0);
-  }
-  &-wrapper {
-    position: relative;
-  }
-  &-item {
-    text-align: center;
-    position: absolute;
-    width: 100%;
-    background: #e0e0e0;
-    line-height: 35px;
-    height: 35px;
-    cursor: pointer;
-    font-size: 15px;
-    opacity: 1;
-    transition: transform 0.28s ease;
-    &:hover {
-      background: rgba(66,185,131, 0.90);
-      color: white;
-    }
-    @for $i from 1 through $n {
-      &:nth-of-type(#{$i}) {
-        z-index: -1;
-        transition-delay: $i*$t;
-        transform: translate3d(0, -35px, 0);
-      }
-    }
-  }
-  &.active {
-    .share-dropdown-menu-wrapper {
-      z-index: 1;
-    }
-    .share-dropdown-menu-item {
-      @for $i from 1 through $n {
-        &:nth-of-type(#{$i}) {
-         transition-delay: ($n - $i)*$t;
-          transform: translate3d(0, ($i - 1)*35px, 0);
-        }
-      }
-    }
-  }
+<style lang="scss">
+.el-collapse-item__header {
+  height: 60px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
 }
+.card-panel {
+    height: 50px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    &:hover {
+      .card-panel-icon-wrapper {
+        color: #fff;
+      }
+      .icon-people {
+         background: #40c9c6;
+      }
+      .icon-message {
+        background: #36a3f7;
+      }
+      .icon-money {
+        background: #f4516c;
+      }
+      .icon-shopping {
+        background: #34bfa3
+      }
+    }
+    .icon-people {
+      color: #40c9c6;
+    }
+    .icon-message {
+      color: #36a3f7;
+    }
+    .icon-money {
+      color: #f4516c;
+    }
+    .icon-shopping {
+      color: #34bfa3
+    }
+    .card-panel-icon-wrapper {
+      float: left;
+      margin: 0 0 0 14px;
+      padding: 10px;
+      transition: all 0.38s ease-out;
+      border-radius: 6px;
+    }
+    .card-panel-icon {
+      float: left;
+      font-size: 30px;
+    }
+    .card-panel-description {
+      float: left;
+      font-weight: bold;
+      margin: 26px;
+      margin-left: 0px;
+      .card-panel-text {
+        line-height: 5px;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+    }
+  }
 </style>
