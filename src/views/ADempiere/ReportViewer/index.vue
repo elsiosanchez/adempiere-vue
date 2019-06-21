@@ -1,16 +1,15 @@
 <template>
   <div v-if="loading">
-    <context-menu />
+    <context-menu
+      :is-report="true"
+    />
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="content">
           <h3 class="text-center">{{ reportHeader }}</h3>
           <iframe v-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content-api" :src="url" />
           <div v-else-if="reportFormatValue === 'html'" class="content-html">
-            <a :href="url" :download="name">
-              <el-button icon="el-icon-download">Download File</el-button>
-            </a>
-            <el-scrollbar wrap-class="scroll">
+            <el-scrollbar wrap-class="scroll" style="bottom: -7%;">
               <div
                 class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
                 v-html="reportContentValue"
@@ -71,6 +70,7 @@ export default {
     }
   },
   created() {
+    console.log(this.$store.getters.getProcessR)
     this.getCachedReport(this.$route.params.instanceUuid)
   },
   mounted() {
@@ -114,8 +114,9 @@ export default {
     top: 0%;
   }
 	.content-html {
-		width: 100%;
+    width: 100%;
     height: 100%;
+    bottom: -19% !important;
     padding: 10px;
 	}
   .content-api {

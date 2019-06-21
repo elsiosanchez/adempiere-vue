@@ -12,11 +12,6 @@
         clearable
       />
     </div>
-
-    <!--
-      Add this prop to el-table later fix Duplicate keys records
-      :row-key="keyColumn"
-    -->
     <el-table
       ref="multipleTable"
       fit
@@ -25,13 +20,9 @@
       stripe
       border
       highlight-current-row
-      :reserve-selection="true"
       :row-style="rowStyle"
       :data="getDataDetail"
-      @row-click="handleRowClick"
-      @row-dblclick="handleRowDblClick"
       @select="handleSelection"
-      @select-all="handleSelectionAll"
     >
       <el-table-column
         v-if="isTableSelection"
@@ -39,7 +30,6 @@
         :prop="keyColumn"
         fixed
         min-width="50"
-        :class-name="'is-cell-selection'"
       />
       <template v-for="(item, key) in fieldList">
         <el-table-column
@@ -48,8 +38,8 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
-          min-width="150"
-          :class-name="cellClass(item)"
+          min-width="180"
+          height="80px"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
@@ -59,10 +49,7 @@
                 :in-table="true"
                 :metadata-field="{
                   ...item,
-                  displayColumn: scope.row['DisplayColumn_' + item.columnName],
-                  tableIndex: scope.$index,
-                  rowKey: scope.row[keyColumn],
-                  keyColumn: keyColumn
+                  displayColumn: scope.row['DisplayColumn_' + item.columnName]
                 }"
                 :record-data-fields="scope.row[item.columnName]"
                 size="mini"
@@ -184,22 +171,12 @@ export default {
       }
     },
     /**
-     * @param {object} field
-     */
-    cellClass(field) {
-      if (!(field.isIdentifier || field.isUpdateable && !field.isReadOnly)) {
-        return 'cell-no-edit'
-      }
-      // return 'cell-edit'
-      return undefined
-    },
-    /**
      * Select or unselect rows
      * USE ONLY MOUNTED
      */
-    toggleSelection(rowsSelection) {
-      if (rowsSelection) {
-        rowsSelection.forEach(row => {
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
           this.$refs.multipleTable.toggleRowSelection(row)
         })
       } else {
@@ -207,62 +184,19 @@ export default {
       }
     },
     confirmEdit(row, newValue, value) {
-      if (row.edit) {
-        row.edit = false
-        this.$message({
-          message: 'The title has been edited',
-          type: 'success'
-        })
-      }
-    },
-    handleRowClick(row, column, event) {
-      if (!row.edit) {
-        /*
-        var inSelection = this.getDataSelection.some(item => {
-          return JSON.stringify(item) === JSON.stringify(row)
-        })
-        if (inSelection) {
-          row.edit = true
-        }
-        */
-        row.edit = true
-      }
-    },
-    handleRowDblClick(row, column, event) {
-      this.confirmEdit(row, null, null)
-    },
-    handleSelection(rowsSelection, rowSelected) {
-      // index.edit = !index.edit
-      // rowSelected.edit = !rowSelected.edit
-      // if (this.isAllSelected(rows.length)) {
-      //   index.edit = true
-      // }
-      this.$store.dispatch('recordSelection', {
-        containerUuid: this.containerUuid,
-        selection: rowsSelection,
-        record: this.getDataDetail
+      row.edit = false
+      this.$message({
+        message: 'The title has been edited',
+        type: 'success'
       })
     },
-    isAllSelected(selection = 0) {
-      if (selection > 0) {
-        var data = this.$store.getters.getDataRecordDetail(this.containerUuid)
-        return data.length === selection
-      }
-      return false
-    },
-    handleSelectionAll(rowsSelection) {
-      // var selectAll = false
-      // if (this.isAllSelected(rowsSelection.length)) {
-      //   selectAll = true
-      // }
+    handleSelection(row, index) {
+      index.edit = !index.edit
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
-        selection: rowsSelection,
+        selection: row,
         record: this.getDataDetail
       })
-      // rowsSelection.forEach(row => {
-      //   row.edit = selectAll
-      // })
     },
     filterResult() {
       var data = []
@@ -350,29 +284,16 @@ export default {
 }
 </script>
 
-<style>
-  /* style in cursor if cell is no edit */
-  .cell-no-edit {
-    cursor: not-allowed !important;
-  }
-  .cell-edit {
-    cursor: pointer !important;
-  }
-</style>
 <style lang="scss" scoped>
   .search-detail {
     font-size: 0 !important;
     width: 98%;
     .search-icon {
-      // cursor: pointer;
-      // font-size: 18px;
-      // vertical-align: middle;
       cursor: pointer;
       font-size: 18px;
       color: #000;
       position: absolute;
       vertical-align: middle;
-      // left: 2px;
     }
     .container-table {
       width: 100%;

@@ -25,7 +25,6 @@
             :panel-type="panelType"
           />
         </el-card>
-        <!-- <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" /> -->
       </el-col>
     </el-row>
   </div>
@@ -68,6 +67,7 @@ export default {
   },
   beforeMount() {
     this.getProcess(this.$route.meta.uuid)
+    console.log(this.$store.getters.getProcessR)
     // this.subscribeAction()
   },
   methods: {
@@ -133,13 +133,6 @@ export default {
     height: 200%;
     padding-left: 39px !important;
   }
-  /* .el-collapse {
-    border-top: 1px solid #e6ebf5;
-    border-bottom: 1px solid #e6ebf5;
-    position: relative;
-    width: 100%;
-    left: 14px;
-  } */
   .el-card {
     width: 100% !important;
     height: 200% !important;
