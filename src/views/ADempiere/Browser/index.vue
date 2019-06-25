@@ -51,14 +51,11 @@
       </el-col>
     </el-row>
   </div>
-  <div
-    v-else
-    v-loading="!isLoading"
-    :element-loading-text="$t('notifications.loading')"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(255, 255, 255, 0.8)"
-    style="padding: 100px 100px; heigth: 100%"
-  />
+  <div v-else style="padding: 20px 100px">
+    <h3>
+      Loading SmatBrowser...
+    </h3>
+  </div>
 </template>
 
 <script>

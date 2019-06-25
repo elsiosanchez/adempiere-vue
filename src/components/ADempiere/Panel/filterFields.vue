@@ -3,7 +3,7 @@
     <el-select
       v-model="newFields"
       :filterable="true"
-      :placeholder="$t('components.filterableItems')"
+      placeholder="Filtrable Items"
       multiple
       collapse-tags
       value-key="key"
