@@ -67,7 +67,6 @@ export default {
   },
   beforeMount() {
     this.getProcess(this.$route.meta.uuid)
-    console.log(this.$store.getters.getProcessR)
     // this.subscribeAction()
   },
   methods: {

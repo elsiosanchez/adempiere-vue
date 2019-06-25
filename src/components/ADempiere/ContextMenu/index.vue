@@ -65,7 +65,7 @@
           References
         </el-menu-item>
         <el-menu-item :disabled="!isReport" index="4">
-          <a :href="downloads" download="file.html">
+          <a :href="downloads" :download="file">
             download
           </a>
         </el-menu-item>
@@ -103,7 +103,7 @@ export default {
       relations: this.$store.getters.getRelations(this.$route.meta.parentUuid),
       actions: [],
       references: [],
-      // file: inReport,
+      file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url
     }
   },
