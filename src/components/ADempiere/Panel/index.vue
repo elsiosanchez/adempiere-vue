@@ -98,11 +98,14 @@
         </template>
       </div>
     </el-form>
-    <div v-else>
-      <h3>
-        Loading fields...
-      </h3>
-    </div>
+    <div
+      v-else
+      v-loading="!isLoading"
+      :element-loading-text="$t('notifications.loading')"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(255, 255, 255, 0.8)"
+      style="padding: 100px 100px; heigth: 100%"
+    />
   </div>
 </template>
 

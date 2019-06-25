@@ -7,7 +7,7 @@
         ref="headerSearchInput"
         v-model="searchTable"
         size="mini"
-        :placeholder="$t('table.search')"
+        :placeholder="$t('table.dataTable.search')"
         class="header-search-input"
         clearable
       />
