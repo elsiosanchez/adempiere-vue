@@ -90,7 +90,8 @@ export default {
     log: 'Bitacora',
     seeReport: 'Ver Reporte',
     summary: 'Resumen',
-    viewsHelp: 'Ayuda'
+    viewsHelp: 'Ayuda',
+    searchCriteria: 'Criterio de Búsqueda'
   },
   table: {
     ProcessActivity: {
@@ -98,6 +99,9 @@ export default {
       Description: 'Descripción',
       Action: 'Acción',
       Status: 'Estado'
+    },
+    dataTable: {
+      search: 'Buscar'
     }
   },
   tagsView: {

@@ -69,6 +69,7 @@ export default {
     ChangeParameters: 'Change Parameters',
     RunProcessAs: 'Run As',
     ExportTo: 'Export to',
+    contextMenuDownload: 'Download',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
     dialogCancelButton: 'Cancel',
@@ -84,7 +85,8 @@ export default {
     log: 'Log',
     seeReport: 'See Report',
     summary: 'Summary',
-    viewsHelp: 'Help'
+    viewsHelp: 'Help',
+    searchCriteria: 'Search Criteria'
   },
   table: {
     ProcessActivity: {
@@ -92,6 +94,9 @@ export default {
       description: 'Descripción',
       actions: 'Acción',
       status: 'Estado'
+    },
+    dataTable: {
+      search: 'Search'
     }
   },
   example: {
