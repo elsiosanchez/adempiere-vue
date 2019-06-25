@@ -4,7 +4,7 @@
     :pattern="pattern"
     :minlength="metadata.MinLength"
     :maxlength="metadata.MaxLength"
-    :rows="5"
+    :rows="rows"
     :type="typeInput"
     :placeholder="metadata.help"
     @blur="validateInput"
@@ -33,8 +33,12 @@ export default {
       default: () => undefined
     },
     valueModel: {
-      type: String,
+      type: [String, Number],
       default: undefined
+    },
+    rows: {
+      type: Number,
+      default: 5
     }
   },
   data() {
@@ -53,17 +57,29 @@ export default {
   beforeMount() {
     // enable to dataTable records
     if (typeof this.valueModel !== 'undefined') {
-      this.value = this.valueModel
+      this.value = String(this.valueModel)
     }
   },
   methods: {
     handleChange() {
-      this.$store.dispatch('notifyFieldChange', {
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        columnName: this.metadata.columnName,
-        newValue: this.value
-      })
+      if (this.metadata.inTable) {
+        this.$store.dispatch('notifyCellTableChange', {
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          columnName: this.metadata.columnName,
+          newValue: this.value,
+          keyColumn: this.metadata.keyColumn,
+          tableIndex: this.metadata.tableIndex,
+          rowKey: this.metadata.rowKey
+        })
+      } else {
+        this.$store.dispatch('notifyFieldChange', {
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          columnName: this.metadata.columnName,
+          newValue: this.value
+        })
+      }
     },
     validateUrl(e) {
       // Entry pattern, in this case only accepts numbers and letters

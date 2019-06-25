@@ -64,6 +64,11 @@
         <el-menu-item index="3">
           References
         </el-menu-item>
+        <el-menu-item :disabled="!isReport" index="4">
+          <a :href="downloads" :download="file">
+            download
+          </a>
+        </el-menu-item>
       </template>
     </el-menu>
   </div>
@@ -88,16 +93,22 @@ export default {
       type: String,
       default: undefined
     },
-    report: {
+    isReport: {
       type: Boolean,
       default: false
+    },
+    lastParameter: {
+      type: String,
+      default: undefined
     }
   },
   data() {
     return {
       relations: this.$store.getters.getRelations(this.$route.meta.parentUuid),
       actions: [],
-      references: []
+      references: [],
+      file: this.$store.getters.getProcessResult.download,
+      downloads: this.$store.getters.getProcessResult.url
     }
   },
   computed: {
@@ -124,11 +135,8 @@ export default {
         mobile: this.device === 'mobile'
       }
     },
-    isReport() {
-      if (this.report === true) {
-        return true
-      }
-      return false
+    Report() {
+      return this.$store.getters.getProcessResult.output.reportExportType
     }
   },
   created() {
@@ -188,9 +196,14 @@ export default {
       if (action.type === 'action') {
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
         if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
+          var containerParams = this.$route.meta.uuid
+          if (typeof this.lastParameter !== 'undefined') {
+            containerParams = this.lastParameter
+          }
+
           this.$store.dispatch(action.action, {
             action: action,
-            containerUuid: this.$route.meta.uuid, // EVALUATE IF IS action.uuid
+            containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.parentUuid,
             parentPanel: this.parentPanel,
             processName: this.$route.meta.title
@@ -216,6 +229,10 @@ export default {
             this.$router.push('/')
           }
           this.$store.dispatch('tagsView/delView', this.$route)
+          if (this.report === true) {
+            return true
+          }
+          return false
         } else {
           this.$notify.info({
             title: 'Info',
@@ -232,7 +249,7 @@ export default {
 
 <style>
   .container-context-menu {
-    z-index: 111;
+    z-index: 1;
   }
 
   .container-submenu-mobile{

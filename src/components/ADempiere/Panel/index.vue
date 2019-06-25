@@ -37,6 +37,7 @@
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
                     :metadata-field="subItem"
+                    :is-load-record="isLoadRecord"
                     :recorddata-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
@@ -82,6 +83,7 @@
                         :parent-uuid="parentUuid"
                         :container-uuid="containerUuid"
                         :metadata-field="subItem"
+                        :is-load-record="isLoadRecord"
                         :recorddata-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
@@ -492,15 +494,13 @@ export default {
   }
   .select-filter {
     width: 280px !important;
-    position: sticky;
-    left: 84%;
+    float: right;
     top: 0;
   }
   .select-filter-header {
     width: 268px !important;
-    position: absolute;
-    left: 50%;
-    top: 10px;
+    float: right;
+    top: 0px;
 }
   .el-card {
     width: 100% !important;

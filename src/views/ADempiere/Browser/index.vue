@@ -63,7 +63,6 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-// import Detail from '@/components/ADempiere/Panel/detail'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
@@ -71,7 +70,6 @@ export default {
   name: 'Browser',
   components: {
     Panel,
-    // Detail,
     DataTable,
     ContextMenu,
     Modal
@@ -149,13 +147,6 @@ export default {
   .warn-content{
     margin: 10px 0px !important;
   }
-  /* .el-collapse {
-     border-top: 1px solid #e6ebf5;
-    border-bottom: 1px solid #e6ebf5;
-    position: relative;
-    width: 100%;
-    left: 14px;
-  } */
   .content-help{
     width: 100%;
     height: 200%;
@@ -165,34 +156,29 @@ export default {
       padding-left: 20 px !important;
   }
   .container-panel {
-    /* position: fixed; */
     bottom: 0;
     right: 0;
     z-index: 0;
-    /* width: calc(100% - 59px); */
+    padding-right: 20px;
+    padding-left: 20px;
     transition: width 0.28s;
     border: 1px solid #e5e9f2;
-    /* background: #e5e9f2; */
   }
   .container-panel-open {
-    /* position: fixed; */
     bottom: 0;
     right: 0;
+    padding-right: 20px;
+    padding-left: 20px;
     border: 1px solid #e5e9f2;
     height: -webkit-fill-available;
-    /* background: #e5e9f2; */
     height:-webkit-calc(100% - 100px);
     z-index: 0;
-    /* width: calc(100% - 210px); */
     transition: width 0.28s;
   }
   .container-collasep-open {
-    /* position: fixed; */
     bottom: 0;
     right: 0;
-    /* background: #e5e9f2; */
     z-index: 0;
-    /* width: calc(100% - 210px); */
     transition: width 0.28s;
   }
   .sticky-submenu {
