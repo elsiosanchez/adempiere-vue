@@ -1,87 +1,91 @@
 <template>
-  <div>
-    <br>
-    <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
-      <el-button @click="clearFilter">reset all filters</el-button>
-      <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
-      <el-input
-        ref="headerSearchSelect"
-        v-model="search"
-        size="mini"
-        placeholder="Type to search"
-        class="header-search-select"
-      />
-    </div>
-    <br>
-    <el-table
-      ref="filterTable"
-      :data="filterResult()"
-      :border="true"
-      :stripe="true"
-    >
-      <el-table-column
-        prop="c_bpartner_id"
-        label="c_bpartner_id"
-        width="180"
-      />
-      <el-table-column
-        prop="ad_client_id"
-        label="ad_client_id"
-        width="180"
-      />
-      <el-table-column
-        prop="ad_org_id"
-        label="ad_org_id"
-        width="180"
-        column-key="ad_org_id"
-        :filters="[{text: '0', value: '0'}, {text: '11', value: '11'}]"
-        :filter-method="filterHandler"
-      />
-      <el-table-column
-        prop="isactive"
-        label="isactive"
-        width="180"
-      />
-      <el-table-column
-        prop="created"
-        label="created"
-        width="180"
-      />
-      <el-table-column
-        prop="createdby"
-        label="createdby"
-        width="180"
-        column-key="createdby"
-        :filters="[{text: '0', value: '0'}, {text: '100', value: '100'}]"
-        :filter-method="filterHandler"
-      />
-      <el-table-column
-        prop="updated"
-        label="updated"
-        width="180"
-      />
-      <el-table-column
-        prop="updated"
-        label="updated"
-        width="180"
-      />
-      <el-table-column
-        prop="updatedby"
-        label="updatedby"
-        width="180"
-      />
-      <el-table-column
-        prop="value"
-        label="value"
-        width="180"
-      />
-      <el-table-column
-        prop="name"
-        label="name"
-        width="180"
-      />
-    </el-table>
-  </div>
+  <el-container style=" border: 1px solid #eee">
+    <el-header style="text-align: right; font-size: 12px">
+      <br>
+      <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
+        <el-button @click="clearFilter">reset all filters</el-button>
+        <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+        <el-input
+          ref="headerSearchSelect"
+          v-model="search"
+          size="mini"
+          placeholder="Type to search"
+          class="header-search-select"
+        />
+      </div>
+    </el-header>
+    <el-main>
+      <el-table
+        ref="filterTable"
+        :data="filterResult()"
+        :border="true"
+        :stripe="true"
+        height="700px"
+      >
+        <el-table-column
+          prop="c_bpartner_id"
+          label="c_bpartner_id"
+          width="180"
+        />
+        <el-table-column
+          prop="ad_client_id"
+          label="ad_client_id"
+          width="180"
+        />
+        <el-table-column
+          prop="ad_org_id"
+          label="ad_org_id"
+          width="180"
+          column-key="ad_org_id"
+          :filters="[{text: '0', value: '0'}, {text: '11', value: '11'}]"
+          :filter-method="filterHandler"
+        />
+        <el-table-column
+          prop="isactive"
+          label="isactive"
+          width="180"
+        />
+        <el-table-column
+          prop="created"
+          label="created"
+          width="180"
+        />
+        <el-table-column
+          prop="createdby"
+          label="createdby"
+          width="180"
+          column-key="createdby"
+          :filters="[{text: '0', value: '0'}, {text: '100', value: '100'}]"
+          :filter-method="filterHandler"
+        />
+        <el-table-column
+          prop="updated"
+          label="updated"
+          width="180"
+        />
+        <el-table-column
+          prop="updated"
+          label="updated"
+          width="180"
+        />
+        <el-table-column
+          prop="updatedby"
+          label="updatedby"
+          width="180"
+        />
+        <el-table-column
+          prop="value"
+          label="value"
+          width="180"
+        />
+        <el-table-column
+          prop="name"
+          label="name"
+          width="180"
+        />
+      </el-table>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

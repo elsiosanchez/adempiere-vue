@@ -9,7 +9,6 @@ import enLocale from './en'
 import zhLocale from './zh'
 import esLocale from './es'
 import jaLocale from './ja'
-import esADempiere from './ADempiere/es'
 
 Vue.use(VueI18n)
 
@@ -24,8 +23,7 @@ const messages = {
   },
   es: {
     ...esLocale,
-    ...elementEsLocale,
-    ...esADempiere
+    ...elementEsLocale
   },
   ja: {
     ...jaLocale,

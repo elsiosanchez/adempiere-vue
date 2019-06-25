@@ -26,18 +26,6 @@ export function loadMainMenu() {
         ]
       },
       {
-        path: '/Role',
-        component: Layout,
-        children: [
-          {
-            path: 'index',
-            component: () => import('@/views/ADempiere/Role'),
-            name: 'Role',
-            meta: { title: 'Role', icon: 'lock', noCache: true }
-          }
-        ]
-      },
-      {
         path: '/SearchWindow',
         component: Layout,
         children: [
@@ -60,7 +48,7 @@ export function loadMainMenu() {
             component: () => import('@/views/ADempiere/ReportViewer'),
             name: 'Report Viewer',
             meta: {
-              title: 'ReportViewer'
+              title: 'Report Viewer'
             }
           }
         ]

@@ -77,8 +77,8 @@ const browserControl = {
             })
             .catch(err => {
               var notificationParams = {
-                title: 'error',
-                message: 'errorSearch',
+                title: 'Error',
+                message: 'The search has not been completed',
                 type: 'error'
               }
               showNotification(notificationParams)

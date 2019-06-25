@@ -109,8 +109,8 @@ export function runProcess(process) {
 // ]
 export function getBrowserSearch(browser) {
   var notificationParams = {
-    title: 'loading',
-    message: 'searching',
+    title: 'Loading...',
+    message: 'Searching records in server',
     type: 'info'
   }
   showNotification(notificationParams)

@@ -7,42 +7,42 @@
         </template>
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" :index="indexMenu() + '1'">
           <template slot="title">
-            {{ $t('components.contextMenuRelations') }}
+            Relations
           </template>
           <el-scrollbar wrap-class="scroll">
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
         <el-menu-item v-else disabled :index="indexMenu() + '1'">
-          {{ $t('components.contextMenuRelations') }}
+          Relations
         </el-menu-item>
         <el-submenu class="el-menu-item" :index="indexMenu() + '2'">
           <template slot="title">
-            {{ $t('components.contextMenuActions') }}
+            Actions
           </template>
           <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
             {{ action.name }}
           </el-menu-item>
         </el-submenu>
         <el-menu-item :index="indexMenu() + '3'">
-          {{ $t('components.contextMenuReferences') }}
+          References
         </el-menu-item>
       </el-submenu>
       <template v-else class="container-submenu">
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
           <template slot="title">
-            {{ $t('components.contextMenuRelations') }}
+            Relations
           </template>
           <el-scrollbar wrap-class="scroll">
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
         <el-menu-item v-else disabled index="1">
-          {{ $t('components.contextMenuRelations') }}
+          Relations
         </el-menu-item>
         <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2">
           <template slot="title">
-            {{ $t('components.contextMenuActions') }}
+            Actions
           </template>
           <template v-for="(action, index) in actions">
             <el-submenu v-if="action.childs" :key="index" :index="action.name">
@@ -59,10 +59,15 @@
           </template>
         </el-submenu>
         <el-menu-item v-else disabled index="2">
-          {{ $t('components.contextMenuActions') }}
+          Actions
         </el-menu-item>
         <el-menu-item index="3">
-          {{ $t('components.contextMenuReferences') }}
+          References
+        </el-menu-item>
+        <el-menu-item :disabled="!isReport" index="4">
+          <a :href="downloads" :download="file">
+            download
+          </a>
         </el-menu-item>
       </template>
     </el-menu>
@@ -88,16 +93,22 @@ export default {
       type: String,
       default: undefined
     },
-    report: {
+    isReport: {
       type: Boolean,
       default: false
+    },
+    lastParameter: {
+      type: String,
+      default: undefined
     }
   },
   data() {
     return {
       relations: this.$store.getters.getRelations(this.$route.meta.parentUuid),
       actions: [],
-      references: []
+      references: [],
+      file: this.$store.getters.getProcessResult.download,
+      downloads: this.$store.getters.getProcessResult.url
     }
   },
   computed: {
@@ -124,11 +135,8 @@ export default {
         mobile: this.device === 'mobile'
       }
     },
-    isReport() {
-      if (this.report === true) {
-        return true
-      }
-      return false
+    Report() {
+      return this.$store.getters.getProcessResult.output.reportExportType
     }
   },
   created() {
@@ -188,9 +196,14 @@ export default {
       if (action.type === 'action') {
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
         if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
+          var containerParams = this.$route.meta.uuid
+          if (typeof this.lastParameter !== 'undefined') {
+            containerParams = this.lastParameter
+          }
+
           this.$store.dispatch(action.action, {
             action: action,
-            containerUuid: this.$route.meta.uuid, // EVALUATE IF IS action.uuid
+            containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.parentUuid,
             parentPanel: this.parentPanel,
             processName: this.$route.meta.title
@@ -216,6 +229,10 @@ export default {
             this.$router.push('/')
           }
           this.$store.dispatch('tagsView/delView', this.$route)
+          if (this.report === true) {
+            return true
+          }
+          return false
         } else {
           this.$notify.info({
             title: 'Info',

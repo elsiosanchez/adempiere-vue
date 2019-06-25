@@ -6,8 +6,8 @@
     :type="typePicker"
     :placeholder="metadata.help"
     range-separator="-"
-    :start-placeholder="$t('components.dateStartPlaceholder')"
-    :end-placeholder="$t('components.dateStartPlaceholder')"
+    start-placeholder="Start date"
+    end-placeholder="End date"
     unlink-panels
     @change="handleChange"
   />

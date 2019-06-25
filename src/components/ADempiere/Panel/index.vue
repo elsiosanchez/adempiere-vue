@@ -494,12 +494,12 @@ export default {
   }
   .select-filter {
     width: 280px !important;
-    position: sticky;
-    left: 84%;
+    float: right;
     top: 0;
   }
   .select-filter-header {
     width: 268px !important;
+    float: right;
     top: 0px;
 }
   .el-card {

@@ -1,21 +1,26 @@
 <template>
   <div v-if="loading">
-    <context-menu />
+    <context-menu
+      :is-report="true"
+      :last-parameter="$route.params.processUuid"
+    />
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="content">
           <h3 class="text-center">{{ reportHeader }}</h3>
-          <iframe v-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content-api" :src="url" />
-          <div v-else-if="reportFormatValue === 'html'" class="content-html">
-            <a :href="url" :download="name">
-              <el-button icon="el-icon-download">Download File</el-button>
-            </a>
-            <el-scrollbar wrap-class="scroll">
-              <div
-                class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
-                v-html="reportContentValue"
-              />
-            </el-scrollbar>
+          <iframe v-if="reportFormatValue === 'pdf'" class="content-api" :src="url" />
+          <div v-else-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content-api" :src="url" />
+          <div v-else-if="reportFormatValue === 'html'" class="content-txt">
+            <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 140px;">
+              <!-- <el-scrollbar wrap-class="scroll" style="bottom: -7%;"> -->
+              <el-main style="padding: 0;">
+                <div
+                  class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
+                  v-html="reportContentValue"
+                />
+              </el-main>
+            </el-container>
+            <!-- </el-scrollbar> -->
           </div>
         </div>
       </el-col>
@@ -28,14 +33,11 @@
       @closeDialog="visibleDialog=false"
     />
   </div>
-  <div
-    v-else
-    v-loading="!isLoading"
-    :element-loading-text="$t('notifications.loading')"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(255, 255, 255, 0.8)"
-    style="padding: 100px 100px; heigth: 100%"
-  />
+  <div v-else style="padding: 20px 100px">
+    <h3>
+      Loading Report...
+    </h3>
+  </div>
 </template>
 
 <script>
@@ -132,7 +134,10 @@ export default {
   .content-txt{
 		width: 100%;
 		height: 100%;
-    padding: 10px;
+    /* padding: 10px; */
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
 	}
   .content-excel {
     width: 100%;
@@ -145,5 +150,7 @@ export default {
   .container-report {
     width: 100%;
   }
+  .scroll {
+    max-height: -webkit-fill-available;
+  }
 </style>
-

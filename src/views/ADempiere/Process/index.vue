@@ -25,18 +25,14 @@
             :panel-type="panelType"
           />
         </el-card>
-        <!-- <code v-show="!isEmptyValue(processMetadata.help)" v-html="processMetadata.help" /> -->
       </el-col>
     </el-row>
   </div>
-  <div
-    v-else
-    v-loading="!isLoading"
-    :element-loading-text="$t('notifications.loading')"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(255, 255, 255, 0.8)"
-    style="padding: 100px 100px; heigth: 100%"
-  />
+  <div v-else style="padding: 20px 100px">
+    <h3>
+      Loading Process...
+    </h3>
+  </div>
 </template>
 
 <script>
@@ -136,13 +132,6 @@ export default {
     height: 200%;
     padding-left: 39px !important;
   }
-  /* .el-collapse {
-    border-top: 1px solid #e6ebf5;
-    border-bottom: 1px solid #e6ebf5;
-    position: relative;
-    width: 100%;
-    left: 14px;
-  } */
   .el-card {
     width: 100% !important;
     height: 200% !important;

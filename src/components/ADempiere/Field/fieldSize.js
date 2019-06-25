@@ -220,7 +220,7 @@ export const FIELD_DISPLAY_SIZES = [
       sm: 12,
       md: 8,
       lg: 6,
-      xl: 4
+      xl: 6
     }
   },
   {
@@ -240,7 +240,7 @@ export const FIELD_DISPLAY_SIZES = [
       sm: 12,
       md: 8,
       lg: 6,
-      xl: 4
+      xl: 6
     }
   },
   {
@@ -250,7 +250,7 @@ export const FIELD_DISPLAY_SIZES = [
       sm: 12,
       md: 8,
       lg: 6,
-      xl: 4
+      xl: 6
     }
   },
   {
@@ -260,7 +260,7 @@ export const FIELD_DISPLAY_SIZES = [
       sm: 12,
       md: 8,
       lg: 6,
-      xl: 4
+      xl: 6
     }
   },
   {
@@ -270,7 +270,7 @@ export const FIELD_DISPLAY_SIZES = [
       sm: 12,
       md: 8,
       lg: 6,
-      xl: 4
+      xl: 6
     }
   },
   {
@@ -280,7 +280,7 @@ export const FIELD_DISPLAY_SIZES = [
       sm: 12,
       md: 8,
       lg: 6,
-      xl: 4
+      xl: 6
     }
   },
   {
