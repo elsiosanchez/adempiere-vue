@@ -27,7 +27,7 @@ export default {
       type: Boolean
     },
     buttonTop: {
-      default: 250,
+      default: 550,
       type: Number
     }
   },
@@ -87,7 +87,7 @@ export default {
   height: 16%;
   right: 0%;
   position: absolute;
-  top: 35%;
+  top: 85%;
 }
 .showme {
   display: none;
