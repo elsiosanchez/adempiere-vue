@@ -7,66 +7,66 @@
         </template>
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" :index="indexMenu() + '1'">
           <template slot="title">
-            Relations
+            {{ $t('components.contextMenuRelations') }}
           </template>
           <el-scrollbar wrap-class="scroll">
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
         <el-menu-item v-else disabled :index="indexMenu() + '1'">
-          Relations
+          {{ $t('components.contextMenuRelations') }}
         </el-menu-item>
         <el-submenu class="el-menu-item" :index="indexMenu() + '2'">
           <template slot="title">
-            Actions
+            {{ $t('components.contextMenuActions') }}
           </template>
           <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
             {{ action.name }}
           </el-menu-item>
         </el-submenu>
         <el-menu-item :index="indexMenu() + '3'">
-          References
+          {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </el-submenu>
       <template v-else class="container-submenu">
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
           <template slot="title">
-            Relations
+            {{ $t('components.contextMenuRelations') }}
           </template>
           <el-scrollbar wrap-class="scroll">
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
         <el-menu-item v-else disabled index="1">
-          Relations
+          {{ $t('components.contextMenuRelations') }}
         </el-menu-item>
         <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2">
           <template slot="title">
-            Actions
+            {{ $t('components.contextMenuActions') }}
           </template>
           <template v-for="(action, index) in actions">
             <el-submenu v-if="action.childs" :key="index" :index="action.name">
               <template slot="title">
-                {{ $t('components.' + action.name) }}
+                {{ action.name }}
               </template>
               <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
                 {{ child.name }}
               </el-menu-item>
             </el-submenu>
             <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-              {{ $t('components.' + action.name) }}
+              {{ action.name }}
             </el-menu-item>
           </template>
         </el-submenu>
         <el-menu-item v-else disabled index="2">
-          Actions
+          {{ $t('components.contextMenuActions') }}
         </el-menu-item>
         <el-menu-item index="3">
-          References
+          {{ $t('components.contextMenuRelations') }}
         </el-menu-item>
         <el-menu-item :disabled="!isReport" index="4">
           <a :href="downloads" :download="file">
-            download
+            {{ $t('components.contextMenuDownload') }}
           </a>
         </el-menu-item>
       </template>

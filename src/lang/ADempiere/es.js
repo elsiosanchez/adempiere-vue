@@ -70,6 +70,7 @@ export default {
     contextMenuRelations: 'Relaciones',
     contextMenuActions: 'Acciones',
     contextMenuReferences: 'Referencias',
+    contextMenuDownload: 'Download',
     RunProcess: 'Ejecutar Proceso',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',
