@@ -96,6 +96,10 @@ export default {
     isReport: {
       type: Boolean,
       default: false
+    },
+    lastParameter: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -192,9 +196,14 @@ export default {
       if (action.type === 'action') {
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
         if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
+          var containerParams = this.$route.meta.uuid
+          if (typeof this.lastParameter !== 'undefined') {
+            containerParams = this.lastParameter
+          }
+
           this.$store.dispatch(action.action, {
             action: action,
-            containerUuid: this.$route.meta.uuid, // EVALUATE IF IS action.uuid
+            containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.parentUuid,
             parentPanel: this.parentPanel,
             processName: this.$route.meta.title

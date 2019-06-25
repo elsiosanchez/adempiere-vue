@@ -2,6 +2,7 @@
   <div v-if="loading">
     <context-menu
       :is-report="true"
+      :last-parameter="$route.params.processUuid"
     />
     <el-row :gutter="20">
       <el-col :span="24">
@@ -153,4 +154,3 @@ export default {
     max-height: -webkit-fill-available;
   }
 </style>
-
