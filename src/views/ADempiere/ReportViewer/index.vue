@@ -118,9 +118,8 @@ export default {
     top: 0%;
   }
 	.content-html {
-    width: 100%;
+		width: 100%;
     height: 100%;
-    bottom: -19% !important;
     padding: 10px;
 	}
   .content-api {
