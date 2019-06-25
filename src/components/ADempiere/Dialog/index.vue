@@ -17,10 +17,10 @@
     />
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">
-        Cancel
+        {{ $t('components.dialogCancelButton') }}
       </el-button>
       <el-button type="primary" @click="runAction(metadata)">
-        Confirm
+        {{ $t('components.dialogConfirmButton') }}
       </el-button>
     </span>
   </el-dialog>
