@@ -100,7 +100,7 @@
     </el-form>
     <div
       v-else
-      v-loading="!isLoading"
+      v-loading="!isLoadPanel"
       :element-loading-text="$t('notifications.loading')"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.8)"

@@ -2,18 +2,22 @@
   <el-col :span="24">
     <el-collapse accordion>
       <el-collapse-item :title="title" name="1" class="collapse-item">
-        <template v-for="(item, index) in items">
-          <div v-if="!item.hidden" :key="index" class="card-panel" @click="redirect(item)">
-            <div class="card-panel-icon-wrapper icon-message">
-              <svg-icon :icon-class="item.meta.icon" class-name="card-panel-icon" />
-            </div>
-            <div class="card-panel-description">
-              <div class="card-panel-text">
-                {{ item.meta.title }}
+        <el-row justify="space-around" class="panel-group">
+          <template v-for="(item, index) in items">
+            <el-col v-if="!item.hidden" :key="index" :span="8" class="card-panel-col">
+              <div :key="index" class="card-panel" @click="redirect(item)">
+                <div class="card-panel-icon-wrapper icon-message">
+                  <svg-icon :icon-class="item.meta.icon" class-name="card-panel-icon" />
+                </div>
+                <div class="card-panel-description">
+                  <div class="card-panel-text">
+                    {{ item.meta.title }}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </template>
+            </el-col>
+          </template>
+        </el-row>
       </el-collapse-item>
     </el-collapse>
   </el-col>
@@ -54,15 +58,22 @@ export default {
   font-size: 16px;
   text-align: center;
 }
-.card-panel {
-    height: 50px;
+.panel-group {
+  margin-top: 18px;
+  .card-panel-col{
+    margin-bottom: 32px;
+  }
+  .card-panel {
+    width: 95%;
+    height: 80px;
     cursor: pointer;
     font-size: 12px;
     position: relative;
     overflow: hidden;
     color: #666;
     background: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .09);
+    border-color: rgba(0, 0, 0, .05);
     &:hover {
       .card-panel-icon-wrapper {
         color: #fff;
@@ -94,26 +105,28 @@ export default {
     }
     .card-panel-icon-wrapper {
       float: left;
-      margin: 0 0 0 14px;
-      padding: 10px;
+      margin: 14px 0 0 7px;
+      padding: 6px;
       transition: all 0.38s ease-out;
       border-radius: 6px;
     }
     .card-panel-icon {
       float: left;
-      font-size: 30px;
+      font-size: 25px;
     }
     .card-panel-description {
       float: left;
       font-weight: bold;
-      margin: 26px;
-      margin-left: 0px;
+      margin: 26px 0 0 0px;
+      /* margin-left: 0px; */
       .card-panel-text {
-        line-height: 5px;
+        vertical-align: middle;
+        line-height: 13px;
         color: rgba(0, 0, 0, 0.45);
-        font-size: 14px;
+        font-size: 13px;
         margin-bottom: 12px;
       }
     }
   }
+}
 </style>

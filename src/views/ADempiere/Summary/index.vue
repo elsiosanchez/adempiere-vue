@@ -2,7 +2,7 @@
   <div v-if="isIndex" class="app-container">
     <el-row :gutter="10">
       <template v-for="(item, key) in optionList.children">
-        <dropdown v-if="$route.name !== item.name" :key="key" :items="item.children" style="margin-bottom: 32px;" :title="item.meta.title" />
+        <dropdown v-if="$route.name !== item.name" :key="key" :items="item.children" :title="item.meta.title" />
       </template>
     </el-row>
   </div>
