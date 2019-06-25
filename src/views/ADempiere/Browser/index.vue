@@ -18,10 +18,16 @@
             <div>{{ browserMetadata.description }}</div>
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
-            <el-collapse-item v-if="!isEmptyValue(browserMetadata.help)" title="Help" name="2">
+            <el-collapse-item v-if="!isEmptyValue(browserMetadata.help)" name="2">
+              <template slot="title">
+                {{ $t('views.viewsHelp') }}
+              </template>
               <div class="content-help" v-html="browserMetadata.help" />
             </el-collapse-item>
-            <el-collapse-item title="Search Criteria" name="1">
+            <el-collapse-item name="1">
+              <template slot="title">
+                {{ $t('views.searchCriteria') }}
+              </template>
               <panel
                 :container-uuid="containerUuid"
                 :metadata="browserMetadata"
@@ -51,11 +57,14 @@
       </el-col>
     </el-row>
   </div>
-  <div v-else style="padding: 20px 100px">
-    <h3>
-      Loading SmatBrowser...
-    </h3>
-  </div>
+  <div
+    v-else
+    v-loading="!isLoading"
+    :element-loading-text="$t('notifications.loading')"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.8)"
+    style="padding: 100px 100px; heigth: 100%"
+  />
 </template>
 
 <script>

@@ -9,13 +9,16 @@ import enLocale from './en'
 import zhLocale from './zh'
 import esLocale from './es'
 import jaLocale from './ja'
+import esADempiere from './ADempiere/es'
+import enADempiere from './ADempiere/en'
 
 Vue.use(VueI18n)
 
 const messages = {
   en: {
     ...enLocale,
-    ...elementEnLocale
+    ...elementEnLocale,
+    ...enADempiere
   },
   zh: {
     ...zhLocale,
@@ -23,7 +26,8 @@ const messages = {
   },
   es: {
     ...esLocale,
-    ...elementEsLocale
+    ...elementEsLocale,
+    ...esADempiere
   },
   ja: {
     ...jaLocale,

@@ -8,7 +8,7 @@
       filterable
       default-first-option
       remote
-      placeholder="Search"
+      :placeholder="$t('table.dataTable.search')"
       class="header-search-select"
       @change="change"
     >
