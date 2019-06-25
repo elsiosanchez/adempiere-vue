@@ -8,6 +8,7 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
+        <br>
         <h2 v-show="checkValue(reportMetadata.description)" class="warn-content text-center">
           <div>{{ reportMetadata.description }}  </div>
         </h2>

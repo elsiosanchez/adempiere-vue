@@ -13,6 +13,7 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
+        <br>
         <el-card class="content-collapse">
           <h3 v-show="!isEmptyValue(browserMetadata.description)" class="warn-content text-center">
             <div>{{ browserMetadata.description }}</div>
