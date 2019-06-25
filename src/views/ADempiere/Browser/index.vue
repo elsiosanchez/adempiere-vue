@@ -18,7 +18,10 @@
             <div>{{ browserMetadata.description }}</div>
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
-            <el-collapse-item v-if="!isEmptyValue(browserMetadata.help)" title="Help" name="2">
+            <el-collapse-item v-if="!isEmptyValue(browserMetadata.help)" name="2">
+              <template slot="title">
+                {{ $t('views.viewsHelp') }}
+              </template>
               <div class="content-help" v-html="browserMetadata.help" />
             </el-collapse-item>
             <el-collapse-item title="Search Criteria" name="1">

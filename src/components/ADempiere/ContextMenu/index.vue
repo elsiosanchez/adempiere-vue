@@ -47,14 +47,14 @@
           <template v-for="(action, index) in actions">
             <el-submenu v-if="action.childs" :key="index" :index="action.name">
               <template slot="title">
-                {{ action.name }}
+                {{ $t('components.' + action.name) }}
               </template>
               <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
                 {{ child.name }}
               </el-menu-item>
             </el-submenu>
             <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-              {{ action.name }}
+              {{ $t('components.' + action.name) }}
             </el-menu-item>
           </template>
         </el-submenu>

@@ -1,5 +1,6 @@
 import { getProcess as getProcessFromDictionary } from '@/api/ADempiere/dictionary'
 import { convertFieldFromGRPC, evalutateTypeField } from '@/utils/ADempiere'
+import i18n from '@/lang'
 
 const process = {
   state: {
@@ -58,7 +59,9 @@ const process = {
               isDisableRunProcess = true
             }
             processActions.push({
-              name: 'Run Process',
+              // name: 'RunProcess',
+              // name: i18n.t('components.RunProcess'),
+              name: i18n.t(`RunProcess`),
               type: 'action',
               action: 'startProcess',
               uuid: response.getUuid(),
@@ -70,7 +73,7 @@ const process = {
               disabled: isDisableRunProcess,
               isDirectPrint: response.getIsdirectprint()
             }, {
-              name: 'Change parameters',
+              name: i18n.t(`ChangeParameters`),
               type: 'process',
               action: 'changeParameters',
               uuid: response.getUuid(),
@@ -83,7 +86,7 @@ const process = {
             })
 
             var summaryAction = {
-              name: 'Run Process As',
+              name: i18n.t(`RunProcessAs`),
               type: 'summary',
               action: '',
               childs: [],
@@ -97,7 +100,7 @@ const process = {
             }
             reportExportTypeList.forEach((actionValue) => {
               var action = {
-                name: 'Export to (' + actionValue.name + ')',
+                name: i18n.t(`components.ExportTo`) + ' (' + actionValue.name + ')',
                 type: 'action',
                 action: 'startProcess',
                 uuid: response.getUuid(),

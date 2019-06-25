@@ -13,7 +13,10 @@
             {{ processMetadata.name }}
           </h3>
           <el-collapse v-if="!isEmptyValue(processMetadata.help)" v-model="activeNames">
-            <el-collapse-item title="Help" name="2" aling="center">
+            <el-collapse-item name="2" aling="center">
+              <template slot="title">
+                {{ $t('views.viewsHelp') }}
+              </template>
               <div class="content-help" v-html="processMetadata.help" />
             </el-collapse-item>
           </el-collapse>
