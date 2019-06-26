@@ -74,7 +74,8 @@ export default {
     dateEndPlaceholder: 'End date',
     dialogCancelButton: 'Cancel',
     dialogConfirmButton: 'Confirm',
-    filterableItems: 'Optional fields'
+    filterableItems: 'Optional fields',
+    resetAllFilters: 'Reset all filters'
   },
   views: {
     SmartBrowser: 'Smart Browser',

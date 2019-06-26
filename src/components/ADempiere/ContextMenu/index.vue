@@ -45,7 +45,7 @@
             {{ $t('components.contextMenuActions') }}
           </template>
           <template v-for="(action, index) in actions">
-            <el-submenu v-if="action.childs" :key="index" :index="action.name">
+            <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
               <template slot="title">
                 {{ action.name }}
               </template>
@@ -62,7 +62,7 @@
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
         <el-menu-item index="3">
-          {{ $t('components.contextMenuRelations') }}
+          {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
         <el-menu-item :disabled="!isReport" index="4">
           <a :href="downloads" :download="file">
@@ -175,17 +175,25 @@ export default {
           this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
           if (typeof this.actions !== 'undefined') {
             this.actions.forEach((item) => {
-              if (typeof item.disabled === 'undefined') {
-                item['disabled'] = false
-              }
+              item['disabled'] = false
             })
-            var index = this.actions.findIndex(item => item.action === 'changeParameters')
             if (this.$route.name !== 'Report Viewer') {
+              var index = this.actions.findIndex(item => item.action === 'changeParameters')
               if (index !== -1) {
                 this.actions[index].disabled = true
               }
-            } else {
-              this.actions[index].disabled = false
+            }
+            if (this.$route.meta.type === 'report') {
+              index = this.actions.findIndex(item => item.action === 'startProcess')
+              if (index !== -1) {
+                this.actions[index].disabled = true
+              }
+            }
+            if (this.$route.meta.type === 'process') {
+              index = this.actions.findIndex(item => item.type === 'summary')
+              if (index !== -1) {
+                this.actions[index].disabled = true
+              }
             }
           }
           if (typeof this.$route.meta.parentUuid !== 'undefined') {

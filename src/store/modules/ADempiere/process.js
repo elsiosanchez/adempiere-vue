@@ -54,10 +54,6 @@ const process = {
             })
             //  Default Action
             var processActions = []
-            var isDisableRunProcess = false
-            if (response.getIsreport()) {
-              isDisableRunProcess = true
-            }
             processActions.push({
               name: i18n.t('components.RunProcess'),
               type: 'action',
@@ -68,7 +64,6 @@ const process = {
               isReport: response.getIsreport(),
               accessLevel: response.getAccesslevel(),
               showHelp: response.getShowhelp(),
-              disabled: isDisableRunProcess,
               isDirectPrint: response.getIsdirectprint()
             }, {
               name: i18n.t('components.ChangeParameters'),

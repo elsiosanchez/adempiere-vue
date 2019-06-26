@@ -48,7 +48,7 @@ export function loadMainMenu() {
             component: () => import('@/views/ADempiere/ReportViewer'),
             name: 'Report Viewer',
             meta: {
-              title: 'Report Viewer'
+              title: 'ReportViewer'
             }
           }
         ]
