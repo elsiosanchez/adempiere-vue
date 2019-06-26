@@ -2,7 +2,7 @@ import { getLanguage } from '@/lang/index'
 import { getToken } from '@/utils/auth'
 import DataRecord from '@adempiere/grpc-data-client'
 import { HOST_GRPC_DATA } from './constants'
-import { showNotification } from '@/utils/ADempiere/notification'
+import { showMessage } from '@/utils/ADempiere/notification'
 
 // Get Instance for connection
 function Instance() {
@@ -113,7 +113,7 @@ export function getBrowserSearch(browser) {
     message: 'Searching records in server',
     type: 'info'
   }
-  showNotification(notificationParams)
+  showMessage(notificationParams)
   var browserRequest = Instance.call(this).getBrowserRequest()
   var criteria = Instance.call(this).getCriteria('')
   //  Fill Request browser

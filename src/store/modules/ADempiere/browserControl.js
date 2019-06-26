@@ -1,6 +1,6 @@
 import { getBrowserSearch } from '@/api/ADempiere/data'
 import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
-import { showNotification } from '@/utils/ADempiere/notification'
+import { showMessage } from '@/utils/ADempiere/notification'
 
 const browserControl = {
   state: {
@@ -72,7 +72,7 @@ const browserControl = {
                 message: 'The search has been made',
                 type: 'success'
               }
-              showNotification(notificationParams)
+              showMessage(notificationParams)
               resolve(record)
             })
             .catch(err => {
@@ -81,7 +81,7 @@ const browserControl = {
                 message: 'The search has not been completed',
                 type: 'error'
               }
-              showNotification(notificationParams)
+              showMessage(notificationParams)
               reject(err)
             })
         }

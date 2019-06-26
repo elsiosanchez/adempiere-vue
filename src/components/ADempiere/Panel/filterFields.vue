@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-select
-      v-model="newFields"
+      v-model="selectedFields"
       :filterable="true"
       :placeholder="$t('components.filterableItems')"
       multiple
@@ -42,7 +42,7 @@ export default {
   },
   data() {
     return {
-      newFields: [],
+      selectedFields: [], // fields optional showd
       fieldListOptional: []
     }
   },
@@ -54,7 +54,7 @@ export default {
       var isMandatory = field.isMandatory || field.isMandatoryFromLogic
       var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedFromUser || field.isDisplayedFromLogic || isMandatory)
       if (field.isShowedFromUser) {
-        this.newFields.push(field.columnName)
+        this.selectedFields.push(field.columnName)
       }
       return isDisplayed
     },
@@ -80,10 +80,13 @@ export default {
         }
       })
     },
-    addField(value) {
+    /**
+     * @param {array} selectedValues
+     */
+    addField(selectedValues) {
       this.$store.dispatch('changeFieldShowedFromUser', {
         containerUuid: this.containerUuid,
-        fieldsUser: value,
+        fieldsUser: selectedValues,
         show: true
       })
     }
