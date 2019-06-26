@@ -1,7 +1,6 @@
 <template>
   <div v-if="isLoading">
     <context-menu
-      class="sticky-submenu"
       :parent-uuid="containerUuid"
       :parent-panel="panelType"
     />
@@ -27,17 +26,21 @@
             </el-popover>
             {{ browserMetadata.name }}
           </h3>
-          <panel
-            :container-uuid="containerUuid"
-            :metadata="browserMetadata"
-            :panel-type="panelType"
-          />
+          <el-collapse v-model="activeNames" class="container-collasep-open">
+            <el-collapse-item title="Search Criteria" name="1">
+              <panel
+                :container-uuid="containerUuid"
+                :metadata="browserMetadata"
+                :panel-type="panelType"
+              />
+            </el-collapse-item>
+          </el-collapse>
         </el-card>
       </el-col>
       <el-col :span="24">
         <div v-if="this.$store.state.app.sidebar.opened">
           <div class="container-panel-open">
-            <data-table
+            <browser-tabla
               :container-uuid="containerUuid"
               :panel-type="panelType"
             />
@@ -45,7 +48,7 @@
         </div>
         <div v-else-if="!this.$store.state.app.sidebar.opened">
           <div class="container-panel">
-            <data-table
+            <browser-tabla
               :container-uuid="containerUuid"
               :panel-type="panelType"
             />
@@ -69,14 +72,14 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-import DataTable from '@/components/ADempiere/DataTable'
+import BrowserTabla from '@/components/ADempiere/DataTable/BrowserTabla'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
 export default {
   name: 'Browser',
   components: {
     Panel,
-    DataTable,
+    BrowserTabla,
     ContextMenu,
     Modal
   },
@@ -186,11 +189,6 @@ export default {
     right: 0;
     z-index: 0;
     transition: width 0.28s;
-  }
-  .sticky-submenu {
-    position: absolute !important;
-    right: 10px;
-    top: 0;
   }
   .el-collapse-item__header {
     height: 39px !important;
