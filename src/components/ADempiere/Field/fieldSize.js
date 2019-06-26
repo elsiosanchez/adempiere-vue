@@ -289,8 +289,8 @@ export const FIELD_DISPLAY_SIZES = [
       xs: 6,
       sm: 8,
       md: 8,
-      lg: 4,
-      xl: 4
+      lg: 3,
+      xl: 3
     }
   }
 ]
