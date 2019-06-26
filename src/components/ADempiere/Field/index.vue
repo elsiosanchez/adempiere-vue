@@ -5,12 +5,14 @@
     therefore you should not leave the column size spacing of your
     <el-col></el-col> container-->
   <el-col
+    v-if="!inTable"
     v-show="isDisplayed()"
     :xs="sizeFieldResponsive.xs"
     :sm="sizeFieldResponsive.sm"
     :md="sizeFieldResponsive.md"
     :lg="sizeFieldResponsive.lg"
     :xl="sizeFieldResponsive.xl"
+    :class="classField"
   >
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
       <component
@@ -28,6 +30,21 @@
       />
     </el-form-item>
   </el-col>
+  <component
+    :is="afterLoader"
+    v-else
+    :class="classField"
+    :metadata="{
+      ...field,
+      panelType: panelType,
+      inTable: inTable,
+      // DOM properties
+      required: isMandatory(),
+      readonly: !isReadOnly(),
+      disabled: !field.isActive
+    }"
+    :value-model="recordDataFields"
+  />
 </template>
 
 <script>
@@ -132,6 +149,12 @@ export default {
     },
     getWidth() {
       return this.$store.getters.getWidth()
+    },
+    classField() {
+      if (this.inTable) {
+        return 'in-table'
+      }
+      return undefined
     }
   },
   watch: {
@@ -220,22 +243,23 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
   /**
    * Separation between elements (item) of the form
    */
   .el-form-item {
     margin-bottom: 10px !important;
-  }
-</style>
-<style>
-  .el-form-item {
     margin-left: 10px;
     margin-right: 10px;
   }
+  .in-table {
+    margin-bottom: 0px !important;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
 
   /* Global Styles */
-  .el-textarea__inner {
+  .el-textarea__inner:not(.in-table) {
     min-height: 36px !important;
     /*
     height: 36px auto !important;

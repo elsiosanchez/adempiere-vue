@@ -466,11 +466,6 @@ export default {
   .item {
     margin: 4px;
   }
-
-  .left .el-tooltip__popper,
-  .right .el-tooltip__popper {
-    padding: 8px 10px;
-  }
 </style>
 <style>
   .cards {
