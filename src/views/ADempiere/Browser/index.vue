@@ -28,7 +28,7 @@
             {{ browserMetadata.name }}
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
-            <el-collapse-item title="Search Criteria" name="1">
+            <el-collapse-item :title="$t('views.searchCriteria')" name="1">
               <panel
                 :container-uuid="containerUuid"
                 :metadata="browserMetadata"
