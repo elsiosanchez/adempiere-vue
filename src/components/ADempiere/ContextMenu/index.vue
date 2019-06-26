@@ -179,11 +179,13 @@ export default {
                 item['disabled'] = false
               }
             })
+            var index = this.actions.findIndex(item => item.action === 'changeParameters')
             if (this.$route.name !== 'Report Viewer') {
-              var index = this.actions.findIndex(item => item.action === 'changeParameters')
               if (index !== -1) {
                 this.actions[index].disabled = true
               }
+            } else {
+              this.actions[index].disabled = false
             }
           }
           if (typeof this.$route.meta.parentUuid !== 'undefined') {
