@@ -1,6 +1,5 @@
 <template>
   <el-form :label-position="labelPosition">
-    <br>
     <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" class="search-detail" align="right">
       <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" @submit.prevent.native="false" />
       <el-input
@@ -12,7 +11,6 @@
         clearable
       />
     </div>
-
     <!--
       Add this prop to el-table later fix Duplicate keys records
       :row-key="keyColumn"
@@ -103,7 +101,7 @@ export default {
     // Show input section from search in data
     isSearchable: {
       type: Boolean,
-      default: true
+      default: false
     },
     // Show check from selection row
     isTableSelection: {
