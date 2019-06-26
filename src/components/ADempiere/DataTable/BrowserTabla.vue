@@ -2,7 +2,6 @@
   <el-container style="padding-bottom: 0%;">
     <!-- {{ getwindowzise }} -->
     <el-main>
-      {{ getwindowzise }}
       <el-form :label-position="labelPosition">
         <div v-show="isSearchable" :class="{'show-input-seacrh':showSearch}" class="search-detail" align="right">
           <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" @submit.prevent.native="false" />
