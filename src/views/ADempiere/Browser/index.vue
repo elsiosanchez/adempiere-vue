@@ -14,27 +14,27 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <el-card class="content-collapse">
-          <h3 v-show="!isEmptyValue(browserMetadata.description)" class="warn-content text-center">
-            <div>{{ browserMetadata.description }}</div>
+          <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
+            <el-popover
+              v-if="!isEmptyValue(browserMetadata.help)"
+              placement="top-start"
+              :title="browserMetadata.name"
+              width="400"
+              trigger="hover"
+              :content="browserMetadata.help"
+            >
+              <i slot="reference" class="el-icon-info" />
+            </el-popover>
+            {{ browserMetadata.name }}
           </h3>
-          <el-collapse v-model="activeNames" class="container-collasep-open">
-            <el-collapse-item v-if="!isEmptyValue(browserMetadata.help)" name="2">
-              <template slot="title">
-                {{ $t('views.viewsHelp') }}
-              </template>
-              <div class="content-help" v-html="browserMetadata.help" />
-            </el-collapse-item>
-            <el-collapse-item name="1">
-              <template slot="title">
-                {{ $t('views.searchCriteria') }}
-              </template>
-              <panel
-                :container-uuid="containerUuid"
-                :metadata="browserMetadata"
-                :panel-type="panelType"
-              />
-            </el-collapse-item>
-          </el-collapse>
+          <template slot="title">
+            {{ $t('views.searchCriteria') }}
+          </template>
+          <panel
+            :container-uuid="containerUuid"
+            :metadata="browserMetadata"
+            :panel-type="panelType"
+          />
         </el-card>
       </el-col>
       <el-col :span="24">
