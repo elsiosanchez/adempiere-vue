@@ -3,13 +3,13 @@
     <el-header style="text-align: right; font-size: 12px">
       <br>
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
-        <el-button @click="clearFilter">reset all filters</el-button>
+        <el-button @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
         <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
         <el-input
           ref="headerSearchSelect"
           v-model="search"
           size="mini"
-          placeholder="Type to search"
+          :placeholder="$t('table.dataTable.search')"
           class="header-search-select"
         />
       </div>

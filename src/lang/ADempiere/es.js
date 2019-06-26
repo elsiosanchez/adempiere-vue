@@ -79,7 +79,8 @@ export default {
     dateEndPlaceholder: 'Fecha final',
     dialogCancelButton: 'Cancelar',
     dialogConfirmButton: 'Confirmar',
-    filterableItems: 'Campos opcionales'
+    filterableItems: 'Campos opcionales',
+    resetAllFilters: 'Reiniciar todos los filtors'
   },
   views: {
     SmartBrowser: 'Consulta Inteligente',

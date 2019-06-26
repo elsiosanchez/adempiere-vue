@@ -10,16 +10,18 @@
       <el-col :span="24">
         <el-card class="content-collapse">
           <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
+            <el-popover
+              v-if="!isEmptyValue(processMetadata.help)"
+              placement="top-start"
+              :title="processMetadata.name"
+              width="400"
+              trigger="hover"
+              :content="processMetadata.help"
+            >
+              <i slot="reference" class="el-icon-info" />
+            </el-popover>
             {{ processMetadata.name }}
           </h3>
-          <el-collapse v-if="!isEmptyValue(processMetadata.help)" v-model="activeNames">
-            <el-collapse-item name="2" aling="center">
-              <template slot="title">
-                {{ $t('views.viewsHelp') }}
-              </template>
-              <div class="content-help" v-html="processMetadata.help" />
-            </el-collapse-item>
-          </el-collapse>
           <panel
             :position-tab="processMetadata.accesLevel"
             :container-uuid="processUuid"
@@ -97,32 +99,6 @@ export default {
         this.isLoading = true
         this.processMetadata = process
       }
-    },
-    subscribeAction() {
-      this.$store.subscribeAction({
-        after: (action, state) => {
-          if (action.type === 'startProcess') {
-            this.$notify.info({
-              title: 'Info',
-              message: 'Processing'
-            })
-          }
-          if (action.type === 'finishProcess') {
-            if (action.payload.isError) {
-              this.$notify.error({
-                title: 'Error',
-                message: 'The process was not executed'
-              })
-            } else {
-              this.$notify({
-                title: 'Success',
-                message: 'process executed, see process activity',
-                type: 'success'
-              })
-            }
-          }
-        }
-      })
     }
   }
 }

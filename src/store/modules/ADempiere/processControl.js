@@ -74,7 +74,7 @@ const processControl = {
         selection: selection
       }
       var notificationParams = {
-        title: 'Processing',
+        title: 'processing',
         message: processToRun.processName,
         type: 'info'
       }
@@ -148,6 +148,7 @@ const processControl = {
             action: processToRun.name,
             instanceUuid: '',
             processUuid: processToRun.uuid.trim(),
+            processName: processToRun.processName,
             isError: true,
             isProcessing: false,
             isReport: processToRun.isReport,
@@ -224,8 +225,9 @@ const processControl = {
         typeof processOutput.instanceUuid !== 'undefined' &&
         typeof processOutput.processUuid !== 'undefined') {
         var notificationParams = {
-          title: 'Succes',
-          message: processOutput.processName + ' executed, see process activity',
+          name: processOutput.processName,
+          title: 'succesful',
+          message: 'processExecuted',
           type: 'success'
         }
         showNotification(notificationParams)
@@ -233,8 +235,9 @@ const processControl = {
         commit('addStartedProcess', processOutput)
       } else {
         notificationParams = {
-          title: 'Error',
-          message: 'The process ' + processOutput.processName + ' was not executed',
+          name: processOutput.processName,
+          title: 'error',
+          message: 'processError',
           type: 'error'
         }
         showNotification(notificationParams)
