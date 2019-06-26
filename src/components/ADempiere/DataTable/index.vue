@@ -28,6 +28,7 @@
       :reserve-selection="true"
       :row-style="rowStyle"
       :data="getDataDetail"
+      cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
       @select="handleSelection"
@@ -209,10 +210,6 @@ export default {
     confirmEdit(row, newValue, value) {
       if (row.edit) {
         row.edit = false
-        this.$message({
-          message: 'The title has been edited',
-          type: 'success'
-        })
       }
     },
     handleRowClick(row, column, event) {
@@ -360,6 +357,10 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  .datatable-max-cell-height {
+    max-height: 52px;
+  }
+
   .search-detail {
     font-size: 0 !important;
     width: 98%;
