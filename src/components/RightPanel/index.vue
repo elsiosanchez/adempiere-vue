@@ -83,8 +83,8 @@ export default {
 <style>
 .setting {
   z-index: 3;
-  width: 8%;
-  height: 16%;
+  width: 5%;
+  height: 10%;
   right: 0%;
   position: absolute;
   top: 50%;
