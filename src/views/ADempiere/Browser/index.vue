@@ -14,7 +14,7 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <el-card class="content-collapse">
-          <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
+          <h3 v-show="!isEmptyValue(browserMetadata.name)" class="warn-content text-center">
             <el-popover
               v-if="!isEmptyValue(browserMetadata.help)"
               placement="top-start"
