@@ -1,6 +1,6 @@
 <template>
   <el-col :span="24">
-    <el-collapse accordion>
+    <el-collapse v-model="activeNames">
       <el-collapse-item :title="title" name="1" class="collapse-item">
         <el-row justify="space-around" class="panel-group">
           <template v-for="(item, index) in items">
@@ -40,6 +40,7 @@ export default {
   },
   data() {
     return {
+      activeNames: ['1'],
       isActive: false
     }
   },
