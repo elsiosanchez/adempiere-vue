@@ -27,11 +27,15 @@
             </el-popover>
             {{ browserMetadata.name }}
           </h3>
-          <panel
-            :container-uuid="containerUuid"
-            :metadata="browserMetadata"
-            :panel-type="panelType"
-          />
+          <el-collapse v-model="activeNames" class="container-collasep-open">
+            <el-collapse-item :title="$t('views.searchCriteria')" name="1">
+              <panel
+                :container-uuid="containerUuid"
+                :metadata="browserMetadata"
+                :panel-type="panelType"
+              />
+            </el-collapse-item>
+          </el-collapse>
         </el-card>
       </el-col>
       <el-col :span="24">
