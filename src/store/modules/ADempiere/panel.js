@@ -82,10 +82,22 @@ const panel = {
     },
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
+      var showsFieldsWithValue = false
+      var hiddenFieldsWithValue = false
       var newFields = panel.fieldList.map((itemField) => {
         if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
+          // if it isShowedFromUser it is false, and it has some value, it means
+          // that it is going to show, therefore the SmartBrowser must be searched
+          if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
+            showsFieldsWithValue = true
+          }
           itemField.isShowedFromUser = true
           return itemField
+        }
+        // if it isShowedFromUser it is true, and it has some value, it means
+        // that it is going to hidden, therefore the SmartBrowser must be searched
+        if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
+          hiddenFieldsWithValue = true
         }
         itemField.isShowedFromUser = false
         return itemField
@@ -96,7 +108,7 @@ const panel = {
         newPanel: panel
       })
       // Updated record result
-      if (panel.panelType === 'browser') {
+      if (panel.panelType === 'browser' && (showsFieldsWithValue || hiddenFieldsWithValue)) {
         dispatch('getBrowserSearch', {
           containerUuid: panel.uuid,
           clearSelection: true
