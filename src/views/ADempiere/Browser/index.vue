@@ -168,16 +168,16 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 0;
-    padding-right: 20px;
-    padding-left: 20px;
+    /* padding-right: 20px;
+    padding-left: 20px; */
     transition: width 0.28s;
     border: 1px solid #e5e9f2;
   }
   .container-panel-open {
     bottom: 0;
     right: 0;
-    padding-right: 20px;
-    padding-left: 20px;
+    /* padding-right: 20px;
+    padding-left: 20px; */
     border: 1px solid #e5e9f2;
     height: -webkit-fill-available;
     height:-webkit-calc(100% - 100px);
