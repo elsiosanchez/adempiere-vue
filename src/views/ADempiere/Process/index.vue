@@ -16,8 +16,8 @@
               :title="processMetadata.name"
               width="400"
               trigger="hover"
-              :content="processMetadata.help"
             >
+              <div v-html="processMetadata.help" />
               <i slot="reference" class="el-icon-info" />
             </el-popover>
             {{ processMetadata.name }}
