@@ -18,7 +18,8 @@ export function showNotification(params) {
     if (params.name) {
       Notification({
         title: title,
-        message: params.name + message,
+        dangerouslyUseHTMLString: true,
+        message: params.name + message + ' <a href="http://localhost:9527/#/ProcessActivity/index"><b><i>ProcessActivity</i></b></a>',
         type: params.type,
         position: 'bottom-right'
       })
