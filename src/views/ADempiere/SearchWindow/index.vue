@@ -1,17 +1,8 @@
 <template>
   <el-container style=" border: 1px solid #eee">
-    <el-header style="text-align: right; font-size: 12px">
-      <br>
+    <el-header>
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
         <el-button @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
-        <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
-        <el-input
-          ref="headerSearchSelect"
-          v-model="search"
-          size="mini"
-          :placeholder="$t('table.dataTable.search')"
-          class="header-search-select"
-        />
       </div>
     </el-header>
     <el-main>
@@ -20,7 +11,7 @@
         :data="filterResult()"
         :border="true"
         :stripe="true"
-        height="700px"
+        :height="getHeigthTable"
       >
         <el-table-column
           prop="c_bpartner_id"
@@ -110,6 +101,15 @@ export default {
       showSearch: false,
       data: [],
       search: ''
+    }
+  },
+  computed: {
+    getHeigthTable() {
+      if (this.getDataDetail !== 'undefined') {
+        return this.$store.getters.getHeigth() - 150
+      } else {
+        return this.$store.getters.getHeigth()
+      }
     }
   },
   watch: {
