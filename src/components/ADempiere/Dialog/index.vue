@@ -81,11 +81,6 @@ export default {
       var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
       if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
         this.closeDialog()
-        this.$notify.info({
-          title: 'Info',
-          message: 'Processing ' + action.name
-        })
-
         this.$store.dispatch('startProcess', {
           action: action,
           reportFormat: this.reportExportType,

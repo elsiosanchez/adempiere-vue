@@ -45,7 +45,7 @@ const process = {
             fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
 
             //  Get export list
-            var reportExportTypeList = response.getReportexporttypesList().map((reportType) => {
+            var reportExportTypeList = response.getReportexporttypesList().map(reportType => {
               return {
                 name: reportType.getName(),
                 description: reportType.getDescription(),
@@ -91,7 +91,7 @@ const process = {
               showHelp: response.getShowhelp(),
               isDirectPrint: response.getIsdirectprint()
             }
-            reportExportTypeList.forEach((actionValue) => {
+            reportExportTypeList.forEach(actionValue => {
               var action = {
                 name: i18n.t('components.ExportTo') + ' (' + actionValue.name + ')',
                 type: 'action',
@@ -110,27 +110,21 @@ const process = {
             })
             //  Add summary Actions
             processActions.push(summaryAction)
-            var panel = {
-              id: response.getId(),
-              uuid: response.getUuid(),
-              name: response.getName(),
-              parentUuid: response.getUuid(),
-              fieldList: fieldDefinitionList,
-              panelType: panelType
-            }
 
             var processDefinition = {
               id: response.getId(),
               uuid: response.getUuid(),
-              value: response.getValue(),
               name: response.getName(),
               description: response.getDescription(),
+              parentUuid: response.getUuid(),
               help: response.getHelp(),
               isReport: response.getIsreport(),
               accessLevel: response.getAccesslevel(),
               showHelp: response.getShowhelp(),
               isDirectPrint: response.getIsdirectprint(),
               reportExportTypeList: reportExportTypeList,
+              value: response.getValue(),
+              panelType: panelType,
               fieldList: fieldDefinitionList
             }
             //  Add process menu
@@ -140,7 +134,7 @@ const process = {
               actions: processActions,
               references: []
             }
-            dispatch('addPanel', panel)
+            dispatch('addPanel', processDefinition)
             commit('addProcess', processDefinition)
             commit('setMenu', contextMenu)
             resolve(processDefinition)

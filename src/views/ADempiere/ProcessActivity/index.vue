@@ -3,6 +3,7 @@
     <h3 class="warn-content text-center">
       {{ $t('route.ProcessActivity') }}
     </h3>
+
     <el-table ref="dragTable" :data="processListData" :stripe="true" class="table" border>
       <template v-for="(item, key) in tableColumns">
         <el-table-column :key="key" :label="generateTitle(item)">
@@ -75,7 +76,7 @@ export default {
   name: 'ProcessActivity',
   data() {
     return {
-      errGif: errGif + '?' + +new Date(),
+      errGif: errGif + '?' + new Date(),
       tableColumns: ['Name', 'Description', 'Action', 'Status'],
       showDialog: false
     }
@@ -85,7 +86,7 @@ export default {
       return this.$store.getters.getRunningProcess
     },
     processListData() {
-      var processListData = this.processRunnings.map((item) => {
+      var processListData = this.processRunnings.map(item => {
         var reportInfo = {
           instanceUuid: 'undefined',
           processUuid: item.uuid,
@@ -94,32 +95,12 @@ export default {
           resultTableId: 0,
           logs: item.logs,
           output: {
-            uuid: '',
-            name: '',
-            description: '',
-            fileName: 'undefined',
-            output: '',
-            outputStream: {},
-            reportExportType: '',
+            ...item.output,
             isRootInsert: false,
             elm: {}
           }
         }
-        var status = this.$t('notifications.processing')
-        if (item.isReport) {
-          reportInfo = this.$store.getters.getCachedReport(item.instanceUuid)
-          if (reportInfo.isError) {
-            status = this.$t('notifications.error')
-          } else {
-            status = this.$t('notifications.completed')
-          }
-        } else {
-          if (item.isError) {
-            status = this.$t('notifications.error')
-          } else {
-            status = this.$t('notifications.completed')
-          }
-        }
+        var status = this.checkStatus(item.isError)
         return {
           Name: item.name,
           Description: item.description,
@@ -131,7 +112,19 @@ export default {
       return processListData
     }
   },
+  mounted() {
+    this.$store.dispatch('getSessionProcessFromServer')
+  },
   methods: {
+    checkStatus(isError) {
+      var status = this.$t('notifications.processing')
+      if (isError) {
+        status = this.$t('notifications.error')
+      } else {
+        status = this.$t('notifications.completed')
+      }
+      return status
+    },
     generateTitle(title) {
       const hasKey = this.$te('table.ProcessActivity.' + title)
       if (hasKey) {
@@ -140,10 +133,16 @@ export default {
         return translatedTitle
       }
       return title
+    },
+    getProcess(uuid) {
+      this.$store.dispatch('getProcessFromServer', {
+        containerUuid: uuid
+      })
     }
   }
 }
 </script>
+
 <style>
   .table {
     width: 100%;

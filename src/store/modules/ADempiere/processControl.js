@@ -37,7 +37,7 @@ const processControl = {
       state.reportList.push(payload)
     },
     setSessionProcess(state, payload) {
-      state.sessionProcess = payload.responses
+      state.sessionProcess = payload.processList
     },
     changeFormatReport(state, payload) {
       state.reportFormat = payload
@@ -45,7 +45,7 @@ const processControl = {
   },
   actions: {
     // Supported Actions for it
-    startProcess({ commit, rootGetters, dispatch }, params) {
+    startProcess({ commit, dispatch, rootGetters }, params) {
       var reportExportType
       if (typeof params.action.reportExportType === 'undefined') {
         reportExportType = params.reportFormat
@@ -79,31 +79,31 @@ const processControl = {
         type: 'info'
       }
       showNotification(notificationParams)
-      /* if (!processToRun.isReport) {
-        commit('addStartedProcess', processToRun)
-      } */
-      // requestProcessActivity({ commit }, process)
-      //   .then(response => {
-      //     console.log(response)
-      //     var server = response.getResponsesList()
-      //     console.log(server)
-      //     commit('addStartedProcess', server)
-      //   })
       // Run process on server and wait for it for notify
       var processResult = {}
       runProcess(processToRun)
         .then(response => {
-          var output = response.getOutput()
-          if (typeof output !== 'undefined') {
+          var output = {
+            uuid: '',
+            name: '',
+            description: '',
+            fileName: '',
+            output: '',
+            outputStream: '',
+            reportExportType: ''
+          }
+
+          if (typeof response.getOutput() !== 'undefined') {
+            var responseOutput = response.getOutput()
             output = {
-              uuid: output.getUuid(),
-              name: output.getName(),
-              description: output.getDescription(),
-              fileName: output.getFilename(),
-              output: output.getOutput(),
-              mimeType: output.getMimetype(),
-              outputStream: output.getOutputstream(),
-              reportExportType: output.getReportexporttype()
+              uuid: responseOutput.getUuid(),
+              name: responseOutput.getName(),
+              description: responseOutput.getDescription(),
+              fileName: responseOutput.getFilename(),
+              output: responseOutput.getOutput(),
+              mimeType: responseOutput.getMimetype(),
+              outputStream: responseOutput.getOutputstream(),
+              reportExportType: responseOutput.getReportexporttype()
             }
           }
           var logList = response.getLogsList()
@@ -117,15 +117,21 @@ const processControl = {
           } else {
             logList = []
           }
-          // var extension = response.getOutput().getReportexporttype()
-          // console.log(extension)
-          var blob = new Blob([response.getOutput().getOutputstream()], { type: response.getOutput().getMimetype() })
-          var link = document.createElement('a')
-          link.href = window.URL.createObjectURL(blob)
-          link.download = output.fileName
-          if (reportExportType !== 'pdf' && reportExportType !== 'html') {
-            link.click()
+
+          var link = {
+            href: undefined,
+            download: undefined
           }
+          if (processToRun.isReport) {
+            var blob = new Blob([output.outputStream], { type: output.mimeType })
+            link = document.createElement('a')
+            link.href = window.URL.createObjectURL(blob)
+            link.download = output.fileName
+            if (reportExportType !== 'pdf' && reportExportType !== 'html') {
+              link.click()
+            }
+          }
+
           processResult = {
             action: processToRun.name,
             instanceUuid: response.getInstanceuuid().trim(),
@@ -141,6 +147,7 @@ const processControl = {
             logs: logList,
             output: output
           }
+          dispatch('deleteRecortContainer', processToRun.uuid)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -165,47 +172,73 @@ const processControl = {
               reportExportType: ''
             }
           }
+          dispatch('deleteRecortContainer', processToRun.uuid)
           dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
         })
     },
-    getSessionProcessFromServer({ commit }) {
+    getSessionProcessFromServer({ commit, dispatch, rootGetters }) {
       // Example of process Activity
       requestProcessActivity()
         .then(response => {
-          /* var infoLogs = response.getLogsList().map((log) => {
-            return {
-              recordId: log.getRecordid(),
-              log: log.getLog()
+          var responseList = response.getResponsesList().map(responseItem => {
+            var output = {
+              uuid: '',
+              name: '',
+              description: '',
+              fileName: '',
+              mimeType: '',
+              output: '',
+              outputStream: '',
+              outputStream_asB64: '',
+              outputStream_asU8: '',
+              reportExportType: ''
             }
-          }) */
-          var responseList = response.getResponsesList().map((responseItem) => {
-            return {
-              instanceUuid: responseItem.getInstanceuuid(),
-              isError: responseItem.getIserror(),
-              summary: responseItem.getSummary(),
-              resultTableId: responseItem.getResulttableid(),
-              isProcessing: responseItem.getIsprocessing(),
-              logs: responseItem.getLogsList(),
-              output: responseItem.getOutput()
-            }
-          })
-          responseList.forEach((item) => {
-            if (typeof item.output !== 'undefined') {
-              item.output = {
-                uuid: item.output.getUuid(),
-                name: item.output.getName(),
-                description: item.output.getDescription(),
-                fileName: item.output.getFilename(),
-                output: item.output.getOutput(),
-                outputStream: item.output.getOutputstream(),
-                reportExportType: item.output.getReportexporttype()
+            var responseOutput = responseItem.getOutput()
+            if (typeof responseOutput !== 'undefined') {
+              output = {
+                uuid: responseOutput.getUuid(),
+                name: responseOutput.getName(),
+                description: responseOutput.getDescription(),
+                fileName: responseOutput.getFilename(),
+                mimeType: responseOutput.getMimetype(),
+                output: responseOutput.getOutput(),
+                outputStream: responseOutput.getOutputstream(),
+                outputStream_asB64: responseOutput.getOutputstream_asB64(),
+                outputStream_asU8: responseOutput.getOutputstream_asU8(),
+                reportExportType: responseOutput.getReportexporttype()
               }
             }
+            var logList = responseItem.getLogsList().map(log => {
+              return {
+                recordId: log.getRecordid(),
+                log: log.getLog()
+              }
+            })
+            var process = {
+              instanceUuid: responseItem.getInstanceuuid(),
+              isError: responseItem.getIserror(),
+              isProcessing: responseItem.getIsprocessing(),
+              logs: logList,
+              output: output,
+              parametersMap: responseItem.getParametersMap(),
+              resultTableId: responseItem.getResulttableid(),
+              summary: responseItem.getSummary()
+            }
+
+            // ADD SUPPORT TO UUID FROM PROCESS
+            var processMetadata = rootGetters.getProcess(undefined)
+            // Add process metadata to store
+            if (typeof processMetadata === 'undefined') {
+              dispatch('getProcessFromServer', undefined)
+            }
+
+            return process
           })
+
           var processResponseList = {
             recordCount: response.getRecordcount(),
-            responses: responseList
+            processList: responseList
           }
           commit('setSessionProcess', processResponseList)
         })
@@ -262,29 +295,17 @@ const processControl = {
       return process
     },
     getRunningProcess: (state, rootGetters) => {
-      var process
-      var processList = state.process.map((item) => {
-        if (!item.isReport) {
-          process = rootGetters.getProcess(item.processUuid)
-          return {
-            ...process,
-            action: item.action,
-            isError: item.isError,
-            logs: item.logs,
-            summary: item.summary
-          }
-        } else {
-          process = rootGetters.getProcess(item.processUuid)
-          if (typeof process !== 'undefined') {
-            return {
-              ...process,
-              action: item.action,
-              instanceUuid: item.instanceUuid,
-              output: item.output,
-              logs: item.logs,
-              summary: item.summary
-            }
-          }
+      var processList = state.sessionProcess.map((item) => {
+        var process = rootGetters.getProcess(item.processUuid)
+        return {
+          ...process,
+          action: item.action,
+          instanceUuid: item.instanceUuid,
+          isReport: item.isReport,
+          output: item.output,
+          isError: item.isError,
+          logs: item.logs,
+          summary: item.summary
         }
       })
       return processList
