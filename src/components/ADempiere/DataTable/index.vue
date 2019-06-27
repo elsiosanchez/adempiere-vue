@@ -48,6 +48,7 @@
           :prop="item.columnName"
           :column-key="item.columnName"
           min-width="150"
+          height="300"
           :class-name="cellClass(item)"
         >
           <template slot-scope="scope">
@@ -359,6 +360,18 @@ export default {
   }
   .cell-edit {
     cursor: pointer !important;
+  }
+  .el-table th, .el-table td {
+    padding: 12px 0;
+    min-width: 0;
+    height: 64px;
+    max-height: 407px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    position: relative;
+    text-align: left;
   }
 </style>
 <style lang="scss" scoped>
