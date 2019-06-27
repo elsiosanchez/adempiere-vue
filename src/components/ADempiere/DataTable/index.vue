@@ -139,10 +139,10 @@ export default {
       return this.$store.getters.getHeigth()
     },
     getheigthtable() {
-      if (this.getDataDetail !== 'undefined') {
-        return this.$store.getters.getHeigth() - 400
+      if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
+        return this.$store.getters.getHeigth() - 300
       } else {
-        return this.$store.getters.getHeigth()
+        return this.$store.getters.getHeigth() - 400
       }
     }
   },
