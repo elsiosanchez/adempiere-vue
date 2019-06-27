@@ -11,7 +11,7 @@
         :data="filterResult()"
         :border="true"
         :stripe="true"
-        :height="getheigthtable"
+        :height="getHeigthTable"
       >
         <el-table-column
           prop="c_bpartner_id"
@@ -104,10 +104,7 @@ export default {
     }
   },
   computed: {
-    getwindowzise() {
-      return this.$store.getters.getHeigth()
-    },
-    getheigthtable() {
+    getHeigthTable() {
       if (this.getDataDetail !== 'undefined') {
         return this.$store.getters.getHeigth() - 150
       } else {
