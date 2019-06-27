@@ -20,8 +20,8 @@
               :title="browserMetadata.name"
               width="400"
               trigger="hover"
-              :content="browserMetadata.help"
             >
+              <div v-html="browserMetadata.help" />
               <i slot="reference" class="el-icon-info" />
             </el-popover>
             {{ browserMetadata.name }}
