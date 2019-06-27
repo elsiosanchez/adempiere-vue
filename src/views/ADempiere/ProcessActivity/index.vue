@@ -71,6 +71,7 @@
 </template>
 <script>
 import errGif from '@/assets/401_images/401.gif'
+import Sortable from 'sortablejs'
 
 export default {
   name: 'ProcessActivity',
@@ -78,7 +79,10 @@ export default {
     return {
       errGif: errGif + '?' + new Date(),
       tableColumns: ['Name', 'Description', 'Action', 'Status'],
-      showDialog: false
+      showDialog: false,
+      sortable: null,
+      oldprocessListData: [],
+      newprocessListData: []
     }
   },
   computed: {
@@ -115,7 +119,36 @@ export default {
   mounted() {
     this.$store.dispatch('getSessionProcessFromServer')
   },
+  created() {
+    this.getList()
+  },
   methods: {
+    async getList() {
+      this.oldprocessListData = this.processListData.map(v => v.id)
+      this.newprocessListData = this.oldprocessListData.slice()
+      this.$nextTick(() => {
+        this.setSort()
+      })
+    },
+    setSort() {
+      const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+      this.sortable = Sortable.create(el, {
+        ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
+        setData: function(dataTransfer) {
+          // to avoid Firefox bug
+          // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+          dataTransfer.setData('Text', '')
+        },
+        onEnd: evt => {
+          const targetRow = this.processListData.splice(evt.oldIndex, 1)[0]
+          this.processListData.splice(evt.newIndex, 0, targetRow)
+
+          // for show the changes, you can delete in you code
+          const tempIndex = this.newprocessListData.splice(evt.oldIndex, 1)[0]
+          this.newprocessListData.splice(evt.newIndex, 0, tempIndex)
+        }
+      })
+    },
     checkStatus(isError) {
       var status = this.$t('notifications.processing')
       if (isError) {
