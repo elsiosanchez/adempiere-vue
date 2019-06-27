@@ -1,6 +1,6 @@
 <template>
   <el-container style=" border: 1px solid #eee">
-    <el-header style=" height: 20px; text-align: right;font-size: 12px;">
+    <el-header>
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
         <el-button @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
       </div>
