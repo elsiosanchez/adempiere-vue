@@ -40,7 +40,7 @@
       <el-col :span="24">
         <div v-if="this.$store.state.app.sidebar.opened">
           <div class="container-panel-open">
-            <browser-tabla
+            <browser-table
               :container-uuid="containerUuid"
               :panel-type="panelType"
             />
@@ -48,7 +48,7 @@
         </div>
         <div v-else-if="!this.$store.state.app.sidebar.opened">
           <div class="container-panel">
-            <browser-tabla
+            <browser-table
               :container-uuid="containerUuid"
               :panel-type="panelType"
             />
@@ -72,14 +72,14 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-import BrowserTabla from '@/components/ADempiere/DataTable/BrowserTabla'
+import BrowserTable from '@/components/ADempiere/DataTable/BrowserTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
 export default {
   name: 'Browser',
   components: {
     Panel,
-    BrowserTabla,
+    BrowserTable,
     ContextMenu,
     Modal
   },

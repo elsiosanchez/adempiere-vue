@@ -86,7 +86,7 @@ Add this prop to el-table later fix Duplicate keys records
 <script>
 import Field from '@/components/ADempiere/Field'
 export default {
-  name: 'BrowserTabla',
+  name: 'BrowserTable',
   components: {
     Field
   },

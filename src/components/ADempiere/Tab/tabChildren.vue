@@ -10,7 +10,7 @@
         :name="String(key)"
         :lazy="true"
       >
-        <el-col :span="24">
+        <el-col :span="24" style="/* padding-left: 10px; *//* padding-right: 10px; */">
           <div class="paneltab">
             <data-table
               :parent-uuid="windowUuid"

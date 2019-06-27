@@ -19,13 +19,15 @@ export function showNotification(params) {
       Notification({
         title: title,
         message: params.name + message,
-        type: params.type
+        type: params.type,
+        position: 'bottom-right'
       })
     } else {
       Notification({
         title: title,
         message: message,
-        type: params.type
+        type: params.type,
+        position: 'bottom-right'
       })
     }
   }
