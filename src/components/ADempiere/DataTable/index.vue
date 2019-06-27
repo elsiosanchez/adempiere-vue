@@ -18,7 +18,7 @@
     <el-table
       ref="multipleTable"
       fit
-      :height="getheigthtable"
+      :height="getHeigthTable"
       style="width: 100%"
       stripe
       border
@@ -135,10 +135,7 @@ export default {
     getDataSelection() {
       return this.$store.getters.getDataRecordSelection(this.containerUuid)
     },
-    getwindowzise() {
-      return this.$store.getters.getHeigth()
-    },
-    getheigthtable() {
+    getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
         return this.$store.getters.getHeigth() - 300
       } else {
