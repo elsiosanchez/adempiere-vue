@@ -30,8 +30,8 @@
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
               <el-button
                 type="text"
-                icon="el-icon-close cerrar"
-                class="cerrar"
+                icon="el-icon-close"
+                class="close"
                 @click="handleChange()"
               />
               <panel
@@ -162,7 +162,7 @@ export default {
 </script>
 
 <style scoped>
-  .cerrar{
+  .close{
     float: right;
   }
   .title{
