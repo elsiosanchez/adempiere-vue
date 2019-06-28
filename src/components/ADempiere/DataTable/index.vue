@@ -47,6 +47,8 @@
           :label="item.name"
           :prop="item.columnName"
           :column-key="item.columnName"
+          sortable
+          :formatter="changeOrder"
           min-width="150"
           height="300"
           :class-name="cellClass(item)"
@@ -196,6 +198,10 @@ export default {
           this.newgetDataDetail.splice(evt.newIndex, 0, tempIndex)
         }
       })
+    },
+    changeOrder() {
+      var reversed = this.getDataDetail.reverse()
+      console.log('1reversed: ', reversed)
     },
     /**
      * ASOCIATE WITH SEARCH INPUT

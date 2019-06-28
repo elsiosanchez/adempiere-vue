@@ -28,6 +28,12 @@
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
+              <el-button
+                type="text"
+                icon="el-icon-close cerrar"
+                class="cerrar"
+                @click="handleChange()"
+              />
               <panel
                 :container-uuid="containerUuid"
                 :metadata="browserMetadata"
@@ -147,12 +153,18 @@ export default {
         this.isLoading = true
         this.browserMetadata = browser
       }
+    },
+    handleChange() {
+      this.activeNames = 2
     }
   }
 }
 </script>
 
 <style scoped>
+  .cerrar{
+    float: right;
+  }
   .title{
     color: #000000;
     text-size-adjust: 20px;
