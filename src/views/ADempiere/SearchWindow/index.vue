@@ -17,62 +17,67 @@
           prop="c_bpartner_id"
           label="c_bpartner_id"
           width="180"
+          sortable
         />
         <el-table-column
           prop="ad_client_id"
           label="ad_client_id"
           width="180"
+          sortable
         />
         <el-table-column
           prop="ad_org_id"
           label="ad_org_id"
           width="180"
-          column-key="ad_org_id"
-          :filters="[{text: '0', value: '0'}, {text: '11', value: '11'}]"
-          :filter-method="filterHandler"
+          sortable
         />
         <el-table-column
           prop="isactive"
           label="isactive"
           width="180"
+          sortable
         />
         <el-table-column
           prop="created"
           label="created"
           width="180"
+          sortable
         />
         <el-table-column
           prop="createdby"
           label="createdby"
           width="180"
-          column-key="createdby"
-          :filters="[{text: '0', value: '0'}, {text: '100', value: '100'}]"
-          :filter-method="filterHandler"
+          sortable
         />
         <el-table-column
           prop="updated"
           label="updated"
           width="180"
+          sortable
         />
         <el-table-column
           prop="updated"
           label="updated"
           width="180"
+          sortable
         />
         <el-table-column
           prop="updatedby"
           label="updatedby"
           width="180"
+          sortable
         />
         <el-table-column
           prop="value"
           label="value"
           width="180"
+          sortable
         />
         <el-table-column
           prop="name"
           label="name"
           width="180"
+          sortable
         />
       </el-table>
     </el-main>
@@ -136,6 +141,10 @@ export default {
       this.$nextTick(() => {
         this.setSort()
       })
+    },
+    changeOrder() {
+      var reversed = this.datalis.reverse()
+      return reversed
     },
     setSort() {
       const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
