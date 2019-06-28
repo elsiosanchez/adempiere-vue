@@ -22,9 +22,9 @@
               trigger="hover"
             >
               <div v-html="browserMetadata.help" />
-              <i slot="reference" class="el-icon-info" />
+              <el-button slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+              <!-- <i slot="reference" class="el-icon-info" /> -->
             </el-popover>
-            {{ browserMetadata.name }}
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
@@ -153,6 +153,12 @@ export default {
 </script>
 
 <style scoped>
+  .title{
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 100%;
+    font-weight: 605!important;
+  }
   .warn-content{
     margin: 10px 0px !important;
   }

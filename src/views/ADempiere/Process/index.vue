@@ -18,9 +18,8 @@
               trigger="hover"
             >
               <div v-html="processMetadata.help" />
-              <i slot="reference" class="el-icon-info" />
+              <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
             </el-popover>
-            {{ processMetadata.name }}
           </h3>
           <panel
             :position-tab="processMetadata.accesLevel"
@@ -105,6 +104,12 @@ export default {
 </script>
 
 <style scoped >
+  .title{
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 100%;
+    font-weight: 605!important;
+  }
   .warn-content{
     margin: 0px 0px !important;
     padding-top: 39px !important;
