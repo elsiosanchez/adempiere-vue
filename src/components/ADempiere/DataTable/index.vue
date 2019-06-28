@@ -81,6 +81,7 @@
 
 <script>
 import Field from '@/components/ADempiere/Field'
+import Sortable from 'sortablejs'
 export default {
   name: 'DataTable',
   components: {
@@ -123,7 +124,10 @@ export default {
       tableData: [],
       multipleSelection: [],
       edit: false,
-      rowStyle: { height: '52px' }
+      rowStyle: { height: '52px' },
+      sortable: null,
+      oldprocessListData: [],
+      newprocessListData: []
     }
   },
   computed: {
@@ -161,11 +165,38 @@ export default {
   created() {
     // get tab with uuid
     this.getPanel()
+    this.getList()
   },
   mounted() {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+    async getList() {
+      this.oldgetDataDetail = this.getDataDetail.map(v => v.id)
+      this.newgetDataDetail = this.oldgetDataDetail.slice()
+      this.$nextTick(() => {
+        this.setSort()
+      })
+    },
+    setSort() {
+      const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+      this.sortable = Sortable.create(el, {
+        ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
+        setData: function(dataTransfer) {
+          // to avoid Firefox bug
+          // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+          dataTransfer.setData('Text', '')
+        },
+        onEnd: evt => {
+          const targetRow = this.getDataDetail.splice(evt.oldIndex, 1)[0]
+          this.getDataDetail.splice(evt.newIndex, 0, targetRow)
+
+          // for show the changes, you can delete in you code
+          const tempIndex = this.newgetDataDetail.splice(evt.oldIndex, 1)[0]
+          this.newgetDataDetail.splice(evt.newIndex, 0, tempIndex)
+        }
+      })
+    },
     /**
      * ASOCIATE WITH SEARCH INPUT
      */

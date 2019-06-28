@@ -1,14 +1,14 @@
 <template>
   <el-container style=" border: 1px solid #eee">
-    <el-header>
+    <el-header style="height: 16px;">
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
         <el-button @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
       </div>
     </el-header>
     <el-main>
       <el-table
-        ref="filterTable"
-        :data="filterResult()"
+        ref="dragTable"
+        :data="datalis"
         :border="true"
         :stripe="true"
         :height="getHeigthTable"
@@ -82,6 +82,7 @@
 <script>
 import c_bpartner from '@/views/ADempiere/SearchWindow/datalist.json'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
+import Sortable from 'sortablejs'
 
 export default {
   name: 'SearchWindow',
@@ -100,7 +101,10 @@ export default {
       datalis: c_bpartner,
       showSearch: false,
       data: [],
-      search: ''
+      search: '',
+      sortable: null,
+      olddatalis: [],
+      newdatalis: []
     }
   },
   computed: {
@@ -121,7 +125,37 @@ export default {
       }
     }
   },
+  beforeMount() {
+    // get tab with uuid
+    this.getList()
+  },
   methods: {
+    async getList() {
+      this.olddatalis = this.datalis.map(v => v.id)
+      this.newdatalis = this.olddatalis.slice()
+      this.$nextTick(() => {
+        this.setSort()
+      })
+    },
+    setSort() {
+      const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+      this.sortable = Sortable.create(el, {
+        ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
+        setData: function(dataTransfer) {
+          // to avoid Firefox bug
+          // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+          dataTransfer.setData('Text', '')
+        },
+        onEnd: evt => {
+          const targetRow = this.datalis.splice(evt.oldIndex, 1)[0]
+          this.datalis.splice(evt.newIndex, 0, targetRow)
+
+          // for show the changes, you can delete in you code
+          const tempIndex = this.newdatalis.splice(evt.oldIndex, 1)[0]
+          this.newdatalis.splice(evt.newIndex, 0, tempIndex)
+        }
+      })
+    },
     isEmptyValue,
     click() {
       this.showSearch = !this.showSearch
