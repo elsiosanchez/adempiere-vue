@@ -1,13 +1,27 @@
 <template>
   <div v-if="loading">
     <context-menu
+      :parent-uuid="reportResult.processUuid"
+      :parent-panel="panelType"
       :is-report="true"
       :last-parameter="$route.params.processUuid"
+      :report-format="reportFormatValue"
     />
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="content">
-          <h3 class="text-center">{{ reportHeader }}</h3>
+          <h3 class="text-center">
+            <el-popover
+              v-if="!isEmptyValue(processMetadataValue.help)"
+              placement="top-start"
+              :title="processMetadataValue.name"
+              width="400"
+              trigger="hover"
+            >
+              <div v-html="processMetadataValue.help" />
+              <el-button slot="reference" type="text" class="title">{{ processMetadataValue.name }}</el-button>
+            </el-popover>
+          </h3>
           <iframe v-if="reportFormatValue === 'pdf'" class="content-api" :src="url" />
           <div v-else-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content-api" :src="url" />
           <div v-else-if="reportFormatValue === 'html'" class="content-txt">
@@ -46,6 +60,7 @@
 <script>
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Modal from '@/components/ADempiere/Dialog'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 export default {
   name: 'ReportViewer',
@@ -55,6 +70,7 @@ export default {
   },
   data() {
     return {
+      panelType: 'process',
       url: this.$store.getters.getProcessResult.url,
       name: [],
       reportFormat: '',
@@ -85,6 +101,7 @@ export default {
     this.reloadContextMenu()
   },
   methods: {
+    isEmptyValue,
     reloadContextMenu() {
       this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.reportResult.processUuid
@@ -101,6 +118,7 @@ export default {
     },
     getCachedReport(instanceUuid) {
       this.reportResult = this.$store.getters.getCachedReport(instanceUuid)
+      console.log(this.processMetadataValue)
       if (typeof this.reportResult === 'undefined') {
         this.$store.dispatch('getSessionProcessFromServer')
         this.reportResult = this.$store.getters.getSessionProcess(instanceUuid)
@@ -114,6 +132,12 @@ export default {
 </script>
 
 <style scoped >
+.title{
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 100%;
+    font-weight: 605!important;
+  }
 	.content {
     width: 100%;
     height: -webkit-fill-available;

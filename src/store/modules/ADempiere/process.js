@@ -56,6 +56,7 @@ const process = {
             var processActions = []
             processActions.push({
               name: i18n.t('components.RunProcess'),
+              processName: response.getName(),
               type: 'action',
               action: 'startProcess',
               uuid: response.getUuid(),
@@ -64,9 +65,11 @@ const process = {
               isReport: response.getIsreport(),
               accessLevel: response.getAccesslevel(),
               showHelp: response.getShowhelp(),
-              isDirectPrint: response.getIsdirectprint()
+              isDirectPrint: response.getIsdirectprint(),
+              reportExportType: undefined
             }, {
               name: i18n.t('components.ChangeParameters'),
+              processName: response.getName(),
               type: 'process',
               action: 'changeParameters',
               uuid: response.getUuid(),
@@ -80,6 +83,7 @@ const process = {
 
             var summaryAction = {
               name: i18n.t('components.RunProcessAs'),
+              processName: response.getName(),
               type: 'summary',
               action: '',
               childs: [],
@@ -94,6 +98,7 @@ const process = {
             reportExportTypeList.forEach(actionValue => {
               var action = {
                 name: i18n.t('components.ExportTo') + ' (' + actionValue.name + ')',
+                processName: response.getName(),
                 type: 'action',
                 action: 'startProcess',
                 uuid: response.getUuid(),

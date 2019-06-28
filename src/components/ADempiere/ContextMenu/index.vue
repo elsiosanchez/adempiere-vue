@@ -100,6 +100,10 @@ export default {
     lastParameter: {
       type: String,
       default: undefined
+    },
+    reportFormat: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -216,7 +220,8 @@ export default {
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.parentUuid,
             parentPanel: this.parentPanel,
-            processName: this.$route.meta.title
+            processName: action.processName,
+            reportFormat: this.reportFormat
           })
           if (action.isReport) {
             this.$store.subscribeAction({
