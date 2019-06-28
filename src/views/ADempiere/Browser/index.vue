@@ -12,7 +12,7 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-card class="content-collapse">
+        <el-card class="content-collapse" style="padding: 0px;">
           <h3 v-show="!isEmptyValue(browserMetadata.name)" class="warn-content text-center">
             <el-popover
               v-if="!isEmptyValue(browserMetadata.help)"
@@ -22,9 +22,9 @@
               trigger="hover"
             >
               <div v-html="browserMetadata.help" />
-              <i slot="reference" class="el-icon-info" />
+              <el-button slot="reference" type="text" style="color: #000000;text-size-adjust: 20px;font-size: 100%;font-weight: 605!important;">{{ browserMetadata.name }}</el-button>
+              <!-- <i slot="reference" class="el-icon-info" /> -->
             </el-popover>
-            {{ browserMetadata.name }}
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">

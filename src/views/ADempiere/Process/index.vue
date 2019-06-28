@@ -8,7 +8,7 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-card class="content-collapse">
+        <el-card class="content-collapse" style="padding: 0px;">
           <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
             <el-popover
               v-if="!isEmptyValue(processMetadata.help)"
@@ -18,9 +18,8 @@
               trigger="hover"
             >
               <div v-html="processMetadata.help" />
-              <i slot="reference" class="el-icon-info" />
+              <el-button slot="reference" type="text" style="color: #000000;text-size-adjust: 20px;font-size: 100%;font-weight: 605!important;">{{ processMetadata.name }}</el-button>
             </el-popover>
-            {{ processMetadata.name }}
           </h3>
           <panel
             :position-tab="processMetadata.accesLevel"
