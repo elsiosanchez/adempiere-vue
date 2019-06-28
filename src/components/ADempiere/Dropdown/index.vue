@@ -65,7 +65,7 @@ export default {
     margin-bottom: 32px;
   }
   .card-panel {
-    width: 95%;
+    width: 98%;
     height: 80px;
     cursor: pointer;
     font-size: 12px;

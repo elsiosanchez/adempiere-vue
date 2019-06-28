@@ -66,6 +66,8 @@
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
+      overflow: hidden;
+      text-overflow: ellipsis;
       &:hover {
         background-color: $menuHover !important;
       }
