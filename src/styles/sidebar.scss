@@ -79,6 +79,8 @@
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
+      overflow: hidden;
+      text-overflow: ellipsis;
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
 
