@@ -54,7 +54,7 @@ export default {
       isLoading: false
     }
   },
-  beforeMount() {
+  created() {
     this.getProcess(this.$route.meta.uuid)
   },
   methods: {
@@ -94,7 +94,7 @@ export default {
 </script>
 
 <style scoped >
-  .warn-content{
+  .warn-content {
     margin: 10px 0px !important;
   }
 </style>

@@ -21,7 +21,9 @@ export default {
     errorSearch: 'The search has not been completed',
     processing: 'Processing',
     processExecuted: ' executed, see process activity',
-    processError: ' he was not executed'
+    processError: ' he was not executed',
+    emptyValues: 'Parameter(s) empty value',
+    fieldMandatory: 'The field is mandatory'
   },
   navbar: {
     dashboard: 'Dashboard',

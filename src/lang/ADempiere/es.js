@@ -26,7 +26,9 @@ export default {
     errorSearch: 'La búsqueda no se ha completado.',
     processing: 'Procesando',
     processExecuted: ' ejecutado, ver actividad de proceso',
-    processError: ' no fue ejecutado'
+    processError: ' no fue ejecutado',
+    emptyValues: 'Parametro(s) con valores vacios',
+    fieldMandatory: 'El campo es obligatorio'
   },
   navbar: {
     logOut: 'Salir',

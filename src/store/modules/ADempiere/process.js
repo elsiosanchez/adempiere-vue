@@ -36,11 +36,15 @@ const process = {
 
             //  Convert from gRPC
             var fieldsRangeList = []
-            var fieldDefinitionList = parameterList.map((fieldItem) => {
-              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
-                fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
+            var fieldDefinitionList = parameterList.map((fieldItem, index) => {
+              var someAttributes = {
+                ...additionalAttributes,
+                fieldListIndex: index
               }
-              return convertFieldFromGRPC(fieldItem, additionalAttributes)
+              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
+                fieldsRangeList.push(convertFieldFromGRPC(fieldItem, someAttributes, true))
+              }
+              return convertFieldFromGRPC(fieldItem, someAttributes)
             })
             fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
 

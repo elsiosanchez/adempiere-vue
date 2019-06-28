@@ -102,6 +102,18 @@ export default {
       panelType: 'browser'
     }
   },
+  computed: {
+    getParamsProcessToServer() {
+      return this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
+    }
+  },
+  watch: {
+    isLoading(value) {
+      if (value) {
+        this.defaultSearch()
+      }
+    }
+  },
   beforeCreate() {
     this.$store.subscribe(mutation => {
       if (mutation.type === 'setShowDialog') {
@@ -113,9 +125,6 @@ export default {
     })
   },
   created() {
-    this.getBrowser(this.$route.meta.uuid)
-  },
-  beforeMount() {
     this.getBrowser(this.$route.meta.uuid)
   },
   mounted() {
@@ -147,28 +156,38 @@ export default {
         this.isLoading = true
         this.browserMetadata = browser
       }
+    },
+    defaultSearch() {
+      var finalParameters = this.getParamsProcessToServer
+      if ((finalParameters.fieldsMandatory.length > 0 &&
+        finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
+        finalParameters.fieldsMandatory.length === 0) {
+        this.$store.dispatch('getBrowserSearch', {
+          containerUuid: this.browserUuid
+        })
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-  .title{
+  .title {
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
     font-weight: 605!important;
   }
-  .warn-content{
+  .warn-content {
     margin: 10px 0px !important;
   }
-  .content-help{
+  .content-help {
     width: 100%;
     height: 200%;
     padding-left: 15px !important;
   }
-  .content-collapse{
-      padding-left: 20 px !important;
+  .content-collapse {
+    padding-left: 20 px !important;
   }
   .container-panel {
     bottom: 0;

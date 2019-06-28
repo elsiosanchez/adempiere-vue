@@ -99,8 +99,11 @@ const window = {
             }
 
             //  Convert from gRPC
-            fieldsList = fieldsList.map((item) => {
-              item = convertFieldFromGRPC(item, additionalAttributes)
+            fieldsList = fieldsList.map((item, index) => {
+              item = convertFieldFromGRPC(item, {
+                ...additionalAttributes,
+                fieldListIndex: index
+              })
               return item
             })
 

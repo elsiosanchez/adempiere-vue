@@ -28,6 +28,8 @@
 
 <script>
 import Panel from '@/components/ADempiere/Panel'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
+import { showNotification } from '@/utils/ADempiere/notification.js'
 
 export default {
   name: 'Modal',
@@ -74,12 +76,16 @@ export default {
     }
   },
   methods: {
+    isEmptyValue,
+    showNotification,
     closeDialog() {
       this.$store.dispatch('setShowDialog', undefined)
     },
     runAction(action) {
       var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
-      if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
+      if ((finalParameters.fieldsMandatory.length > 0 &&
+        finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
+        finalParameters.fieldsMandatory.length === 0) {
         this.closeDialog()
         this.$store.dispatch('startProcess', {
           action: action,
@@ -110,9 +116,16 @@ export default {
             this.$router.push('/')
           })
       } else {
-        this.$notify.info({
-          title: 'Info',
-          message: 'Some params empty.'
+        var emptyField = finalParameters.fieldsMandatory.find(filed => {
+          if (this.isEmptyValue(filed.value)) {
+            return true
+          }
+        })
+        this.showNotification({
+          type: 'warning',
+          title: this.$t('notifications.emptyValues'),
+          name: '<b>' + emptyField.name + '.</b> ',
+          message: this.$t('notifications.fieldMandatory')
         })
       }
     }

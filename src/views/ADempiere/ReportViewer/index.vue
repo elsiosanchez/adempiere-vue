@@ -132,7 +132,7 @@ export default {
 </script>
 
 <style scoped >
-.title{
+.title {
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
@@ -158,7 +158,7 @@ export default {
     padding-top: 10px;
     padding-bottom: 160px;
 	}
-  .content-txt{
+  .content-txt {
 		width: 100%;
 		height: 100%;
     /* padding: 10px; */

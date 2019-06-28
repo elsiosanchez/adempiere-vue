@@ -20,14 +20,16 @@ export function showNotification(params) {
         title: title,
         message: params.name + message,
         type: params.type,
-        position: 'bottom-right'
+        position: 'bottom-right',
+        dangerouslyUseHTMLString: true
       })
     } else {
       Notification({
         title: title,
         message: message,
         type: params.type,
-        position: 'bottom-right'
+        position: 'bottom-right',
+        dangerouslyUseHTMLString: true
       })
     }
   }
