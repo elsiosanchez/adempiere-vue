@@ -165,6 +165,9 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     parentFieldsList: getParentFields(fieldGRPC),
     dependentFieldsList: [],
     reference: referenceValue,
+    contextInfo: convertContextInfoFromGRPC(
+      fieldGRPC.getContextinfo()
+    ),
     // TODO: Add support on server
     isShowedFromUser: isShowedFromUser
   }
@@ -284,6 +287,56 @@ export function convertRoleFromGRPC(roleGRPC) {
     clientName: roleGRPC.getClientname(),
     organizationsList: roleGRPC.getOrganizationsList()
   }
+}
+
+export function convertContextInfoFromGRPC(contextInfoGRPC) {
+  var contextInfo = {
+    id: '',
+    uuid: '',
+    name: '',
+    description: '',
+    sqlStatement: '',
+    isActive: '',
+    messageText: convertMessageTextFromGRPC(undefined)
+  }
+  if (typeof contextInfoGRPC !== 'undefined') {
+    contextInfo = {
+      id: contextInfoGRPC.getId(),
+      uuid: contextInfoGRPC.getUuid(),
+      name: contextInfoGRPC.getName(),
+      description: contextInfoGRPC.getDescription(),
+      sqlStatement: contextInfoGRPC.getSqlstatement(),
+      isActive: contextInfoGRPC.getIsactive(),
+      messageText: convertMessageTextFromGRPC(
+        contextInfoGRPC.getMessagetext()
+      )
+    }
+  }
+  return contextInfo
+}
+
+export function convertMessageTextFromGRPC(messageTextGRPC) {
+  var messageText = {
+    id: '',
+    uuid: '',
+    value: '',
+    msgType: '',
+    msgText: '',
+    msgTip: '',
+    isActive: ''
+  }
+  if (typeof messageTextGRPC !== 'undefined') {
+    messageText = {
+      id: messageTextGRPC.getId(),
+      uuid: messageText.getUuid(),
+      value: messageTextGRPC.getValue(),
+      msgType: messageTextGRPC.getMsgtype(),
+      msgText: messageTextGRPC.getMsgtext(),
+      msgTip: messageTextGRPC.getMsgtip(),
+      isActive: messageTextGRPC.getIsactive()
+    }
+  }
+  return messageText
 }
 
 /**

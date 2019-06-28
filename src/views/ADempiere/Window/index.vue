@@ -232,8 +232,8 @@ export default {
 }
 </script>
 
-<style scoped >
-.container {
+<style scoped>
+  .container {
     bottom: 0;
     right: 0;
     z-index: 0;
@@ -243,17 +243,17 @@ export default {
     height: 20px;
     display: flex;
     color: #424242;
-}
+  }
 	.show {
-  position: absolute;
-  bottom: 0;
-  color: #FFF;
-  width: 100%;
-  height: 300px;
-  transition: all 0.5s ease-in;
-  display: flex;
-}
-.container-open {
+    position: absolute;
+    bottom: 0;
+    color: #FFF;
+    width: 100%;
+    height: 300px;
+    transition: all 0.5s ease-in;
+    display: flex;
+  }
+  .container-open {
     bottom: 0;
     right: 0;
     z-index: 0;
@@ -263,27 +263,27 @@ export default {
     height: 20px;
     display: flex;
     color: #424242;
-}
+  }
 	.show-open {
-  position: absolute;
-  bottom: 0;
-  color: #FFF;
-  width: 100%;
-  height: 300px;
-  transition: all 0.5s ease-in;
-  display: flex;
-}
-  .container:hover .show{
+    position: absolute;
+    bottom: 0;
+    color: #FFF;
+    width: 100%;
+    height: 300px;
+    transition: all 0.5s ease-in;
+    display: flex;
+  }
+  .container:hover .show {
     height: 30px;
   }
-  .btn{
+  .btn {
     animation-name: btn;
     position: relative;
     transition-delay: 0.6s;
     visibility: hidden;
     /* right: 50%; */
   }
-  .container:hover .btn{
+  .container:hover .btn {
     visibility: visible;
   }
   .el-tabs__content {
@@ -346,7 +346,7 @@ export default {
     width: calc(100% - 200px);
     transition: width 0.28s;
   }
-  .container-up{
+  .container-up {
     right: 50%;
   }
   .show {

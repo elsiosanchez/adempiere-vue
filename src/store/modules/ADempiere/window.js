@@ -1,5 +1,5 @@
 import { getWindow as gettingWindow, getTab } from '@/api/ADempiere/dictionary'
-import { convertFieldFromGRPC } from '@/utils/ADempiere'
+import { convertContextInfoFromGRPC, convertFieldFromGRPC } from '@/utils/ADempiere'
 
 const window = {
   state: {
@@ -48,8 +48,10 @@ const window = {
                 linkColumnName: tabItem.getLinkcolumnname(),
                 sequence: tabItem.getSequence(),
                 tabLevel: tabItem.getTablevel(),
+                isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
                 parentColumnName: tabItem.getParentcolumnname(),
-                parentTab: Boolean(firstTab === tabItem.getTablename())
+                parentTab: Boolean(firstTab === tabItem.getTablename()),
+                contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo())
               }
               if (tab.parentTab) {
                 parentTabs.push(tab)
@@ -71,7 +73,8 @@ const window = {
               tabsList: allTabs,
               currentTab: parentTabs[0],
               tabsListParent: parentTabs,
-              tabsListChildren: childrenTabs
+              tabsListChildren: childrenTabs,
+              contextInfo: convertContextInfoFromGRPC(response.getContextinfo())
             }
             commit('addWindow', newWindow)
             resolve(newWindow)
