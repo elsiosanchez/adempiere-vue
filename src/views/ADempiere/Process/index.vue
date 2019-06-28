@@ -8,7 +8,7 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-card class="content-collapse" style="padding: 0px;">
+        <el-card class="content-collapse">
           <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
             <el-popover
               v-if="!isEmptyValue(processMetadata.help)"
@@ -18,7 +18,7 @@
               trigger="hover"
             >
               <div v-html="processMetadata.help" />
-              <el-button slot="reference" type="text" style="color: #000000;text-size-adjust: 20px;font-size: 100%;font-weight: 605!important;">{{ processMetadata.name }}</el-button>
+              <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
             </el-popover>
           </h3>
           <panel
@@ -104,6 +104,12 @@ export default {
 </script>
 
 <style scoped >
+  .title{
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 100%;
+    font-weight: 605!important;
+  }
   .warn-content{
     margin: 0px 0px !important;
     padding-top: 39px !important;

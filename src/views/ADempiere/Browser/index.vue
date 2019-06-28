@@ -12,7 +12,7 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-card class="content-collapse" style="padding: 0px;">
+        <el-card class="content-collapse">
           <h3 v-show="!isEmptyValue(browserMetadata.name)" class="warn-content text-center">
             <el-popover
               v-if="!isEmptyValue(browserMetadata.help)"
@@ -22,7 +22,7 @@
               trigger="hover"
             >
               <div v-html="browserMetadata.help" />
-              <el-button slot="reference" type="text" style="color: #000000;text-size-adjust: 20px;font-size: 100%;font-weight: 605!important;">{{ browserMetadata.name }}</el-button>
+              <el-button slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
               <!-- <i slot="reference" class="el-icon-info" /> -->
             </el-popover>
           </h3>
@@ -153,6 +153,12 @@ export default {
 </script>
 
 <style scoped>
+  .title{
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 100%;
+    font-weight: 605!important;
+  }
   .warn-content{
     margin: 10px 0px !important;
   }
