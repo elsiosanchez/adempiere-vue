@@ -201,7 +201,7 @@ export default {
     },
     changeOrder() {
       var reversed = this.getDataDetail.reverse()
-      console.log('1reversed: ', reversed)
+      return reversed
     },
     /**
      * ASOCIATE WITH SEARCH INPUT
