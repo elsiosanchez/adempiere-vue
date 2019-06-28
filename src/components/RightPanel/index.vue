@@ -4,7 +4,7 @@
       <div class="showme">
         <div class="rightPanel-background" />
         <div class="rightPanel">
-          <div class="handle-button" :style="{'top':buttonTop+'%','background-color':theme}" @click="show=!show">
+          <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
             <i :class="show?'el-icon-close':'el-icon-setting'" />
           </div>
           <div class="rightPanel-items">
@@ -27,7 +27,7 @@ export default {
       type: Boolean
     },
     buttonTop: {
-      default: 50,
+      default: 250,
       type: Number
     }
   },
@@ -87,7 +87,7 @@ export default {
   height: 10%;
   right: 0%;
   position: absolute;
-  top: 50%;
+  top: 250px;
 }
 .showme {
   display: none;
