@@ -25,7 +25,7 @@ export default {
     },
     valueModel: {
       type: String,
-      default: ''
+      default: undefined
     }
   },
   data() {
@@ -48,17 +48,12 @@ export default {
       return 'date' + time + range
     }
   },
-  watch: {
-    valueModel() {
-      this.value = this.valueModel
-    }
-  },
   created() {
     this.checkValueFormat()
   },
   beforeMount() {
     // enable to dataTable records
-    if (typeof this.valueModel !== 'undefined') {
+    if (typeof this.valueModel !== 'undefined' && this.value !== null) {
       this.value = this.valueModel
     }
   },
@@ -92,7 +87,7 @@ export default {
       var valueFirst, valueTo
 
       valueFirst = value
-      if ((this.metadata.isRange && !this.metadata.inTable) || value.isArray) {
+      if ((this.metadata.isRange && !this.metadata.inTable) || Array.isArray(value)) {
         valueFirst = value[0]
         valueTo = value[1]
       }
