@@ -72,7 +72,7 @@ export default {
       panelType: 'process'
     }
   },
-  beforeMount() {
+  created() {
     this.getProcess(this.$route.meta.uuid)
     // this.subscribeAction()
   },
@@ -104,17 +104,17 @@ export default {
 </script>
 
 <style scoped >
-  .title{
+  .title {
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
     font-weight: 605!important;
   }
-  .warn-content{
+  .warn-content {
     margin: 0px 0px !important;
     padding-top: 39px !important;
   }
-  .content-help{
+  .content-help {
     width: 100%;
     height: 200%;
     padding-left: 39px !important;
@@ -128,7 +128,7 @@ export default {
     right: 0;
     top: 0;
   }
-   .content-collapse{
+  .content-collapse {
     padding-left: 20 px !important;
     padding-top: 50 px !important;
   }

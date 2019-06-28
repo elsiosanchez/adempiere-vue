@@ -499,7 +499,7 @@ export default {
     width: 268px !important;
     float: right;
     top: 0px;
-}
+  }
   .el-card {
     width: 100% !important;
   }

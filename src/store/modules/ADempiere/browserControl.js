@@ -1,6 +1,7 @@
 import { getBrowserSearch } from '@/api/ADempiere/data'
 import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
 import { showMessage } from '@/utils/ADempiere/notification'
+import i18n from '@/lang'
 
 const browserControl = {
   state: {
@@ -21,7 +22,10 @@ const browserControl = {
       return new Promise((resolve, reject) => {
         // parameters isQueryCriteria
         var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
-        if (finalParameters.params.length > 0) {
+
+        if ((finalParameters.fieldsMandatory.length > 0 &&
+          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
+          finalParameters.fieldsMandatory.length === 0) {
           var browser = rootGetters.getBrowser(params.containerUuid)
           var parsedQuery = parseContext({
             parentUuid: params.containerUuid,
@@ -68,8 +72,8 @@ const browserControl = {
                 selection: selection
               })
               var notificationParams = {
-                title: 'Successful',
-                message: 'The search has been made',
+                title: i18n.t('notifications.succesful'),
+                message: i18n.t('notifications.succcessSearch'),
                 type: 'success'
               }
               showMessage(notificationParams)
@@ -77,8 +81,8 @@ const browserControl = {
             })
             .catch(err => {
               var notificationParams = {
-                title: 'Error',
-                message: 'The search has not been completed',
+                title: i18n.t('notifications.error'),
+                message: i18n.t('notifications.errorSearch'),
                 type: 'error'
               }
               showMessage(notificationParams)

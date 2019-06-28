@@ -14,7 +14,7 @@ const browser = {
     }
   },
   actions: {
-    getBrowserFromServer: ({ commit, dispatch }, browserUuid) => {
+    getBrowserFromServer: ({ commit, dispatch, rootGetters }, browserUuid) => {
       return new Promise((resolve, reject) => {
         getBrowser(browserUuid)
           .then(response => {
@@ -32,11 +32,17 @@ const browser = {
 
             //  Convert from gRPC
             var fieldsRangeList = []
-            fieldsList = fieldsList.map((fieldItem) => {
-              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
-                fieldsRangeList.push(convertFieldFromGRPC(fieldItem, additionalAttributes, true))
+            fieldsList = fieldsList.map((fieldItem, index) => {
+              var someAttributes = {
+                ...additionalAttributes,
+                fieldListIndex: index
               }
-              var field = convertFieldFromGRPC(fieldItem, additionalAttributes)
+              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
+                fieldsRangeList.push(
+                  convertFieldFromGRPC(fieldItem, someAttributes, true)
+                )
+              }
+              var field = convertFieldFromGRPC(fieldItem, someAttributes)
               if (query.includes('@' + field.columnName + '@') || whereClause.includes('@' + field.columnName + '@')) {
                 field.isMandatory = true
                 field.isMandatoryFromLogic = true
@@ -104,6 +110,13 @@ const browser = {
                 showHelp: process.getShowhelp(),
                 isDirectPrint: process.getIsdirectprint()
               })
+
+              // TO DO convert gRPC attributes from response.getProcess() to object
+              // Add process asociate in store
+              var processStore = rootGetters.getProcess(process.getUuid())
+              if (typeof processStore === 'undefined') {
+                dispatch('getProcessFromServer', process.getUuid())
+              }
             }
 
             //  Add process menu

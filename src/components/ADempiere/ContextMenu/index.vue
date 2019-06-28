@@ -77,6 +77,8 @@
 <script>
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import Item from './items'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
+import { showNotification } from '@/utils/ADempiere/notification.js'
 
 export default {
   name: 'ContextMenu',
@@ -147,6 +149,8 @@ export default {
     this.subscribeChanges()
   },
   methods: {
+    isEmptyValue,
+    showNotification,
     isMobileClassmenu() {
       const cssClass = 'container-submenu'
       if (this.device === 'mobile') {
@@ -209,7 +213,9 @@ export default {
     runAction(action) {
       if (action.type === 'action') {
         var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
-        if ((finalParameters.fieldsMandatory > 0 && finalParameters.params.length > 0) || finalParameters.fieldsMandatory === 0) {
+        if ((finalParameters.fieldsMandatory.length > 0 &&
+          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
+          finalParameters.fieldsMandatory.length === 0) {
           var containerParams = this.$route.meta.uuid
           if (typeof this.lastParameter !== 'undefined') {
             containerParams = this.lastParameter
@@ -249,9 +255,16 @@ export default {
           }
           return false
         } else {
-          this.$notify.info({
-            title: 'Info',
-            message: 'Some params empty.'
+          var emptyField = finalParameters.fieldsMandatory.find(filed => {
+            if (this.isEmptyValue(filed.value)) {
+              return true
+            }
+          })
+          this.showNotification({
+            type: 'warning',
+            title: this.$t('notifications.emptyValues'),
+            name: '<b>' + emptyField.name + '.</b> ',
+            message: this.$t('notifications.fieldMandatory')
           })
         }
       } else if (action.type === 'process') {
@@ -267,14 +280,14 @@ export default {
     z-index: 1;
   }
 
-  .container-submenu-mobile{
+  .container-submenu-mobile {
     position: relative;
     height: 39px !important;
     width: 39px !important;
     float: right;
   }
 
-  .container-submenu{
+  .container-submenu {
     position: relative;
     height: 39px !important;
     float: right;
@@ -286,7 +299,7 @@ export default {
     padding: 0 10px;
   }
 
-  .el-menu-demo > .el-menu-item > .el-submenu__title{
+  .el-menu-demo > .el-menu-item > .el-submenu__title {
     line-height: 39px;
     height: 39px !important;
     padding: 0;
@@ -297,7 +310,7 @@ export default {
     right: 150px;
   }
 
-  .el-menu--popup-bottom-start{
+  .el-menu--popup-bottom-start {
     min-width: 150px !important;
   }
 
@@ -305,7 +318,7 @@ export default {
     min-width: 150px !important;
   }
 
-  .el-menu--popup-right-start > .el-menu-item{
+  .el-menu--popup-right-start > .el-menu-item {
     min-width: 150px;
   }
 

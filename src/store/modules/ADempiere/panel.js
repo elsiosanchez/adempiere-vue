@@ -275,33 +275,39 @@ const panel = {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
       const fields = fieldList.length
       var params = []
+      var fieldsMandatory = []
       var isEmptyFieldDisplayed = false // indicate if exists a field displayed and empty value
 
       if (fields > 0) {
-        params = fieldList
-          .filter(fieldItem => {
-            const isMandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
-            const isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic && (fieldItem.isShowedFromUser || isMandatory)
-            if (!isEmptyValue(fieldItem.value) && isDisplayed) {
-              return true
-            }
-            // empty value
-            if (isMandatory && isEvaluateEmptyDisplayed) {
-              isEmptyFieldDisplayed = true
-            }
-            return false
-          })
+        params = fieldList.filter(fieldItem => {
+          const isMandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
+          const isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic && (fieldItem.isShowedFromUser || isMandatory)
+          // mandatory fields
+          if (isMandatory) {
+            fieldsMandatory.push(fieldItem)
+          }
+          if (!isEmptyValue(fieldItem.value) && isDisplayed) {
+            return true
+          }
+          // empty value
+          if (isMandatory && isEvaluateEmptyDisplayed) {
+            isEmptyFieldDisplayed = true
+          }
+          return false
+        })
 
         if (isEvaluateEmptyDisplayed && isEmptyFieldDisplayed) {
           return {
             fields: fields,
-            params: []
+            params: [],
+            fieldsMandatory: fieldsMandatory
           }
         }
       }
       return {
         fields: fields,
-        params: params
+        params: params,
+        fieldsMandatory: fieldsMandatory
       }
     }
   }
