@@ -129,7 +129,6 @@
 <script>
 import Tab from '@/components/ADempiere/Tab'
 import TabChildren from '@/components/ADempiere/Tab/tabChildren'
-// import Detail from '@/components/ADempiere/Panel/detail'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import Submenu from '@/components/ADempiere/ContextMenu'
@@ -244,7 +243,7 @@ export default {
     display: flex;
     color: #424242;
   }
-	.show {
+  .show {
     position: absolute;
     bottom: 0;
     color: #FFF;
@@ -264,7 +263,7 @@ export default {
     display: flex;
     color: #424242;
   }
-	.show-open {
+  .show-open {
     position: absolute;
     bottom: 0;
     color: #FFF;
@@ -331,7 +330,6 @@ export default {
   .container-panel-mobile {
     position: fixed;
     bottom: 0;
-    /* height: calc(100% - (20px + 30px)); */
     right: 0;
     z-index: 0;
     width: 100%;
@@ -340,10 +338,9 @@ export default {
   .container-panel-open {
     position: fixed;
     bottom: 0;
-    /* height: calc(100% - (20px + 30px)); */
     right: 0;
     z-index: 0;
-    width: calc(100% - 200px);
+    width: calc(100% - 250px);
     transition: width 0.28s;
   }
   .container-up {
@@ -387,11 +384,9 @@ export default {
   }
   .el-row {
     margin-bottom: 20px;
-    /* border: 2px solid black; */
   }
   .el-col {
     border-radius: 4px;
-    /* border: 5px solid rgb(247, 0, 41); */
     left: 10px;
   }
   .el-main {
@@ -399,7 +394,6 @@ export default {
     color: #333;
     text-align: center;
     width: 100%;
-    /* line-height: 160px;   */
   }
   .sticky-submenu {
     position: absolute !important;
