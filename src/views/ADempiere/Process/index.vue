@@ -20,6 +20,7 @@
               <div v-html="processMetadata.help" />
               <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
             </el-popover>
+            <el-button v-if="isEmptyValue(processMetadata.help)" slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
           </h3>
           <panel
             :position-tab="processMetadata.accesLevel"

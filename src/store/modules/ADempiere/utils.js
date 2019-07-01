@@ -22,6 +22,8 @@ const utils = {
     changeShowedDetail({ dispatch }, params) {
       if (params.panelType === 'window') {
         dispatch('changeShowedDetailWindow', params)
+      } else if (params.panelType === 'browser') {
+        dispatch('changeShowedCriteriaBrowser', params)
       }
     }
   },
