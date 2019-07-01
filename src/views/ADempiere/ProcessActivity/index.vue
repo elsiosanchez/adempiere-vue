@@ -116,19 +116,21 @@ export default {
       return processListData
     }
   },
-  mounted() {
+  created() {
     this.$store.dispatch('getSessionProcessFromServer')
   },
-  created() {
+  mounted() {
     this.getList()
   },
   methods: {
     async getList() {
       this.oldprocessListData = this.processListData.map(v => v.id)
       this.newprocessListData = this.oldprocessListData.slice()
-      this.$nextTick(() => {
-        this.setSort()
-      })
+      if (this.processListData.length > 0) {
+        this.$nextTick(() => {
+          this.setSort()
+        })
+      }
     },
     setSort() {
       const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
