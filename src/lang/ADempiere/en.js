@@ -23,7 +23,8 @@ export default {
     processExecuted: ' executed, see process activity',
     processError: ' he was not executed',
     emptyValues: 'Parameter(s) empty value',
-    fieldMandatory: 'The field is mandatory'
+    fieldMandatory: 'The field is mandatory',
+    Opened: 'Opened'
   },
   navbar: {
     dashboard: 'Dashboard',

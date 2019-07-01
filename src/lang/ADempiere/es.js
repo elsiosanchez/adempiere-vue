@@ -28,7 +28,8 @@ export default {
     processExecuted: ' ejecutado, ver actividad de proceso',
     processError: ' no fue ejecutado',
     emptyValues: 'Parametro(s) con valores vacios',
-    fieldMandatory: 'El campo es obligatorio'
+    fieldMandatory: 'El campo es obligatorio',
+    Opened: 'Abierto'
   },
   navbar: {
     logOut: 'Salir',
