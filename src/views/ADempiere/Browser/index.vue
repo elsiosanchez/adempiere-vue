@@ -14,16 +14,17 @@
       <el-col :span="24">
         <div class="containert">
           <el-popover
-            v-if="!isEmptyValue(browserMetadata.help)"
+            v-if="!isEmptyValue(browserMetadata.name)"
             placement="top-start"
             :title="browserMetadata.name"
             width="400"
             trigger="hover"
           >
             <div v-html="browserMetadata.help" />
-            <el-button v-if="!isEmptyValue(browserMetadata.name)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+            <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
           </el-popover>
-          <el-button v-if="!isEmptyValue(browserMetadata.name)" type="text" class="title">{{ browserMetadata.name }}</el-button>
+          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+          <!-- <span v-if="!isEmptyValue(browserMetadata.name)" class="title" > {{ browserMetadata.name }} </span> -->
           <el-collapse v-model="activeSearch" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
               <panel
