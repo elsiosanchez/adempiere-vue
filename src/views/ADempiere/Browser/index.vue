@@ -93,6 +93,9 @@ export default {
   computed: {
     getParamsProcessToServer() {
       return this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
+    },
+    getDataDetail() {
+      return this.$store.getters.getDataRecordDetail(this.containerUuid)
     }
   },
   watch: {
@@ -146,15 +149,16 @@ export default {
       }
     },
     defaultSearch() {
-      var finalParameters = this.getParamsProcessToServer
-      if ((finalParameters.fieldsMandatory.length > 0 &&
-        finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
-        finalParameters.fieldsMandatory.length === 0) {
-        this.$store.dispatch('getBrowserSearch', {
-          containerUuid: this.browserUuid
-        })
-      } else {
-        this.activeSearch = ['1']
+      this.activeSearch = ['1']
+      if (this.getDataDetail.length <= 0) {
+        var finalParameters = this.getParamsProcessToServer
+        if ((finalParameters.fieldsMandatory.length > 0 &&
+          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
+          finalParameters.fieldsMandatory.length === 0) {
+          this.$store.dispatch('getBrowserSearch', {
+            containerUuid: this.browserUuid
+          })
+        }
       }
     }
   }
