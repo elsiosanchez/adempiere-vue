@@ -15,105 +15,17 @@
         :parent-panel="panelType"
         @closeDialog="isVisibleDialog=false"
       />
-      <!-- <el-container>
-        <el-main>
-          <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-            <tab-children
-              :window-uuid="windowUuid"
-              :tabs-list="windowMetadata.tabsListChildren"
-            />
-          </detail>
-        </el-main>
-      </el-container> -->
-      <!-- <el-col :span="24"> -->
-      <!-- <detail :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-          <tab-children
-            :window-uuid="windowUuid"
-            :tabs-list="windowMetadata.tabsListChildren"
-          />
-        </detail> -->
-      <div v-if="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0">
-        <div v-if="this.$store.state.app.device === 'mobile'">
-          <div class="container">
-            <div class="show">
-              <el-button
-                class="el-icon-arrow-up button-up btn"
-                :circle="true"
-                @click="handleChange()"
-              />
-            </div>
-            <div class="container-panel-mobile">
-              <el-collapse-transition>
-                <div v-show="showPanel">
-                  <el-button
-                    class="el-icon-arrow-down button-bottom btn"
-                    :circle="true"
-                    @click="handleChange()"
-                  />
-                  <tab-children
-                    :window-uuid="windowUuid"
-                    :tabs-list="windowMetadata.tabsListChildren"
-                  />
-                </div>
-              </el-collapse-transition>
-            </div>
-          </div>
-        </div>
-        <div v-else-if="this.$store.state.app.sidebar.opened">
-          <div class="container">
-            <div class="show">
-              <el-button
-                class="el-icon-arrow-up button-up btn"
-                :circle="true"
-                @click="handleChange()"
-              />
-
-            </div>
-            <div class="container-panel-open">
-              <el-collapse-transition>
-                <div v-show="showPanel">
-                  <el-button
-                    class="el-icon-arrow-down button-bottom btn"
-                    :circle="true"
-                    @click="handleChange()"
-                  />
-                  <tab-children
-                    :window-uuid="windowUuid"
-                    :tabs-list="windowMetadata.tabsListChildren"
-                  />
-                </div>
-              </el-collapse-transition>
-            </div>
-          </div>
-        </div>
-        <div v-else-if="!this.$store.state.app.sidebar.opened">
-          <div class="container">
-            <div class="show">
-              <el-button
-                class="el-icon-arrow-up button-up btn"
-                :circle="true"
-                @click="handleChange()"
-              />
-            </div>
-            <div class="container-panel">
-              <el-collapse-transition>
-                <div v-show="showPanel">
-                  <el-button
-                    class="el-icon-arrow-down button-bottom btn"
-                    :circle="true"
-                    @click="handleChange()"
-                  />
-                  <tab-children
-                    :window-uuid="windowUuid"
-                    :tabs-list="windowMetadata.tabsListChildren"
-                  />
-                </div>
-              </el-collapse-transition>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- </el-col> -->
+      <detail
+        :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0"
+        :is-showed-detail="windowMetadata.isShowedDetail"
+        :panel-type="panelType"
+        :container-uuid="windowUuid"
+      >
+        <tab-children
+          :window-uuid="windowUuid"
+          :tabs-list="windowMetadata.tabsListChildren"
+        />
+      </detail>
     </el-row>
   </div>
   <div
@@ -129,16 +41,18 @@
 <script>
 import Tab from '@/components/ADempiere/Tab'
 import TabChildren from '@/components/ADempiere/Tab/tabChildren'
+import Detail from '@/components/ADempiere/Panel/detail'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import Submenu from '@/components/ADempiere/ContextMenu'
 import Modal from '@/components/ADempiere/Dialog'
+
 export default {
   name: 'Window',
   components: {
     Tab,
     TabChildren,
-    // Detail,
+    Detail,
     Submenu,
     Modal
   },
@@ -232,155 +146,15 @@ export default {
 </script>
 
 <style scoped>
-  .container {
-    bottom: 0;
-    right: 0;
-    z-index: 0;
-    width: calc(111% - 200px);
-    transition: width 0.28s;
-    position: fixed;
-    height: 20px;
-    display: flex;
-    color: #424242;
-  }
-  .show {
-    position: absolute;
-    bottom: 0;
-    color: #FFF;
-    width: 100%;
-    height: 300px;
-    transition: all 0.5s ease-in;
-    display: flex;
-  }
-  .container-open {
-    bottom: 0;
-    right: 0;
-    z-index: 0;
-    width: 100%;
-    transition: width 0.28s;
-    position: fixed;
-    height: 20px;
-    display: flex;
-    color: #424242;
-  }
-  .show-open {
-    position: absolute;
-    bottom: 0;
-    color: #FFF;
-    width: 100%;
-    height: 300px;
-    transition: all 0.5s ease-in;
-    display: flex;
-  }
-  .container:hover .show {
-    height: 30px;
-  }
-  .btn {
-    animation-name: btn;
-    position: relative;
-    transition-delay: 0.6s;
-    visibility: hidden;
-    /* right: 50%; */
-  }
-  .container:hover .btn {
-    visibility: visible;
-  }
   .el-tabs__content {
     overflow: hidden;
     position: relative;
     padding-top: 0px;
     padding-left: 15px;
     padding-right: 15px;
-}
-  .btn-base :hover {
-    box-shadow: 5px #5a5a5a;
-  }
-  .avatar {
-    width: 54px;
-    height: 28px;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 134px;
-    height: 5px;
-    line-height: 57px;
   }
   .tab-window {
     z-index: 9;
-  }
-  .container-panel {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 0;
-    width: calc(100% - 54px);
-    /* height: 40%; */
-    transition: width 0.28s;
-  }
-  .container-panel-movil {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 0;
-    width: 100%;
-    height: 60%;
-    transition: width 0.28s;
-  }
-  .container-panel-mobile {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 0;
-    width: 100%;
-    transition: width 0.28s;
-  }
-  .container-panel-open {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 0;
-    width: calc(100% - 250px);
-    transition: width 0.28s;
-  }
-  .container-up {
-    right: 50%;
-  }
-  .show {
-    position: absolute;
-    bottom: 0;
-    color: #FFF;
-    width: 100%;
-    height: 0px;
-    transition: all 0.5s ease-in;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .button-bottom {
-    bottom: 50%;
-    z-index: 2;
-    position: relative;
-    margin: 0 auto;
-    left: 47%;
-  }
-  .button-up {
-    bottom: 0;
-    position: relative;
-    margin: 0 auto;
-  }
-  .btn-base {
-    width: 40px;
-    position: fixed;
-    background: #ffffff;
-    color: #606266;
-    -webkit-appearance: none;
-    text-align: center;
-    outline: 0;
-    font-size: 14px;
-  }
-  .btn-base :hover {
-    box-shadow: 5px #5a5a5a;
   }
   .el-row {
     margin-bottom: 20px;
@@ -394,10 +168,5 @@ export default {
     color: #333;
     text-align: center;
     width: 100%;
-  }
-  .sticky-submenu {
-    position: absolute !important;
-    right: 10px;
-    top: 0;
   }
 </style>

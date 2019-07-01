@@ -18,6 +18,11 @@ const utils = {
     },
     setHeight({ commit }, height) {
       commit('setHeigth', height)
+    },
+    changeShowedDetail({ dispatch }, params) {
+      if (params.panelType === 'window') {
+        dispatch('changeShowedDetailWindow', params)
+      }
     }
   },
   getters: {

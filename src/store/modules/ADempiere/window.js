@@ -11,6 +11,9 @@ const window = {
     },
     dictionaryResetCacheWindow(state, payload) {
       state.window = payload
+    },
+    changeShowedDetailWindow(state, payload) {
+      payload.window.isShowedDetail = payload.changeShowedDetail
     }
   },
   actions: {
@@ -74,7 +77,9 @@ const window = {
               currentTab: parentTabs[0],
               tabsListParent: parentTabs,
               tabsListChildren: childrenTabs,
-              contextInfo: convertContextInfoFromGRPC(response.getContextinfo())
+              contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
+              // app attributes
+              isShowedDetail: Boolean(childrenTabs.length > 0)
             }
             commit('addWindow', newWindow)
             resolve(newWindow)
@@ -161,6 +166,15 @@ const window = {
             console.warn('Dictionary Tab (State Window) - Error ' + err.code + ': ' + err.message)
             reject(err)
           })
+      })
+    },
+    changeShowedDetailWindow: ({ commit, state }, params) => {
+      var window = state.window.find(itemWindow => {
+        return itemWindow.uuid === params.containerUuid
+      })
+      commit('changeShowedDetailWindow', {
+        window: window,
+        changeShowedDetail: params.isShowedDetail
       })
     }
   },
