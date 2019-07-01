@@ -145,7 +145,7 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 235
+        return this.$store.getters.getHeigth() - 250
       } else {
         return this.$store.getters.getHeigth() - 400
       }
