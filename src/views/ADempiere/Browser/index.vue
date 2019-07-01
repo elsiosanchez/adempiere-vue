@@ -28,12 +28,6 @@
           </h3>
           <el-collapse v-model="activeNames" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
-              <el-button
-                type="text"
-                icon="el-icon-close"
-                class="close"
-                @click="handleChange()"
-              />
               <panel
                 :container-uuid="containerUuid"
                 :metadata="browserMetadata"
@@ -178,9 +172,6 @@ export default {
 </script>
 
 <style scoped>
-  .close{
-    float: right;
-  }
   .title{
     color: #000000;
     text-size-adjust: 20px;
