@@ -24,7 +24,7 @@
             <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
           </el-popover>
           <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
-          <div>
+          <!-- <div>
             <br>
             <el-button v-show="!openContainer" icon="el-icon-search" type="text" class="opem" @click="openContainer = !openContainer"> {{ $t('views.searchCriteria') }} </el-button>
             <el-button v-show="openContainer" icon="el-icon-close" type="text" class="close" @click="openContainer = !openContainer" />
@@ -41,8 +41,19 @@
                 </div>
               </el-collapse-transition>
             </div>
-          </div>
+          </div> -->
         </div>
+        <search-criteria
+          :is-showed-criteria="browserMetadata.isShowedCriteria"
+          :panel-type="panelType"
+          :container-uuid="browserUuid"
+        >
+          <panel
+            :container-uuid="containerUuid"
+            :metadata="browserMetadata"
+            :panel-type="panelType"
+          />
+        </search-criteria>
       </el-col>
       <el-col :span="24">
         <div v-if="this.$store.state.app.sidebar.opened">
@@ -79,6 +90,7 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
+import searchCriteria from '@/components/ADempiere/Panel/searchCriteria'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
@@ -86,6 +98,7 @@ export default {
   name: 'Browser',
   components: {
     Panel,
+    searchCriteria,
     DataTable,
     ContextMenu,
     Modal
@@ -102,7 +115,7 @@ export default {
       browserUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
       isLoading: false,
-      activeSearch: [],
+      openContainer: false,
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
@@ -168,7 +181,7 @@ export default {
       }
     },
     defaultSearch() {
-      this.activeSearch = ['1']
+      this.openContainer = true
       if (this.getDataDetail.length <= 0) {
         var finalParameters = this.getParamsProcessToServer
         if ((finalParameters.fieldsMandatory.length > 0 &&
@@ -195,46 +208,24 @@ export default {
     text-size-adjust: 20px;
     font-size: 100%;
     font-weight: 605!important;
-  }
-  .close{
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605!important;
     position: relative;
-    left: 96%;
-  }
-  .opem{
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605!important;
-  }
-  .warn-content {
-    margin: 10px 0px !important;
+    left: 40%;
   }
   .content-help {
     width: 100%;
     height: 200%;
     padding-left: 15px !important;
   }
-  .content-collapse {
-    padding-left: 20 px !important;
-  }
   .container-panel {
     bottom: 0;
     right: 0;
     z-index: 0;
-    /* padding-right: 20px;
-    padding-left: 20px; */
     transition: width 0.28s;
     border: 1px solid #e5e9f2;
   }
   .container-panel-open {
     bottom: 0;
     right: 0;
-    /* padding-right: 20px;
-    padding-left: 20px; */
     border: 1px solid #e5e9f2;
     height: -webkit-fill-available;
     height:-webkit-calc(100% - 100px);
@@ -246,8 +237,5 @@ export default {
     right: 0;
     z-index: 0;
     transition: width 0.28s;
-  }
-  .el-collapse-item__header {
-    height: 39px !important;
   }
 </style>

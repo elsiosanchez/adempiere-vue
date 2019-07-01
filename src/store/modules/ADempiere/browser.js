@@ -11,6 +11,9 @@ const browser = {
     },
     dictionaryResetCacheBrowser(state, payload) {
       state.browser = payload
+    },
+    changeShowedCriteriaBrowser(state, payload) {
+      payload.browser.isShowedCriteria = payload.changeShowedCriteria
     }
   },
   actions: {
@@ -92,7 +95,9 @@ const browser = {
               isActive: response.getIsactive(),
               viewUuid: response.getViewuuid(),
               fieldList: fieldsList,
-              panelType: panelType
+              panelType: panelType,
+              // app attributes
+              isShowedCriteria: Boolean(fieldsList.length > 0)
             }
 
             // //  Convert from gRPC process list
@@ -136,6 +141,15 @@ const browser = {
             console.warn('Dictionary Browser - Error ' + err.code + ': ' + err.message)
             reject(err)
           })
+      })
+    },
+    changeShowedCriteriaBrowser: ({ commit, state }, params) => {
+      var browser = state.browser.find(item => {
+        return item.uuid === params.containerUuid
+      })
+      commit('changeShowedCriteriaBrowser', {
+        browser: browser,
+        changeShowedCriteria: params.isShowedCriteria
       })
     }
   },

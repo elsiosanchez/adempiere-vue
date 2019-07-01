@@ -164,7 +164,8 @@ export default {
     /* padding: 10px; */
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 10px;
+    padding-top: 0px;
+    padding-bottom: 20px;
 	}
   .content-excel {
     width: 100%;
