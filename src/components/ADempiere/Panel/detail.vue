@@ -1,37 +1,32 @@
 <template>
-  <el-row v-if="showDetail" :gutter="12" class="root-container">
+  <div v-if="showDetail">
     <div class="container">
-      <el-col :span="6">
-        <div class="hidden-container">
-          <div :class="isMobie()">
+      <!-- down button -->
+      <div class="show">
+        <el-button
+          v-if="!showPanel"
+          class="el-icon-arrow-up button-up btn"
+          :circle="true"
+          @click="handleChange()"
+        />
+      </div>
+      <!-- panel show -->
+      <div :class="classContainer()">
+        <el-collapse-transition>
+          <div v-show="showPanel">
             <el-button
-              v-if="!showPanel"
+              class="el-icon-arrow-down button-bottom btn"
               :circle="true"
-              class="el-icon-arrow-up button-top btn-base"
               @click="handleChange()"
             />
-          </div>
-        </div>
-        <el-collapse-transition class="paneltab">
-          <div v-show="showPanel">
-            <div>
-              <div class="container-table">
-                <div class="show-container">
-                  <el-button
-                    v-if="showPanel"
-                    :circle="true"
-                    class="el-icon-arrow-down button-bottom btn-base"
-                    @click="handleChange()"
-                  />
-                </div>
-                <slot />
-              </div>
-            </div>
+
+            <slot />
+
           </div>
         </el-collapse-transition>
-      </el-col>
+      </div>
     </div>
-  </el-row>
+  </div>
 </template>
 
 <script>
@@ -45,94 +40,151 @@ export default {
     showDetail: {
       type: Boolean,
       default: true
+    },
+    panelType: {
+      type: String,
+      default: 'window'
+    },
+    containerUuid: {
+      type: String,
+      default: undefined
+    },
+    isShowedDetail: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
-      showPanel: true
+      showPanel: this.isShowedDetail
     }
   },
   methods: {
-    isMobie() {
-      if (this.$store.state.app.device !== 'mobile') {
-        return 'show-button'
+    classContainer() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'container-panel-mobile'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'container-panel-open'
       }
+      return 'container-panel'
     },
     handleChange() {
       this.showPanel = !this.showPanel
+      this.$store.dispatch('changeShowedDetail', {
+        panelType: this.panelType,
+        containerUuid: this.containerUuid,
+        isShowedDetail: this.showPanel
+      })
     }
   }
 }
 </script>
 
-<style scoped >
-  /*
-  .root-container {
-    border-top: 2px solid #606266;
-    height: 50%;
-    margin: 5px;
-  }
-  */
-  .hidden-container {
-    bottom: 0;
-    z-index: 0;
-    position: fixed;
-    width: 100%;
-    color: #424242;
-    margin-left: 10px;
-    border-top: 10px solid #606266;
-  }
+<style scoped>
   .container {
     bottom: 0;
+    right: 0;
     z-index: 0;
+    width: calc(111% - 200px);
+    transition: width 0.28s;
     position: fixed;
-    width: 100%;
+    height: 20px;
     display: flex;
     color: #424242;
-    margin-left: 10px;
-    border-top: 10px solid #606266;
   }
-  .container:hover .show-button {
-    visibility: visible;
-    height: 50%;
-  }
-  .container:hover button {
-    visibility: visible;
-  }
-  .show-button {
-    visibility: hidden;
+  .show {
     position: absolute;
     bottom: 0;
     color: #FFF;
     width: 100%;
+    height: 300px;
     transition: all 0.5s ease-in;
     display: flex;
   }
-  .buttonp {
-    visibility: hidden;
-    transition: all .5s ease-in;
-  }
-  .container-table {
+  .container-open {
     bottom: 0;
-    height: 50%;
+    right: 0;
+    z-index: 0;
     width: 100%;
+    transition: width 0.28s;
     position: fixed;
-    position: fixed;
+    height: 20px;
     display: flex;
     color: #424242;
-    background-color: #fff;
   }
-  .container-table:hover .show-container {
-    visibility: visible;
+  .show-open {
+    position: absolute;
+    bottom: 0;
+    color: #FFF;
+    width: 100%;
+    height: 300px;
+    transition: all 0.5s ease-in;
+    display: flex;
   }
-  .container-table:hover .buttonp2 {
-    visibility: visible;
+  .container:hover .show {
+    height: 30px;
   }
-  .container-table:hover .transi-box-menu-menu-hiden {
-    visibility: visible;
-  }
-  .show-container {
+  .btn {
+    animation-name: btn;
+    position: relative;
+    transition-delay: 0.6s;
     visibility: hidden;
+    /* right: 50%; */
+  }
+  .container:hover .btn {
+    visibility: visible;
+  }
+  .el-tabs__content {
+    overflow: hidden;
+    position: relative;
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+  .btn-base :hover {
+    box-shadow: 5px #5a5a5a;
+  }
+  .tab-window {
+    z-index: 9;
+  }
+  .container-panel {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 54px);
+    /* height: 40%; */
+    transition: width 0.28s;
+  }
+  .container-panel-movil {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    height: 60%;
+    transition: width 0.28s;
+  }
+  .container-panel-mobile {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    transition: width 0.28s;
+  }
+  .container-panel-open {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(100% - 250px);
+    transition: width 0.28s;
+  }
+  .container-up {
+    right: 50%;
+  }
+  .show {
     position: absolute;
     bottom: 0;
     color: #FFF;
@@ -140,14 +192,23 @@ export default {
     height: 0px;
     transition: all 0.5s ease-in;
     display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  .buttonp2 {
-    visibility: visible;
-    transition: all .5s ease-in;
+  .button-bottom {
+    bottom: 50%;
+    z-index: 2;
+    position: relative;
+    margin: 0 auto;
+    left: 47%;
+  }
+  .button-up {
+    bottom: 0;
+    position: relative;
+    margin: 0 auto;
   }
   .btn-base {
     width: 40px;
-    right: 50%;
     position: fixed;
     background: #ffffff;
     color: #606266;
@@ -159,42 +220,17 @@ export default {
   .btn-base :hover {
     box-shadow: 5px #5a5a5a;
   }
-  .button-top {
-    bottom: 0;
-  }
-  .button-bottom {
-    bottom: 50%;
-    z-index: 2;
-  }
-  .transi-box-menu {
-    bottom: 0;
-    width: calc(100% - 170px);
-    position: fixed;
-    border-radius: 4px;
-    background-color: #FFF;
-    text-align: center;
-    color: #FFF;
-    box-sizing: border-box;
-    height: 50%;
-  }
-  .transi-box-menu-menu-hiden {
-    margin-bottom: 0px;
-    width: calc(100% + 10px);
-    position: fixed;
-    bottom: 0;
-    border-radius: 4px;
-    background-color: #FFF;
-    text-align: center;
-    color: #FFF;
-    height: 50%;
-    box-sizing: border-box;
-    margin-right: 2px;
-  }
   .el-row {
     margin-bottom: 20px;
   }
   .el-col {
     border-radius: 4px;
-    left: 150px;
+    left: 10px;
+  }
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    width: 100%;
   }
 </style>
