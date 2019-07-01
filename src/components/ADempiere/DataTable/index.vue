@@ -48,7 +48,7 @@
           :column-key="item.columnName"
           sortable
           :formatter="changeOrder"
-          min-width="150"
+          min-width="200"
           height="300"
           :class-name="cellClass(item)"
         >

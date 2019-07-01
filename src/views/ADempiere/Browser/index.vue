@@ -24,24 +24,6 @@
             <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
           </el-popover>
           <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
-          <!-- <div>
-            <br>
-            <el-button v-show="!openContainer" icon="el-icon-search" type="text" class="opem" @click="openContainer = !openContainer"> {{ $t('views.searchCriteria') }} </el-button>
-            <el-button v-show="openContainer" icon="el-icon-close" type="text" class="close" @click="openContainer = !openContainer" />
-            <div>
-              <el-collapse-transition>
-                <div v-show="openContainer">
-                  <div class="transition-box">
-                    <panel
-                      :container-uuid="containerUuid"
-                      :metadata="browserMetadata"
-                      :panel-type="panelType"
-                    />
-                  </div>
-                </div>
-              </el-collapse-transition>
-            </div>
-          </div> -->
         </div>
         <search-criteria
           :is-showed-criteria="browserMetadata.isShowedCriteria"
@@ -56,22 +38,10 @@
         </search-criteria>
       </el-col>
       <el-col :span="24">
-        <div v-if="this.$store.state.app.sidebar.opened">
-          <div class="container-panel-open">
-            <data-table
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-            />
-          </div>
-        </div>
-        <div v-else-if="!this.$store.state.app.sidebar.opened">
-          <div class="container-panel">
-            <data-table
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-            />
-          </div>
-        </div>
+        <data-table
+          :container-uuid="containerUuid"
+          :panel-type="panelType"
+        />
       </el-col>
     </el-row>
   </div>
@@ -115,7 +85,6 @@ export default {
       browserUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
       isLoading: false,
-      openContainer: false,
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
@@ -181,7 +150,6 @@ export default {
       }
     },
     defaultSearch() {
-      this.openContainer = true
       if (this.getDataDetail.length <= 0) {
         var finalParameters = this.getParamsProcessToServer
         if ((finalParameters.fieldsMandatory.length > 0 &&

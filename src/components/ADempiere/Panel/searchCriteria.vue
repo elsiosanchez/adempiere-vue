@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-button v-show="!openContainer" icon="el-icon-search" type="text" class="open" @click="handleChange()"> {{ $t('views.searchCriteria') }} </el-button>
-    <el-button v-show="openContainer" icon="el-icon-close" type="text" class="close" @click="handleChange()" />
+    <el-button v-show="!showCriteria" icon="el-icon-search" type="text" class="open" @click="handleChange()"> {{ $t('views.searchCriteria') }} </el-button>
+    <el-button v-show="showCriteria" icon="el-icon-close" type="text" class="close" @click="handleChange()" />
     <div>
       <el-collapse-transition>
-        <div v-show="openContainer">
+        <div v-show="showCriteria" :is-params-criteria="false">
           <div class="transition-box">
             <slot />
           </div>
@@ -32,29 +32,21 @@ export default {
     },
     isShowedCriteria: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
     return {
-      openContainer: this.isShowedCriteria
+      showCriteria: this.isShowedCriteria
     }
   },
   methods: {
-    classContainer() {
-      if (this.$store.state.app.device === 'mobile') {
-        return 'container-panel-mobile'
-      } else if (this.$store.state.app.sidebar.opened) {
-        return 'container-panel-open'
-      }
-      return 'container-panel'
-    },
     handleChange() {
-      this.openContainer = !this.openContainer
+      this.showCriteria = !this.showCriteria
       this.$store.dispatch('changeShowedDetail', {
         panelType: this.panelType,
         containerUuid: this.containerUuid,
-        isShowedCriteria: this.openContainer
+        isShowedCriteria: this.showCriteria
       })
     }
   }
@@ -78,7 +70,7 @@ export default {
   .close{
     color: #000000;
     text-size-adjust: 20px;
-    font-size: 100%;
+    font-size: 150%;
     font-weight: 605!important;
     position: relative;
     left: 96%;
