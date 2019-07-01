@@ -11,10 +11,6 @@
         clearable
       />
     </div>
-    <!--
-      Add this prop to el-table later fix Duplicate keys records
-      :row-key="keyColumn"
-    -->
     <el-table
       ref="multipleTable"
       fit
@@ -22,6 +18,7 @@
       style="width: 100%"
       stripe
       border
+      :row-key="keyColumn"
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
@@ -32,14 +29,16 @@
       @select="handleSelection"
       @select-all="handleSelectionAll"
     >
-      <el-table-column
-        v-if="isTableSelection"
-        type="selection"
-        :prop="keyColumn"
-        fixed
-        min-width="50"
-        :class-name="'is-cell-selection'"
-      />
+      <!--
+        <el-table-column
+          v-if="isTableSelection"
+          type="selection"
+          :prop="keyColumn"
+          fixed
+          min-width="50"
+          :class-name="'is-cell-selection'"
+        />
+      -->
       <template v-for="(item, key) in fieldList">
         <el-table-column
           v-if="isDisplayed(item)"
@@ -54,7 +53,7 @@
           :class-name="cellClass(item)"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.edit && (item.isIdentifier || item.isUpdateable)">
+            <template v-if="scope.row.isEdit && (item.isIdentifier || item.isUpdateable)">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
@@ -78,12 +77,16 @@
         </el-table-column>
       </template>
     </el-table>
+    <div class="table-footer">
+      {{ $t('table.dataTable.selected') }}: {{ getDataSelection.length }} / {{ $t('table.dataTable.records') }}: {{ getDataDetail.length }}
+    </div>
   </el-form>
 </template>
 
 <script>
 import Field from '@/components/ADempiere/Field'
 import Sortable from 'sortablejs'
+
 export default {
   name: 'DataTable',
   components: {
@@ -125,7 +128,7 @@ export default {
       keyColumn: '', // column as isKey in fieldList
       tableData: [],
       multipleSelection: [],
-      edit: false,
+      isEdit: false, // get data
       rowStyle: { height: '52px' },
       sortable: null,
       oldprocessListData: [],
@@ -251,31 +254,31 @@ export default {
       }
     },
     confirmEdit(row, newValue, value) {
-      if (row.edit) {
-        row.edit = false
+      if (row.isEdit) {
+        row.isEdit = false
       }
     },
     handleRowClick(row, column, event) {
-      if (!row.edit) {
+      if (!row.isEdit) {
         /*
         var inSelection = this.getDataSelection.some(item => {
           return JSON.stringify(item) === JSON.stringify(row)
         })
         if (inSelection) {
-          row.edit = true
+          row.isEdit = true
         }
         */
-        row.edit = true
+        row.isEdit = true
       }
     },
     handleRowDblClick(row, column, event) {
       this.confirmEdit(row, null, null)
     },
     handleSelection(rowsSelection, rowSelected) {
-      // index.edit = !index.edit
-      // rowSelected.edit = !rowSelected.edit
+      // index.isEdit = !index.isEdit
+      // rowSelected.isEdit = !rowSelected.isEdit
       // if (this.isAllSelected(rows.length)) {
-      //   index.edit = true
+      //   index.isEdit = true
       // }
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
@@ -301,7 +304,7 @@ export default {
         record: this.getDataDetail
       })
       // rowsSelection.forEach(row => {
-      //   row.edit = selectAll
+      //   row.isEdit = selectAll
       // })
     },
     filterResult() {
@@ -412,6 +415,12 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  .table-footer {
+    bottom: 0px;
+    text-align: right;
+    padding: 10px;
+  }
+
   .datatable-max-cell-height {
     max-height: 52px;
   }

@@ -93,13 +93,15 @@ export default {
   },
   table: {
     ProcessActivity: {
-      name: 'Nombre',
-      description: 'Descripción',
-      actions: 'Acción',
-      status: 'Estado'
+      name: 'Name',
+      description: 'Description',
+      actions: 'Action',
+      status: 'State'
     },
     dataTable: {
-      search: 'Search'
+      search: 'Search',
+      records: 'Records',
+      selected: 'Selected'
     }
   },
   example: {

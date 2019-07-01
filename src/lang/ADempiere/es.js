@@ -56,13 +56,13 @@ export default {
     editPermission: 'Permiso de edición',
     roles: 'Tus permisos',
     switchRoles: 'Cambiar permisos',
-    tips: 'In some cases it is not suitable to use v-permission, such as element Tab component or el-table-column and other asynchronous rendering dom cases which can only be achieved by manually setting the v-if.',
+    tips: 'En algunos casos, no es adecuado usar v-permission, como el componente Element Tab o el-table-column y otros casos de dom de representación asíncrona que solo se pueden lograr configurando manualmente v-if.',
     delete: 'Borrar',
     confirm: 'Confirmar',
     cancel: 'Cancelar'
   },
   guide: {
-    description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',
+    description: 'La página de guía es útil para algunas personas que ingresaron al proyecto por primera vez. Puede introducir brevemente las características del proyecto. Demo se basa en ',
     button: 'Ver guía'
   },
   components: {
@@ -104,7 +104,9 @@ export default {
       Status: 'Estado'
     },
     dataTable: {
-      search: 'Buscar'
+      search: 'Buscar',
+      records: 'Registros',
+      selected: 'Seleccionados'
     }
   },
   tagsView: {

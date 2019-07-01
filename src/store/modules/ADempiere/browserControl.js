@@ -57,7 +57,8 @@ const browserControl = {
                 })
 
                 // datatables attribute
-                values.edit = false
+                values.isEdit = false
+                values.isSelected = false
                 return values
               })
 
