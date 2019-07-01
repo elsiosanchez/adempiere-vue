@@ -129,7 +129,8 @@ export default {
       rowStyle: { height: '52px' },
       sortable: null,
       oldprocessListData: [],
-      newprocessListData: []
+      newprocessListData: [],
+      value: ''
     }
   },
   computed: {
@@ -144,7 +145,7 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 300
+        return this.$store.getters.getHeigth() - 245
       } else {
         return this.$store.getters.getHeigth() - 400
       }

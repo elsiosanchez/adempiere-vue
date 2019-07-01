@@ -12,8 +12,8 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-card class="content-collapse">
-          <h3 v-show="!isEmptyValue(browserMetadata.name)" class="warn-content text-center">
+        <el-card>
+          <div v-show="!isEmptyValue(browserMetadata.name)" class="warn-content text-center">
             <el-popover
               v-if="!isEmptyValue(browserMetadata.help)"
               placement="top-start"
@@ -25,15 +25,9 @@
               <el-button slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
               <!-- <i slot="reference" class="el-icon-info" /> -->
             </el-popover>
-          </h3>
+          </div>
           <el-collapse v-model="activeNames" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
-              <el-button
-                type="text"
-                icon="el-icon-close"
-                class="close"
-                @click="handleChange()"
-              />
               <panel
                 :container-uuid="containerUuid"
                 :metadata="browserMetadata"
@@ -171,6 +165,8 @@ export default {
         this.$store.dispatch('getBrowserSearch', {
           containerUuid: this.browserUuid
         })
+      } else {
+        this.activeNames = ['1']
       }
     }
   }
@@ -178,9 +174,6 @@ export default {
 </script>
 
 <style scoped>
-  .close{
-    float: right;
-  }
   .title{
     color: #000000;
     text-size-adjust: 20px;
@@ -196,7 +189,11 @@ export default {
     padding-left: 15px !important;
   }
   .content-collapse {
-    padding-left: 20 px !important;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: getSizeWindow;
   }
   .container-panel {
     bottom: 0;
@@ -210,11 +207,11 @@ export default {
   .container-panel-open {
     bottom: 0;
     right: 0;
+    padding-left: 15px;
+    padding-right: 15px;
     /* padding-right: 20px;
     padding-left: 20px; */
-    border: 1px solid #e5e9f2;
-    height: -webkit-fill-available;
-    height:-webkit-calc(100% - 100px);
+    height: 350px;
     z-index: 0;
     transition: width 0.28s;
   }
@@ -226,5 +223,8 @@ export default {
   }
   .el-collapse-item__header {
     height: 39px !important;
+  }
+  .el-card__body {
+    padding: 0px !important;
   }
 </style>
