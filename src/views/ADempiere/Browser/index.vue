@@ -12,21 +12,19 @@
     />
     <el-row :gutter="20">
       <el-col :span="24">
-        <el-card>
-          <div v-show="!isEmptyValue(browserMetadata.name)" class="warn-content text-center">
-            <el-popover
-              v-if="!isEmptyValue(browserMetadata.help)"
-              placement="top-start"
-              :title="browserMetadata.name"
-              width="400"
-              trigger="hover"
-            >
-              <div v-html="browserMetadata.help" />
-              <el-button slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
-              <!-- <i slot="reference" class="el-icon-info" /> -->
-            </el-popover>
-          </div>
-          <el-collapse v-model="activeNames" class="container-collasep-open">
+        <div class="containert">
+          <el-popover
+            v-if="!isEmptyValue(browserMetadata.help)"
+            placement="top-start"
+            :title="browserMetadata.name"
+            width="400"
+            trigger="hover"
+          >
+            <div v-html="browserMetadata.help" />
+            <el-button v-if="!isEmptyValue(browserMetadata.name)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+          </el-popover>
+          <el-button v-if="!isEmptyValue(browserMetadata.name)" type="text" class="title">{{ browserMetadata.name }}</el-button>
+          <el-collapse v-model="activeSearch" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
               <panel
                 :container-uuid="containerUuid"
@@ -35,24 +33,14 @@
               />
             </el-collapse-item>
           </el-collapse>
-        </el-card>
+        </div>
       </el-col>
       <el-col :span="24">
-        <div v-if="this.$store.state.app.sidebar.opened">
-          <div class="container-panel-open">
-            <data-table
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-            />
-          </div>
-        </div>
-        <div v-else-if="!this.$store.state.app.sidebar.opened">
-          <div class="container-panel">
-            <data-table
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-            />
-          </div>
+        <div v-if="!isEmptyValue(browserMetadata.name)" class="container-panel-open">
+          <data-table
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+          />
         </div>
       </el-col>
     </el-row>
@@ -95,7 +83,7 @@ export default {
       browserUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
       isLoading: false,
-      activeNames: [],
+      activeSearch: [],
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {},
@@ -166,7 +154,7 @@ export default {
           containerUuid: this.browserUuid
         })
       } else {
-        this.activeNames = ['1']
+        this.activeSearch = ['1']
       }
     }
   }
@@ -174,14 +162,21 @@ export default {
 </script>
 
 <style scoped>
+  .containert {
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+  }
   .title{
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
     font-weight: 605!important;
+    position: relative;
+    left: 45%;
   }
   .warn-content {
-    margin: 10px 0px !important;
+    margin: 0px !important;
   }
   .content-help {
     width: 100%;
