@@ -24,7 +24,6 @@
             <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
           </el-popover>
           <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
-          <!-- <span v-if="!isEmptyValue(browserMetadata.name)" class="title" > {{ browserMetadata.name }} </span> -->
           <el-collapse v-model="activeSearch" class="container-collasep-open">
             <el-collapse-item :title="$t('views.searchCriteria')" name="1">
               <panel
@@ -178,7 +177,7 @@ export default {
     font-size: 100%;
     font-weight: 605!important;
     position: relative;
-    left: 45%;
+    left: 40%;
   }
   .warn-content {
     margin: 0px !important;
@@ -199,8 +198,6 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 0;
-    /* padding-right: 20px;
-    padding-left: 20px; */
     transition: width 0.28s;
     border: 1px solid #e5e9f2;
   }
@@ -209,8 +206,6 @@ export default {
     right: 0;
     padding-left: 15px;
     padding-right: 15px;
-    /* padding-right: 20px;
-    padding-left: 20px; */
     height: 350px;
     z-index: 0;
     transition: width 0.28s;
