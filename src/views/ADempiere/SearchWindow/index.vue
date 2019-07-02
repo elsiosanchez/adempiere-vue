@@ -3,6 +3,7 @@
     <el-header style="height: 16px;">
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
         <el-button @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
+        <el-button @click="isFixed = !isFixed">Fixed Column key</el-button>
       </div>
     </el-header>
     <el-main>
@@ -18,6 +19,7 @@
           label="c_bpartner_id"
           width="180"
           sortable
+          :fixed="isFixed"
           column-key="c_bpartner_id"
           :filters="[{text: '50005', value: ' 50005'},{text: '113', value:113}]"
           :filter-method="filterHandler"
@@ -116,7 +118,8 @@ export default {
       search: '',
       sortable: null,
       olddatalis: [],
-      newdatalis: []
+      newdatalis: [],
+      isFixed: true
     }
   },
   computed: {
