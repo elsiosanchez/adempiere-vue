@@ -281,16 +281,18 @@ export default {
   }
 
   .container-submenu-mobile {
-    position: relative;
+    position: absolute;
     height: 39px !important;
     width: 39px !important;
-    float: right;
+    right: 10px;
+    top: 0;
   }
 
   .container-submenu {
-    position: relative;
+    position: absolute;
     height: 39px !important;
-    float: right;
+    right: 10px;
+    top: 0;
   }
 
   ul.el-menu-demo > .el-menu-item {
