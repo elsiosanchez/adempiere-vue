@@ -8,7 +8,7 @@
     <el-main>
       <el-table
         ref="dragTable"
-        :data="datalis"
+        :data="filterResult()"
         :border="true"
         :stripe="true"
         :height="getHeigthTable"
@@ -18,18 +18,25 @@
           label="c_bpartner_id"
           width="180"
           sortable
+          column-key="c_bpartner_id"
+          :filters="[{text: '50005', value: ' 50005'},{text: '113', value:113}]"
+          :filter-method="filterHandler"
         />
         <el-table-column
           prop="ad_client_id"
           label="ad_client_id"
           width="180"
           sortable
+          :filters="[{text: '11', value:11}]"
+          :filter-method="filterHandler"
         />
         <el-table-column
           prop="ad_org_id"
           label="ad_org_id"
           width="180"
           sortable
+          :filters="[{text: '0', value:0},{text: '11', value:11}]"
+          :filter-method="filterHandler"
         />
         <el-table-column
           prop="isactive"
@@ -177,11 +184,11 @@ export default {
       this.options = []
       this.showSearch = false
     },
-    clearFilter() {
-      this.$refs.filterTable.clearFilter()
-    },
     formatter(row, column) {
       return row.address
+    },
+    clearFilter() {
+      this.$refs.dragTable.clearFilter()
     },
     filterHandler(value, row, column) {
       const property = column['property']

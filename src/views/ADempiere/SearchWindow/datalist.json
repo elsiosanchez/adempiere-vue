@@ -516,7 +516,7 @@
         "uuid" : "91d96df2-2fab-11e9-b8d5-0242ac140002"
     },
     {
-        "c_bpartner_id" :50005,
+        "c_bpartner_id" :" 50005",
         "ad_client_id" :11,
         "ad_org_id" :0,
         "isactive" : "Y",
