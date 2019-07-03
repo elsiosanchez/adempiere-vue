@@ -38,7 +38,7 @@
                     :container-uuid="containerUuid"
                     :metadata-field="subItem"
                     :is-load-record="isLoadRecord"
-                    :recorddata-fields="dataRecords[subItem.columnName]"
+                    :record-data-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
                   />
@@ -84,7 +84,7 @@
                         :container-uuid="containerUuid"
                         :metadata-field="subItem"
                         :is-load-record="isLoadRecord"
-                        :recorddata-fields="dataRecords[subItem.columnName]"
+                        :record-data-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
                         :in-group="true"
@@ -166,11 +166,15 @@ export default {
       sizesFields: SizeField,
       isLoadPanel: false,
       isLoadRecord: false,
-      uuidRecord: this.$route.params.uuidRecord,
       fieldGroups: [],
       firstGroup: {},
       size: 0,
       groupsView: 0
+    }
+  },
+  computed: {
+    uuidRecord() {
+      return this.$route.params.uuidRecord
     }
   },
   watch: {
@@ -250,6 +254,7 @@ export default {
         this.getData(this.tableName)
       }
       this.reloadContextMenu()
+      this.getData(this.tableName, this.uuidRecord)
     },
     notifyPanelChange() {
       this.$store.dispatch('notifyPanelChange', {

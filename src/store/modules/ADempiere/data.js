@@ -83,6 +83,7 @@ const data = {
       })
     },
     getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {
+      console.log(objectParams)
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams.table, objectParams.criteria)
           .then(response => {

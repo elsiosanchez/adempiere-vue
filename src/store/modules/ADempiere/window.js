@@ -60,11 +60,6 @@ const window = {
                 parentTabs.push(tab)
               } else {
                 childrenTabs.push(tab)
-                dispatch('getObjectListFromCriteria', {
-                  containerUuid: tab.uuid,
-                  table: tab.tableName,
-                  criteria: "IsActive = 'Y'"
-                })
               }
               allTabs.push(tab)
             })
