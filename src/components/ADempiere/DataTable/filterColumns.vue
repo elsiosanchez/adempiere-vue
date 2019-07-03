@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-select
-      v-model="selectedFields"
+      v-model="columnsShowed"
       :filterable="true"
       :placeholder="$t('components.filterableItems')"
       multiple
@@ -11,7 +11,7 @@
       @change="addField"
     >
       <el-option
-        v-for="(item, key) in columnListShowed"
+        v-for="(item, key) in columnListAvailable"
         :key="key"
         :label="item.name"
         :value="item.columnName"
@@ -35,21 +35,14 @@ export default {
   },
   data() {
     return {
-      selectedFields: [], // fields optional showd
-      columnListShowed: []
+      columnsShowed: [], // columns showed
+      columnListAvailable: [] // available fields
     }
   },
-  mounted() {
+  created() {
     this.getPanel()
   },
   methods: {
-    isDisplayed(field) {
-      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic)
-      if (field.isShowedTableFromUser) {
-        this.selectedFields.push(field.columnName)
-      }
-      return isDisplayed
-    },
     getPanel() {
       var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
       if (typeof fieldList === 'undefined' || fieldList.length === 0) {
@@ -66,9 +59,16 @@ export default {
       }
     },
     generatePanel(fieldList) {
-      this.columnListShowed = fieldList.filter((item) => {
+      this.columnListAvailable = fieldList.filter((item) => {
         return this.isDisplayed(item)
       })
+    },
+    isDisplayed(field) {
+      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic)
+      if (field.isShowedTableFromUser && field.isDisplayed) {
+        this.columnsShowed.push(field.columnName)
+      }
+      return isDisplayed
     },
     /**
      * @param {array} selectedValues
