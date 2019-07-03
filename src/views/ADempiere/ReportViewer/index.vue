@@ -97,16 +97,8 @@ export default {
   created() {
     this.getCachedReport(this.$route.params.instanceUuid)
   },
-  mounted() {
-    this.reloadContextMenu()
-  },
   methods: {
     isEmptyValue,
-    reloadContextMenu() {
-      this.$store.dispatch('reloadContextMenu', {
-        containerUuid: this.reportResult.processUuid
-      })
-    },
     displayReport(reportResult) {
       if (!this.isError) {
         this.reportFormat = reportResult.output.reportExportType
@@ -118,7 +110,6 @@ export default {
     },
     getCachedReport(instanceUuid) {
       this.reportResult = this.$store.getters.getCachedReport(instanceUuid)
-      console.log(this.processMetadataValue)
       if (typeof this.reportResult === 'undefined') {
         this.$store.dispatch('getSessionProcessFromServer')
         this.reportResult = this.$store.getters.getSessionProcess(instanceUuid)
@@ -132,7 +123,7 @@ export default {
 </script>
 
 <style scoped >
-.title {
+  .title {
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
