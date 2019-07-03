@@ -89,6 +89,9 @@
           sortable
         />
       </el-table>
+      <div class="table-footer">
+        {{ $t('table.dataTable.records') }}: {{ datalis.length }}
+      </div>
     </el-main>
   </el-container>
 </template>
@@ -217,6 +220,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .table-footer {
+    bottom: 0px;
+    text-align: right;
+    padding: 10px;
+  }
   .search-detail {
     font-size: 0 !important;
 

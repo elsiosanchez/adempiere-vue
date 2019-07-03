@@ -48,7 +48,7 @@
           :column-key="item.columnName"
           sortable
           :formatter="changeOrder"
-          min-width="150"
+          min-width="200"
           height="300"
           :class-name="cellClass(item)"
         >
@@ -147,7 +147,7 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 220
+        return this.$store.getters.getHeigth() - 240
       } else {
         return this.$store.getters.getHeigth() - 400
       }
