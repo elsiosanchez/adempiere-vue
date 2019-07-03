@@ -39,8 +39,10 @@
           />
         </search-criteria>
         <data-table
+          v-if="isLoading"
           :container-uuid="containerUuid"
           :panel-type="panelType"
+          :metadata="browserMetadata"
         />
       </el-main>
     </el-container>
