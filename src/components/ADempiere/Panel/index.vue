@@ -189,11 +189,6 @@ export default {
       }
       return 'cards'
     },
-    reloadContextMenu() {
-      this.$store.dispatch('reloadContextMenu', {
-        containerUuid: this.containerUuid
-      })
-    },
     determinateGroup(group, type) {
       if (type === 'header') {
         if (group !== '') {
@@ -249,7 +244,6 @@ export default {
       if (this.isEdit && this.panelType === 'window') {
         this.getData(this.tableName)
       }
-      this.reloadContextMenu()
     },
     notifyPanelChange() {
       this.$store.dispatch('notifyPanelChange', {

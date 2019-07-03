@@ -23,7 +23,9 @@
             trigger="hover"
           >
             <div v-html="browserMetadata.help" />
-            <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+            <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">
+              {{ browserMetadata.name }}
+            </el-button>
           </el-popover>
           <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
         </div>
@@ -66,6 +68,7 @@ import searchCriteria from '@/components/ADempiere/Panel/searchCriteria'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
+
 export default {
   name: 'Browser',
   components: {
@@ -99,6 +102,12 @@ export default {
     },
     getDataDetail() {
       return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    },
+    cssClass() {
+      if (this.$store.state.app.sidebar.opened) {
+        return 'container-panel-open'
+      }
+      return 'container-panel'
     }
   },
   watch: {
@@ -121,16 +130,8 @@ export default {
   created() {
     this.getBrowser(this.$route.meta.uuid)
   },
-  mounted() {
-    this.reloadContextMenu()
-  },
   methods: {
     isEmptyValue,
-    reloadContextMenu() {
-      this.$store.dispatch('reloadContextMenu', {
-        containerUuid: this.containerUuid
-      })
-    },
     getBrowser(uuid = null) {
       if (!uuid) {
         uuid = this.$route.meta.uuid
@@ -173,7 +174,7 @@ export default {
     padding-right: 20px;
     width: 100%;
   }
-  .title{
+  .title {
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;

@@ -114,7 +114,9 @@ export default {
       actions: [],
       references: [],
       file: this.$store.getters.getProcessResult.download,
-      downloads: this.$store.getters.getProcessResult.url
+      downloads: this.$store.getters.getProcessResult.url,
+      metadataMenu: {},
+      containerUuid: this.parentUuid
     }
   },
   computed: {
@@ -143,14 +145,54 @@ export default {
     },
     Report() {
       return this.$store.getters.getProcessResult.output.reportExportType
+    },
+    getterRelations() {
+      return this.$store.getters.getRelations(this.$route.meta.parentUuid)
+    },
+    getterContextMenu() {
+      return this.$store.getters.getContextMenu(this.containerUuid)
+    }
+  },
+  watch: {
+    parentUuid(value) {
+      this.containerUuid = value
+      this.generateContextMenu(this.containerUuid)
     }
   },
   created() {
-    this.subscribeChanges()
+    this.generateContextMenu(this.containerUuid)
   },
   methods: {
     isEmptyValue,
     showNotification,
+    generateContextMenu(containerUuid) {
+      this.metadataMenu = this.getterContextMenu
+      this.actions = this.metadataMenu.actions
+
+      if (typeof this.actions !== 'undefined') {
+        this.actions.forEach((item) => {
+          item['disabled'] = false
+        })
+        if (this.$route.name !== 'Report Viewer') {
+          var index = this.actions.findIndex(item => item.action === 'changeParameters')
+          if (index !== -1) {
+            this.actions[index].disabled = true
+          }
+        }
+        if (this.$route.meta.type === 'report') {
+          index = this.actions.findIndex(item => item.action === 'startProcess')
+          if (index !== -1) {
+            this.actions[index].disabled = true
+          }
+        }
+        if (this.$route.meta.type === 'process') {
+          index = this.actions.findIndex(item => item.type === 'summary')
+          if (index !== -1) {
+            this.actions[index].disabled = true
+          }
+        }
+      }
+    },
     isMobileClassmenu() {
       const cssClass = 'container-submenu'
       if (this.device === 'mobile') {
@@ -176,39 +218,6 @@ export default {
       } else {
         this.$store.dispatch('setShowDialog', processData)
       }
-    },
-    subscribeChanges() {
-      this.$store.subscribe(mutation => {
-        if (mutation.type === 'reloadContextMenu') {
-          this.actions = this.$store.getters.getActions(mutation.payload.containerUuid)
-          if (typeof this.actions !== 'undefined') {
-            this.actions.forEach((item) => {
-              item['disabled'] = false
-            })
-            if (this.$route.name !== 'Report Viewer') {
-              var index = this.actions.findIndex(item => item.action === 'changeParameters')
-              if (index !== -1) {
-                this.actions[index].disabled = true
-              }
-            }
-            if (this.$route.meta.type === 'report') {
-              index = this.actions.findIndex(item => item.action === 'startProcess')
-              if (index !== -1) {
-                this.actions[index].disabled = true
-              }
-            }
-            if (this.$route.meta.type === 'process') {
-              index = this.actions.findIndex(item => item.type === 'summary')
-              if (index !== -1) {
-                this.actions[index].disabled = true
-              }
-            }
-          }
-          if (typeof this.$route.meta.parentUuid !== 'undefined') {
-            this.relations = this.$store.getters.getRelations(this.$route.meta.parentUuid)
-          }
-        }
-      })
     },
     runAction(action) {
       if (action.type === 'action') {
@@ -246,10 +255,11 @@ export default {
                 }
               }
             })
-          } else {
-            this.$router.push('/')
           }
           this.$store.dispatch('tagsView/delView', this.$route)
+            .then(({ visitedViews }) => {
+              this.$router.push('/')
+            })
           if (this.report === true) {
             return true
           }
