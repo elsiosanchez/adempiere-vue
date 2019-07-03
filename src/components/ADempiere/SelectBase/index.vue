@@ -34,9 +34,7 @@ export default {
   },
   data() {
     return {
-      // value: this.metadata.value,
-      // value: (this.valueModel !== '') ? this.valueModel : this.metadata.value,
-      value: this.metadata.isShowedFromUser ? this.valueModel : this.metadata.value,
+      value: this.metadata.value,
       loading: false,
       options: [],
       list: [],
@@ -71,15 +69,14 @@ export default {
     }
   },
   watch: {
-    valueModel() {
-      this.value = this.valueModel
-      this.getData()
-    }
-    /* 'metadata.isShowedFromUser'(value) {
+    // valueModel() {
+    //   this.value = this.valueModel
+    // },
+    'metadata.isShowedFromUser'(value) {
       if (value) {
         this.getData()
       }
-    } */
+    }
   },
   created() {
     this.options = this.getterOptions
@@ -107,17 +104,13 @@ export default {
   methods: {
     parseContext,
     getData() {
-      if (this.valueModel !== '') {
-        this.getDataTrigger(this.tableName, this.parsedDirectQuery, this.valueModel)
-      } else if (this.metadata.value !== '') {
-        this.getDataTrigger(this.tableName, this.parsedDirectQuery, this.metadata.value)
+      if (this.metadata.value !== '') {
+        this.value = this.metadata.value
       }
-    },
-    getDataTrigger(tableName, directQuery, value) {
       this.$store.dispatch('getLookup', {
-        tableName: tableName,
-        directQuery: directQuery,
-        value: value
+        tableName: this.metadata.reference.tableName,
+        directQuery: this.parsedDirectQuery,
+        value: this.value
       })
         .then(response => {
           this.value = response.label

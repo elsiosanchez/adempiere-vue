@@ -79,8 +79,6 @@ function getChildFromAction(menu) {
   let selectedComponent
   if (action === 'W') {
     selectedComponent = () => import('@/views/ADempiere/Window')
-    routeIdentifier = routeIdentifier + '/:uuidRecord'
-    // TODO: in the dictionary service, when you bring the items from the menu, add a uuid or default registration id from ADempiere and place it in meta to pass it by default
   } else if (action === 'S') {
     selectedComponent = () => import('@/views/ADempiere/Browser')
   } else if (action === 'P' || action === 'R') {

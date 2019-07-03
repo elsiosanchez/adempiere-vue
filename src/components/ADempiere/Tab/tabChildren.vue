@@ -15,7 +15,6 @@
             <data-table
               :parent-uuid="windowUuid"
               :container-uuid="item.uuid"
-              :window-metadata="windowMetadata"
               :panel-type="panelType"
             />
           </div>
@@ -37,10 +36,6 @@ export default {
     windowUuid: {
       type: String,
       default: ''
-    },
-    windowMetadata: {
-      type: Object,
-      default: () => {}
     },
     tabsList: {
       type: [Array, Object],

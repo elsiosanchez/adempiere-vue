@@ -101,10 +101,6 @@ export default {
       type: String,
       default: ''
     },
-    windowMetadata: {
-      type: Object,
-      default: () => {}
-    },
     panelType: {
       type: String,
       default: 'window'
@@ -180,20 +176,6 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
-    getDetail(tabsList) {
-      var detail = tabsList.find(tab => tab.uuid === this.containerUuid)
-      var linkColumnNameValue = this.$store.getters.getContext({
-        parentUuid: detail.windowUuid,
-        containerUuid: this.windowMetadata.currentTab.uuid,
-        columnName: detail.linkColumnName
-      })
-      console.log(detail)
-      this.$store.dispatch('getObjectListFromCriteria', {
-        containerUuid: detail.uuid,
-        table: detail.tableName,
-        criteria: detail.linkColumnName + ' = ' + linkColumnNameValue
-      })
-    },
     async getList() {
       this.oldgetDataDetail = this.getDataDetail.map(v => v.id)
       this.newgetDataDetail = this.oldgetDataDetail.slice()
@@ -386,7 +368,6 @@ export default {
       this.keyColumn = panel.keyColumn
       this.fieldList = this.sortFields(panel.fieldList)
       this.isLoaded = true
-      this.getDetail(this.windowMetadata.tabsListChildren)
       // this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
       if (this.isEdit && this.panelType === 'window') {
         this.getData(this.tableName)

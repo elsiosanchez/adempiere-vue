@@ -16,14 +16,13 @@
         @closeDialog="isVisibleDialog=false"
       />
       <detail
-        :show-detail="typeof windowMetadata.tabsListChildren !== 'undefined' && windowMetadata.tabsListChildren.length > 0"
+        :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0"
         :is-showed-detail="windowMetadata.isShowedDetail"
         :panel-type="panelType"
         :container-uuid="windowUuid"
       >
         <tab-children
           :window-uuid="windowUuid"
-          :window-metadata="windowMetadata"
           :tabs-list="windowMetadata.tabsListChildren"
         />
       </detail>
@@ -71,6 +70,7 @@ export default {
       panelType: 'window',
       showPanel: true,
       isLoading: false,
+      uuidRecord: this.$route.params.uuidRecord,
       isVisibleDialog: this.$store.state.processControl.visibleDialog,
       processMetadata: {}
     }

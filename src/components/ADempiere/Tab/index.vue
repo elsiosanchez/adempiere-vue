@@ -48,6 +48,7 @@ export default {
   },
   data() {
     return {
+      tableName: [],
       loading: false,
       currentTab: this.$route.params.tabNumber,
       uuidRecord: this.$route.params.uuidRecord,
