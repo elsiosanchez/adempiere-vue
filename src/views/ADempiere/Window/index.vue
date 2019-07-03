@@ -1,9 +1,5 @@
 <template>
   <div v-if="isLoading">
-    <context-menu
-      :parent-uuid="windowMetadata.currentTabUuid"
-      :parent-panel="panelType"
-    />
     <el-row :gutter="20">
       <tab
         :window-uuid="windowUuid"
@@ -11,6 +7,7 @@
         :is-edit="isEdit"
         class="tab-window"
       />
+      <submenu class="sticky-submenu" />
       <modal
         :visible="isVisibleDialog"
         :metadata="processMetadata"
@@ -48,7 +45,7 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 import Detail from '@/components/ADempiere/Panel/detail'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
-import ContextMenu from '@/components/ADempiere/ContextMenu'
+import Submenu from '@/components/ADempiere/ContextMenu'
 import Modal from '@/components/ADempiere/Dialog'
 
 export default {
@@ -57,7 +54,7 @@ export default {
     Tab,
     TabChildren,
     Detail,
-    ContextMenu,
+    Submenu,
     Modal
   },
   props: {

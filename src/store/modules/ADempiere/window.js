@@ -14,9 +14,6 @@ const window = {
     },
     changeShowedDetailWindow(state, payload) {
       payload.window.isShowedDetail = payload.changeShowedDetail
-    },
-    setCurrentTab(state, payload) {
-      payload.window.currentTabUuid = payload.tabUuid
     }
   },
   actions: {
@@ -59,30 +56,6 @@ const window = {
                 parentTab: Boolean(firstTab === tabItem.getTablename()),
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo())
               }
-
-              //  Convert from gRPC process list
-              var actions = tabItem.getProcessesList().map((processItem) => {
-                return {
-                  name: processItem.getName(),
-                  type: 'process',
-                  uuid: processItem.getUuid(),
-                  description: processItem.getDescription(),
-                  help: processItem.getHelp(),
-                  isReport: processItem.getIsreport(),
-                  accessLevel: processItem.getAccesslevel(),
-                  showHelp: processItem.getShowhelp(),
-                  isDirectPrint: processItem.getIsdirectprint()
-                }
-              })
-              //  Add process menu
-              var contextMenu = {
-                containerUuid: tab.uuid,
-                relations: [],
-                actions: actions,
-                references: []
-              }
-              dispatch('setContextMenu', contextMenu)
-
               if (tab.parentTab) {
                 parentTabs.push(tab)
               } else {
@@ -101,8 +74,7 @@ const window = {
               tabsListChildren: childrenTabs,
               contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
               // app attributes
-              isShowedDetail: Boolean(childrenTabs.length > 0),
-              currentTabUuid: parentTabs[0].uuid
+              isShowedDetail: Boolean(childrenTabs.length > 0)
             }
             commit('addWindow', newWindow)
             resolve(newWindow)
@@ -160,8 +132,29 @@ const window = {
               parentColumnName: response.getParentcolumnname(),
               panelType: panelType
             }
-
+            //  Convert from gRPC process list
+            var actions = response.getProcessesList().map((processItem) => {
+              return {
+                name: processItem.getName(),
+                type: 'process',
+                uuid: processItem.getUuid(),
+                description: processItem.getDescription(),
+                help: processItem.getHelp(),
+                isReport: processItem.getIsreport(),
+                accessLevel: processItem.getAccesslevel(),
+                showHelp: processItem.getShowhelp(),
+                isDirectPrint: processItem.getIsdirectprint()
+              }
+            })
+            //  Add process menu
+            var contextMenu = {
+              containerUuid: response.getUuid(),
+              relations: [],
+              actions: actions,
+              references: []
+            }
             dispatch('addPanel', panel)
+            commit('setMenu', contextMenu)
             resolve(panel)
           })
           .catch(err => {
@@ -177,17 +170,6 @@ const window = {
       commit('changeShowedDetailWindow', {
         window: window,
         changeShowedDetail: params.isShowedDetail
-      })
-    },
-    /**
-     * @param {string} params.parentUuid
-     * @param {string} params.containerUuid
-     */
-    setCurrentTab: ({ commit, state }, params) => {
-      var window = state.window.find(item => item.uuid === params.parentUuid)
-      commit('setCurrentTab', {
-        window: window,
-        tabUuid: params.containerUuid
       })
     }
   },

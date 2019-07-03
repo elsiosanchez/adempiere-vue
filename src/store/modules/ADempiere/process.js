@@ -145,7 +145,7 @@ const process = {
             }
             dispatch('addPanel', processDefinition)
             commit('addProcess', processDefinition)
-            dispatch('setContextMenu', contextMenu)
+            commit('setMenu', contextMenu)
             resolve(processDefinition)
           })
           .catch(err => {

@@ -75,6 +75,7 @@ export default {
   },
   created() {
     this.getProcess(this.$route.meta.uuid)
+    // this.subscribeAction()
   },
   methods: {
     isEmptyValue,

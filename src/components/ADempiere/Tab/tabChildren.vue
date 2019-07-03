@@ -67,9 +67,8 @@ export default {
     }
   },
   methods: {
-    setCurrentTab() {
-      this.$store.dispatch('setCurrentTab', {
-        parentUuid: this.windowUuid,
+    reloadContextMenu() {
+      this.$store.dispatch('reloadContextMenu', {
         containerUuid: this.tabUuid
       })
     },
@@ -79,7 +78,7 @@ export default {
     handleClick(tabHTML) {
       if (this.tabUuid !== tabHTML.$attrs.tabuuid) {
         this.tabUuid = tabHTML.$attrs.tabuuid
-        this.setCurrentTab()
+        this.reloadContextMenu()
       }
       // this.setPemantLink(tabHTML)
     },

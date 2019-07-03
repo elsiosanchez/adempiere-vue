@@ -134,7 +134,7 @@ const browser = {
 
             dispatch('addPanel', newBrowser)
             commit('addBrowser', newBrowser)
-            dispatch('setContextMenu', contextMenu)
+            commit('setMenu', contextMenu)
             resolve(newBrowser)
           })
           .catch(err => {

@@ -7,45 +7,89 @@
 //     relations: [],
 //     actions: [],
 //     references: []
-//     defaultAction: {},
-//     lastAction: {}
 //   }
 // ]
 const contextMenu = {
   state: {
-    contextMenu: []
+    menu: [],
+    currentContextMenuUuid: ''
   },
   mutations: {
-    setContextMenu(state, payload) {
-      state.contextMenu.push(payload)
+    setMenu(state, payload) {
+      state.menu.push(payload)
+    },
+    setRelations(state, payload) {
+      state.menu.find(
+        item => item.containerUuid === payload.containerUuid
+      ).relations = payload.relations
+    },
+    setActions(state, payload) {
+      state.menu.find(
+        item => item.containerUuid === payload.containerUuid
+      ).actions = payload.actions
+    },
+    setReferences(state, payload) {
+      state.menu.find(
+        item => item.containerUuid === payload.containerUuid
+      ).references = payload.references
+    },
+    reloadContextMenu(state, payload) {
+      state.currentContextMenuUuid = payload.containerUuid
     }
   },
   actions: {
-    setContextMenu({ commit }, payload) {
-      commit('setContextMenu', payload)
+    setMenu({ commit }, payload) {
+      commit('setMenu', payload)
+    },
+    setRelations({ commit }, payload) {
+      commit('setRelations', payload)
+    },
+    setActions({ commit }, payload) {
+      commit('setActions', payload)
+    },
+    setReferences({ commit }, payload) {
+      commit('setReferences', payload)
+    },
+    reloadContextMenu({ commit }, payload) {
+      commit('reloadContextMenu', payload)
     }
   },
   getters: {
-    getContextMenu: (state) => (containerUuid) => {
-      return state.contextMenu.find(item => item.containerUuid === containerUuid)
+    getMenu: (state) => (containerUuid) => {
+      var menu = state.menu.find(
+        item => item.containerUuid === containerUuid
+      )
+      if (menu === undefined) {
+        return menu
+      }
+      return menu
     },
     getRelations: (state, getters, rootState) => (containerUuid) => {
-      var menuRelations = rootState.permission.addRoutes.find(
+      var menu = rootState.permission.addRoutes.find(
         item => item.name === containerUuid
       )
-      if (menuRelations === undefined) {
-        return []
+      if (menu === undefined) {
+        return menu
       }
-      return menuRelations.children
+      return menu.children
     },
     getActions: (state) => (containerUuid) => {
-      var menu = state.contextMenu.find(
+      var menu = state.menu.find(
         item => item.containerUuid === containerUuid
       )
       if (menu === undefined) {
         return menu
       }
       return menu.actions
+    },
+    getReferences: (state) => (containerUuid) => {
+      var menu = state.menu.find(
+        item => item.containerUuid === containerUuid
+      )
+      if (menu === undefined) {
+        return menu
+      }
+      return menu.references
     }
   }
 }
