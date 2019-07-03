@@ -37,7 +37,7 @@
           />
         </search-criteria>
       </el-col>
-      <el-col :span="24">
+      <el-col :span="24" style="padding-left: 20px;padding-right: 20px;">
         <data-table
           :container-uuid="containerUuid"
           :panel-type="panelType"
