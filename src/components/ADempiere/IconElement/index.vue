@@ -52,8 +52,9 @@ export default {
 
 <style lang="scss">
   .search-detail {
-    font-size: 0 !important;
-    width: 98%;
+    height: 28px;
+    width: 100%;
+    float: right;
     .search-icon {
       cursor: pointer;
       font-size: 18px;

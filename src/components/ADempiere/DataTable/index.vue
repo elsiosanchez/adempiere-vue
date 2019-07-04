@@ -1,23 +1,26 @@
 <template>
-  <el-form :label-position="labelPosition" class="table-root">
-    <div class="table-header">
-      <icon-element v-show="isSearchable" icon="el-icon-search">
-        <el-input
-          v-model="searchTable"
-          size="mini"
-          :placeholder="$t('table.dataTable.search')"
-          class="header-search-input"
-          clearable
-        />
-      </icon-element>
-      <icon-element icon="el-icon-circle-plus">
-        <filter-columns
-          ref="headerSearchInput"
-          :container-uuid="containerUuid"
-          :panel-type="panelType"
-          class="header-search-input"
-        />
-      </icon-element>
+  <el-form :label-position="labelPosition">
+    <br>
+    <div class="table-root">
+      <div class="table-header">
+        <icon-element v-show="isSearchable || true" icon="el-icon-circle-plus-outline">
+          <filter-columns
+            ref="headerSearchInput"
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+            class="header-search-input"
+          />
+        </icon-element>
+        <icon-element v-show="isSearchable" icon="el-icon-search">
+          <el-input
+            v-model="searchTable"
+            size="mini"
+            :placeholder="$t('table.dataTable.search')"
+            class="header-search-input"
+            clearable
+          />
+        </icon-element>
+      </div>
     </div>
     <el-table
       ref="multipleTable"
@@ -85,7 +88,7 @@
         </el-table-column>
       </template>
     </el-table>
-    <div class="table-footer">
+    <div class="table-footer" style="float: right;">
       {{ $t('table.dataTable.selected') }}: {{ getDataSelection.length }} / {{ $t('table.dataTable.records') }}: {{ getDataDetail.length }}
     </div>
   </el-form>
@@ -403,11 +406,6 @@ export default {
 </style>
 <style lang="scss" scoped>
   .table-root {
-    background-color: #f5f7fa;
-
-    .datatable-max-cell-height {
-      max-height: 52px;
-    }
 
     .table-header {
       text-align: right;
@@ -421,6 +419,7 @@ export default {
     }
     .table-footer {
       bottom: 0px;
+      float: right;
       text-align: right;
       padding: 10px;
     }
