@@ -8,6 +8,7 @@
       size="mini"
       collapse-tags
       value-key="key"
+      class="select"
       @change="addField"
     >
       <el-option
@@ -83,3 +84,10 @@ export default {
   }
 }
 </script>
+<style>
+
+  .select{
+    height: 28px;
+  }
+
+</style>

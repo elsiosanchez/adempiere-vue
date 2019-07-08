@@ -29,17 +29,15 @@
           </el-popover>
           <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
         </div>
-        <search-criteria
-          :is-showed-criteria="browserMetadata.isShowedCriteria"
-          :panel-type="panelType"
-          :container-uuid="browserUuid"
-        >
-          <panel
-            :container-uuid="containerUuid"
-            :metadata="browserMetadata"
-            :panel-type="panelType"
-          />
-        </search-criteria>
+        <el-collapse v-model="activeSearch" class="container-collasep-open">
+          <el-collapse-item :title="$t('views.searchCriteria')" name="1">
+            <panel
+              :container-uuid="containerUuid"
+              :metadata="browserMetadata"
+              :panel-type="panelType"
+            />
+          </el-collapse-item>
+        </el-collapse>
         <data-table
           v-if="isLoading"
           :container-uuid="containerUuid"
@@ -64,7 +62,6 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-import searchCriteria from '@/components/ADempiere/Panel/searchCriteria'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
@@ -73,7 +70,6 @@ export default {
   name: 'Browser',
   components: {
     Panel,
-    searchCriteria,
     DataTable,
     ContextMenu,
     Modal
@@ -89,6 +85,7 @@ export default {
       browserMetadata: {},
       browserUuid: this.$route.meta.uuid,
       containerUuid: this.$route.meta.uuid,
+      activeSearch: [],
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
@@ -153,6 +150,7 @@ export default {
       }
     },
     defaultSearch() {
+      this.activeSearch = ['1']
       if (this.getDataDetail.length <= 0) {
         var finalParameters = this.getParamsProcessToServer
         if ((finalParameters.fieldsMandatory.length > 0 &&
@@ -169,6 +167,24 @@ export default {
 </script>
 
 <style scoped>
+.el-main {
+    display: block;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    overflow: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-bottom: 0px;
+    padding-right: 20px;
+    padding-top: 0px;
+    padding-left: 20px;
+  }
+  .el-header {
+    height: 50px;
+  }
   .containert {
     padding-left: 20px;
     padding-right: 20px;
