@@ -87,9 +87,14 @@ export default {
   },
   mixins: [ResizeMixin],
   props: {
-    parentUuid: {
+    menuParentUuid: {
       type: String,
       default: undefined
+    },
+    // uuid of the component where it is called
+    containerUuid: {
+      type: String,
+      required: true
     },
     parentPanel: {
       type: String,
@@ -110,13 +115,11 @@ export default {
   },
   data() {
     return {
-      relations: this.$store.getters.getRelations(this.$route.meta.parentUuid),
       actions: [],
       references: [],
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
-      metadataMenu: {},
-      containerUuid: this.parentUuid
+      metadataMenu: {}
     }
   },
   computed: {
@@ -143,20 +146,14 @@ export default {
         mobile: this.device === 'mobile'
       }
     },
-    Report() {
-      return this.$store.getters.getProcessResult.output.reportExportType
-    },
-    getterRelations() {
-      return this.$store.getters.getRelations(this.$route.meta.parentUuid)
+    relations() {
+      if (typeof this.$route.params.menuParentUuid !== 'undefined') {
+        return this.$store.getters.getRelations(this.$route.params.menuParentUuid)
+      }
+      return this.$store.getters.getRelations(this.menuParentUuid)
     },
     getterContextMenu() {
       return this.$store.getters.getContextMenu(this.containerUuid)
-    }
-  },
-  watch: {
-    parentUuid(value) {
-      this.containerUuid = value
-      this.generateContextMenu(this.containerUuid)
     }
   },
   created() {
@@ -230,11 +227,10 @@ export default {
           if (typeof this.lastParameter !== 'undefined') {
             containerParams = this.lastParameter
           }
-
           this.$store.dispatch(action.action, {
             action: action,
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
-            parentUuid: this.parentUuid,
+            parentUuid: this.containerUuid,
             parentPanel: this.parentPanel,
             processName: action.processName,
             reportFormat: this.reportFormat
@@ -244,9 +240,17 @@ export default {
               after: (action, state) => {
                 if (action.type === 'finishProcess') {
                   if (!action.payload.isError) {
+                    var parentMenu = this.menuParentUuid
+                    if (typeof this.$route.params !== 'undefined') {
+                      if (typeof this.$route.params.menuParentUuid !== 'undefined') {
+                        parentMenu = this.$route.params.menuParentUuid
+                      }
+                    }
+
                     this.$router.push({
                       name: 'Report Viewer',
                       params: {
+                        menuParentUuid: parentMenu,
                         processUuid: action.payload.processUuid,
                         instanceUuid: action.payload.instanceUuid,
                         fileName: action.payload.output.fileName

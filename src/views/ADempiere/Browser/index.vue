@@ -3,7 +3,8 @@
     <el-container>
       <el-header>
         <context-menu
-          :parent-uuid="containerUuid"
+          :menu-parent-uuid="$route.meta.parentUuid"
+          :container-uuid="containerUuid"
           :parent-panel="panelType"
         />
         <modal

@@ -1,7 +1,8 @@
 <template>
   <div v-if="isLoading">
     <context-menu
-      :parent-uuid="windowMetadata.currentTabUuid"
+      :menu-parent-uuid="$route.meta.parentUuid"
+      :container-uuid="windowMetadata.currentTabUuid"
       :parent-panel="panelType"
     />
     <el-row :gutter="20">

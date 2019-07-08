@@ -1,8 +1,8 @@
 <template>
   <div v-if="isLoading">
     <context-menu
-      class="sticky-submenu"
-      :parent-uuid="containerUuid"
+      :menu-parent-uuid="$route.meta.parentUuid"
+      :container-uuid="containerUuid"
       :parent-panel="panelType"
       :report="processMetadata.isReport"
     />

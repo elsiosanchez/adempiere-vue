@@ -1,7 +1,7 @@
 <template>
   <div v-if="isLoading">
     <context-menu
-      :parent-uuid="reportResult.processUuid"
+      :container-uuid="reportResult.processUuid"
       :parent-panel="panelType"
       :is-report="true"
       :last-parameter="$route.params.processUuid"
