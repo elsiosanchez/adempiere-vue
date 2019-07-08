@@ -69,7 +69,7 @@ export default {
     contextMenuRelations: 'Relations',
     contextMenuActions: 'Actions',
     contextMenuReferences: 'References',
-    RunProcess: 'Run Process',
+    RunProcess: 'Run',
     ChangeParameters: 'Change Parameters',
     RunProcessAs: 'Run As',
     ExportTo: 'Export to',

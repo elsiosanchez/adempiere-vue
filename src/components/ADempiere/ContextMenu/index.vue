@@ -182,7 +182,8 @@ export default {
         if (this.$route.meta.type === 'report') {
           index = this.actions.findIndex(item => item.action === 'startProcess')
           if (index !== -1) {
-            this.actions[index].disabled = true
+            this.actions[index].reportExportType = 'html'
+            // this.actions[index].disabled = true
           }
         }
         if (this.$route.meta.type === 'process') {

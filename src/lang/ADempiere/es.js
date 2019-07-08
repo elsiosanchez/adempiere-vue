@@ -75,7 +75,7 @@ export default {
     contextMenuActions: 'Acciones',
     contextMenuReferences: 'Referencias',
     contextMenuDownload: 'Descargar',
-    RunProcess: 'Ejecutar Proceso',
+    RunProcess: 'Ejecutar',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',
     ExportTo: 'Exportar a',
