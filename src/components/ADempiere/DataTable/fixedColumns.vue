@@ -1,14 +1,13 @@
 <template>
   <div>
     <el-select
-      v-model="columnsShowed"
+      v-model="columnsFixed"
       :filterable="true"
       :placeholder="$t('components.filterableItems')"
       multiple
       size="mini"
       collapse-tags
       value-key="key"
-      class="select"
       @change="addField"
     >
       <el-option
@@ -23,7 +22,7 @@
 
 <script>
 export default {
-  name: 'FilterColumns',
+  name: 'FixedColumns',
   props: {
     containerUuid: {
       type: String,
@@ -36,7 +35,7 @@ export default {
   },
   data() {
     return {
-      columnsShowed: [], // columns showed
+      columnsFixed: [], // columns showed
       columnListAvailable: [] // available fields
     }
   },
@@ -65,9 +64,9 @@ export default {
       })
     },
     isDisplayed(field) {
-      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic)
-      if (field.isShowedTableFromUser && field.isDisplayed) {
-        this.columnsShowed.push(field.columnName)
+      var isDisplayed = field.isActive && field.isDisplayed && field.isDisplayedFromLogic
+      if (field.isFixedTableColumn && field.isDisplayed) {
+        this.columnsFixed.push(field.columnName)
       }
       return isDisplayed
     },
@@ -78,17 +77,10 @@ export default {
       this.$store.dispatch('changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
         fieldsUser: selectedValues,
-        attribute: 'isShowedTableFromUser',
+        attribute: 'isFixedTableColumn',
         valueAttrbute: true
       })
     }
   }
 }
 </script>
-<style>
-
-  .select{
-    height: 28px;
-  }
-
-</style>

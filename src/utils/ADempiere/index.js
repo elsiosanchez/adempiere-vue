@@ -171,7 +171,8 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     ),
     // TODO: Add support on server
     // app attributes
-    isShowedFromUser: isShowedFromUser
+    isShowedFromUser: isShowedFromUser,
+    isFixedTableColumn: false
   }
   field.isShowedTableFromUser = field.isDisplayed && field.isDisplayedFromLogic
 

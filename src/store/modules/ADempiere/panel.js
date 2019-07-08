@@ -36,15 +36,7 @@ const panel = {
     dictionaryResetCache(state, payload) {
       state.panel = payload
     },
-    changeFieldShowedFromUser(state, payload) {
-      state = state.panel.map(item => {
-        if (payload.containerUuid === item.containerUuid) {
-          return payload.newPanel
-        }
-        return item
-      })
-    },
-    changeColumnShowedFromUser(state, payload) {
+    changePanel(state, payload) {
       state = state.panel.map(item => {
         if (payload.containerUuid === item.containerUuid) {
           return payload.newPanel
@@ -111,7 +103,7 @@ const panel = {
         return itemField
       })
       panel.fieldList = newFields
-      commit('changeFieldShowedFromUser', {
+      commit('changePanel', {
         containerUuid: params.containerUuid,
         newPanel: panel
       })
@@ -123,18 +115,18 @@ const panel = {
         })
       }
     },
-    changeColumnShowedFromUser({ commit, getters }, params) {
+    changeFieldAttributesBoolean({ commit, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
       var newFields = panel.fieldList.map((itemField) => {
         if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
-          itemField.isShowedTableFromUser = true
+          itemField[params.attribute] = params.valueAttrbute
           return itemField
         }
-        itemField.isShowedTableFromUser = false
+        itemField[params.attribute] = !params.valueAttrbute
         return itemField
       })
       panel.fieldList = newFields
-      commit('changeColumnShowedFromUser', {
+      commit('changePanel', {
         containerUuid: params.containerUuid,
         newPanel: panel
       })

@@ -5,7 +5,6 @@
       <div class="table-header">
         <icon-element v-show="isSearchable || true" icon="el-icon-circle-plus-outline">
           <filter-columns
-            ref="headerSearchInput"
             :container-uuid="containerUuid"
             :panel-type="panelType"
             class="header-search-input"
@@ -21,6 +20,13 @@
           />
         </icon-element>
       </div>
+      <icon-element icon="el-icon-star-off">
+        <fixed-columns
+          :container-uuid="containerUuid"
+          :panel-type="panelType"
+          class="header-search-input"
+        />
+      </icon-element>
     </div>
     <el-table
       ref="multipleTable"
@@ -40,16 +46,15 @@
       @select="handleSelection"
       @select-all="handleSelectionAll"
     >
-      <!--
-        <el-table-column
-          v-if="isTableSelection"
-          type="selection"
-          :prop="keyColumn"
-          fixed
-          min-width="50"
-          :class-name="'is-cell-selection'"
-        />
-      -->
+      <el-table-column
+        v-if="isTableSelection"
+        type="selection"
+        :prop="keyColumn"
+        fixed
+        min-width="50"
+        :class-name="'is-cell-selection'"
+      />
+
       <template v-for="(item, key) in fieldList">
         <el-table-column
           v-if="isDisplayed(item)"
@@ -62,6 +67,7 @@
           min-width="200"
           height="300"
           :class-name="cellClass(item)"
+          :fixed="item.isFixedTableColumn"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.isEdit && (item.isIdentifier || item.isUpdateable)">
@@ -98,6 +104,7 @@
 import Field from '@/components/ADempiere/Field'
 import Sortable from 'sortablejs'
 import FilterColumns from '@/components/ADempiere/DataTable/filterColumns'
+import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
 
 export default {
@@ -105,6 +112,7 @@ export default {
   components: {
     Field,
     FilterColumns,
+    FixedColumns,
     IconElement
   },
   props: {
@@ -406,7 +414,6 @@ export default {
 </style>
 <style lang="scss" scoped>
   .table-root {
-
     .table-header {
       text-align: right;
       padding: 5px;
