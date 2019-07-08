@@ -58,7 +58,6 @@ export default {
     float: right;
     .search-icon {
       cursor: pointer;
-      padding-bottom: 10px;
       font-size: 18px;
       color: #000;
       // position: absolute;
