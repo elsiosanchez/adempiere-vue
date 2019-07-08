@@ -54,9 +54,11 @@ export default {
   .search-detail {
     height: 28px;
     width: 100%;
+    padding-bottom: 35px;
     float: right;
     .search-icon {
       cursor: pointer;
+      padding-bottom: 10px;
       font-size: 18px;
       color: #000;
       // position: absolute;
