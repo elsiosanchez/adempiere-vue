@@ -1,7 +1,7 @@
 <template>
   <div :class="{'show-input-seacrh':showSearch}" class="search-detail">
     <i
-      :class="icon + ' search-icon'"
+      :class="icon + ' props-icon'"
       @click.stop="click"
       @submit.prevent.native="false"
     />
@@ -56,7 +56,7 @@ export default {
     width: 100%;
     padding-bottom: 35px;
     float: right;
-    .search-icon {
+    .props-icon {
       cursor: pointer;
       font-size: 18px;
       color: #000;
