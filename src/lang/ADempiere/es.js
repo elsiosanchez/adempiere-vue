@@ -29,7 +29,8 @@ export default {
     processError: ' no fue ejecutado',
     emptyValues: 'Parametro(s) con valores vacios',
     fieldMandatory: 'El campo es obligatorio',
-    Opened: 'Abierto'
+    Opened: 'Abierto',
+    requestError: 'Error al ejecutar la petición'
   },
   navbar: {
     logOut: 'Salir',

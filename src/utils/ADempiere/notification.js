@@ -16,22 +16,16 @@ export function showNotification(params) {
     var title = hasTranslation(params.title)
     var message = hasTranslation(params.message)
     if (params.name) {
-      Notification({
-        title: title,
-        message: params.name + message,
-        type: params.type,
-        position: 'bottom-right',
-        dangerouslyUseHTMLString: true
-      })
-    } else {
-      Notification({
-        title: title,
-        message: message,
-        type: params.type,
-        position: 'bottom-right',
-        dangerouslyUseHTMLString: true
-      })
+      message = params.name + message
     }
+
+    Notification({
+      title: title,
+      message: message,
+      type: params.type,
+      position: 'bottom-right',
+      dangerouslyUseHTMLString: true
+    })
   }
 }
 

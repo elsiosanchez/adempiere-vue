@@ -24,7 +24,8 @@ export default {
     processError: ' he was not executed',
     emptyValues: 'Parameter(s) empty value',
     fieldMandatory: 'The field is mandatory',
-    Opened: 'Opened'
+    Opened: 'Opened',
+    requestError: 'Error executing the request'
   },
   navbar: {
     dashboard: 'Dashboard',

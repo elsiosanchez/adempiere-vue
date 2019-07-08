@@ -178,73 +178,76 @@ const processControl = {
         })
     },
     getSessionProcessFromServer({ commit, dispatch, rootGetters }) {
-      // Example of process Activity
-      requestProcessActivity()
-        .then(response => {
-          var responseList = response.getResponsesList().map(responseItem => {
-            var output = {
-              uuid: '',
-              name: '',
-              description: '',
-              fileName: '',
-              mimeType: '',
-              output: '',
-              outputStream: '',
-              outputStream_asB64: '',
-              outputStream_asU8: '',
-              reportExportType: ''
-            }
-            var responseOutput = responseItem.getOutput()
-            if (typeof responseOutput !== 'undefined') {
-              output = {
-                uuid: responseOutput.getUuid(),
-                name: responseOutput.getName(),
-                description: responseOutput.getDescription(),
-                fileName: responseOutput.getFilename(),
-                mimeType: responseOutput.getMimetype(),
-                output: responseOutput.getOutput(),
-                outputStream: responseOutput.getOutputstream(),
-                outputStream_asB64: responseOutput.getOutputstream_asB64(),
-                outputStream_asU8: responseOutput.getOutputstream_asU8(),
-                reportExportType: responseOutput.getReportexporttype()
+      return new Promise((resolve, reject) => {
+        // Example of process Activity
+        requestProcessActivity()
+          .then(response => {
+            var responseList = response.getResponsesList().map(responseItem => {
+              var output = {
+                uuid: '',
+                name: '',
+                description: '',
+                fileName: '',
+                mimeType: '',
+                output: '',
+                outputStream: '',
+                outputStream_asB64: '',
+                outputStream_asU8: '',
+                reportExportType: ''
               }
-            }
-            var logList = responseItem.getLogsList().map(log => {
-              return {
-                recordId: log.getRecordid(),
-                log: log.getLog()
+              var responseOutput = responseItem.getOutput()
+              if (typeof responseOutput !== 'undefined') {
+                output = {
+                  uuid: responseOutput.getUuid(),
+                  name: responseOutput.getName(),
+                  description: responseOutput.getDescription(),
+                  fileName: responseOutput.getFilename(),
+                  mimeType: responseOutput.getMimetype(),
+                  output: responseOutput.getOutput(),
+                  outputStream: responseOutput.getOutputstream(),
+                  outputStream_asB64: responseOutput.getOutputstream_asB64(),
+                  outputStream_asU8: responseOutput.getOutputstream_asU8(),
+                  reportExportType: responseOutput.getReportexporttype()
+                }
               }
+              var logList = responseItem.getLogsList().map(log => {
+                return {
+                  recordId: log.getRecordid(),
+                  log: log.getLog()
+                }
+              })
+              var process = {
+                instanceUuid: responseItem.getInstanceuuid(),
+                isError: responseItem.getIserror(),
+                isProcessing: responseItem.getIsprocessing(),
+                logs: logList,
+                output: output,
+                parametersMap: responseItem.getParametersMap(),
+                resultTableId: responseItem.getResulttableid(),
+                summary: responseItem.getSummary()
+              }
+
+              // ADD SUPPORT TO UUID FROM PROCESS
+              var processMetadata = rootGetters.getProcess(undefined)
+              // Add process metadata to store
+              if (typeof processMetadata === 'undefined') {
+                dispatch('getProcessFromServer', undefined)
+              }
+
+              return process
             })
-            var process = {
-              instanceUuid: responseItem.getInstanceuuid(),
-              isError: responseItem.getIserror(),
-              isProcessing: responseItem.getIsprocessing(),
-              logs: logList,
-              output: output,
-              parametersMap: responseItem.getParametersMap(),
-              resultTableId: responseItem.getResulttableid(),
-              summary: responseItem.getSummary()
-            }
 
-            // ADD SUPPORT TO UUID FROM PROCESS
-            var processMetadata = rootGetters.getProcess(undefined)
-            // Add process metadata to store
-            if (typeof processMetadata === 'undefined') {
-              dispatch('getProcessFromServer', undefined)
+            var processResponseList = {
+              recordCount: response.getRecordcount(),
+              processList: responseList
             }
-
-            return process
+            commit('setSessionProcess', processResponseList)
+            resolve(processResponseList)
           })
-
-          var processResponseList = {
-            recordCount: response.getRecordcount(),
-            processList: responseList
-          }
-          commit('setSessionProcess', processResponseList)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+          .catch(error => {
+            reject(error)
+          })
+      })
     },
     setShowDialog({ commit }, process) {
       if (typeof process === 'undefined') {

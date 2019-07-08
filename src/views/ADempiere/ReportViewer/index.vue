@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading">
+  <div v-if="isLoading">
     <context-menu
       :parent-uuid="reportResult.processUuid"
       :parent-panel="panelType"
@@ -61,6 +61,7 @@
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Modal from '@/components/ADempiere/Dialog'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
+import { showNotification } from '@/utils/ADempiere/notification'
 
 export default {
   name: 'ReportViewer',
@@ -78,7 +79,7 @@ export default {
       reportHeader: '',
       tableData: [],
       tableHeader: [],
-      loading: false,
+      isLoading: false,
       reportResult: {},
       visibleDialog: this.$store.state.processControl.visibleDialog
     }
@@ -92,28 +93,50 @@ export default {
     },
     processMetadataValue() {
       return this.$store.getters.getProcess(this.$route.params.processUuid)
+    },
+    getterCachedReport() {
+      return this.$store.getters.getCachedReport(this.$route.params.instanceUuid)
     }
   },
   created() {
-    this.getCachedReport(this.$route.params.instanceUuid)
+    this.getCachedReport()
   },
   methods: {
     isEmptyValue,
+    showNotification,
     displayReport(reportResult) {
       if (!this.isError) {
         this.reportFormat = reportResult.output.reportExportType
         this.reportContent = reportResult.output.output
         this.reportHeader = reportResult.output.name
         this.name = reportResult.output.fileName
-        this.loading = true
+        this.isLoading = true
       }
     },
-    getCachedReport(instanceUuid) {
-      this.reportResult = this.$store.getters.getCachedReport(instanceUuid)
+    getCachedReport() {
+      this.reportResult = this.getterCachedReport
       if (typeof this.reportResult === 'undefined') {
         this.$store.dispatch('getSessionProcessFromServer')
-        this.reportResult = this.$store.getters.getSessionProcess(instanceUuid)
-        this.displayReport(this.reportResult)
+          .then(response => {
+            this.reportResult = this.getterCachedReport
+            if (typeof this.reportResult === 'undefined') {
+              this.showNotification({
+                type: 'error',
+                title: 'error',
+                message: 'requestError'
+              })
+
+              this.$store.dispatch('tagsView/delView', this.$route)
+                .then(({ visitedViews }) => {
+                  this.$router.push('/')
+                })
+              return
+            }
+            this.displayReport(this.reportResult)
+          })
+          .catch(error => {
+            console.log(error)
+          })
       } else {
         this.displayReport(this.reportResult)
       }
