@@ -8,7 +8,7 @@
       size="mini"
       collapse-tags
       value-key="key"
-      class="select-fil"
+      class="select-filter"
       @change="addField"
     >
       <el-option
@@ -86,7 +86,7 @@ export default {
 </script>
 <style>
 
-  .select-fil{
+  .select-filter{
     height: 28px;
   }
 
