@@ -66,6 +66,7 @@ export default {
     documentation: 'Documentation',
     binaryButton: 'Upload file',
     binaryTip: 'Only files with a size smaller than 500kb',
+    imageError: 'The image exceeds 2MB and does not comply with the valid formats!',
     contextMenuRelations: 'Relations',
     contextMenuActions: 'Actions',
     contextMenuReferences: 'References',
@@ -76,10 +77,13 @@ export default {
     contextMenuDownload: 'Download',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
+    timePlaceholder: 'Select time',
     dialogCancelButton: 'Cancel',
     dialogConfirmButton: 'Confirm',
     filterableItems: 'Optional fields',
-    resetAllFilters: 'Reset all filters'
+    resetAllFilters: 'Reset all filters',
+    switchActiveText: 'Yes',
+    switchInactiveText: 'Not'
   },
   views: {
     SmartBrowser: 'Smart Browser',

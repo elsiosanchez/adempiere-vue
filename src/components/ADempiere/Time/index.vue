@@ -9,7 +9,7 @@
     }"
     :is-range="isPickerRange"
     range-separator="-"
-    placeholder="Select time"
+    :placeholder="$t('components.timePlaceholder')"
     @change="handleChange"
   />
 </template>

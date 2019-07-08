@@ -74,7 +74,7 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
-        this.$message.error('La imagen excede los 2MB y no cumple con los formato validos !')
+        this.$message.error(this.$t('components.imageError'))
       }
       return isJPG || isPNG || isGIF || isBMP && isLt2M
     }

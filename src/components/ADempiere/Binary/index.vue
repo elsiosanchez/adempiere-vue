@@ -10,10 +10,10 @@
     @change="handleChange"
   >
     <el-button size="small" type="primary">
-      Upload File
+      {{ $t('components.binaryButton') }}
     </el-button>
     <div slot="tip" class="el-upload__tip">
-      Only files with a size smaller than 500kb
+      {{ $t('components.binaryTip') }}
     </div>
   </el-upload>
 </template>

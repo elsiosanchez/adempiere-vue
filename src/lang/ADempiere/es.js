@@ -71,6 +71,7 @@ export default {
     documentation: 'Documentación',
     binaryButton: 'Subir archivo',
     binaryTip: 'Solo archivos con un tamaño menor a 500kb',
+    imageError: 'La imagen excede los 2MB y no cumple con los formato validos!',
     contextMenuRelations: 'Relaciones',
     contextMenuActions: 'Acciones',
     contextMenuReferences: 'Referencias',
@@ -79,12 +80,15 @@ export default {
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',
     ExportTo: 'Exportar a',
-    dateStartPlaceholder: 'Fecha de inicio',
+    dateStartPlaceholder: 'Fecha inicial',
     dateEndPlaceholder: 'Fecha final',
+    timePlaceholder: 'Seleccione tiempo',
     dialogCancelButton: 'Cancelar',
     dialogConfirmButton: 'Confirmar',
     filterableItems: 'Campos opcionales',
-    resetAllFilters: 'Reiniciar todos los filtors'
+    resetAllFilters: 'Reiniciar todos los filtors',
+    switchActiveText: 'Si',
+    switchInactiveText: 'No'
   },
   views: {
     SmartBrowser: 'Consulta Inteligente',

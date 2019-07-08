@@ -1,8 +1,8 @@
 <template>
   <el-switch
     v-model="value"
-    inactive-text="Not"
-    active-text="Yes"
+    :inactive-text="$t('components.switchInactiveText')"
+    :active-text="$t('components.switchActiveText')"
     true-value="true"
     false-value="false"
     :name="metadata.columnName"
