@@ -1,12 +1,12 @@
 <template>
-  <div :class="{'show-input-seacrh':showSearch}" class="search-detail">
+  <div :class="{'show-input-seacrh':isShowElement}" class="search-detail">
     <i
       :class="icon + ' props-icon'"
       @click.stop="click"
       @submit.prevent.native="false"
     />
     <slot
-      ref="headerSearchInput"
+      ref="headerSearchSelect"
     />
   </div>
 </template>
@@ -22,11 +22,11 @@ export default {
   },
   data() {
     return {
-      showSearch: false // show input from search,
+      isShowElement: false // show input from search,
     }
   },
   watch: {
-    showSearch(value) {
+    isShowElement(value) {
       if (value) {
         document.body.addEventListener('click', this.close)
       } else {
@@ -36,8 +36,8 @@ export default {
   },
   methods: {
     click() {
-      this.showSearch = !this.showSearch
-      if (this.showSearch) {
+      this.isShowElement = !this.isShowElement
+      if (this.isShowElement) {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
     },
@@ -53,7 +53,7 @@ export default {
 <style lang="scss">
   .search-detail {
     height: 28px;
-    width: 100%;
+    // width: 100%;
     padding-bottom: 35px;
     float: right;
     .props-icon {
@@ -73,6 +73,7 @@ export default {
       border-radius: 0;
       display: inline-block;
       vertical-align: middle;
+      height: 28px;
 
       /deep/ .el-input__inner {
         border-radius: 0;
@@ -87,7 +88,7 @@ export default {
     &.show-input-seacrh {
       .header-search-input {
         width: 250px;
-        margin-left: 5px; // separation with the icon
+        // margin-left: 5px; // separation with the icon
       }
     }
   }

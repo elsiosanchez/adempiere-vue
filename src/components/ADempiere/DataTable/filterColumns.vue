@@ -1,24 +1,22 @@
 <template>
-  <div>
-    <el-select
-      v-model="columnsShowed"
-      :filterable="true"
-      :placeholder="$t('components.filterableItems')"
-      multiple
-      size="mini"
-      collapse-tags
-      value-key="key"
-      class="select"
-      @change="addField"
-    >
-      <el-option
-        v-for="(item, key) in columnListAvailable"
-        :key="key"
-        :label="item.name"
-        :value="item.columnName"
-      />
-    </el-select>
-  </div>
+  <el-select
+    v-model="columnsShowed"
+    :filterable="true"
+    :placeholder="$t('components.filterableItems')"
+    multiple
+    size="mini"
+    collapse-tags
+    value-key="key"
+    class="select"
+    @change="addField"
+  >
+    <el-option
+      v-for="(item, key) in columnListAvailable"
+      :key="key"
+      :label="item.name"
+      :value="item.columnName"
+    />
+  </el-select>
 </template>
 
 <script>
@@ -85,10 +83,3 @@ export default {
   }
 }
 </script>
-<style>
-
-  .select{
-    height: 28px;
-  }
-
-</style>

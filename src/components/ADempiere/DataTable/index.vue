@@ -3,14 +3,7 @@
     <br>
     <div class="table-root">
       <div class="table-header">
-        <icon-element v-show="isSearchable || true" icon="el-icon-circle-plus-outline">
-          <filter-columns
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-            class="header-search-input"
-          />
-        </icon-element>
-        <icon-element v-show="isSearchable" icon="el-icon-search">
+        <!-- <icon-element icon="el-icon-search">
           <el-input
             v-model="searchTable"
             size="mini"
@@ -18,15 +11,22 @@
             class="header-search-input"
             clearable
           />
+        </icon-element> -->
+        <icon-element icon="el-icon-star-off">
+          <fixed-columns
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+            class="header-search-input"
+          />
+        </icon-element>
+        <icon-element icon="el-icon-circle-plus-outline">
+          <filter-columns
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+            class="header-search-input"
+          />
         </icon-element>
       </div>
-      <icon-element icon="el-icon-star-off">
-        <fixed-columns
-          :container-uuid="containerUuid"
-          :panel-type="panelType"
-          class="header-search-input"
-        />
-      </icon-element>
     </div>
     <el-table
       ref="multipleTable"
