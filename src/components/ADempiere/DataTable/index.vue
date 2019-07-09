@@ -1,6 +1,5 @@
 <template>
   <el-form :label-position="labelPosition">
-    <br>
     <div class="table-root">
       <div class="table-header">
         <!-- <icon-element icon="el-icon-search">
@@ -12,14 +11,23 @@
             clearable
           />
         </icon-element> -->
-        <icon-element icon="el-icon-star-off">
+        <el-menu :default-active="MenuTable" class="menutable" mode="horizontal" @select="handleSelect">
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-more" />
+            </template>
+            <el-menu-item index="optional"> {{ $t('components.filterableItems') }} </el-menu-item>
+            <el-menu-item index="fixed"> {{ $t('components.fixedleItems') }} </el-menu-item>
+          </el-submenu>
+        </el-menu>
+        <icon-element v-show="fixed" icon="el-icon-star-off">
           <fixed-columns
             :container-uuid="containerUuid"
             :panel-type="panelType"
             class="header-search-input"
           />
         </icon-element>
-        <icon-element icon="el-icon-circle-plus-outline">
+        <icon-element v-show="optional" icon="el-icon-circle-plus-outline">
           <filter-columns
             :container-uuid="containerUuid"
             :panel-type="panelType"
@@ -147,6 +155,9 @@ export default {
       showSearch: false, // show input from search,
       panel: {},
       fieldList: [],
+      MenuTable: '1',
+      optional: false,
+      fixed: false,
       isLoaded: false,
       keyColumn: '', // column as isKey in fieldList
       tableData: [],
@@ -170,9 +181,9 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 300
+        return this.$store.getters.getHeigth() - 325
       } else {
-        return this.$store.getters.getHeigth() - 400
+        return this.$store.getters.getHeigth() - 430
       }
     }
   },
@@ -192,6 +203,15 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+    handleSelect(key, keyPath) {
+      if (key === 'optional') {
+        this.optional = !this.optional
+        console.log(key, keyPath)
+      } else {
+        this.fixed = !this.fixed
+        console.log(key, keyPath)
+      }
+    },
     /**
      * ASOCIATE WITH SEARCH INPUT
      */
@@ -411,12 +431,27 @@ export default {
     position: relative;
     text-align: left;
   }
+  /* .el-submenu {
+    float: right !important;
+  } */
+  .menutable{
+    width: 71px;
+    float: right;
+    left: 20px;
+    /* position: absolute;
+    bottom: 388px;
+    right: 9px; */
+  }
+  .el-submenu__title {
+    border-bottom: 0px !important;
+    color: #303133;
+  }
 </style>
 <style lang="scss" scoped>
   .table-root {
+    padding-right: 20px;
     .table-header {
       text-align: right;
-      padding: 5px;
       width: 100%;
       border: 1px solid transparent;
       // position: fixed;

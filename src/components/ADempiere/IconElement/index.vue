@@ -54,11 +54,12 @@ export default {
   .search-detail {
     height: 28px;
     // width: 100%;
-    padding-bottom: 35px;
     float: right;
+    padding-top: 10px;
     .props-icon {
       cursor: pointer;
       font-size: 18px;
+      padding-top: 15px;
       color: #000;
       // position: absolute;
       vertical-align: middle;

@@ -128,7 +128,7 @@ export default {
   computed: {
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined') {
-        return this.$store.getters.getHeigth() - 150
+        return this.$store.getters.getHeigth() - 180
       } else {
         return this.$store.getters.getHeigth()
       }

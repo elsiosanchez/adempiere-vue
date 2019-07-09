@@ -4,8 +4,14 @@
       <!-- down button -->
       <div class="show">
         <el-button
-          v-if="!showPanel"
+          v-if="!showPanel && !this.$store.state.app.sidebar.opened "
           class="el-icon-arrow-up button-up btn"
+          :circle="true"
+          @click="handleChange()"
+        />
+        <el-button
+          v-if="!showPanel && this.$store.state.app.sidebar.opened "
+          class="el-icon-arrow-up button-up2 btn"
           :circle="true"
           @click="handleChange()"
         />
@@ -65,8 +71,19 @@ export default {
         return 'container-panel-mobile'
       } else if (this.$store.state.app.sidebar.opened) {
         return 'container-panel-open'
+      } else if (!this.$store.state.app.sidebar.opened) {
+        return 'container-panel-close'
       }
       return 'container-panel'
+    },
+    classButtom() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'container-panel-mobile'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'el-icon-arrow-down button-bottom btn'
+      } else if (!this.$store.state.app.sidebar.opened) {
+        return 'el-icon-arrow-down button-bottom2 btn'
+      }
     },
     handleChange() {
       this.showPanel = !this.showPanel
@@ -80,7 +97,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "~@/styles/variables.scss";
   .container {
     bottom: 0;
     right: 0;
@@ -178,7 +196,15 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 0;
-    width: calc(100% - 250px);
+    width: calc(100% - #{$sideBarWidth});
+    transition: width 0.28s;
+  }
+  .container-panel-close {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: calc(119% - #{$sideBarWidth});
     transition: width 0.28s;
   }
   .container-up {
@@ -200,15 +226,29 @@ export default {
     z-index: 2;
     position: relative;
     margin: 0 auto;
-    left: 47%;
+    left: 45%;
+  }
+  .button-bottom2 {
+    bottom: 50%;
+    z-index: 2;
+    position: relative;
+    margin: 0 auto;
+    left: 45%;
   }
   .button-up {
     bottom: 0;
-    position: relative;
+    position: fixed;
+    left: 48%;
+    margin: 0 auto;
+  }
+  .button-up2 {
+    bottom: 0;
+    position: fixed;
+    left: 57%;
     margin: 0 auto;
   }
   .btn-base {
-    width: 40px;
+    width: 100%;
     position: fixed;
     background: #ffffff;
     color: #606266;
