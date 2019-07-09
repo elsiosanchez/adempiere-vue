@@ -1,6 +1,5 @@
 <template>
   <el-form :label-position="labelPosition">
-    <br>
     <div class="table-root">
       <div class="table-header">
         <!-- <icon-element icon="el-icon-search">
@@ -19,7 +18,7 @@
             class="header-search-input"
           />
         </icon-element>
-        <icon-element icon="el-icon-circle-plus-outline">
+        <icon-element v-show="Optional" icon="el-icon-circle-plus-outline">
           <filter-columns
             :container-uuid="containerUuid"
             :panel-type="panelType"
@@ -170,9 +169,9 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 300
+        return this.$store.getters.getHeigth() - 315
       } else {
-        return this.$store.getters.getHeigth() - 400
+        return this.$store.getters.getHeigth() - 430
       }
     }
   },
@@ -416,7 +415,6 @@ export default {
   .table-root {
     .table-header {
       text-align: right;
-      padding: 5px;
       width: 100%;
       border: 1px solid transparent;
       // position: fixed;
