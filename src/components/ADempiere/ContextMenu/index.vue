@@ -40,7 +40,7 @@
         <el-menu-item v-else disabled index="1">
           {{ $t('components.contextMenuRelations') }}
         </el-menu-item>
-        <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2">
+        <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2" @click.native="runAction(actions[0])">
           <template slot="title">
             {{ $t('components.contextMenuActions') }}
           </template>
@@ -57,17 +57,17 @@
               {{ action.name }}
             </el-menu-item>
           </template>
+          <el-menu-item :disabled="!isReport" index="4">
+            <a :href="downloads" :download="file">
+              {{ $t('components.contextMenuDownload') }}
+            </a>
+          </el-menu-item>
         </el-submenu>
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
         <el-menu-item index="3">
           {{ $t('components.contextMenuReferences') }}
-        </el-menu-item>
-        <el-menu-item :disabled="!isReport" index="4">
-          <a :href="downloads" :download="file">
-            {{ $t('components.contextMenuDownload') }}
-          </a>
         </el-menu-item>
       </template>
     </el-menu>
@@ -180,7 +180,7 @@ export default {
           index = this.actions.findIndex(item => item.action === 'startProcess')
           if (index !== -1) {
             this.actions[index].reportExportType = 'html'
-            // this.actions[index].disabled = true
+            this.actions[index].disabled = true
           }
         }
         if (this.$route.meta.type === 'process') {
@@ -246,25 +246,28 @@ export default {
                         parentMenu = this.$route.params.menuParentUuid
                       }
                     }
-
-                    this.$router.push({
-                      name: 'Report Viewer',
-                      params: {
-                        menuParentUuid: parentMenu,
-                        processUuid: action.payload.processUuid,
-                        instanceUuid: action.payload.instanceUuid,
-                        fileName: action.payload.output.fileName
-                      }
-                    })
+                    if (!action.payload.isReport) {
+                      this.$store.dispatch('tagsView/delView', this.$route)
+                        .then(({ visitedViews }) => {
+                          this.$router.push('/dashboard')
+                        })
+                    } else {
+                      this.$router.push({
+                        name: 'Report Viewer',
+                        params: {
+                          menuParentUuid: parentMenu,
+                          processUuid: action.payload.processUuid,
+                          instanceUuid: action.payload.instanceUuid,
+                          fileName: action.payload.output.fileName
+                        }
+                      })
+                      this.$store.dispatch('tagsView/delView', this.$route)
+                    }
                   }
                 }
               }
             })
           }
-          this.$store.dispatch('tagsView/delView', this.$route)
-            .then(({ visitedViews }) => {
-              this.$router.push('/')
-            })
           if (this.report === true) {
             return true
           }
