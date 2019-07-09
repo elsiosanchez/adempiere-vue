@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       errGif: errGif + '?' + new Date(),
-      tableColumns: ['Name', 'Description', 'Action', 'Status'],
+      tableColumns: ['Name', 'Description', 'Status'],
       showDialog: false,
       sortable: null,
       oldprocessListData: [],
@@ -108,7 +108,7 @@ export default {
         return {
           Name: item.name,
           Description: item.description,
-          Action: item.action,
+          // Summary: item.summary,
           Status: status,
           Report: reportInfo
         }
@@ -168,11 +168,6 @@ export default {
         return translatedTitle
       }
       return title
-    },
-    getProcess(uuid) {
-      this.$store.dispatch('getProcessFromServer', {
-        containerUuid: uuid
-      })
     }
   }
 }

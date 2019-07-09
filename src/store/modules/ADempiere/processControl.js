@@ -9,7 +9,6 @@ const processControl = {
     visibleDialog: false,
     reportObject: {},
     reportList: [],
-    serveList: [],
     metadata: {},
     process: [],
     sessionProcess: []
@@ -17,9 +16,6 @@ const processControl = {
   mutations: {
     addStartedProcess(state, payload) {
       state.process.push(payload)
-    },
-    addServerProcess(state, payload) {
-      state.serveList.push(payload)
     },
     dataResetCacheProcess(state, payload) {
       state.process = payload
@@ -216,7 +212,13 @@ const processControl = {
                   log: log.getLog()
                 }
               })
+
+              var processMetadata = rootGetters.getProcess(responseItem.getUuid())
+              if (typeof processMetadata === 'undefined') {
+                dispatch('getProcessFromServer', responseItem.getUuid())
+              }
               var process = {
+                processUuid: responseItem.getUuid(),
                 instanceUuid: responseItem.getInstanceuuid(),
                 isError: responseItem.getIserror(),
                 isProcessing: responseItem.getIsprocessing(),
@@ -225,13 +227,6 @@ const processControl = {
                 parametersMap: responseItem.getParametersMap(),
                 resultTableId: responseItem.getResulttableid(),
                 summary: responseItem.getSummary()
-              }
-
-              // ADD SUPPORT TO UUID FROM PROCESS
-              var processMetadata = rootGetters.getProcess(undefined)
-              // Add process metadata to store
-              if (typeof processMetadata === 'undefined') {
-                dispatch('getProcessFromServer', undefined)
               }
 
               return process
@@ -264,7 +259,8 @@ const processControl = {
           name: processOutput.processName,
           title: 'succesful',
           message: 'processExecuted',
-          type: 'success'
+          type: 'success',
+          log: (processOutput.log === undefined) ? processOutput.summary : processOutput.log
         }
         showNotification(notificationParams)
         commit('setReportValues', processOutput)
@@ -274,7 +270,8 @@ const processControl = {
           name: processOutput.processName,
           title: 'error',
           message: 'processError',
-          type: 'error'
+          type: 'error',
+          log: (processOutput.log === undefined) ? processOutput.summary : processOutput.log
         }
         showNotification(notificationParams)
         commit('addStartedProcess', processOutput)
@@ -288,9 +285,6 @@ const processControl = {
     }
   },
   getters: {
-    getServerProcess: (state) => {
-      return state.serveList
-    },
     getActionProcess: (state) => (processUuid) => {
       var process = state.process.find(
         item => item.uuid === processUuid
@@ -302,9 +296,7 @@ const processControl = {
         var process = rootGetters.getProcess(item.processUuid)
         return {
           ...process,
-          action: item.action,
           instanceUuid: item.instanceUuid,
-          isReport: item.isReport,
           output: item.output,
           isError: item.isError,
           logs: item.logs,
