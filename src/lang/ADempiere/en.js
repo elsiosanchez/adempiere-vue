@@ -81,6 +81,7 @@ export default {
     dialogCancelButton: 'Cancel',
     dialogConfirmButton: 'Confirm',
     filterableItems: 'Optional fields',
+    fixedleItems: 'Fixed fields',
     resetAllFilters: 'Reset all filters',
     switchActiveText: 'Yes',
     switchInactiveText: 'Not'

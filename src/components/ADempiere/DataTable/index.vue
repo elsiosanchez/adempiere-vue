@@ -16,8 +16,8 @@
             <template slot="title">
               <i class="el-icon-more" />
             </template>
-            <el-menu-item index="optional">optional</el-menu-item>
-            <el-menu-item index="fixed">fixed</el-menu-item>
+            <el-menu-item index="optional"> {{ $t('components.filterableItems') }} </el-menu-item>
+            <el-menu-item index="fixed"> {{ $t('components.fixedleItems') }} </el-menu-item>
           </el-submenu>
         </el-menu>
         <icon-element v-show="fixed" icon="el-icon-star-off">
@@ -181,7 +181,7 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 315
+        return this.$store.getters.getHeigth() - 325
       } else {
         return this.$store.getters.getHeigth() - 430
       }
