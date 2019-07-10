@@ -11,7 +11,7 @@
             clearable
           />
         </icon-element> -->
-        <el-menu :default-active="MenuTable" class="menutable" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="MenuTable" :class="classTableMenu()" mode="horizontal" @select="handleSelect">
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-more" />
@@ -203,6 +203,15 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+
+    classTableMenu() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'menu-table-mobile'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'menu-table'
+      }
+      return 'menu-table'
+    },
     handleSelect(key, keyPath) {
       if (key === 'optional') {
         this.optional = !this.optional
@@ -433,8 +442,15 @@ export default {
    /* .el-submenu {
     float: right !important;
   } */
-  .menutable{
+  .menu-table{
     width: 75px;
+    float: right;
+    /* position: absolute;
+    bottom: 388px;
+    right: 9px; */
+  }
+  .menu-table-mobile{
+    width: 35px;
     float: right;
     /* position: absolute;
     bottom: 388px;

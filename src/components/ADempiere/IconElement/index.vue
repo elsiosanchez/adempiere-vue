@@ -109,7 +109,7 @@ export default {
     }
     &.show-input-seacrh {
       .header-search-input {
-        width: 250px;
+        width: 227px;
         margin-top: 8px;
         // margin-left: 5px; // separation with the icon
       }
