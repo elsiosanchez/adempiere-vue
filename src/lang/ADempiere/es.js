@@ -85,8 +85,8 @@ export default {
     timePlaceholder: 'Seleccione tiempo',
     dialogCancelButton: 'Cancelar',
     dialogConfirmButton: 'Confirmar',
-    filterableItems: 'Campos opcionales',
-    fixedleItems: 'Campos fjos',
+    filterableItems: 'Columna opcionales',
+    fixedleItems: 'Columna Fijas',
     resetAllFilters: 'Reiniciar todos los filtors',
     switchActiveText: 'Si',
     switchInactiveText: 'No'

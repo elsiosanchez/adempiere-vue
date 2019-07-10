@@ -59,7 +59,7 @@ export default {
     .props-icon {
       cursor: pointer;
       font-size: 18px;
-      padding-top: 15px;
+      // padding-top: 15px;
       color: #000;
       // position: absolute;
       vertical-align: middle;
@@ -69,6 +69,26 @@ export default {
       font-size: 12px;
       transition: width 0.2s;
       width: 0;
+      overflow: hidden;
+      background: transparent;
+      border-radius: 0;
+      display: inline-block;
+      vertical-align: middle;
+      height: 28px;
+
+      /deep/ .el-input__inner {
+        border-radius: 0;
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+        box-shadow: none !important;
+        border-bottom: 1px solid #d9d9d9;
+        vertical-align: middle;
+      }
+    }.header-search-select {
+      font-size: 12px;
+      transition: width 0.2s;
+      width: 30px;
       overflow: hidden;
       background: transparent;
       border-radius: 0;
