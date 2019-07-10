@@ -55,11 +55,12 @@ export default {
     height: 28px;
     // width: 100%;
     float: right;
+    left: 5%;
     padding-top: 10px;
     .props-icon {
       cursor: pointer;
       font-size: 18px;
-      padding-top: 15px;
+      margin-top: 15px;
       color: #000;
       // position: absolute;
       vertical-align: middle;
@@ -85,10 +86,31 @@ export default {
         border-bottom: 1px solid #d9d9d9;
         vertical-align: middle;
       }
+    }.header-search-select {
+      font-size: 12px;
+      transition: width 0.2s;
+      width: 30px;
+      overflow: hidden;
+      background: transparent;
+      border-radius: 0;
+      display: inline-block;
+      vertical-align: middle;
+      height: 28px;
+
+      /deep/ .el-input__inner {
+        border-radius: 0;
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+        box-shadow: none !important;
+        border-bottom: 1px solid #d9d9d9;
+        vertical-align: middle;
+      }
     }
     &.show-input-seacrh {
       .header-search-input {
         width: 250px;
+        margin-top: 8px;
         // margin-left: 5px; // separation with the icon
       }
     }

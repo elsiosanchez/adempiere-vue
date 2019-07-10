@@ -27,13 +27,13 @@
             class="header-search-input"
           />
         </icon-element>
-        <icon-element v-show="optional" icon="el-icon-circle-plus-outline">
-          <filter-columns
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-            class="header-search-input"
-          />
-        </icon-element>
+        <filter-columns
+          v-show="optional"
+          :container-uuid="containerUuid"
+          :panel-type="panelType"
+          class="header-search-select"
+          style="width: 227px;margin-top: 20px;"
+        />
       </div>
     </div>
     <el-table
@@ -206,10 +206,8 @@ export default {
     handleSelect(key, keyPath) {
       if (key === 'optional') {
         this.optional = !this.optional
-        console.log(key, keyPath)
       } else {
         this.fixed = !this.fixed
-        console.log(key, keyPath)
       }
     },
     /**
@@ -412,6 +410,7 @@ export default {
 </script>
 
 <style>
+
   /* style in cursor if cell is no edit */
   .cell-no-edit {
     cursor: not-allowed !important;
@@ -431,7 +430,7 @@ export default {
     position: relative;
     text-align: left;
   }
-  /* .el-submenu {
+   /* .el-submenu {
     float: right !important;
   } */
   .menutable{
@@ -449,7 +448,7 @@ export default {
 </style>
 <style lang="scss" scoped>
   .table-root {
-    padding-right: 20px;
+    padding-right: 0px;
     .table-header {
       text-align: right;
       width: 100%;
