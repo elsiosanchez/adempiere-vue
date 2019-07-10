@@ -434,9 +434,8 @@ export default {
     float: right !important;
   } */
   .menutable{
-    width: 24px;
+    width: 75px;
     float: right;
-    right: 9px;
     /* position: absolute;
     bottom: 388px;
     right: 9px; */
