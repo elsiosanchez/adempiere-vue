@@ -203,13 +203,6 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
-    handleSelect(key, keyPath) {
-      if (key === 'optional') {
-        this.optional = !this.optional
-      } else {
-        this.fixed = !this.fixed
-      }
-    },
     /**
      * ASOCIATE WITH SEARCH INPUT
      */
@@ -429,30 +422,6 @@ export default {
     vertical-align: middle;
     position: relative;
     text-align: left;
-  }
-  /* .el-submenu {
-    float: right !important;
-  } */
-  .menutable{
-    width: 1px;
-    float: right;
-    left: 0 px;
-    /* position: absolute;
-    bottom: 388px;
-    right: 9px; */
-  }
-  .el-submenu__title {
-    border-bottom: 0px !important;
-    color: #303133;
-  }
-  .el-submenu [class^="el-icon-"] {
-    vertical-align: middle;
-    margin-right: 14px;
-    width: 0px;
-    text-align: center;
-    /* padding-bottom: 9px; */
-    font-size: 22px;
-    margin-bottom: 16px;
   }
 </style>
 <style lang="scss" scoped>

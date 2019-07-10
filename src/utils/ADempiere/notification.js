@@ -18,10 +18,10 @@ export function showNotification(params) {
     if (params.name) {
       message = params.name + message
     }
-
+    var log = (params.log === undefined) ? '' : params.log
     Notification({
       title: title,
-      message: message,
+      message: message + '<br>' + log,
       type: params.type,
       position: 'bottom-right',
       dangerouslyUseHTMLString: true
