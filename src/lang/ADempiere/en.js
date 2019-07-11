@@ -36,6 +36,8 @@ export default {
     size: 'Global Size'
   },
   login: {
+    noValidUser: 'Please enter the correct user name',
+    noValidPassword: 'The password can not be empty',
     title: 'Login Form',
     logIn: 'Login',
     username: 'Username',

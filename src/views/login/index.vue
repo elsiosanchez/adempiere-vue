@@ -90,14 +90,14 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if ((value.trim()).length < 1) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error(this.$t('login.noValidUser')))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 1) {
-        callback(new Error('The password can not be empty'))
+        callback(new Error(this.$t('login.noValidPassword')))
       } else {
         callback()
       }
