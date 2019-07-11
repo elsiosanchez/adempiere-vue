@@ -2,7 +2,7 @@
   <el-select
     v-model="columnsFixed"
     :filterable="true"
-    :placeholder="$t('components.filterableItems')"
+    :placeholder="$t('components.fixedleItems')"
     multiple
     size="mini"
     collapse-tags

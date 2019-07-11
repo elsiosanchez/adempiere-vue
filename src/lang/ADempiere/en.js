@@ -80,8 +80,8 @@ export default {
     timePlaceholder: 'Select time',
     dialogCancelButton: 'Cancel',
     dialogConfirmButton: 'Confirm',
-    filterableItems: 'Optional fields',
-    fixedleItems: 'Fixed fields',
+    filterableItems: 'Optional Column',
+    fixedleItems: 'Fixed Column',
     resetAllFilters: 'Reset all filters',
     switchActiveText: 'Yes',
     switchInactiveText: 'Not'

@@ -11,7 +11,7 @@
             clearable
           />
         </icon-element> -->
-        <el-menu :default-active="MenuTable" class="menutable" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="MenuTable" :class="classTableMenu()" mode="horizontal" @select="handleSelect">
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-more" />
@@ -27,13 +27,13 @@
             class="header-search-input"
           />
         </icon-element>
-        <icon-element v-show="optional" icon="el-icon-circle-plus-outline">
-          <filter-columns
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-            class="header-search-input"
-          />
-        </icon-element>
+        <filter-columns
+          v-show="optional"
+          :container-uuid="containerUuid"
+          :panel-type="panelType"
+          class="header-search-select"
+          style="width: 227px;margin-top: 20px;"
+        />
       </div>
     </div>
     <el-table
@@ -203,13 +203,20 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+
+    classTableMenu() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'menu-table-mobile'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'menu-table'
+      }
+      return 'menu-table'
+    },
     handleSelect(key, keyPath) {
       if (key === 'optional') {
         this.optional = !this.optional
-        console.log(key, keyPath)
       } else {
         this.fixed = !this.fixed
-        console.log(key, keyPath)
       }
     },
     /**
@@ -412,6 +419,7 @@ export default {
 </script>
 
 <style>
+
   /* style in cursor if cell is no edit */
   .cell-no-edit {
     cursor: not-allowed !important;
@@ -431,13 +439,19 @@ export default {
     position: relative;
     text-align: left;
   }
-  /* .el-submenu {
+   /* .el-submenu {
     float: right !important;
   } */
-  .menutable{
-    width: 71px;
+  .menu-table{
+    width: 75px;
     float: right;
-    left: 20px;
+    /* position: absolute;
+    bottom: 388px;
+    right: 9px; */
+  }
+  .menu-table-mobile{
+    width: 35px;
+    float: right;
     /* position: absolute;
     bottom: 388px;
     right: 9px; */
@@ -449,7 +463,7 @@ export default {
 </style>
 <style lang="scss" scoped>
   .table-root {
-    padding-right: 20px;
+    padding-right: 0px;
     .table-header {
       text-align: right;
       width: 100%;
