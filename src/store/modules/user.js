@@ -8,9 +8,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  currentRole: '',
-  rol: {},
-  currentRolUuid: getCurrentRole(),
+  rol: {}, // info current rol
+  rolesList: [],
   roles: []
 }
 
@@ -27,11 +26,11 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_CURRENTROLE: (state, currentRole) => {
-    state.currentRole = currentRole
-  },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_ROLES_LIST: (state, payload) => {
+    state.rolesList = payload
   },
   SET_ROL: (state, rol) => {
     state.rol = rol
@@ -50,15 +49,15 @@ const actions = {
             token: response.getUuid(),
             name: response.getUserinfo().getName(),
             avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-            currentRole: convertRoleFromGRPC(response.getRole())
+            currentRole: convertRoleFromGRPC(response.getRole()),
+            isProcessed: response.getProcessed()
           }
 
           commit('SET_TOKEN', data.token)
-          commit('SET_CURRENTROLE', data.currentRole.name)
           commit('SET_ROL', data.currentRole)
           setToken(data.token)
           setCurrentRole(data.currentRole.uuid)
-          resolve()
+          resolve(data)
         }).catch(error => {
           reject(error)
         })
@@ -71,20 +70,19 @@ const actions = {
         if (!response) {
           reject('Verification failed, please Login again.')
         }
-        // const { roles, name, avatar, introduction } = data
         // roles must be a non-empty array
-        if (!response.roles || response.roles.length <= 0) {
+        if (!response.rolesList || response.rolesList.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
 
-        var rol = response.roles.find(itemRol => {
+        var rol = response.rolesList.find(itemRol => {
           return itemRol.uuid === getCurrentRole()
         })
 
+        commit('SET_ROLES_LIST', response.rolesList)
         commit('SET_ROLES', response.roles)
         commit('SET_NAME', response.name)
         commit('SET_ROL', rol)
-        commit('SET_CURRENTROLE', rol.name)
         commit('SET_AVATAR', response.avatar)
         commit('SET_INTRODUCTION', response.introduction)
         resolve(response)
@@ -132,15 +130,13 @@ const actions = {
         organizationUuid: null,
         warehouseUuid: null
       }).then(response => {
-        var role = convertRoleFromGRPC(response.getRole())
-        commit('SET_ROL', role)
-
-        commit('SET_CURRENTROLE', role.name)
-        setCurrentRole(role.uuid)
+        var rol = convertRoleFromGRPC(response.getRole())
+        commit('SET_ROL', rol)
+        setCurrentRole(rol.uuid)
         commit('SET_TOKEN', response.getUuid())
         setToken(response.getUuid())
         resolve({
-          ...role,
+          ...rol,
           sessionUuid: response.getUuid()
         })
       }).catch(error => {
@@ -164,17 +160,12 @@ const actions = {
 }
 
 const getters = {
-  getCurrentRole: (state) => {
-    return state.currentRole
-  },
   getRoles: (state) => {
-    return state.roles
+    return state.rolesList
   },
+  // current rol info
   getRol: (state) => {
     return state.rol
-  },
-  getState: () => {
-    return state
   }
 }
 

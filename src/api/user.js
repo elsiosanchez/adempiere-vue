@@ -43,7 +43,8 @@ export function getInfo(token) {
           name: itemRol.getName(),
           description: itemRol.getDescription(),
           clientId: itemRol.getClientid(),
-          clientName: itemRol.getClientname()
+          clientName: itemRol.getClientname(),
+          organizationList: itemRol.getOrganizationsList()
         }
       })
 
@@ -54,7 +55,7 @@ export function getInfo(token) {
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),
-        roles: rolesList,
+        roles: roles, // rol list names, used from app (src/permission.js, src/utils/permission.js)
         rolesList: rolesList
       }
       return response

@@ -1,13 +1,16 @@
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
+      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link sidebar-logo-link-close" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 v-else class="sidebar-title">{{ title }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+        <h1 class="sidebar-title">{{ title }}</h1><br>
+        <p class="sidebar-sub-title">
+          {{ getRol.name }} | {{ getRol.clientName }}
+        </p>
       </router-link>
     </transition>
   </div>
@@ -29,6 +32,11 @@ export default {
       // logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
       logo: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4?imageView2/1/w/80/h/80'
     }
+  },
+  computed: {
+    getRol() {
+      return this.$store.getters['user/getRol']
+    }
   }
 }
 </script>
@@ -47,7 +55,7 @@ export default {
   position: relative;
   width: 100%;
   height: 50px;
-  line-height: 50px;
+  // line-height: 50px;
   background: #2b2f3a;
   text-align: center;
   overflow: hidden;
@@ -68,11 +76,23 @@ export default {
       margin: 0;
       color: #fff;
       font-weight: 600;
-      line-height: 50px;
+      // line-height: 50px;
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
     }
+
+    & .sidebar-sub-title {
+      display: inline-block;
+      margin: 0;
+      color: #fff;
+      font-size: 12px;
+      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      vertical-align: middle;
+    }
+  }
+  & .sidebar-logo-link-close {
+    line-height: 50px;
   }
 
   &.collapse {
