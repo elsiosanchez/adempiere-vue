@@ -5,13 +5,13 @@
         <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 v-else class="sidebar-title">{{ title }} </h1>
       </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }}</h1><br>
-        <p class="sidebar-sub-title">
+      <div v-else key="expand" class="sidebar-logo-link">
+        <img v-if="logo" :src="logo" class="sidebar-logo" @click="dashboard()">
+        <h1 class="sidebar-title" @click="dashboard()">{{ title }}</h1><br>
+        <p class="sidebar-sub-title" @click="profile()">
           {{ getRol.name }} | {{ getRol.clientName }}
         </p>
-      </router-link>
+      </div>
     </transition>
   </div>
 </template>
@@ -36,6 +36,14 @@ export default {
   computed: {
     getRol() {
       return this.$store.getters['user/getRol']
+    }
+  },
+  methods: {
+    profile() {
+      this.$router.push({ path: '/profile/index?' })
+    },
+    dashboard() {
+      this.$router.push({ path: '/' })
     }
   }
 }
@@ -69,10 +77,12 @@ export default {
       height: 32px;
       vertical-align: middle;
       margin-right: 12px;
+      cursor: pointer;
     }
 
     & .sidebar-title {
       display: inline-block;
+      cursor: pointer;
       margin: 0;
       color: #fff;
       font-weight: 600;
@@ -84,6 +94,7 @@ export default {
 
     & .sidebar-sub-title {
       display: inline-block;
+      cursor: pointer;
       margin: 0;
       color: #fff;
       font-size: 12px;
