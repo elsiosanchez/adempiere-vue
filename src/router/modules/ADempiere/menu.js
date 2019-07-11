@@ -28,6 +28,7 @@ export function loadMainMenu() {
       {
         path: '/SearchWindow',
         component: Layout,
+        hidden: true,
         children: [
           {
             path: 'index',
