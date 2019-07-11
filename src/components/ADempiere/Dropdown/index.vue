@@ -1,10 +1,10 @@
 <template>
-  <el-col :span="24">
+  <el-col v-if="items.children" :span="24">
     <el-collapse v-model="activeNames">
       <el-collapse-item :title="title" name="1" class="collapse-item">
         <el-row justify="space-around" class="panel-group">
-          <template v-for="(item, index) in items">
-            <el-col v-if="!item.hidden" :key="index" :span="8" class="card-panel-col">
+          <template v-for="(item, index) in items.children">
+            <el-col :key="index" :span="8" class="card-panel-col">
               <div :key="index" class="card-panel" @click="redirect(item)">
                 <div class="card-panel-icon-wrapper icon-message">
                   <svg-icon :icon-class="item.meta.icon" class-name="card-panel-icon" />
@@ -21,6 +21,18 @@
       </el-collapse-item>
     </el-collapse>
   </el-col>
+  <el-col v-else :span="8" class="panel-group card-panel-col">
+    <div class="card-panel" @click="redirect(items)">
+      <div class="card-panel-icon-wrapper icon-message">
+        <svg-icon :icon-class="items.meta.icon" class-name="card-panel-icon" />
+      </div>
+      <div class="card-panel-description">
+        <div class="card-panel-text">
+          {{ items.meta.title }}
+        </div>
+      </div>
+    </div>
+  </el-col>
 </template>
 
 <script>
@@ -28,9 +40,9 @@ export default {
   name: 'Dropdown',
   props: {
     items: {
-      type: Array,
+      type: Object,
       default: function() {
-        return []
+        return {}
       }
     },
     title: {
@@ -46,7 +58,7 @@ export default {
   },
   methods: {
     redirect(item) {
-      this.$router.push({ name: item.name })
+      this.$router.push({ name: item.name, params: { childs: item.children }})
     }
   }
 }

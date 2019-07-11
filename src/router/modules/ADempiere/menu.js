@@ -93,7 +93,7 @@ function getChildFromAction(menu) {
     name: menu.getUuid(),
     hidden: actionAttributes.hidden,
     meta: {
-      isIndex: false,
+      isIndex: actionAttributes.isIndex,
       title: menu.getName(),
       uuid: menu.getReferenceuuid(),
       type: actionAttributes.name,
@@ -135,7 +135,7 @@ function getRouteFromMenuItem(menu) {
         name: menu.getUuid(),
         hidden: true,
         meta: {
-          isIndex: true,
+          isIndex: actionAttributes.isIndex,
           parentUuid: menu.getUuid(),
           title: menu.getName(),
           type: actionAttributes.name,
@@ -152,7 +152,8 @@ function convertAction(action) {
   var actionAttributes = {
     name: '',
     icon: '',
-    hidden: false
+    hidden: false,
+    isIndex: false
   }
   switch (action) {
     case 'B':
@@ -191,6 +192,7 @@ function convertAction(action) {
       actionAttributes.name = 'summary'
       actionAttributes.icon = 'nested'
       actionAttributes.hidden = true
+      actionAttributes.isIndex = true
       break
   }
   return actionAttributes
