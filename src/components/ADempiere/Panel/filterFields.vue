@@ -1,22 +1,20 @@
 <template>
-  <div>
-    <el-select
-      v-model="selectedFields"
-      :filterable="true"
-      :placeholder="$t('components.filterableItems')"
-      multiple
-      collapse-tags
-      value-key="key"
-      @change="addField"
-    >
-      <el-option
-        v-for="(item, key) in fieldListOptional"
-        :key="key"
-        :label="item.name"
-        :value="item.columnName"
-      />
-    </el-select>
-  </div>
+  <el-select
+    v-model="selectedFields"
+    :filterable="true"
+    :placeholder="$t('components.filterableItems')"
+    multiple
+    collapse-tags
+    value-key="key"
+    @change="addField"
+  >
+    <el-option
+      v-for="(item, key) in fieldListOptional"
+      :key="key"
+      :label="item.name"
+      :value="item.columnName"
+    />
+  </el-select>
 </template>
 
 <script>
@@ -33,7 +31,7 @@ export default {
     },
     groupField: {
       type: String,
-      default: 'window'
+      default: undefined
     },
     isFirstGroup: {
       type: Boolean,
@@ -53,7 +51,7 @@ export default {
     isDisplayed(field) {
       var isMandatory = field.isMandatory || field.isMandatoryFromLogic
       var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedFromUser || field.isDisplayedFromLogic || isMandatory)
-      if (field.isShowedFromUser) {
+      if (field.isShowedFromUser && field.isDisplayed) {
         this.selectedFields.push(field.columnName)
       }
       return isDisplayed
