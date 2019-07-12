@@ -20,12 +20,13 @@ const processControl = {
     dataResetCacheProcess(state, payload) {
       state.process = payload
     },
-    setShowDialog(state, payload) {
+    setShowDialog(state) {
       state.visibleDialog = true
-      state.metadata = payload
     },
-    setCloseDialog(state, payload) {
+    setCloseDialog(state) {
       state.visibleDialog = false
+    },
+    setMetadata(state, payload) {
       state.metadata = payload
     },
     setReportValues(state, payload) {
@@ -244,11 +245,39 @@ const processControl = {
           })
       })
     },
-    setShowDialog({ commit }, process) {
-      if (typeof process === 'undefined') {
-        commit('setCloseDialog')
-      } else {
-        commit('setShowDialog', process)
+    setShowDialog({ commit }, params) {
+      if (params.type === 'process') {
+        if (typeof params.action === 'undefined') {
+          commit('setMetadata', {
+            id: null,
+            uuid: '',
+            name: '',
+            description: '',
+            parentUuid: '',
+            help: '',
+            isReport: null,
+            accessLevel: null,
+            showHelp: '',
+            isDirectPrint: null,
+            reportExportTypeList: [],
+            value: '',
+            panelType: params.type,
+            fieldList: [],
+            keyColumn: '',
+            selectionColumn: []
+          })
+          commit('setCloseDialog')
+        } else {
+          commit('setMetadata', params.action)
+          commit('setShowDialog')
+        }
+      } else if (params.type === 'search') {
+        if (typeof params.action === 'undefined') {
+          commit('setCloseDialog')
+        } else {
+          commit('setMetadata', params.action)
+          commit('setShowDialog')
+        }
       }
     },
     finishProcess({ commit }, processOutput) {

@@ -66,7 +66,7 @@
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
-        <el-menu-item index="3">
+        <el-menu-item index="3" @click="showModal('search', undefined)">
           {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </template>
@@ -111,6 +111,10 @@ export default {
     reportFormat: {
       type: String,
       default: undefined
+    },
+    modalMetadata: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -204,17 +208,21 @@ export default {
       }
       return index
     },
-    showModal(action) {
-      var processData = this.$store.getters.getProcess(action.uuid)
-      if (typeof processData === 'undefined') {
-        this.$store.dispatch('getProcessFromServer', action.uuid)
-          .then(response => {
-            this.$store.dispatch('setShowDialog', response)
-          }).catch(err => {
-            console.warn('ContextMenu: Dictionary Process (State) - Error ' + err.code + ': ' + err.message)
-          })
+    showModal(type, action) {
+      if (type === 'process') {
+        var processData = this.$store.getters.getProcess(action.uuid)
+        if (typeof processData === 'undefined') {
+          this.$store.dispatch('getProcessFromServer', action.uuid)
+            .then(response => {
+              this.$store.dispatch('setShowDialog', { type: type, action: response })
+            }).catch(err => {
+              console.warn('ContextMenu: Dictionary Process (State) - Error ' + err.code + ': ' + err.message)
+            })
+        } else {
+          this.$store.dispatch('setShowDialog', { type: type, action: processData })
+        }
       } else {
-        this.$store.dispatch('setShowDialog', processData)
+        this.$store.dispatch('setShowDialog', { type: type, action: this.modalMetadata })
       }
     },
     runAction(action) {
@@ -286,7 +294,7 @@ export default {
           })
         }
       } else if (action.type === 'process') {
-        this.showModal(action)
+        this.showModal(action.type, action)
       }
     }
   }

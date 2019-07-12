@@ -2,8 +2,8 @@
   <el-container style=" border: 1px solid #eee">
     <el-header style="height: 16px;">
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
-        <el-button @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
-        <el-button @click="isFixed = !isFixed">Fixed Column key</el-button>
+        <el-button type="text" @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
+        <el-button type="text" @click="isFixed = !isFixed">Fixed Column key</el-button>
       </div>
     </el-header>
     <el-main>
@@ -11,10 +11,19 @@
         ref="dragTable"
         :data="filterResult()"
         :border="true"
-        :stripe="true"
+        :highlight-current-row="true"
         :height="getHeigthTable"
+        @row-click="setCurrentRow"
+        @current-change="handleCurrentChange"
       >
-        <el-table-column
+        <template v-for="(item, index) in fieldList">
+          <el-table-column :key="index" :label="item.name" sortable>
+            <template slot-scope="scope">
+              {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
+            </template>
+          </el-table-column>
+        </template>
+        <!-- <el-table-column
           prop="c_bpartner_id"
           label="c_bpartner_id"
           width="180"
@@ -87,17 +96,16 @@
           label="name"
           width="180"
           sortable
-        />
+        /> -->
       </el-table>
       <div class="table-footer">
-        {{ $t('table.dataTable.records') }}: {{ datalis.length }}
+        {{ $t('table.dataTable.records') }}: {{ tableRecords.length }}
       </div>
     </el-main>
   </el-container>
 </template>
 
 <script>
-import c_bpartner from '@/views/ADempiere/SearchWindow/datalist.json'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 import Sortable from 'sortablejs'
 
@@ -111,21 +119,43 @@ export default {
     searchable: {
       type: Boolean,
       default: true
+    },
+    tableName: {
+      type: String,
+      default: ''
+    },
+    windowUuid: {
+      type: String,
+      default: ''
+    },
+    tabUuid: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      datalis: c_bpartner,
       showSearch: false,
       data: [],
       search: '',
       sortable: null,
-      olddatalis: [],
-      newdatalis: [],
-      isFixed: true
+      olddatalist: [],
+      newdatalist: [],
+      isFixed: true,
+      fieldList: [],
+      recordSelected: {}
     }
   },
   computed: {
+    tableRecords() {
+      return this.$store.getters.getDataRecordDetail(this.windowUuid)
+    },
+    getterPanel() {
+      if (this.tabUuid !== undefined) {
+        return this.$store.getters.getPanel(this.tabUuid)
+      }
+      return undefined
+    },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined') {
         return this.$store.getters.getHeigth() - 180
@@ -143,20 +173,55 @@ export default {
       }
     }
   },
-  beforeMount() {
+  mounted() {
     // get tab with uuid
     this.getList()
+    this.generatePanel()
   },
   methods: {
+    setCurrentRow(row) {
+      this.$refs.dragTable.setCurrentRow(row)
+    },
+    handleCurrentChange(value) {
+      this.recordSelected = value
+      this.$store.dispatch('setRecordSelected', this.recordSelected)
+    },
+    /**
+     * Get the tab object with all its attributes as well as the fields it contains
+     */
+    generatePanel() {
+      var panel = this.getterPanel
+      if (typeof panel === 'undefined' || panel.fieldList.length === 0) {
+        this.$store.dispatch('getPanelAndFields', {
+          containerUuid: this.tabUuid,
+          type: 'window'
+        }).then(response => {
+          this.fieldList = this.sortFields(response.fieldList)
+        }).catch(err => {
+          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        })
+      } else {
+        this.fieldList = this.sortFields(panel.fieldList)
+      }
+    },
+    sortFields(arr, orderBy = 'sequence', type = 'asc') {
+      arr.sort((itemA, itemB) => {
+        return itemA[orderBy] - itemB[orderBy]
+      })
+      if (type.toLowerCase() === 'desc') {
+        return arr.reverse()
+      }
+      return arr
+    },
     async getList() {
-      this.olddatalis = this.datalis.map(v => v.id)
-      this.newdatalis = this.olddatalis.slice()
+      this.olddatalist = this.tableRecords.map(v => v.id)
+      this.newdatalist = this.olddatalist.slice()
       this.$nextTick(() => {
         this.setSort()
       })
     },
     changeOrder() {
-      var reversed = this.datalis.reverse()
+      var reversed = this.tableRecords.reverse()
       return reversed
     },
     setSort() {
@@ -169,12 +234,12 @@ export default {
           dataTransfer.setData('Text', '')
         },
         onEnd: evt => {
-          const targetRow = this.datalis.splice(evt.oldIndex, 1)[0]
-          this.datalis.splice(evt.newIndex, 0, targetRow)
+          const targetRow = this.tableRecords.splice(evt.oldIndex, 1)[0]
+          this.tableRecords.splice(evt.newIndex, 0, targetRow)
 
           // for show the changes, you can delete in you code
-          const tempIndex = this.newdatalis.splice(evt.oldIndex, 1)[0]
-          this.newdatalis.splice(evt.newIndex, 0, tempIndex)
+          const tempIndex = this.newdatalist.splice(evt.oldIndex, 1)[0]
+          this.newdatalist.splice(evt.newIndex, 0, tempIndex)
         }
       })
     },
@@ -201,7 +266,7 @@ export default {
       return row[property] === value
     },
     filterResult() {
-      return this.datalis.filter((rowItem) => {
+      return this.tableRecords.filter((rowItem) => {
         if (!this.isEmptyValue(this.search)) {
           let find = false
           Object.keys(rowItem).forEach(key => {

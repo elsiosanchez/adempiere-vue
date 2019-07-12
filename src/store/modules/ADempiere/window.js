@@ -3,7 +3,8 @@ import { convertContextInfoFromGRPC, convertFieldFromGRPC } from '@/utils/ADempi
 
 const window = {
   state: {
-    window: []
+    window: [],
+    recordSelected: {}
   },
   mutations: {
     addWindow(state, payload) {
@@ -17,6 +18,9 @@ const window = {
     },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
+    },
+    setRecordSelected(state, payload) {
+      state.recordSelected = payload
     }
   },
   actions: {
@@ -109,6 +113,11 @@ const window = {
               isShowedDetail: Boolean(childrenTabs.length > 0),
               currentTabUuid: parentTabs[0].uuid
             }
+            dispatch('getObjectListFromCriteria', {
+              containerUuid: newWindow.currentTab.windowUuid,
+              table: newWindow.currentTab.tableName,
+              criteria: "uuid <> ''"
+            })
             commit('addWindow', newWindow)
             resolve(newWindow)
           })
@@ -194,6 +203,11 @@ const window = {
         window: window,
         tabUuid: params.containerUuid
       })
+    },
+    setRecordSelected: ({ commit }, object) => {
+      if (typeof object !== 'undefined') {
+        commit('setRecordSelected', object)
+      }
     }
   },
   getters: {

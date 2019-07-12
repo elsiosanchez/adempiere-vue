@@ -4,6 +4,7 @@
       :menu-parent-uuid="$route.meta.parentUuid"
       :container-uuid="windowMetadata.currentTabUuid"
       :parent-panel="panelType"
+      :modal-metadata="windowMetadata"
     />
     <el-row :gutter="20">
       <tab
@@ -12,13 +13,14 @@
         :is-edit="isEdit"
         class="tab-window"
       />
-      <modal
+      <!-- <modal
         :visible="isVisibleDialog"
         :metadata="processMetadata"
         :parent-uuid="windowUuid"
         :parent-panel="panelType"
         @closeDialog="isVisibleDialog=false"
-      />
+      /> --> <!-- THIS IS NOT DOING ANYTHING -->
+      <modal />
       <detail
         :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0"
         :is-showed-detail="windowMetadata.isShowedDetail"
@@ -101,16 +103,6 @@ export default {
       }
     }
   },
-  beforeCreate() {
-    this.$store.subscribe(mutation => {
-      if (mutation.type === 'setShowDialog') {
-        if (typeof mutation.payload !== 'undefined') {
-          this.isVisibleDialog = true
-          this.processMetadata = mutation.payload
-        }
-      }
-    })
-  },
   beforeMount() {
     this.getWindow(this.windowUuid)
   },
@@ -134,6 +126,7 @@ export default {
         this.$store.dispatch('getWindowFromServer', uuid)
           .then(response => {
             this.windowMetadata = response
+            this.windowMetadata['panelType'] = 'search'
             this.isLoading = true
           })
           .catch(err => {
@@ -141,8 +134,9 @@ export default {
             console.warn('Dictionary Window - Error ' + err.code + ': ' + err.message)
           })
       } else {
-        this.isLoading = true
         this.windowMetadata = window
+        this.windowMetadata['panelType'] = 'search'
+        this.isLoading = true
       }
     }
   }
