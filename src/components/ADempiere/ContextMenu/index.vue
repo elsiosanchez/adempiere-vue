@@ -16,12 +16,27 @@
         <el-menu-item v-else disabled :index="indexMenu() + '1'">
           {{ $t('components.contextMenuRelations') }}
         </el-menu-item>
-        <el-submenu class="el-menu-item" :index="indexMenu() + '2'">
+        <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2">
           <template slot="title">
             {{ $t('components.contextMenuActions') }}
           </template>
-          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
-            {{ action.name }}
+          <template v-for="(action, index) in actions">
+            <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
+              <template slot="title">
+                {{ action.name }}
+              </template>
+              <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+                {{ child.name }}
+              </el-menu-item>
+            </el-submenu>
+            <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
+              {{ action.name }}
+            </el-menu-item>
+          </template>
+          <el-menu-item v-show="isReport" index="4">
+            <a :href="downloads" :download="file">
+              {{ $t('components.contextMenuDownload') }}das
+            </a>
           </el-menu-item>
         </el-submenu>
         <el-menu-item :index="indexMenu() + '3'">
@@ -57,9 +72,9 @@
               {{ action.name }}
             </el-menu-item>
           </template>
-          <el-menu-item :disabled="!isReport" index="4">
+          <el-menu-item v-show="isReport" index="4">
             <a :href="downloads" :download="file">
-              {{ $t('components.contextMenuDownload') }}
+              {{ $t('components.contextMenuDownload') }}das
             </a>
           </el-menu-item>
         </el-submenu>
@@ -166,6 +181,14 @@ export default {
   methods: {
     isEmptyValue,
     showNotification,
+    classContextMenu() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'el-menu-item'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'container-submenu'
+      }
+      return 'menu-table'
+    },
     generateContextMenu(containerUuid) {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions

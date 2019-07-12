@@ -490,7 +490,7 @@ export default {
     top: 0;
   }
   .select-filter-header {
-    width: 268px !important;
+    width: 60% !important;
     float: right;
     top: 0px;
   }
