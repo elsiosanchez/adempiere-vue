@@ -41,6 +41,8 @@ export default {
     profile: 'Perfil'
   },
   login: {
+    noValidUser: 'Por favor ingrese el nombre de usuario correcto',
+    noValidPassword: 'La contraseña no puede estar vacía',
     title: 'Formulario de acceso',
     logIn: 'Acceso',
     username: 'Usuario',
