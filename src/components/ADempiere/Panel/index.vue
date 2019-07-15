@@ -38,7 +38,7 @@
                     :container-uuid="containerUuid"
                     :metadata-field="subItem"
                     :is-load-record="isLoadRecord"
-                    :recorddata-fields="dataRecords[subItem.columnName]"
+                    :record-data-fields="dataRecords[subItem.columnName]"
                     :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
                   />
@@ -84,7 +84,7 @@
                         :container-uuid="containerUuid"
                         :metadata-field="subItem"
                         :is-load-record="isLoadRecord"
-                        :recorddata-fields="dataRecords[subItem.columnName]"
+                        :record-data-fields="dataRecords[subItem.columnName]"
                         :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
                         :in-group="true"
@@ -243,6 +243,8 @@ export default {
       this.isLoadPanel = true
       if (this.isEdit && this.panelType === 'window') {
         this.getData(this.tableName)
+      } else if (this.panelType === 'window' && this.uuidRecord) {
+        this.getData(this.tableName, this.uuidRecord)
       }
     },
     notifyPanelChange() {
