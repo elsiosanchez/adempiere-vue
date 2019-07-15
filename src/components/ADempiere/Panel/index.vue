@@ -104,7 +104,7 @@
       :element-loading-text="$t('notifications.loading')"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.8)"
-      style="padding: 100px 100px; heigth: 100%"
+      class="load-panel"
     />
   </div>
 </template>
@@ -462,6 +462,10 @@ export default {
   .item {
     margin: 4px;
   }
+  .load-panel{
+    padding: 100px;
+    height: 100%;
+  }
 </style>
 <style>
   .cards {
@@ -478,9 +482,7 @@ export default {
 
   .card {
     padding: 10px;
-    margin: 0 0 1em;
     width: 100% !important;
-    cursor: pointer;
     transition: all 100ms ease-in-out;
     display: inline-block;
     perspective: 1000;
