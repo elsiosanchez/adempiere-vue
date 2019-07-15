@@ -217,32 +217,35 @@ const window = {
       )
       return window
     },
-    getTabsList: (state) => (windowUuid, tabUuid = null) => {
-      var window = state.window.find(
-        item => item.uuid === windowUuid
-      )
-      if (typeof window === 'undefined') {
-        return window
+    getTabsList: (state, getters) => (windowUuid, tabUuid = null) => {
+      var window = getters.getWindow(windowUuid)
+      if (window) {
+        if (tabUuid) {
+          var tab = window.allTabs.find(
+            tabItem => tabItem.uuid === tabUuid
+          )
+          return tab
+        }
+        return window.tabsListParent
       }
-      if (tabUuid) {
-        var tab = window.allTabs.find(
+      return window
+    },
+    getTabProcess: (state, getters) => (windowUuid, tabUuid) => {
+      var window = getters.getWindow(windowUuid)
+      if (window) {
+        var tab = window.tabsListParent.find(
           tabItem => tabItem.uuid === tabUuid
         )
-        return tab
+        return tab.processList
       }
-      return window.tabsListParent
+      return window
     },
-    getTabProcess: (state) => (windowUuid, tabUuid) => {
-      var window = state.window.find(
-        item => item.uuid === windowUuid
-      )
-      if (typeof window === 'undefined') {
-        return window
+    getCurrentTab: (state, getters) => (windowUuid) => {
+      var window = getters.getWindow(windowUuid)
+      if (window) {
+        return window.currentTab
       }
-      var tab = window.tabsListParent.find(
-        tabItem => tabItem.uuid === tabUuid
-      )
-      return tab.processList
+      return window
     }
   }
 }

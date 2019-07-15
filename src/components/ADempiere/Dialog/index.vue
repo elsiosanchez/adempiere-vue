@@ -17,12 +17,12 @@
       :is-view="false"
       :panel-type="'process'"
     />
-    <search-window
+    <!-- <search-window
       v-else
       :tab-uuid="modalMetadata.currentTab.uuid"
       :window-uuid="modalMetadata.currentTab.windowUuid"
       :table-name="modalMetadata.currentTab.tableName"
-    />
+    /> -->
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">
         {{ $t('components.dialogCancelButton') }}
@@ -38,13 +38,13 @@
 import Panel from '@/components/ADempiere/Panel'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 import { showNotification } from '@/utils/ADempiere/notification.js'
-import SearchWindow from '@/views/ADempiere/SearchWindow'
+// import SearchWindow from '@/views/ADempiere/SearchWindow'
 
 export default {
   name: 'Modal',
   components: {
-    Panel,
-    SearchWindow
+    // SearchWindow,
+    Panel
   },
   props: {
     visible: {
