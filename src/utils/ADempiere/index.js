@@ -118,6 +118,8 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     value: fieldGRPC.getDefaultvalueto()
   })
 
+  var componentReference = evalutateTypeField(fieldGRPC.getDisplaytype(), true)
+
   var field = {
     ...moreAttributes,
 
@@ -130,7 +132,8 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
 
     fieldGroup: group,
     displayType: fieldGRPC.getDisplaytype(),
-    componentPath: evalutateTypeField(fieldGRPC.getDisplaytype()),
+    componentPath: componentReference.type,
+    referenceType: componentReference.alias[0],
     isFieldOnly: fieldGRPC.getIsfieldonly(),
     isRange: fieldGRPC.getIsrange(),
     isSameLine: fieldGRPC.getIssameline(),
@@ -190,20 +193,16 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
 
 /**
  * Evaluate by the ID and name of the reference to call the component type
- * @param {integer} param, received from data
+ * @param {integer} displayTypeId, received from data
+ * @param {boolean} isAllInfo
  * @return string type, assigned value to folder after evaluating the parameter
  */
-export function evalutateTypeField(param) {
-  var path = 'String'
-  REFERENCES.forEach(reference => {
-    if (param === reference.id || param === reference.type) {
-      if (reference.support) {
-        path = reference.type
-        return
-      }
-    }
-  })
-  return path
+export function evalutateTypeField(displayTypeId, isAllInfo = false) {
+  var component = REFERENCES.find(reference => displayTypeId === reference.id)
+  if (isAllInfo) {
+    return component
+  }
+  return component.type
 }
 
 export function getParentFields(fieldGRPC) {

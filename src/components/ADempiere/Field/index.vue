@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { FIELD_ONLY, FIELD_RANGE } from '@/components/ADempiere/Field/references'
+import { FIELD_ONLY } from '@/components/ADempiere/Field/references'
 import { FIELD_DISPLAY_SIZES } from '@/components/ADempiere/Field/fieldSize'
 
 /**
@@ -83,10 +83,6 @@ export default {
       type: [Number, String, Boolean, Array, Object],
       default: undefined
     },
-    span: {
-      type: Number,
-      default: undefined
-    },
     inGroup: {
       type: Boolean,
       default: false
@@ -98,9 +94,6 @@ export default {
   },
   data() {
     return {
-      fieldOnly: FIELD_ONLY,
-      fieldRange: FIELD_RANGE,
-      fieldDisplaySizes: FIELD_DISPLAY_SIZES,
       field: {}
     }
   },
@@ -121,7 +114,7 @@ export default {
       }
     },
     sizeFieldResponsive() {
-      var sizeFieldFromType = this.fieldDisplaySizes.find(item => {
+      var sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
         return item.type === this.field.componentPath
       })
       var sizeField = sizeFieldFromType.size
@@ -158,8 +151,8 @@ export default {
     }
   },
   watch: {
-    metadataField() {
-      this.field = this.metadataField
+    metadataField(value) {
+      this.field = value
     }
   },
   created() {
@@ -167,20 +160,6 @@ export default {
     this.field = this.metadataField
   },
   methods: {
-    getSpan() {
-      var span = 0
-      if (this.isDisplayed()) {
-        span = this.span
-      }
-      // isDisplayed type Button
-      if (this.field.displayType === 28) {
-        span = 0
-      }
-      if (this.$store.state.app.device === 'mobile' && this.field.displayType !== 28) {
-        span = 24
-      }
-      return span
-    },
     isDisplayed() {
       var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
       //  Verify for displayed and is active
@@ -206,30 +185,13 @@ export default {
       return this.field.name
     },
     /**
-     * Evaluate the current field with the range type fields contained in the
-     * constant FIELD_RANGE
-     * @param  {integer} id [identifier of the type of isDisplayed]
-     * @return {boolean}
-     */
-    evaluateRange(id) {
-      var range = this.fieldRange.find((item) => {
-        if (id === item.id) {
-          return true
-        }
-      })
-      if (typeof range !== 'undefined') {
-        return true
-      }
-      return false
-    },
-    /**
      * Evaluate the current field with the only fields contained in the
      * constant FIELD_ONLY
      * @param  {integer} id [identifier of the type of isDisplayed]
      * @return {boolean}
      */
     verifyIsFieldOnly(type) {
-      var field = this.fieldOnly.find((item) => {
+      var field = FIELD_ONLY.find((item) => {
         if (type === item.id) {
           return true
         }

@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'Color',
+  name: 'ColorBase',
   props: {
     metadata: {
       type: Object,
@@ -27,8 +27,8 @@ export default {
     }
   },
   watch: {
-    valueModel() {
-      this.value = this.valueModel
+    valueModel(value) {
+      this.value = value
     }
   },
   beforeMount() {

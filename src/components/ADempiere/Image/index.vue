@@ -32,8 +32,8 @@ export default {
     }
   },
   watch: {
-    valueModel() {
-      this.value = this.valueModel
+    valueModel(value) {
+      this.value = value
     }
   },
   beforeMount() {

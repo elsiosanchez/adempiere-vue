@@ -98,7 +98,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/variables.scss";
+  @import "~@/styles/variables.scss";
+
   .container {
     bottom: 0;
     right: 0;

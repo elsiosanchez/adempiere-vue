@@ -9,6 +9,7 @@
     :start-placeholder="$t('components.dateStartPlaceholder')"
     :end-placeholder="$t('components.dateEndPlaceholder')"
     unlink-panels
+    class="date-base"
     @change="handleChange"
   />
 </template>
@@ -117,7 +118,7 @@ export default {
 </script>
 
 <style scoped>
-  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+  .date-base {
     width: 100% !important;
   }
 </style>

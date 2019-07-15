@@ -84,7 +84,12 @@ export default {
       /* this.$router.replace({
         params: { tabNumber: tabHTML.name }
       })*/
-      this.$router.push({ name: this.$route.name, params: { tabNumber: tabHTML.name }})
+      this.$router.push({
+        name: this.$route.name,
+        params: {
+          tabNumber: tabHTML.name
+        }
+      })
     }
   }
 }

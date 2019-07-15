@@ -11,7 +11,7 @@
             clearable
           />
         </icon-element> -->
-        <el-menu :default-active="MenuTable" :class="classTableMenu()" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="MenuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal" @select="handleSelect">
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-more" />
@@ -182,9 +182,8 @@ export default {
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
         return this.$store.getters.getHeigth() - 325
-      } else {
-        return this.$store.getters.getHeigth() - 430
       }
+      return this.$store.getters.getHeigth() - 430
     }
   },
   watch: {
@@ -203,7 +202,6 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
-
     classTableMenu() {
       if (this.$store.state.app.device === 'mobile') {
         return 'menu-table-mobile'
@@ -419,7 +417,6 @@ export default {
 </script>
 
 <style>
-
   /* style in cursor if cell is no edit */
   .cell-no-edit {
     cursor: not-allowed !important;
@@ -462,12 +459,17 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  // .menu-table-container {
+  //   max-height: 40px;
+  // }
+
   .table-root {
     padding-right: 0px;
     .table-header {
       text-align: right;
       width: 100%;
       border: 1px solid transparent;
+      // padding-bottom: 5px;
       // position: fixed;
       // display: inline-block;
       // float: right;

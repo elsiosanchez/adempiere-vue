@@ -31,8 +31,8 @@ export default {
     }
   },
   watch: {
-    valueModel: function() {
-      this.value = this.valueModel
+    valueModel(value) {
+      this.value = value
     }
   },
   mounted() {

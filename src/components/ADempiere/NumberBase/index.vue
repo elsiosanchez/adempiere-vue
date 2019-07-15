@@ -7,7 +7,7 @@
     :max="maxValue"
     :placeholder="metadata.help"
     controls-position="right"
-    :class="'display-type' + metadata.displayType"
+    :class="'display-type-' + cssClass"
     @blur="validateInput"
     @change="handleChange"
   />
@@ -50,11 +50,14 @@ export default {
         return this.metadata.valueMax
       }
       return -Infinity
+    },
+    cssClass() {
+      return this.metadata.referenceType.split(/(?=[A-Z])/).join('-').toLowerCase()
     }
   },
   watch: {
-    valueModel() {
-      this.value = Number(this.valueModel)
+    valueModel(value) {
+      this.value = Number(value)
     }
   },
   beforeMount() {
@@ -95,10 +98,10 @@ export default {
   }
 
   /** Amount reference **/
-  .display-type-12 {
+  .display-type-amount {
+    text-align: right !important;
     input, .el-input__inner {
       text-align: right !important;
     }
   }
-
 </style>

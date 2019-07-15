@@ -3,23 +3,22 @@
     <el-form
       v-if="isLoadPanel"
       v-model="dataRecords"
-      :label-position="labelPosition"
+      label-position="top"
       label-width="200px"
     >
       <template
         v-if="typeof firstGroup !== 'undefined' &&
-          typeof determinateGroup(firstGroup.groupFinal, 'header') === 'undefined'"
+          firstGroup.groupFinal === ''"
       >
         <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
           <div
-            v-if="checkInGroup(firstGroup.groupFinal)
-              && (group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
+            v-if="(group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
             <div class="select-filter">
               <span>
-                {{ determinateGroup(firstGroup.groupFinal, 'header') }}
+                {{ firstGroup.groupFinal }}
               </span>
               <filter-fields
                 :container-uuid="containerUuid"
@@ -39,7 +38,6 @@
                     :metadata-field="subItem"
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
-                    :span="checkNextField(firstGroup.metadataFields, subKey)"
                     :panel-type="panelType"
                   />
                 </template>
@@ -53,11 +51,11 @@
           <el-row :key="key">
             <el-col :key="key" :span="24">
               <div
-                v-if="checkInGroup(item.groupFinal)
+                v-if="item.groupFinal.trim() !== ''
                   && (group.groupType == 'T' && group.groupName == item.groupFinal)
                   || (group.groupType !== 'T' && item.typeGroup !== 'T')"
                 :key="key"
-                :style="determinateGroup(item.groupFinal, 'style')"
+                :style="columnGroup(item.groupFinal)"
                 class="card"
               >
                 <el-card
@@ -65,7 +63,7 @@
                 >
                   <div slot="header" class="clearfix">
                     <span>
-                      {{ determinateGroup(item.groupFinal, 'header') }}
+                      {{ item.groupFinal }}
                     </span>
                     <div class="select-filter-header">
                       <filter-fields
@@ -85,7 +83,6 @@
                         :metadata-field="subItem"
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
-                        :span="countWidthField(item.groupFinal, item.activeFields, subItem)"
                         :panel-type="panelType"
                         :in-group="true"
                       />
@@ -112,7 +109,6 @@
 <script>
 import Field from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
-import SizeField from '@/components/ADempiere/Field/fieldSize'
 
 export default {
   name: 'Panel',
@@ -148,10 +144,6 @@ export default {
       type: Boolean,
       default: false
     },
-    isView: {
-      type: Boolean,
-      default: true
-    },
     panelType: {
       type: String,
       default: 'window'
@@ -161,9 +153,7 @@ export default {
     return {
       fieldList: [],
       dataRecords: {},
-      labelPosition: 'top',
       gutterRow: 0,
-      sizesFields: SizeField,
       isLoadPanel: false,
       isLoadRecord: false,
       uuidRecord: this.$route.params.uuidRecord,
@@ -173,8 +163,13 @@ export default {
       groupsView: 0
     }
   },
+  computed: {
+    getterFieldList() {
+      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    }
+  },
   watch: {
-    containerUuid: function() {
+    containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     }
   },
@@ -189,34 +184,27 @@ export default {
       }
       return 'cards'
     },
-    determinateGroup(group, type) {
-      if (type === 'header') {
-        if (group !== '') {
-          return group
-        }
-        return undefined
-      } else if (type === 'class' || type === 'style') {
-        var style = {}
-        if (this.groupsView === 1) {
-          style['column-count'] = 1
-        }
-        if (this.groupsView === 2) {
-          style['column-count'] = 1
-        }
-        if (group === '' && this.groupsView > 2) {
-          style['column-count'] = 1
-        }
-        if (this.$store.state.app.device === 'mobile') {
-          style['column-count'] = 1
-        }
-        return style
+    columnGroup(group) {
+      var style = {}
+      if (this.groupsView === 1) {
+        style['column-count'] = 1
       }
+      if (this.groupsView === 2) {
+        style['column-count'] = 1
+      }
+      if (group === '' && this.groupsView > 2) {
+        style['column-count'] = 1
+      }
+      if (this.$store.state.app.device === 'mobile') {
+        style['column-count'] = 1
+      }
+      return style
     },
     /**
      * Get the tab object with all its attributes as well as the fields it contains
      */
     getPanel() {
-      var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+      var fieldList = this.getterFieldList
       if (typeof fieldList === 'undefined' || fieldList.length === 0) {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
@@ -241,17 +229,9 @@ export default {
       }
       this.fieldGroups.shift()
       this.isLoadPanel = true
-      if (this.isEdit && this.panelType === 'window') {
-        this.getData(this.tableName)
-      } else if (this.panelType === 'window' && this.uuidRecord) {
+      if (this.panelType === 'window' && (this.uuidRecord || this.isEdit)) {
         this.getData(this.tableName, this.uuidRecord)
       }
-    },
-    notifyPanelChange() {
-      this.$store.dispatch('notifyPanelChange', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid
-      })
     },
     /**
      * @param  {string} table Table name in BD
@@ -267,6 +247,10 @@ export default {
         console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }
+      if (uuidRecord === ':uuidRecord') {
+        uuidRecord = undefined
+      }
+
       // if (this.isLoadRecord === false) {
       this.$store.dispatch('getObject', {
         table: table,
@@ -286,53 +270,6 @@ export default {
           console.warn('DataRecord Panel - Error ' + err.code + ': ' + err.message)
         })
       // }
-    },
-    /**
-     * [checkInGroup description]
-     * @param  {string | integer} groupFinal [description]
-     * @return {bool} if in group field.
-     */
-    checkInGroup(groupFinal) {
-      if (typeof groupFinal === 'undefined' ||
-        groupFinal === '') {
-        return false
-      } else {
-        return true
-      }
-    },
-    /**
-     * Account the field width according to which it establishes the component,
-     * taking maximum by default when it has no field group and the minimum when
-     * it has a field group
-     * @param  {object} field Attributes of the field
-     * @param  {integer} [quantityFields=0] number of active fields that exist in the group
-     * @return {integer} size that the field will have
-     */
-    countWidthField(group, quantityFields = 0, field) {
-      var inGroup = false
-
-      if (this.$store.state.app.device === 'mobile') {
-        quantityFields = 1
-      }
-      if (group !== '') {
-        inGroup = true
-      }
-      if (quantityFields === 1) {
-        return 24
-      } else if (quantityFields === 2) {
-        return 12
-      }
-      var size = this.sizesFields.find((item) => {
-        if (item.types.indexOf(field.displayType)) {
-          return true
-        }
-      })
-
-      if (inGroup) {
-        return size.sizeInGroup.max
-      } else {
-        return size.sizeNotGroup.max
-      }
     },
     /**
      * Order the fields, then assign the groups to each field, and finally group
@@ -376,21 +313,19 @@ export default {
       }
 
       // reduce, create array with number groupAssigned element comun
-      var res = arr.reduce((res, currentValue) => {
-        if (res.indexOf(currentValue.groupAssigned) === -1) {
-          res.push(currentValue.groupAssigned)
-        }
-        return res
-      }, [])
-        .map((_group) => {
+      var res = arr
+        .reduce((res, currentValue) => {
+          if (res.indexOf(currentValue.groupAssigned) === -1) {
+            res.push(currentValue.groupAssigned)
+          }
+          return res
+        }, [])
+        .map((itemGroup) => {
           return {
-            groupFinal: _group,
-            metadataFields: arr.filter((_el) => {
-              return _el.groupAssigned === _group
+            groupFinal: itemGroup,
+            metadataFields: arr.filter(itemField => {
+              return itemField.groupAssigned === itemGroup
             })
-              .map((_el) => {
-                return _el
-              })
           }
         })
 
@@ -417,51 +352,12 @@ export default {
       })
 
       return res
-    },
-    checkNextField(item, position) {
-      if (position + 1 < item.length) {
-        if (item[position].displayType === 20 && item[position + 1].displayType === 20) {
-          // console.log(item[position + 1].columnName)
-          var span = 6
-        } else {
-          span = this.countWidthField(
-            item[position].groupFinal, item[position].activeFields, item[position]
-          )
-        }
-      }
-      return span
     }
   }
 }
 </script>
 
 <style scoped>
-  .box {
-    width: 400px;
-  }
-
-  .top {
-    text-align: center;
-  }
-
-  .bottom {
-    clear: both;
-    text-align: center;
-  }
-
-  .left {
-    float: left;
-    width: 110px;
-  }
-
-  .right {
-    float: right;
-    width: 110px;
-  }
-
-  .item {
-    margin: 4px;
-  }
   .load-panel{
     padding: 100px;
     height: 100%;

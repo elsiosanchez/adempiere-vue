@@ -5,6 +5,7 @@
     :placeholder="metadata.help"
     :loading="loading"
     value-key="key"
+    class="select-base"
     @change="handleChange"
     @visible-change="getDataLookupList"
   >
@@ -69,8 +70,8 @@ export default {
     }
   },
   watch: {
-    valueModel() {
-      this.value = this.valueModel
+    valueModel(value) {
+      this.value = value
       this.getData()
     }
   },
@@ -175,8 +176,8 @@ export default {
 }
 </script>
 
-<style>
-  .el-select {
+<style scoped>
+  .select-base {
     width: 100%;
   }
 </style>

@@ -10,13 +10,14 @@
     :is-range="isPickerRange"
     range-separator="-"
     :placeholder="$t('components.timePlaceholder')"
+    class="time-base"
     @change="handleChange"
   />
 </template>
 
 <script>
 export default {
-  name: 'Time',
+  name: 'TimeBase',
   props: {
     metadata: {
       type: Object,
@@ -41,8 +42,8 @@ export default {
     }
   },
   watch: {
-    valueModel() {
-      this.value = this.valueModel
+    valueModel(value) {
+      this.value = value
     }
   },
   beforeMount() {
@@ -77,7 +78,7 @@ export default {
 </script>
 
 <style>
-  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+  .tiem-base {
     width: 100% !important;
   }
 </style>
