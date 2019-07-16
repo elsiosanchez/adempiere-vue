@@ -171,8 +171,7 @@ const processControl = {
           }
           dispatch('deleteRecortContainer', processToRun.uuid)
           dispatch('finishProcess', processResult)
-          // commit('addStartedProcess', processResult)
-          console.log('Error running   the process', error)
+          console.log('Error running the process', error)
         })
     },
     getSessionProcessFromServer({ commit, dispatch, rootGetters }) {
