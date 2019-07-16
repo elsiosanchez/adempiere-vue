@@ -89,7 +89,11 @@ export default {
     processRunnings() {
       return this.$store.getters.getRunningProcess
     },
+    processFinalized() {
+      return this.$store.getters.getProcessFinalized
+    },
     processListData() {
+      // Array.prototype.push.apply(this.processRunnings, this.processFinalized)
       var processListData = this.processRunnings.map(item => {
         var reportInfo = {
           instanceUuid: 'undefined',
@@ -108,11 +112,20 @@ export default {
         return {
           Name: item.name,
           Description: item.description,
-          // Summary: item.summary,
+          Summary: item.summary,
           Status: status,
           Report: reportInfo
         }
       })
+      // var vegetables = ['parsnip', 'potato']
+      // var moreVegs = ['celery', 'beetroot']
+
+      // Merge the second array into the first one
+      // Equivalent to vegetables.push('celery', 'beetroot');
+
+      // console.log(this.processRunnings)
+      // processListData.push(this.processFinalized)
+      // console.log(processListData)
       return processListData
     }
   },
