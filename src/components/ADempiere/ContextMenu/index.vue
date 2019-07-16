@@ -1,11 +1,11 @@
 <template>
   <div :class="isMobileClassmenu() + ' container-context-menu'">
-    <el-menu :default-active="activeMenu" :router="false" class="context-menu" mode="horizontal" menu-trigger="hover" unique-opened>
-      <el-submenu v-if="device==='mobile'" class="menu-item sub-menu-mobile" index="1">
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
+      <el-submenu v-if="device==='mobile'" class="el-menu-item" index="1">
         <template slot="title">
           <i class="el-icon-more" />
         </template>
-        <el-submenu :disabled="relations === undefined || relations.length < 1" class="menu-item" :index="indexMenu() + '1'">
+        <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" :index="indexMenu() + '1'">
           <template slot="title">
             {{ $t('components.contextMenuRelations') }}
           </template>
@@ -13,27 +13,15 @@
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
-        <el-submenu :disabled="actions === undefined && actions.length > 0" class="menu-item" index="2">
+        <el-menu-item v-else disabled :index="indexMenu() + '1'">
+          {{ $t('components.contextMenuRelations') }}
+        </el-menu-item>
+        <el-submenu class="el-menu-item" :index="indexMenu() + '2'">
           <template slot="title">
             {{ $t('components.contextMenuActions') }}
           </template>
-          <template v-for="(action, index) in actions">
-            <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
-              <template slot="title">
-                {{ action.name }}
-              </template>
-              <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
-                {{ child.name }}
-              </el-menu-item>
-            </el-submenu>
-            <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-              {{ action.name }}
-            </el-menu-item>
-          </template>
-          <el-menu-item v-show="isReport" index="4">
-            <a :href="downloads" :download="file">
-              {{ $t('components.contextMenuDownload') }}
-            </a>
+          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
+            {{ action.name }}
           </el-menu-item>
         </el-submenu>
         <el-menu-item :index="indexMenu() + '3'">
@@ -41,7 +29,7 @@
         </el-menu-item>
       </el-submenu>
       <template v-else class="container-submenu">
-        <el-submenu :disabled="relations == undefined && relations.length < 1" class="menu-item" index="1">
+        <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
           <template slot="title">
             {{ $t('components.contextMenuRelations') }}
           </template>
@@ -49,7 +37,10 @@
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
         </el-submenu>
-        <el-submenu :disabled="actions == undefined && actions.length < 1" class="menu-item" index="2" @click.native="runAction(actions[0])">
+        <el-menu-item v-else disabled index="1">
+          {{ $t('components.contextMenuRelations') }}
+        </el-menu-item>
+        <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2" @click.native="runAction(actions[0])">
           <template slot="title">
             {{ $t('components.contextMenuActions') }}
           </template>
@@ -72,7 +63,10 @@
             </a>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item class="menu-item" index="3" @click="showModal('search', undefined)">
+        <el-menu-item v-else disabled index="2">
+          {{ $t('components.contextMenuActions') }}
+        </el-menu-item>
+        <el-menu-item index="3" @click="showModal('search', undefined)">
           {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </template>
@@ -172,14 +166,6 @@ export default {
   methods: {
     isEmptyValue,
     showNotification,
-    classContextMenu() {
-      if (this.$store.state.app.device === 'mobile') {
-        return 'el-menu-item'
-      } else if (this.$store.state.app.sidebar.opened) {
-        return 'container-submenu'
-      }
-      return 'menu-table'
-    },
     generateContextMenu(containerUuid) {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
@@ -246,6 +232,10 @@ export default {
           finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
           finalParameters.fieldsMandatory.length === 0) {
           var containerParams = this.$route.meta.uuid
+          this.$store.dispatch('tagsView/delView', this.$route)
+            .then(({ visitedViews }) => {
+              this.$router.push('/')
+            })
           if (typeof this.lastParameter !== 'undefined') {
             containerParams = this.lastParameter
           }
@@ -315,50 +305,36 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .container-context-menu {
     z-index: 1;
   }
 
   .container-submenu-mobile {
     position: absolute;
-    height: 40px !important;
-    width: 40px !important;
-    right: 0px;
+    height: 39px !important;
+    width: 39px !important;
+    right: 10px;
     top: 0;
   }
 
   .container-submenu {
     position: absolute;
-    height: 40px !important;
+    height: 39px !important;
     right: 10px;
     top: 0;
   }
 
-  ul.context-menu > .menu-item {
-    height: 40px !important;
-    line-height: 40px !important;
+  ul.el-menu-demo > .el-menu-item {
+    height: 39px !important;
+    line-height: 39px !important;
     padding: 0 10px;
   }
 
-  .context-menu > .menu-item > .el-submenu__title {
-    height: 40px !important;
+  .el-menu-demo > .el-menu-item > .el-submenu__title {
+    line-height: 39px;
+    height: 39px !important;
     padding: 0;
-    max-height: 40px;
-    line-height: 40px;
-  }
-
-  .sub-menu-mobile {
-    max-height: 40px !important;
-    line-height: 40px !important;
-  }
-
-  .sub-menu-mobile > .el-submenu__title {
-    height: 40px !important;
-    padding: 0;
-    cursor: help;
-    max-height: 40px !important;
-    line-height: 40px !important;
   }
 
   .el-menu--horizontal .el-submenu > .el-menu--horizontal {
@@ -374,7 +350,7 @@ export default {
     min-width: 150px !important;
   }
 
-  .el-menu--popup-right-start > .menu-item {
+  .el-menu--popup-right-start > .el-menu-item {
     min-width: 150px;
   }
 
@@ -384,17 +360,5 @@ export default {
 
   .el-icon-more {
     transform: rotate(90deg);
-  }
-  .context-menu {
-    max-height: 40px;
-  }
-</style>
-
-<style>
-  .context-menu > .menu-item > .el-submenu__title {
-    padding: 0;
-    height: 40px !important;
-    max-height: 40px;
-    line-height: 40px;
   }
 </style>
