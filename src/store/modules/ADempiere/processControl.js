@@ -321,6 +321,7 @@ const processControl = {
       return process
     },
     getRunningProcess: (state, rootGetters) => {
+      Array.prototype.push.apply(state.sessionProcess, state.process)
       var processList = state.sessionProcess.map((item) => {
         var process = rootGetters.getProcess(item.processUuid)
         return {
@@ -334,6 +335,20 @@ const processControl = {
       })
       return processList
     },
+    // getProcessFinalized: (state, rootGetters) => {
+    //   var procesfinalized = state.process.map((item) => {
+    //     var process = rootGetters.getProcess(item.processUuid)
+    //     return {
+    //       ...process,
+    //       instanceUuid: item.instanceUuid,
+    //       output: item.output,
+    //       isError: item.isError,
+    //       logs: item.logs,
+    //       summary: item.summary
+    //     }
+    //   })
+    //   return procesfinalized
+    // },
     getProcessResult: (state) => {
       return state.reportObject
     },
