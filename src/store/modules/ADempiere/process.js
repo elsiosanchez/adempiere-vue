@@ -48,6 +48,20 @@ const process = {
             })
             fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
 
+            //  Get dependent fields
+            fieldDefinitionList
+              .filter(field => field.parentFieldsList && field.isActive)
+              .forEach((field, index, list) => {
+                field.parentFieldsList.forEach((parentColumnName) => {
+                  var parentField = list.find((parentField) => {
+                    return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
+                  })
+                  if (parentField) {
+                    parentField.dependentFieldsList.push(field.columnName)
+                  }
+                })
+              })
+
             //  Get export list
             var reportExportTypeList = response.getReportexporttypesList().map(reportType => {
               return {

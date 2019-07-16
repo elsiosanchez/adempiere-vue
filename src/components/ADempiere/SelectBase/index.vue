@@ -6,6 +6,7 @@
     :loading="loading"
     value-key="key"
     class="select-base"
+    :disabled="metadata.readonly || metadata.disabled"
     @change="handleChange"
     @visible-change="getDataLookupList"
   >

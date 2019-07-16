@@ -163,7 +163,7 @@ const panel = {
         return field.dependentFieldsList.includes(fieldItem.columnName)
       })
       //  Iterate for change logic
-      dependents.forEach((dependent) => {
+      dependents.forEach(dependent => {
         //  isDisplayed Logic
         var isDisplayedFromLogic = false
         var isMandatoryFromLogic = false

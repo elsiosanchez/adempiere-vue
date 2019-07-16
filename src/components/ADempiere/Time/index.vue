@@ -11,6 +11,8 @@
     range-separator="-"
     :placeholder="$t('components.timePlaceholder')"
     class="time-base"
+    :readonly="metadata.readonly"
+    :disabled="metadata.disabled"
     @change="handleChange"
   />
 </template>

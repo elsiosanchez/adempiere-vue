@@ -23,7 +23,7 @@
           inTable: inTable,
           // DOM properties
           required: isMandatory(),
-          readonly: !isReadOnly(),
+          readonly: isReadOnly(),
           disabled: !field.isActive
         }"
         :value-model="recordDataFields"
@@ -40,7 +40,7 @@
       inTable: inTable,
       // DOM properties
       required: isMandatory(),
-      readonly: !isReadOnly(),
+      readonly: isReadOnly(),
       disabled: !field.isActive
     }"
     :value-model="recordDataFields"
@@ -166,8 +166,8 @@ export default {
       return this.field.isActive && isDisplayed
     },
     isReadOnly() {
-      // CHECK ATTRIBUTE isUpdatable
-      return this.field.isReadonly && this.field.isReadonlyFromLogic
+      // CHECK ATTRIBUTE isUpdateable
+      return this.field.isReadOnly || this.field.isReadOnlyFromLogic
     },
     isMandatory() {
       return this.field.isMandatory && this.field.isMandatoryFromLogic
@@ -176,10 +176,10 @@ export default {
       if (this.inTable) {
         return undefined
       }
-      if (this.verifyIsFieldOnly(this.field.displayType)) {
+      if (this.field.isFieldOnly) {
         return undefined
       }
-      if (this.field.isFieldOnly) {
+      if (this.verifyIsFieldOnly(this.field.displayType)) {
         return undefined
       }
       return this.field.name

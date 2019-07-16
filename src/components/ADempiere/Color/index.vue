@@ -3,6 +3,7 @@
     v-model="value"
     :value="value"
     :show-alpha="showAlphaColor"
+    :disabled="metadata.readonly || metadata.disabled"
     @change="handleChange"
   />
 </template>

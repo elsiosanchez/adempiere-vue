@@ -10,6 +10,8 @@
     :end-placeholder="$t('components.dateEndPlaceholder')"
     unlink-panels
     class="date-base"
+    :readonly="metadata.readonly"
+    :disabled="metadata.readonly || metadata.disabled"
     @change="handleChange"
   />
 </template>

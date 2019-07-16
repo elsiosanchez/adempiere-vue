@@ -7,6 +7,8 @@
     :rows="rows"
     :type="typeInput"
     :placeholder="metadata.help"
+    :readonly="metadata.readonly"
+    :disabled="metadata.readonly || metadata.disabled"
     @blur="validateInput"
     @change="handleChange"
   />

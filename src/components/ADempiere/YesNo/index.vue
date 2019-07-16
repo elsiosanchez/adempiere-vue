@@ -6,6 +6,7 @@
     true-value="true"
     false-value="false"
     :name="metadata.columnName"
+    :disabled="metadata.readonly || metadata.disabled"
     @change="handleChange"
   />
 </template>
@@ -25,14 +26,12 @@ export default {
   },
   data() {
     return {
-      value: Boolean(this.metadata.value),
-      isReadOnly: false,
-      isMadatory: false
+      value: Boolean(this.metadata.value)
     }
   },
   watch: {
     valueModel(value) {
-      this.value = value
+      this.value = Boolean(value)
     }
   },
   mounted() {

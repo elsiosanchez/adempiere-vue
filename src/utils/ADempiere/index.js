@@ -179,6 +179,24 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
   }
   field.isShowedTableFromUser = field.isDisplayed && field.isDisplayedFromLogic
 
+  // evaluate simple logics without context
+  if (field.displayLogic.trim() !== '' && !field.displayLogic.includes('@')) {
+    field.isDisplayedFromLogic = evaluator.evaluateLogic({
+      type: 'displayed',
+      logic: field.displayLogic
+    })
+  }
+  if (field.mandatoryLogic.trim() !== '' && !field.mandatoryLogic.includes('@')) {
+    field.isMandatoryFromLogic = evaluator.evaluateLogic({
+      logic: field.mandatoryLogic
+    })
+  }
+  if (field.readOnlyLogic.trim() !== '' && !field.readOnlyLogic.includes('@')) {
+    field.isReadOnlyFromLogic = evaluator.evaluateLogic({
+      logic: field.readOnlyLogic
+    })
+  }
+
   // Overwrite some values
   if (typeRange) {
     field.uuid = field.uuid + '_To'

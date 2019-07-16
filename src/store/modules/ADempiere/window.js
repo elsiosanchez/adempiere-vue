@@ -158,7 +158,8 @@ const window = {
             })
 
             //  Get dependent fields
-            fieldsList.filter(field => field.parentFieldsList && field.isActive)
+            fieldsList
+              .filter(field => field.parentFieldsList && field.isActive)
               .forEach((field, index, list) => {
                 field.parentFieldsList.forEach((parentColumnName) => {
                   var parentField = list.find((parentField) => {
