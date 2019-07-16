@@ -58,8 +58,8 @@ export function loadMainMenu() {
     menu.getChildsList().forEach((menu) => {
       const optionMenu = getRouteFromMenuItem(menu)
       if (menu.getIssummary()) {
-        menu.getChildsList().forEach((menu) => {
-          optionMenu.children.push(getChildFromAction(menu))
+        menu.getChildsList().forEach((menu, index) => {
+          optionMenu.children.push(getChildFromAction(menu, index = 0))
         })
       } else {
         optionMenu.children.push(getChildFromAction(menu))
@@ -73,7 +73,7 @@ export function loadMainMenu() {
 }
 
 // Get Only Child
-function getChildFromAction(menu) {
+function getChildFromAction(menu, index) {
   const action = menu.getAction()
   var actionAttributes = convertAction(action)
   var routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid()
@@ -93,7 +93,8 @@ function getChildFromAction(menu) {
     path: routeIdentifier,
     component: selectedComponent,
     name: menu.getUuid(),
-    hidden: actionAttributes.hidden,
+    // hidden: actionAttributes.hidden,
+    hidden: index > 0,
     meta: {
       isIndex: actionAttributes.isIndex,
       title: menu.getName(),
@@ -107,8 +108,8 @@ function getChildFromAction(menu) {
   }
   if (option.meta.type === 'summary') {
     option['children'] = []
-    menu.getChildsList().forEach((child) => {
-      option.children.push(getChildFromAction(child))
+    menu.getChildsList().forEach((child, index) => {
+      option.children.push(getChildFromAction(child, index = 1))
     })
   }
   return option
@@ -193,7 +194,7 @@ function convertAction(action) {
     default:
       actionAttributes.name = 'summary'
       actionAttributes.icon = 'nested'
-      actionAttributes.hidden = true
+      // actionAttributes.hidden = true
       actionAttributes.isIndex = true
       break
   }
