@@ -28,13 +28,19 @@ const window = {
       return new Promise((resolve, reject) => {
         gettingWindow(windowUuid)
           .then(response => {
+            var newWindow = {
+              id: response.getId(),
+              uuid: windowUuid,
+              name: response.getName(),
+              contextInfo: convertContextInfoFromGRPC(response.getContextinfo())
+            }
+
             var tabs = response.getTabsList()
             var firstTab = tabs[0].getTablename()
-            var allTabs = []
             var childrenTabs = []
             var parentTabs = []
 
-            tabs.map((tabItem) => {
+            tabs.map(tabItem => {
               var group = {}
               try {
                 group = {
@@ -97,22 +103,24 @@ const window = {
                   criteria: "IsActive = 'Y'"
                 })
               }
-              allTabs.push(tab)
+              return tab
             })
 
-            var newWindow = {
-              id: response.getId(),
-              uuid: windowUuid,
-              name: response.getName(),
-              tabsList: allTabs,
+            var tabProperties = {
+              tabsList: tabs,
               currentTab: parentTabs[0],
               tabsListParent: parentTabs,
               tabsListChildren: childrenTabs,
-              contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
               // app attributes
               isShowedDetail: Boolean(childrenTabs.length > 0),
               currentTabUuid: parentTabs[0].uuid
             }
+
+            newWindow = {
+              ...newWindow,
+              ...tabProperties
+            }
+
             dispatch('getObjectListFromCriteria', {
               containerUuid: newWindow.currentTab.windowUuid,
               table: newWindow.currentTab.tableName,

@@ -295,7 +295,7 @@ export function convertRoleFromGRPC(roleGRPC) {
 export function convertContextInfoFromGRPC(contextInfoGRPC) {
   var contextInfo = {
     id: '',
-    uuid: '',
+    // uuid: '',
     name: '',
     description: '',
     sqlStatement: '',
@@ -331,7 +331,7 @@ export function convertMessageTextFromGRPC(messageTextGRPC) {
   if (typeof messageTextGRPC !== 'undefined') {
     messageText = {
       id: messageTextGRPC.getId(),
-      uuid: messageText.getUuid(),
+      // uuid: messageText.getUuid(),
       value: messageTextGRPC.getValue(),
       msgType: messageTextGRPC.getMsgtype(),
       msgText: messageTextGRPC.getMsgtext(),

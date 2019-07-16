@@ -103,7 +103,7 @@ export default {
       }
     }
   },
-  beforeMount() {
+  created() {
     this.getWindow(this.windowUuid)
   },
   methods: {
@@ -126,7 +126,7 @@ export default {
         this.$store.dispatch('getWindowFromServer', uuid)
           .then(response => {
             this.windowMetadata = response
-            this.windowMetadata['panelType'] = 'search'
+            this.windowMetadata.panelType = 'search'
             this.isLoading = true
           })
           .catch(err => {
@@ -135,7 +135,7 @@ export default {
           })
       } else {
         this.windowMetadata = window
-        this.windowMetadata['panelType'] = 'search'
+        this.windowMetadata.panelType = 'search'
         this.isLoading = true
       }
     }
