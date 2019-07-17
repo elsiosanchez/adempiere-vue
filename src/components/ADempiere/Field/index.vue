@@ -161,9 +161,12 @@ export default {
   },
   methods: {
     isDisplayed() {
-      var isDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
+      var isBrowserDisplayed = this.field.isQueryCriteria // browser query criteria
+      var isWindowDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic // window, process and report, browser result
+      var isDisplayed = (this.panelType === 'browser' && isBrowserDisplayed) || (this.panelType !== 'browser' && isWindowDisplayed)
+
       //  Verify for displayed and is active
-      return this.field.isActive && isDisplayed
+      return this.field.isActive && isDisplayed && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
       // CHECK ATTRIBUTE isUpdateable
@@ -191,8 +194,8 @@ export default {
      * @return {boolean}
      */
     verifyIsFieldOnly(type) {
-      var field = FIELD_ONLY.find((item) => {
-        if (type === item.id) {
+      var field = FIELD_ONLY.find(itemField => {
+        if (type === itemField.id) {
           return true
         }
       })

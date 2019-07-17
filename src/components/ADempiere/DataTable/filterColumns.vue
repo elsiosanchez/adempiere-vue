@@ -58,12 +58,12 @@ export default {
       }
     },
     generatePanel(fieldList) {
-      this.columnListAvailable = fieldList.filter((item) => {
-        return this.isDisplayed(item)
+      this.columnListAvailable = fieldList.filter(fieldItem => {
+        return this.isDisplayed(fieldItem)
       })
     },
     isDisplayed(field) {
-      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic)
+      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic) && !field.isKey
       if (field.isShowedTableFromUser && field.isDisplayed) {
         this.columnsShowed.push(field.columnName)
       }

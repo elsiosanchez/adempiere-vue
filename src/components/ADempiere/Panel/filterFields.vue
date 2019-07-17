@@ -41,18 +41,21 @@ export default {
   },
   data() {
     return {
-      selectedFields: [], // fields optional showd
-      fieldListOptional: []
+      selectedFields: [], // fields optional showed
+      fieldListOptional: [] // all available fields to show
     }
   },
-  mounted() {
+  created() {
     this.getPanel()
   },
   methods: {
     isDisplayed(field) {
-      var isMandatory = field.isMandatory || field.isMandatoryFromLogic
-      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedFromUser || field.isDisplayedFromLogic || isMandatory)
-      if (field.isShowedFromUser && field.isDisplayed) {
+      var isBrowserDisplayed = this.panelType === 'browser' && field.isQueryCriteria // browser query criteria
+      var isWindowDisplayed = this.panelType !== 'browser' && field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result
+      var isDisplayed = field.isActive && (isBrowserDisplayed || isWindowDisplayed) // Available fields to show
+
+      if (isDisplayed && field.isShowedFromUser) {
+        // showed displayed in view
         this.selectedFields.push(field.columnName)
       }
       return isDisplayed
@@ -73,9 +76,9 @@ export default {
       }
     },
     generatePanel(fieldList) {
-      this.fieldListOptional = fieldList.filter((item) => {
-        if (!item.isMandatory && this.groupField === item.groupAssigned) {
-          return this.isDisplayed(item)
+      this.fieldListOptional = fieldList.filter(fieldItem => {
+        if (!fieldItem.isMandatory && this.groupField === fieldItem.groupAssigned) {
+          return this.isDisplayed(fieldItem)
         }
       })
     },

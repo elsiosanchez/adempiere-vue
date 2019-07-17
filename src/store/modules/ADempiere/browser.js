@@ -54,8 +54,7 @@ const browser = {
                 field.isQueryCriteria = true
                 field.isShowedFromUser = true
               }
-              //  Change displayed from type
-              field.isDisplayed = field.isQueryCriteria
+
               return field
             })
             fieldsList = fieldsList.concat(fieldsRangeList)
@@ -64,8 +63,8 @@ const browser = {
             fieldsList
               .filter(field => field.parentFieldsList && field.isActive)
               .forEach((field, index, list) => {
-                field.parentFieldsList.forEach((parentColumnName) => {
-                  var parentField = list.find((parentField) => {
+                field.parentFieldsList.forEach(parentColumnName => {
+                  var parentField = list.find(parentField => {
                     return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
                   })
                   if (parentField) {

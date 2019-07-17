@@ -332,7 +332,7 @@ export default {
     },
     filterResult() {
       var data = []
-      data = this.getDataDetail.filter((rowItem) => {
+      data = this.getDataDetail.filter(rowItem => {
         if (this.searchTable.trim().length > 0) {
           let find = false
           Object.keys(rowItem).forEach(key => {
@@ -361,7 +361,7 @@ export default {
      * Verify is displayed field in column table
      */
     isDisplayed(field) {
-      var isDisplayed = field.isDisplayed && field.isDisplayedFromLogic && field.isShowedTableFromUser
+      var isDisplayed = field.isDisplayed && field.isDisplayedFromLogic && field.isShowedTableFromUser && !field.isKey
       //  Verify for displayed and is active
       return field.isActive && isDisplayed
     },
