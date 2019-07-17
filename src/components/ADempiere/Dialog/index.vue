@@ -27,7 +27,7 @@
       <el-button @click="closeDialog">
         {{ $t('components.dialogCancelButton') }}
       </el-button>
-      <el-button type="primary" @click="runAction(metadata)">
+      <el-button type="primary" @click="runAction(modalMetadata)">
         {{ $t('components.dialogConfirmButton') }}
       </el-button>
     </span>
@@ -101,7 +101,7 @@ export default {
       if (action === undefined && this.windowRecordSelected !== undefined) {
         this.$router.push({ name: this.$route.name, params: { uuidRecord: this.windowRecordSelected.UUID }})
         this.closeDialog()
-      } else if (action !== undefined) {
+      } else if (typeof action !== 'undefined') {
         var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
         if ((finalParameters.fieldsMandatory.length > 0 && finalParameters.params.length >= finalParameters.fieldsMandatory.length) || finalParameters.fieldsMandatory.length === 0) {
           this.closeDialog()
