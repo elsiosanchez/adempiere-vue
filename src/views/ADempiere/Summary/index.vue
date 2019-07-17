@@ -43,15 +43,11 @@ export default {
   methods: {
     generateRoutesPool() {
       var routeParent = this.routes.find(route => route.name === this.parentUuid)
-      this.optionList = routeParent.children.find(
-        child => child.name === this.$route.name
-      )
-      /* this.optionList = this.routes.find(
-        route => route.name === this.parentUuid
-      )
-      if (this.optionList === undefined) {
+      if (typeof routeParent === 'undefined') {
         this.optionList = this.$route.params.childs
-      } */
+      } else {
+        this.optionList = routeParent.children.find(child => child.name === this.$route.name)
+      }
     }
   }
 }
