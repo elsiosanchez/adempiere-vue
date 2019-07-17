@@ -135,7 +135,7 @@ function getRouteFromMenuItem(menu) {
       {
         path: 'index',
         component: () => import('@/views/ADempiere/Summary'),
-        name: menu.getUuid(),
+        name: menu.getUuid() + '-index',
         hidden: true,
         meta: {
           isIndex: actionAttributes.isIndex,
