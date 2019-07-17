@@ -20,8 +20,23 @@
           <template slot="title">
             {{ $t('components.contextMenuActions') }}
           </template>
-          <el-menu-item v-for="(action, index) in actions" :key="index" :index="action.name" @click="runAction(action)">
-            {{ action.name }}
+          <template v-for="(action, index) in actions">
+            <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
+              <template slot="title">
+                {{ action.name }}
+              </template>
+              <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+                {{ child.name }}
+              </el-menu-item>
+            </el-submenu>
+            <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
+              {{ action.name }}
+            </el-menu-item>
+          </template>
+          <el-menu-item v-show="isReport" index="4">
+            <a :href="downloads" :download="file">
+              {{ $t('components.contextMenuDownload') }}
+            </a>
           </el-menu-item>
         </el-submenu>
         <el-menu-item :index="indexMenu() + '3'">
