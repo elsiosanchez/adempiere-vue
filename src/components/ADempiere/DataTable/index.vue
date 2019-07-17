@@ -78,7 +78,7 @@
           :fixed="item.isFixedTableColumn"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.isEdit && (item.isIdentifier || item.isUpdateable)">
+            <template v-if="scope.row.isEdit && !item.isReadOnly">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
@@ -187,7 +187,7 @@ export default {
     }
   },
   watch: {
-    isLoaded: function() {
+    isLoaded() {
       if (typeof this.tableName !== 'undefined') {
         this.getData(this.tableName)
       }
@@ -257,7 +257,7 @@ export default {
      * @param {object} field
      */
     cellClass(field) {
-      if (!(field.isIdentifier || field.isUpdateable && !field.isReadOnly)) {
+      if (field.isReadOnly) {
         return 'cell-no-edit'
       }
       // return 'cell-edit'
