@@ -6,6 +6,7 @@
     multiple
     collapse-tags
     value-key="key"
+    style="float: right;"
     @change="addField"
   >
     <el-option
