@@ -16,19 +16,21 @@
       </el-header>
       <el-main>
         <div class="containert">
-          <el-popover
-            v-if="!isEmptyValue(browserMetadata.name)"
-            placement="top-start"
-            :title="browserMetadata.name"
-            width="400"
-            trigger="hover"
-          >
-            <div v-html="browserMetadata.help" />
-            <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">
-              {{ browserMetadata.name }}
-            </el-button>
-          </el-popover>
-          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+          <div style="text-align: -webkit-center;">
+            <el-popover
+              v-if="!isEmptyValue(browserMetadata.name)"
+              placement="top-start"
+              :title="browserMetadata.name"
+              width="400"
+              trigger="hover"
+            >
+              <div v-html="browserMetadata.help" />
+              <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">
+                {{ browserMetadata.name }}
+              </el-button>
+            </el-popover>
+            <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
+          </div>
         </div>
         <el-collapse v-model="activeSearch" class="container-collasep-open">
           <el-collapse-item :title="$t('views.searchCriteria')" name="1">
@@ -189,7 +191,7 @@ export default {
   .containert {
     padding-left: 20px;
     padding-right: 20px;
-    width: 100%;
+    width: 50%;
   }
   .title {
     color: #000000;
