@@ -54,6 +54,7 @@ export default {
     handleChange(valueSelected) {
       this.$store.dispatch('user/changeRoles', valueSelected)
         .then(response => {
+          this.$store.dispatch('permission/generateRoutes', response.name)
           console.log(response)
         })
     }
