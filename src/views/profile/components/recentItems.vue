@@ -1,14 +1,14 @@
 <template>
   <div class="block">
     <el-timeline>
-      <el-timeline-item v-for="(item, index) of recentItems" :key="index" placement="top" type="primary" size="large" :timestamp="String(new Date())">
+      <el-timeline-item v-for="(item, index) of recentItems" :key="index" placement="top" type="primary" size="large" :timestamp="String(item.updated)">
         <el-card>
           <router-link :to="{ name: item.menuUuid }">
             <h4>
               {{ item.displayName }}
               <el-tag v-show="checkOpened(item.menuUuid)">{{ $t('notifications.Opened') }}</el-tag>
             </h4>
-            <ul>
+            <!-- <ul>
               <li v-show="item.menuName !==''">
                 Menu Name: {{ item.menuName }}
               </li>
@@ -27,7 +27,7 @@
               <li v-show="item.tabUuid !==''">
                 Tab UUID: {{ item.tabUuid }}
               </li>
-            </ul>
+            </ul> -->
           </router-link>
         </el-card>
       </el-timeline-item>
@@ -63,6 +63,7 @@ export default {
       if (typeof items === 'undefined' || items.length < 1) {
         this.$store.dispatch('getRecentItemsFromServer')
           .then(response => {
+            console.log(response)
             this.recentItems = response
           }).catch(error => {
             console.log(error)

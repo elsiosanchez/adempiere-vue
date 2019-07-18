@@ -123,7 +123,8 @@ const data = {
                 windowUuid: item.getWindowuuid(),
                 tableId: item.getTableid(),
                 recordId: item.getRecordid(),
-                tabUuid: tabUuid
+                tabUuid: tabUuid,
+                updated: new Date(item.getUpdated())
               }
             })
             commit('setRecentItems', recentItems)
