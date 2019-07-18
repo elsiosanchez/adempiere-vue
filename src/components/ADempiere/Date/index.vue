@@ -1,19 +1,21 @@
 <template>
-  <el-date-picker
-    v-model="value"
-    :format="formatView"
-    :value-format="formatSend"
-    :type="typePicker"
-    :placeholder="metadata.help"
-    range-separator="-"
-    :start-placeholder="$t('components.dateStartPlaceholder')"
-    :end-placeholder="$t('components.dateEndPlaceholder')"
-    unlink-panels
-    class="date-base"
-    :readonly="metadata.readonly"
-    :disabled="metadata.readonly || metadata.disabled"
-    @change="handleChange"
-  />
+  <div>
+    <el-date-picker
+      v-model="value"
+      :format="formatView"
+      :value-format="formatSend"
+      :type="typePicker"
+      range-separator="To"
+      :placeholder="metadata.help"
+      :start-placeholder="$t('components.dateStartPlaceholder')"
+      :end-placeholder="$t('components.dateEndPlaceholder')"
+      unlink-panels
+      class="date-base"
+      :readonly="metadata.readonly"
+      :disabled="metadata.readonly || metadata.disabled"
+      @change="handleChange"
+    />
+  </div>
 </template>
 
 <script>
@@ -33,22 +35,22 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.value,
+      value: this.metadata.parsedDefaultValue + this.metadata.parsedDefaultValueTo,
       formatView: undefined,
       formatSend: undefined
     }
   },
   computed: {
     typePicker() {
-      var time = ''
       var range = ''
+      var time = ''
+      if (this.metadata.isRange && !this.metadata.inTable) {
+        range = 'DateTimeRangePicker'
+      }
       if (String(this.metadata.displayType) === String(16)) {
         time = 'time'
       }
-      if (this.metadata.isRange && !this.metadata.inTable) {
-        range = 'range'
-      }
-      return 'date' + time + range
+      return 'date' + range + time
     }
   },
   created() {
@@ -90,11 +92,11 @@ export default {
       var valueFirst, valueTo
 
       valueFirst = value
-      if ((this.metadata.isRange && !this.metadata.inTable) || Array.isArray(value)) {
+      if ((this.metadata.isRange && !this.metadata.inTable) && Array.isArray(value)) {
         valueFirst = value[0]
         valueTo = value[1]
       }
-
+      // if ()
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
