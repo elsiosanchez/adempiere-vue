@@ -1,18 +1,18 @@
 <template>
   <el-form>
-    <el-form-item label="Current Rol">
+    <el-form-item :label="$t('profile.currentRole')">
       {{ getRol.name }}
     </el-form-item>
 
-    <el-form-item label="Client Name">
+    <el-form-item :label="$t('profile.clientName')">
       {{ getRol.clientName }}
     </el-form-item>
 
-    <el-form-item label="Description">
+    <el-form-item :label="$t('profile.description')">
       {{ getRol.description }}
     </el-form-item>
 
-    <el-form-item label="Change Rol">
+    <el-form-item :label="$t('profile.changeRole')">
       <el-select
         v-model="value"
         :filterable="true"
@@ -27,16 +27,37 @@
         />
       </el-select>
     </el-form-item>
+    <el-form-item :label="$t('profile.changeLanguage')">
+      <el-select
+        v-model="language"
+        :filterable="true"
+        value-key="key"
+        :placeholder="$t('profile.changeLanguagePlaceholder')"
+        @visible-change="getLanguageList"
+        @change="changeLanguage"
+      >
+        <el-option
+          v-for="item in languageList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
   </el-form>
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+
 export default {
   name: 'ProfileRole',
   data() {
     return {
       value: '',
-      options: []
+      options: [],
+      languageList: [],
+      language: ''
     }
   },
   computed: {
@@ -45,17 +66,53 @@ export default {
     },
     getRoles() {
       return this.$store.getters['user/getRoles']
+    },
+    languageCookie() {
+      return Cookies.get('language')
+    },
+    getterLanguageList() {
+      return this.$store.getters.getLanguageList(this.getRol.uuid)
     }
   },
   created() {
     this.value = this.getRol.uuid
+    this.getLanguage()
   },
   methods: {
     handleChange(valueSelected) {
       this.$store.dispatch('user/changeRoles', valueSelected)
         .then(response => {
           this.$store.dispatch('permission/generateRoutes', response.name)
-          console.log(response)
+        })
+    },
+    changeLanguage(languageValue) {
+      this.language = languageValue
+    },
+    getLanguageList(open) {
+      if (open) {
+        if (this.getterLanguageList.length > 0) {
+          this.languageList = this.getterLanguageList
+        } else {
+          this.getLanguage()
+        }
+      }
+    },
+    getLanguage() {
+      this.$store.dispatch('getObjectListFromCriteria', {
+        containerUuid: this.getRol.uuid,
+        table: 'AD_Language',
+        criteria: `LanguageIso = '${this.languageCookie}' AND IsActive = 'Y'`
+      })
+        .then(response => {
+          this.languageList = response.map((language) => {
+            return {
+              value: language.AD_Language,
+              label: language.Name
+            }
+          })
+        })
+        .catch(err => {
+          console.warn('Error getting language list' + err.code + ': ' + err.message)
         })
     }
   }

@@ -247,10 +247,6 @@ export default {
           finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
           finalParameters.fieldsMandatory.length === 0) {
           var containerParams = this.$route.meta.uuid
-          this.$store.dispatch('tagsView/delView', this.$route)
-            .then(({ visitedViews }) => {
-              this.$router.push('/')
-            })
           if (typeof this.lastParameter !== 'undefined') {
             containerParams = this.lastParameter
           }

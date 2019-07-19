@@ -150,5 +150,17 @@ export default {
     tagsView: 'Open Tags-View',
     fixedHeader: 'Fixed Header',
     sidebarLogo: 'Sidebar Logo'
+  },
+  profile: {
+    aboutMe: 'About Me',
+    recentItems: 'Recent Items',
+    role: 'Role',
+    availableRoles: 'Available roles',
+    currentRole: 'Current role',
+    clientName: 'Client name',
+    description: 'Description',
+    changeRole: 'Change role',
+    changeLanguage: 'Change language',
+    changeLanguagePlaceholder: 'Choose a language'
   }
 }

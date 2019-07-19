@@ -105,6 +105,7 @@ const data = {
             resolve(record)
           })
           .catch(error => {
+            console.log(error)
             reject(error)
           })
       })
@@ -263,6 +264,16 @@ const data = {
     },
     getRecentItems: (state) => {
       return state.recentItems
+    },
+    getLanguageList: (state) => (roleUuid) => {
+      var languageList = state.recordSelection.find(
+        record => record.containerUuid === roleUuid
+      )
+      if (typeof languageList !== 'undefined') {
+        return languageList
+      } else {
+        return undefined
+      }
     }
   }
 }

@@ -81,6 +81,10 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
+    },
+    isShowedCriteria: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
