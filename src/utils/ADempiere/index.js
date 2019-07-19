@@ -146,6 +146,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
     value: parsedDefaultValue,
+    valueTo: parsedDefaultValue,
     defaultValue: fieldGRPC.getDefaultvalue(),
     parsedDefaultValue: parsedDefaultValue,
     defaultValueTo: fieldGRPC.getDefaultvalueto(),

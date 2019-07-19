@@ -202,7 +202,7 @@ export default {
 </script>
 
 <style scoped>
-.el-main {
+  .el-main {
     display: block;
     -webkit-box-flex: 1;
     -ms-flex: 1;

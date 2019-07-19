@@ -4,7 +4,7 @@
     :format="formatView"
     :value-format="formatSend"
     :type="typePicker"
-    range-separator="To"
+    range-separator="-"
     :placeholder="metadata.help"
     :start-placeholder="$t('components.dateStartPlaceholder')"
     :end-placeholder="$t('components.dateEndPlaceholder')"
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
 
 export default {
@@ -33,7 +34,7 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.parsedDefaultValue + this.metadata.parsedDefaultValueTo,
+      value: this.metadata.value,
       formatView: undefined,
       formatSend: undefined
     }
@@ -42,17 +43,20 @@ export default {
     typePicker() {
       var range = ''
       var time = ''
-      if (this.metadata.isRange && !this.metadata.inTable) {
-        range = 'DateTimeRangePicker'
-      }
       if (String(this.metadata.displayType) === String(16)) {
         time = 'time'
       }
-      return 'date' + range + time
+      if (this.metadata.isRange && !this.metadata.inTable) {
+        range = 'range'
+      }
+      return 'date' + time + range
     }
   },
   created() {
     this.checkValueFormat()
+    if (this.metadata.isRange) {
+      this.value = [this.metadata.value, this.metadata.valueTo]
+    }
   },
   beforeMount() {
     // enable to dataTable records
@@ -61,6 +65,7 @@ export default {
     }
   },
   methods: {
+    isEmptyValue,
     clientDateTime,
     /**
      * Parse the date format to be compatible with element-ui
@@ -88,13 +93,17 @@ export default {
     },
     handleChange(value) {
       var valueFirst, valueTo
-
       valueFirst = value
+
       if ((this.metadata.isRange && !this.metadata.inTable) && Array.isArray(value)) {
         valueFirst = value[0]
         valueTo = value[1]
       }
-      // if ()
+      if (valueFirst == null) {
+        valueFirst = ''
+        valueTo = ''
+      }
+
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
