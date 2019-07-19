@@ -32,7 +32,7 @@
             <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
           </div>
         </div>
-        <el-collapse v-model="activeSearch" class="container-collasep-open">
+        <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
           <el-collapse-item :title="$t('views.searchCriteria')" name="1">
             <panel
               :container-uuid="containerUuid"
@@ -81,6 +81,10 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
+    },
+    isShowedCriteria: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -108,6 +112,18 @@ export default {
         return 'container-panel-open'
       }
       return 'container-panel'
+    },
+    getParamsCriteria() {
+      var panelCriteri = this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
+      if (panelCriteri !== true) {
+        panelCriteri = []
+        console.log('vacio')
+      } else {
+        console.log('1')
+        panelCriteri = ['1']
+      }
+
+      return panelCriteri
     }
   },
   watch: {
@@ -132,6 +148,22 @@ export default {
   },
   methods: {
     isEmptyValue,
+    handleChange(val) {
+      if (this.activeSearch.length === 0) {
+        var cambio = false
+        this.$store.dispatch('changeShowedCriteriaBrowser', {
+          containerUuid: this.containerUuid,
+          isShowedCriteria: cambio
+        })
+      } else {
+        cambio = true
+        this.$store.dispatch('changeShowedCriteriaBrowser', {
+          panelType: this.panelType,
+          containerUuid: this.containerUuid,
+          isShowedCriteria: cambio
+        })
+      }
+    },
     getBrowser(uuid = null) {
       if (!uuid) {
         uuid = this.$route.meta.uuid

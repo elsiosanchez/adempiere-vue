@@ -181,9 +181,13 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        return this.$store.getters.getHeigth() - 325
+        var showCriteria = this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
+        if (this.getDataDetail !== 'undefined' && this.panelType !== 'window' && showCriteria) {
+          return this.$store.getters.getHeigth() - 545
+        }
+        return this.$store.getters.getHeigth() - 320
       }
-      return this.$store.getters.getHeigth() - 430
+      return this.$store.getters.getHeigth() - 480
     }
   },
   watch: {
