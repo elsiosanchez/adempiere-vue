@@ -150,17 +150,17 @@ export default {
     isEmptyValue,
     handleChange(val) {
       if (this.activeSearch.length === 0) {
-        var cambio = false
+        var showCriteria = false
         this.$store.dispatch('changeShowedCriteriaBrowser', {
           containerUuid: this.containerUuid,
-          isShowedCriteria: cambio
+          isShowedCriteria: showCriteria
         })
       } else {
-        cambio = true
+        showCriteria = true
         this.$store.dispatch('changeShowedCriteriaBrowser', {
           panelType: this.panelType,
           containerUuid: this.containerUuid,
-          isShowedCriteria: cambio
+          isShowedCriteria: showCriteria
         })
       }
     },
