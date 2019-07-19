@@ -179,15 +179,25 @@ export default {
     getDataSelection() {
       return this.$store.getters.getDataRecordSelection(this.containerUuid)
     },
+    getshowCriteria() {
+      return this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
+    },
     getHeigthTable() {
-      if (this.getDataDetail !== 'undefined' && this.panelType !== 'window') {
-        var showCriteria = this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
-        if (this.getDataDetail !== 'undefined' && this.panelType !== 'window' && showCriteria) {
-          return this.$store.getters.getHeigth() - 545
+      if (this.panelType !== 'window') {
+        var table = ''
+        if (this.getDataDetail.length === 0 && this.getshowCriteria) {
+          table = this.$store.getters.getHeigth() - 570
+        } else if (this.getDataDetail.length === 0 && !this.getshowCriteria) {
+          table = this.$store.getters.getHeigth() - 330
+        } else if (this.getDataDetail.length > 0 && this.getshowCriteria) {
+          table = this.$store.getters.getHeigth() - 490
+        } else if (this.getDataDetail.length > 0 && !this.getshowCriteria) {
+          table = this.$store.getters.getHeigth() - 330
         }
-        return this.$store.getters.getHeigth() - 320
+        return table
+      } else {
+        return this.$store.getters.getHeigth() - 480
       }
-      return this.$store.getters.getHeigth() - 480
     }
   },
   watch: {

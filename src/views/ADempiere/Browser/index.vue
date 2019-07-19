@@ -81,10 +81,6 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
-    },
-    isShowedCriteria: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
@@ -133,10 +129,25 @@ export default {
   },
   created() {
     this.getBrowser(this.$route.meta.uuid)
+    // console.log(this.param())
   },
   methods: {
     isEmptyValue,
-    handleChange(val) {
+    param() {
+      if (this.getDataDetail.length <= 0) {
+        var finalParameters = this.getParamsProcessToServer
+        console.log(finalParameters)
+        if ((finalParameters.fieldsMandatory.length > 0 &&
+          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
+          finalParameters.fieldsMandatory.length === 0) {
+          console.log('si qlq')
+        } else {
+          console.log(' no qlq')
+        }
+      }
+      return finalParameters.fieldsMandatory.length
+    },
+    handleChange(value) {
       if (this.activeSearch.length === 0) {
         var showCriteria = false
         this.$store.dispatch('changeShowedCriteriaBrowser', {
@@ -173,9 +184,9 @@ export default {
       }
     },
     defaultSearch() {
-      this.activeSearch = ['1']
       if (this.getDataDetail.length <= 0) {
         var finalParameters = this.getParamsProcessToServer
+        console.log(finalParameters)
         if ((finalParameters.fieldsMandatory.length > 0 &&
           finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
           finalParameters.fieldsMandatory.length === 0) {
