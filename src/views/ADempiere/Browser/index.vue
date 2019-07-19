@@ -112,18 +112,6 @@ export default {
         return 'container-panel-open'
       }
       return 'container-panel'
-    },
-    getParamsCriteria() {
-      var panelCriteri = this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
-      if (panelCriteri !== true) {
-        panelCriteri = []
-        console.log('vacio')
-      } else {
-        console.log('1')
-        panelCriteri = ['1']
-      }
-
-      return panelCriteri
     }
   },
   watch: {
