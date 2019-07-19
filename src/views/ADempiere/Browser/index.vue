@@ -32,7 +32,7 @@
             <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
           </div>
         </div>
-        <el-collapse v-model="activeSearch" class="container-collasep-open">
+        <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
           <el-collapse-item :title="$t('views.searchCriteria')" name="1">
             <panel
               :container-uuid="containerUuid"
@@ -79,6 +79,10 @@ export default {
   },
   props: {
     isEdit: {
+      type: Boolean,
+      default: false
+    },
+    isShowedCriteria: {
       type: Boolean,
       default: false
     }
@@ -132,6 +136,22 @@ export default {
   },
   methods: {
     isEmptyValue,
+    handleChange(val) {
+      if (this.activeSearch.length === 0) {
+        var showCriteria = false
+        this.$store.dispatch('changeShowedCriteriaBrowser', {
+          containerUuid: this.containerUuid,
+          isShowedCriteria: showCriteria
+        })
+      } else {
+        showCriteria = true
+        this.$store.dispatch('changeShowedCriteriaBrowser', {
+          panelType: this.panelType,
+          containerUuid: this.containerUuid,
+          isShowedCriteria: showCriteria
+        })
+      }
+    },
     getBrowser(uuid = null) {
       if (!uuid) {
         uuid = this.$route.meta.uuid
