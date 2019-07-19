@@ -130,5 +130,17 @@ export default {
     tagsView: 'Habilitar Tags-View',
     fixedHeader: 'Encabezado fijo',
     sidebarLogo: 'Logotipo de la barra lateral'
+  },
+  profile: {
+    aboutMe: 'Sobre Mi',
+    recentItems: 'Artículos recientes',
+    role: 'Rol',
+    availableRoles: 'Roles disponibles',
+    currentRole: 'Rol actual',
+    clientName: 'Nombre del cliente',
+    description: 'Descripción',
+    changeRole: 'Cambiar rol',
+    changeLanguage: 'Cambiar idioma',
+    changeLanguagePlaceholder: 'Elija un idioma'
   }
 }

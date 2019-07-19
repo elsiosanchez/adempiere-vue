@@ -1,7 +1,7 @@
 <template>
   <el-card style="margin-bottom:20px;">
     <div slot="header" class="clearfix">
-      <span>About me</span>
+      <span>{{ $t('profile.aboutMe') }}</span>
     </div>
 
     <div class="user-profile">
@@ -14,7 +14,7 @@
       <div class="box-center">
         <div class="user-name text-center">{{ getRol.name }}</div>
         <div class="user-role text-muted">
-          Available roles:
+          {{ $t('profile.availableRoles') }}
           <li v-for="(item, key) in getRoles" :key="key">
             {{ item.name | uppercaseFirst }}
           </li>

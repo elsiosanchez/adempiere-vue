@@ -63,7 +63,6 @@ export default {
       if (typeof items === 'undefined' || items.length < 1) {
         this.$store.dispatch('getRecentItemsFromServer')
           .then(response => {
-            console.log(response)
             this.recentItems = response
           }).catch(error => {
             console.log(error)
