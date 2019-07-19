@@ -64,7 +64,7 @@ export default {
     },
     isDisplayed(field) {
       var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic) && !field.isKey
-      if (field.isShowedTableFromUser && field.isDisplayed) {
+      if (field.isShowedTableFromUser && field.isDisplayed && !field.isKey) {
         this.columnsShowed.push(field.columnName)
       }
       return isDisplayed
