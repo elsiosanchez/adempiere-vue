@@ -14,7 +14,7 @@ function Instance() {
 }
 
 export function getObject(table, uuid = false) {
-  return Instance.call(this).requestObject(table, uuid)
+  return Instance.call(this).getEntity(Instance.call(this).getEntityRequest(table, uuid))
 }
 
 export function getCriteria(table) {
