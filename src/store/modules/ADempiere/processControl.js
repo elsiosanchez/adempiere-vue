@@ -114,7 +114,7 @@ const processControl = {
             href: undefined,
             download: undefined
           }
-          if (processToRun.isReport) {
+          if (processDefinition.isReport) {
             var blob = new Blob([output.outputStream], { type: output.mimeType })
             link = document.createElement('a')
             link.href = window.URL.createObjectURL(blob)
@@ -133,13 +133,13 @@ const processControl = {
             processName: processToRun.processName,
             isError: response.getIserror(),
             isProcessing: response.getIsprocessing(),
-            isReport: processToRun.isReport,
+            isReport: processDefinition.isReport,
             summary: response.getSummary(),
             resultTableId: response.getResulttableid(),
             logs: logList,
             output: output
           }
-          dispatch('deleteRecortContainer', params.parentUuid)
+          dispatch('deleteRecordContainer', params.parentUuid)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -150,7 +150,7 @@ const processControl = {
             processName: processToRun.processName,
             isError: true,
             isProcessing: false,
-            isReport: processToRun.isReport,
+            isReport: processDefinition.isReport,
             summary: '',
             resultTableId: '',
             logs: [],
@@ -164,7 +164,7 @@ const processControl = {
               reportExportType: ''
             }
           }
-          dispatch('deleteRecortContainer', processToRun.uuid)
+          dispatch('deleteRecordContainer', processToRun.uuid)
           dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
         })
