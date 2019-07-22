@@ -102,8 +102,19 @@
         </el-table-column>
       </template>
     </el-table>
-    <div class="table-footer" style="float: right;">
-      {{ $t('table.dataTable.selected') }}: {{ getDataSelection.length }} / {{ $t('table.dataTable.records') }}: {{ getDataDetail.length }}
+    <div class="table-footer">
+      <div style="float: right;">
+        <el-pagination
+          layout="slot, total, prev, pager, next"
+          :current-page="currentPage"
+          :total="getDataDetail.length"
+          @current-change="handleChangePage"
+        >
+          <template v-slot>
+            <span>{{ $t('table.dataTable.selected') }}: {{ getDataSelection.length }} / </span>
+          </template>
+        </el-pagination>
+      </div>
     </div>
   </el-form>
 </template>
@@ -166,7 +177,8 @@ export default {
       rowStyle: { height: '52px' },
       sortable: null,
       oldprocessListData: [],
-      newprocessListData: []
+      newprocessListData: [],
+      currentPage: 1
     }
   },
   computed: {
@@ -175,6 +187,9 @@ export default {
     },
     getDataDetail() {
       return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    },
+    getPageCount() {
+      return this.$store.getters.getPageCount(this.containerUuid)
     },
     getDataSelection() {
       return this.$store.getters.getDataRecordSelection(this.containerUuid)
@@ -211,6 +226,7 @@ export default {
     // get tab with uuid
     this.getPanel()
     this.getList()
+    this.currentPage = this.getPageCount
   },
   mounted() {
     this.toggleSelection(this.getDataSelection)
@@ -425,6 +441,13 @@ export default {
         return arr.reverse()
       }
       return arr
+    },
+    handleChangePage(newPage) {
+      this.currentPage = newPage
+      this.$store.dispatch('setPageNumber', {
+        containerUuid: this.containerUuid,
+        pageNumber: newPage
+      })
     }
   }
 }

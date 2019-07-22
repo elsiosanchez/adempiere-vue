@@ -35,11 +35,23 @@ const data = {
     },
     setRecentItems(state, payload) {
       state.recentItems = payload
+    },
+    setPageNumber(state, payload) {
+      payload.data.pageNumber = payload.pageNumber
     }
   },
   actions: {
+    setPageNumber({ commit, state }, parameters) {
+      var data = state.recordSelection.find(recordItem => {
+        return recordItem.containerUuid === parameters.containerUuid
+      })
+      commit('setPageNumber', {
+        data: data,
+        pageNumber: parameters.pageNumber
+      })
+    },
     recordSelection({ commit, state }, parameters) {
-      var index = state.recordSelection.findIndex((recordItem) => {
+      var index = state.recordSelection.findIndex(recordItem => {
         return recordItem.containerUuid === parameters.containerUuid
       })
       commit('recordSelection', {
@@ -172,7 +184,8 @@ const data = {
       return {
         containerUuid: containerUuid,
         record: [],
-        selection: []
+        selection: [],
+        pageNumber: 1
       }
     },
     getDataRecordDetail: (state, getters) => (containerUuid) => {
@@ -182,6 +195,10 @@ const data = {
     getDataRecordSelection: (state, getters) => (containerUuid) => {
       var selection = getters.getDataRecordAndSelection(containerUuid)
       return selection.selection
+    },
+    getPageCount: (state, getters) => (containerUuid) => {
+      var data = getters.getDataRecordAndSelection(containerUuid)
+      return data.pageNumber
     },
     /**
      * Getter converter selection params with value format

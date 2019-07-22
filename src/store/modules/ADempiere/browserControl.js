@@ -14,7 +14,7 @@ const browserControl = {
   },
   actions: {
     /**
-     *
+     * Search with query criteria
      * @param {string} params.containerUuid, browsert to search record data
      * @param {boolean} params.clearSelection, clear selection after search
      */
@@ -66,11 +66,13 @@ const browserControl = {
               if (!params.clearSelection) {
                 selection = rootGetters.getDataRecordSelection(params.containerUuid)
               }
+              var pageNumber = rootGetters.getPageCount(params.containerUuid)
 
               dispatch('recordSelection', {
                 containerUuid: params.containerUuid,
                 record: record,
-                selection: selection
+                selection: selection,
+                pageNumber: pageNumber
               })
               var notificationParams = {
                 title: i18n.t('notifications.succesful'),
