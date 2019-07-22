@@ -144,7 +144,8 @@ const processControl = {
             logs: logList,
             output: output
           }
-          dispatch('deleteRecortContainer', processToRun.uuid)
+          //  parentUuid is the identifier of the container where the process is called
+          dispatch('deleteRecordContainer', params.parentUuid)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -169,7 +170,8 @@ const processControl = {
               reportExportType: ''
             }
           }
-          dispatch('deleteRecortContainer', processToRun.uuid)
+          //  parentUuid is the identifier of the container where the process is called
+          dispatch('deleteRecordContainer', params.parentUuid)
           dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
         })

@@ -3,7 +3,7 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
   state: {
-    recordSelection: [],
+    recordSelection: [], // record data and selection
     recentItems: []
   },
   mutations: {
