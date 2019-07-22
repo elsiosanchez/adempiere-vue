@@ -1,54 +1,49 @@
 <template>
   <div v-if="isLoading">
-    <el-container>
-      <el-header>
-        <context-menu
-          :menu-parent-uuid="$route.meta.parentUuid"
-          :container-uuid="containerUuid"
-          :parent-panel="panelType"
-        />
-        <modal
-          :visible="isVisisbleDialog"
-          :metadata="processMetadata"
-          :parent-uuid="containerUuid"
-          @closeDialog="isVisisbleDialog=true"
-        />
-      </el-header>
-      <el-main>
-        <div class="containert">
-          <div style="text-align: -webkit-center;">
-            <el-popover
-              v-if="!isEmptyValue(browserMetadata.name)"
-              placement="top-start"
-              :title="browserMetadata.name"
-              width="400"
-              trigger="hover"
-            >
-              <div v-html="browserMetadata.help" />
-              <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">
-                {{ browserMetadata.name }}
-              </el-button>
-            </el-popover>
-            <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
-          </div>
+    <context-menu
+      :menu-parent-uuid="$route.meta.parentUuid"
+      :container-uuid="containerUuid"
+      :parent-panel="panelType"
+    />
+    <modal
+      :visible="isVisisbleDialog"
+      :parent-uuid="containerUuid"
+      @closeDialog="isVisisbleDialog=true"
+    />
+    <el-main>
+      <div class="containert">
+        <div style="text-align: -webkit-center;">
+          <el-popover
+            v-if="!isEmptyValue(browserMetadata.name)"
+            placement="top-start"
+            :title="browserMetadata.name"
+            width="400"
+            trigger="hover"
+          >
+            <div v-html="browserMetadata.help" />
+            <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">
+              {{ browserMetadata.name }}
+            </el-button>
+          </el-popover>
+          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
         </div>
-        <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
-          <el-collapse-item :title="$t('views.searchCriteria')" name="1">
-            <panel
-              :container-uuid="containerUuid"
-              :metadata="browserMetadata"
-              :panel-type="panelType"
-            />
-          </el-collapse-item>
-        </el-collapse>
-        <data-table
-          v-if="isLoading"
-          :container-uuid="containerUuid"
-          :panel-type="panelType"
-          :metadata="browserMetadata"
-        />
-      </el-main>
-    </el-container>
+      </div>
+      <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
+        <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
+          <panel
+            :container-uuid="containerUuid"
+            :metadata="browserMetadata"
+            :panel-type="panelType"
+          />
+        </el-collapse-item>
+      </el-collapse>
+      <data-table
+        v-if="isLoading"
+        :container-uuid="containerUuid"
+        :panel-type="panelType"
+        :metadata="browserMetadata"
+      />
+    </el-main>
   </div>
   <div
     v-else
@@ -56,7 +51,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    style="padding: 100px 100px; heigth: 100%"
+    class="loading"
   />
 </template>
 
@@ -79,10 +74,6 @@ export default {
   },
   props: {
     isEdit: {
-      type: Boolean,
-      default: false
-    },
-    isShowedCriteria: {
       type: Boolean,
       default: false
     }
@@ -119,53 +110,28 @@ export default {
       if (value) {
         this.defaultSearch()
       }
-    }
-  },
-  beforeCreate() {
-    this.$store.subscribe(mutation => {
-      if (mutation.type === 'setShowDialog') {
-        if (typeof mutation.payload !== 'undefined') {
-          this.isVisisbleDialog = true
-          this.processMetadata = mutation.payload
-        }
+    },
+    'browserMetadata.isShowedCriteria'(value) {
+      if (value) {
+        this.activeSearch = ['opened-criteria']
       }
-    })
+    }
   },
   created() {
     this.getBrowser(this.$route.meta.uuid)
-    // console.log(this.param())
   },
   methods: {
     isEmptyValue,
-    param() {
-      if (this.getDataDetail.length <= 0) {
-        var finalParameters = this.getParamsProcessToServer
-        console.log(finalParameters)
-        if ((finalParameters.fieldsMandatory.length > 0 &&
-          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
-          finalParameters.fieldsMandatory.length === 0) {
-          console.log('si qlq')
-        } else {
-          console.log(' no qlq')
-        }
-      }
-      return finalParameters.fieldsMandatory.length
-    },
     handleChange(value) {
-      if (this.activeSearch.length === 0) {
-        var showCriteria = false
-        this.$store.dispatch('changeShowedCriteriaBrowser', {
-          containerUuid: this.containerUuid,
-          isShowedCriteria: showCriteria
-        })
-      } else {
+      var showCriteria = false
+      if (this.activeSearch.length > 0) {
         showCriteria = true
-        this.$store.dispatch('changeShowedCriteriaBrowser', {
-          panelType: this.panelType,
-          containerUuid: this.containerUuid,
-          isShowedCriteria: showCriteria
-        })
       }
+      this.$store.dispatch('changeShowedCriteriaBrowser', {
+        panelType: this.panelType,
+        containerUuid: this.containerUuid,
+        isShowedCriteria: showCriteria
+      })
     },
     getBrowser(uuid = null) {
       if (!uuid) {
@@ -190,7 +156,6 @@ export default {
     defaultSearch() {
       if (this.getDataDetail.length <= 0) {
         var finalParameters = this.getParamsProcessToServer
-        console.log(finalParameters)
         if ((finalParameters.fieldsMandatory.length > 0 &&
           finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
           finalParameters.fieldsMandatory.length === 0) {
@@ -205,6 +170,11 @@ export default {
 </script>
 
 <style scoped>
+  .loading {
+    padding: 100px 100px;
+    height: 100%;
+  }
+
   .el-main {
     display: block;
     -webkit-box-flex: 1;

@@ -41,7 +41,7 @@ import { showNotification } from '@/utils/ADempiere/notification.js'
 // import SearchWindow from '@/views/ADempiere/SearchWindow'
 
 export default {
-  name: 'Modal',
+  name: 'ModalProcess',
   components: {
     // SearchWindow,
     Panel
@@ -95,7 +95,10 @@ export default {
     isEmptyValue,
     showNotification,
     closeDialog() {
-      this.$store.dispatch('setShowDialog', { type: this.modalMetadata.panelType, action: undefined })
+      this.$store.dispatch('setShowDialog', {
+        type: this.modalMetadata.panelType,
+        action: undefined
+      })
     },
     runAction(action) {
       if (action === undefined && this.windowRecordSelected !== undefined) {

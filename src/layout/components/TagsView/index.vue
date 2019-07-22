@@ -144,7 +144,7 @@ export default {
     },
     closeSelectedTag(view) {
       if (this.$route.meta.uuid) {
-        this.$store.dispatch('deleteRecortContainer', this.$route.meta.uuid)
+        this.$store.dispatch('deleteRecordContainer', this.$route.meta.uuid)
       }
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
         if (this.isActive(view)) {

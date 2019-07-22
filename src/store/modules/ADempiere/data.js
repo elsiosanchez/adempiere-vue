@@ -14,7 +14,7 @@ const data = {
         state.recordSelection.push(payload)
       }
     },
-    deleteRecortContainer(state, payload) {
+    deleteRecordContainer(state, payload) {
       state.recordSelection = payload
     },
     notifyCellTableChange: (state, payload) => {
@@ -59,11 +59,11 @@ const data = {
         index: index
       })
     },
-    deleteRecortContainer({ commit, state }, containerUuid) {
+    deleteRecordContainer({ commit, state }, containerUuid) {
       var record = state.recordSelection.filter(itemRecord => {
         return itemRecord.containerUuid !== containerUuid
       })
-      commit('deleteRecortContainer', record)
+      commit('deleteRecordContainer', record)
     },
     getObject: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
