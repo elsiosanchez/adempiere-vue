@@ -1,7 +1,7 @@
 import { getBrowserSearch } from '@/api/ADempiere/data'
 import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
 import { showMessage } from '@/utils/ADempiere/notification'
-import i18n from '@/lang'
+import language from '@/lang'
 
 const browserControl = {
   state: {
@@ -14,7 +14,7 @@ const browserControl = {
   },
   actions: {
     /**
-     * Search with query criteria
+     *
      * @param {string} params.containerUuid, browsert to search record data
      * @param {boolean} params.clearSelection, clear selection after search
      */
@@ -71,24 +71,22 @@ const browserControl = {
               dispatch('recordSelection', {
                 containerUuid: params.containerUuid,
                 record: record,
-                selection: selection,
-                pageNumber: pageNumber
+                pageNumber: pageNumber,
+                selection: selection
               })
-              var notificationParams = {
-                title: i18n.t('notifications.succesful'),
-                message: i18n.t('notifications.succcessSearch'),
+              showMessage({
+                title: language.t('notifications.succesful'),
+                message: language.t('notifications.succcessSearch'),
                 type: 'success'
-              }
-              showMessage(notificationParams)
+              })
               resolve(record)
             })
             .catch(err => {
-              var notificationParams = {
-                title: i18n.t('notifications.error'),
-                message: i18n.t('notifications.errorSearch'),
+              showMessage({
+                title: language.t('notifications.error'),
+                message: language.t('notifications.errorSearch'),
                 type: 'error'
-              }
-              showMessage(notificationParams)
+              })
               reject(err)
             })
         }

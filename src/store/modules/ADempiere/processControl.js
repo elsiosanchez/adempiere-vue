@@ -3,6 +3,7 @@ import {
   requestProcessActivity
 } from '@/api/ADempiere/data'
 import { showNotification } from '@/utils/ADempiere/notification'
+import language from '@/lang'
 
 const processControl = {
   state: {
@@ -55,27 +56,21 @@ const processControl = {
       if (typeof params.parentUuid !== undefined) {
         selection = rootGetters.getSelectionToServer(params.parentUuid)
       }
+      var processDefinition = rootGetters.getProcess(params.action.uuid)
 
       var processToRun = {
-        uuid: params.action.uuid,
-        name: params.action.name,
-        processName: params.processName,
-        description: params.action.description,
-        help: params.action.help,
-        isReport: params.action.isReport,
-        accessLevel: params.accessLevel,
-        showHelp: params.action.showHelp,
-        isDirectPrint: params.action.isDirectPrint,
+        uuid: processDefinition.uuid,
+        name: processDefinition.name,
         reportExportType: reportExportType,
         parameters: finalParameters.params,
         selection: selection
       }
-      var notificationParams = {
-        title: 'processing',
-        message: processToRun.processName,
+      showNotification({
+        title: language.t('notifications.processing'),
+        message: processDefinition.name,
+        summary: processDefinition.description,
         type: 'info'
-      }
-      showNotification(notificationParams)
+      })
       // Run process on server and wait for it for notify
       var processResult = {}
       runProcess(processToRun)
@@ -144,8 +139,7 @@ const processControl = {
             logs: logList,
             output: output
           }
-          //  parentUuid is the identifier of the container where the process is called
-          dispatch('deleteRecordContainer', params.parentUuid)
+          dispatch('deleteRecortContainer', params.parentUuid)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -170,8 +164,7 @@ const processControl = {
               reportExportType: ''
             }
           }
-          //  parentUuid is the identifier of the container where the process is called
-          dispatch('deleteRecordContainer', params.parentUuid)
+          dispatch('deleteRecortContainer', processToRun.uuid)
           dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
         })
@@ -283,31 +276,22 @@ const processControl = {
       }
     },
     finishProcess({ commit }, processOutput) {
-      if (!processOutput.isError &&
-        typeof processOutput.instanceUuid !== 'undefined' &&
-        typeof processOutput.processUuid !== 'undefined') {
-        var notificationParams = {
-          name: processOutput.processName,
-          title: 'succesful',
-          message: 'processExecuted',
-          type: 'success',
-          log: (processOutput.log === undefined) ? processOutput.summary : processOutput.log
-        }
-        showNotification(notificationParams)
-        commit('setReportValues', processOutput)
-        commit('addStartedProcess', processOutput)
-      } else {
-        notificationParams = {
-          name: processOutput.processName,
-          title: 'error',
-          message: 'processError',
-          type: 'error',
-          log: (processOutput.log === undefined) ? processOutput.summary : processOutput.log
-        }
-        showNotification(notificationParams)
-        commit('addStartedProcess', processOutput)
-        commit('setReportValues', processOutput)
+      var processMessage = {
+        name: processOutput.processName,
+        title: language.t('notifications.succesful'),
+        message: language.t('notifications.processExecuted'),
+        type: 'success',
+        logs: processOutput.logs,
+        summary: processOutput.summary
       }
+      if (processOutput.isError) {
+        processMessage.title = language.t('notifications.error')
+        processMessage.message = language.t('notifications.processError')
+        processMessage.type = 'error'
+      }
+      showNotification(processMessage)
+      commit('addStartedProcess', processOutput)
+      commit('setReportValues', processOutput)
     },
     changeFormatReport({ commit }, reportFormat) {
       if (typeof reportFormat !== 'undefined') {

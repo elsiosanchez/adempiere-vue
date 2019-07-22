@@ -12,16 +12,28 @@ export function hasTranslation(text) {
 }
 
 export function showNotification(params) {
-  if (typeof params !== 'undefined') {
+  if (params !== undefined) {
     var title = hasTranslation(params.title)
     var message = hasTranslation(params.message)
-    if (params.name) {
-      message = params.name + message
+    //  For summary
+    if (params.summary !== undefined) {
+      if (message !== undefined) {
+        message = message + '<br>' + params.summary
+      } else {
+        message = params.summary
+      }
     }
-    var log = (params.log === undefined) ? '' : params.log
+    //  For logs
+    if (params.logs !== undefined) {
+      params.logs.forEach((logResult) => {
+        if (logResult !== undefined) {
+          message = message + '<br>' + logResult.log
+        }
+      })
+    }
     Notification({
       title: title,
-      message: message + '<br>' + log,
+      message: message,
       type: params.type,
       position: 'bottom-right',
       dangerouslyUseHTMLString: true

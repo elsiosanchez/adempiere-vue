@@ -1,8 +1,3 @@
-/* import store from '@/store'
-function translations() {
-  return store.getters.getMessages
-}
-var messages = translations() */
 export default {
   route: {
     dashboard: 'Panel de control',
@@ -25,8 +20,8 @@ export default {
     succcessSearch: 'La búsqueda se ha realizado',
     errorSearch: 'La búsqueda no se ha completado.',
     processing: 'Procesando',
-    processExecuted: ' ejecutado, ver actividad de proceso',
-    processError: ' no fue ejecutado',
+    processExecuted: 'Ejecutado, ver actividad de proceso',
+    processError: 'No fue ejecutado',
     emptyValues: 'Parametro(s) con valores vacios',
     fieldMandatory: 'El campo es obligatorio',
     Opened: 'Abierto',
