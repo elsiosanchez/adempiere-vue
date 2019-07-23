@@ -12,24 +12,23 @@
     />
     <el-main>
       <div class="containert">
-        <div style="text-align: -webkit-center;">
-          <el-popover
-            v-if="!isEmptyValue(browserMetadata.name)"
-            placement="top-start"
-            :title="browserMetadata.name"
-            width="400"
-            trigger="hover"
-          >
-            <div v-html="browserMetadata.help" />
-            <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">
-              {{ browserMetadata.name }}
-            </el-button>
-          </el-popover>
-          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title">{{ browserMetadata.name }}</el-button>
-        </div>
+        <div class="menu" />
+        <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title2">{{ browserMetadata.name }}</el-button>
       </div>
       <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
-        <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
+        <el-popover
+          v-if="!isEmptyValue(browserMetadata.name)"
+          placement="top-start"
+          :title="browserMetadata.name"
+          width="400"
+          trigger="hover"
+        >
+          <div v-html="browserMetadata.help" />
+          <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title2">
+            {{ browserMetadata.name }}
+          </el-button>
+        </el-popover>
+        <el-collapse-item name="opened-criteria">
           <panel
             :container-uuid="containerUuid"
             :metadata="browserMetadata"
@@ -198,13 +197,17 @@ export default {
     padding-right: 20px;
     width: 50%;
   }
-  .title {
+  .menu {
+    height: 40px;
+  }
+  .title2 {
+    position: fixed;
+    top: 128px;
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
     font-weight: 605!important;
-    position: relative;
-    left: 43%;
+    /* left: 50%; */
   }
   .content-help {
     width: 100%;

@@ -56,28 +56,14 @@
       </template>
     </el-table>
   </div>
-  <div v-else class="errPage-container">
-    <el-row>
-      <el-col :span="8">.
-      </el-col>
-      <el-col :span="8">
-        <h1>
-          {{ $t('views.noProcess') }}
-        </h1>
-        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
-      </el-col>
-    </el-row>
-  </div>
 </template>
 <script>
-import errGif from '@/assets/401_images/401.gif'
 import Sortable from 'sortablejs'
 
 export default {
   name: 'ProcessActivity',
   data() {
     return {
-      errGif: errGif + '?' + new Date(),
       tableColumns: ['Name', 'Description', 'Status'],
       showDialog: false,
       sortable: null,
