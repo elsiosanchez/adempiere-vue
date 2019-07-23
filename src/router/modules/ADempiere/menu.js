@@ -142,6 +142,7 @@ function getRouteFromMenuItem(menu) {
           parentUuid: menu.getUuid(),
           title: menu.getName(),
           type: actionAttributes.name,
+          icon: actionAttributes.icon,
           noCache: true
         }
       }
