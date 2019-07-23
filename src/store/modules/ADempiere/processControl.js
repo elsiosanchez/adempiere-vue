@@ -241,7 +241,7 @@ const processControl = {
       })
     },
     setShowDialog({ commit }, params) {
-      if (params.type === 'process') {
+      if (params.type === 'process' || params.type === 'report') {
         if (params.action === undefined) {
           commit('setMetadata', {
             id: null,
