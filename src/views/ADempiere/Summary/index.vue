@@ -46,7 +46,7 @@ export default {
       if (routeParent === undefined) {
         this.optionList = this.$route.params.childs
       } else {
-        this.optionList = routeParent.children.find(child => child.name === this.$route.name)
+        this.optionList = routeParent.children
       }
     }
   }
