@@ -1,13 +1,21 @@
 import { getLookup, getLookupList } from '@/api/ADempiere/data'
-import { convertValueFromGRPC } from '@/utils/ADempiere'
+import { convertValueFromGRPC, getCurrentRole } from '@/utils/ADempiere'
 
 const lookup = {
   state: {
-    lookup: []
+    lookupItem: [],
+    lookupList: []
   },
   mutations: {
+    addLoockupItem(state, payload) {
+      state.lookupItem.push(payload)
+    },
     addLoockupList(state, payload) {
-      state.lookup.push(payload)
+      state.lookupList.push(payload)
+    },
+    deleteLookupList(state, payload) {
+      state.lookupItem = payload.lookupItem
+      state.lookupList = payload.lookupList
     }
   },
   actions: {
@@ -20,12 +28,18 @@ const lookup = {
         getLookup(objectParams, objectParams.value)
           .then(response => {
             const map = response.getValuesMap()
-            var options = {
+            var option = {
               label: convertValueFromGRPC(map.get('DisplayColumn')),
               key: convertValueFromGRPC(map.get('KeyColumn'))
             }
-            commit('addLoockupList', options)
-            resolve(options)
+            commit('addLoockupItem', {
+              option: option,
+              value: objectParams.value,
+              parsedDirectQuery: objectParams.parsedDirectQuery,
+              tableName: objectParams.tableName,
+              roleUuid: getCurrentRole()
+            })
+            resolve(option)
           })
           .catch(err => {
             reject(err)
@@ -54,7 +68,8 @@ const lookup = {
             commit('addLoockupList', {
               list: options,
               tableName: objectParams.tableName,
-              parsedQuery: objectParams.query
+              parsedQuery: objectParams.query,
+              roleUuid: getCurrentRole()
             })
             resolve(options)
           })
@@ -62,12 +77,39 @@ const lookup = {
             reject(err)
           })
       })
+    },
+    deleteLookupList({ commit, state }, params) {
+      var lookupItem = state.lookupItem.filter(itemLookup => {
+        return itemLookup.parsedDirectQuery !== params.parsedDirectQuery &&
+        itemLookup.tableName !== params.tableName &&
+        itemLookup.roleUuid !== getCurrentRole() &&
+        itemLookup.value !== params.value
+      })
+      var lookupList = state.lookupList.filter(itemLookup => {
+        return itemLookup.parsedQuery !== params.parsedQuery &&
+        itemLookup.tableName !== params.tableName &&
+        itemLookup.roleUuid !== getCurrentRole()
+      })
+      commit('deleteLookupList', {
+        lookupItem: lookupItem,
+        lookupList: lookupList
+      })
     }
   },
   getters: {
+    getLookupItem: (state) => (params) => {
+      return state.lookupItem.find(itemLookup => {
+        return itemLookup.parsedDirectQuery === params.parsedDirectQuery &&
+          itemLookup.tableName === params.tableName &&
+          itemLookup.roleUuid === getCurrentRole() &&
+          itemLookup.value === params.value
+      })
+    },
     getLookupList: (state) => (params) => {
-      var lookup = state.lookup.find(item => {
-        return item.parsedQuery === params.parsedQuery && item.tableName === params.tableName
+      var lookup = state.lookupList.find(itemLookup => {
+        return itemLookup.parsedQuery === params.parsedQuery &&
+          itemLookup.tableName === params.tableName &&
+          itemLookup.roleUuid === getCurrentRole()
       })
       if (lookup === undefined) {
         return []

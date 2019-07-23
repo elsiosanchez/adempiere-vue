@@ -6,21 +6,23 @@
     :loading="loading"
     value-key="key"
     class="select-base"
+    clearable
     :disabled="metadata.readonly || metadata.disabled"
     @change="handleChange"
     @visible-change="getDataLookupList"
+    @clear="clearLookup"
   >
     <el-option
       v-for="(item, key) in options"
       :key="key"
+      :value="String(item.key)"
       :label="item.label"
-      :value="item.key"
     />
   </el-select>
 </template>
 
 <script>
-import { parseContext } from '@/utils/ADempiere'
+import { isEmptyValue, parseContext } from '@/utils/ADempiere'
 
 export default {
   name: 'SelectBase',
@@ -36,13 +38,13 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.isShowedFromUser ? this.valueModel : this.metadata.value,
+      value: this.metadata.value,
       loading: false,
       options: [],
       list: [],
       showControls: true,
       blanckOption: {
-        label: '',
+        label: ' ',
         value: -1
       }
     }
@@ -73,11 +75,11 @@ export default {
   watch: {
     valueModel(value) {
       this.value = value
-      this.getData()
     }
   },
   created() {
     this.options = this.getterOptions
+    // this.getData()
   },
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
@@ -101,40 +103,7 @@ export default {
   },
   methods: {
     parseContext,
-    getData() {
-      if (this.valueModel !== '') {
-        this.getDataTrigger(this.tableName, this.parsedDirectQuery, this.valueModel)
-      } else if (this.metadata.value !== '') {
-        this.getDataTrigger(this.tableName, this.parsedDirectQuery, this.metadata.value)
-      }
-    },
-    getDataTrigger(tableName, directQuery, value) {
-      this.$store.dispatch('getLookup', {
-        tableName: tableName,
-        directQuery: directQuery,
-        value: value
-      })
-        .then(response => {
-          this.value = response.label
-          this.options.push(response)
-          this.options.push(this.blanckOption)
-        })
-        .catch(err => {
-          console.warn('DataRecord, Select Base - Error ' + err.code + ': ' + err.message)
-        })
-    },
-    /**
-     * @param {boolean} show triggers when the pull-down menu appears or disappears
-     */
-    getDataLookupList(showList) {
-      if (showList) {
-        if (this.getterOptions.length > 0) {
-          this.options = this.getterOptions
-        } else {
-          this.remoteMethod()
-        }
-      }
-    },
+    isEmptyValue,
     handleChange() {
       if (this.metadata.inTable) {
         var selected = this.options.find(option => option.key === this.value)
@@ -157,6 +126,43 @@ export default {
         })
       }
     },
+    getData() {
+      var value
+      if (!this.isEmptyValue(this.metadata.value)) {
+        value = this.metadata.value
+      } else if (!this.isEmptyValue(this.valueModel)) {
+        value = this.valueModel
+      }
+
+      this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, value)
+    },
+    getDataTrigger(tableName, directQuery, value) {
+      this.$store.dispatch('getLookup', {
+        tableName: tableName,
+        directQuery: directQuery,
+        value: value
+      })
+        .then(response => {
+          this.value = response.label
+          this.options.push(response)
+          this.options.unshift(this.blanckOption)
+        })
+        .catch(err => {
+          console.warn('Get Lookup, Select Base - Error ' + err.code + ': ' + err.message)
+        })
+    },
+    /**
+     * @param {boolean} show triggers when the pull-down menu appears or disappears
+     */
+    getDataLookupList(showList) {
+      if (showList) {
+        if (this.getterOptions.length > 0) {
+          this.options = this.getterOptions
+        } else {
+          this.remoteMethod()
+        }
+      }
+    },
     remoteMethod() {
       this.loading = true
       this.$store.dispatch('getLookupList', {
@@ -170,8 +176,17 @@ export default {
         })
         .catch(err => {
           this.loading = false
-          console.warn('DataRecord List, Select Base - Error ' + err.code + ': ' + err.message)
+          console.warn('Get Lookup List, Select Base - Error ' + err.code + ': ' + err.message)
         })
+    },
+    clearLookup() {
+      this.$store.dispatch('deleteLookupList', {
+        tableName: this.metadata.reference.tableName,
+        parsedQuery: this.parsedQuery,
+        parsedDirectQuery: this.parsedDirectQuery,
+        value: this.value
+      })
+      this.options.push(this.blanckOption)
     }
   }
 }
