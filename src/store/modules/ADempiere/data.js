@@ -141,8 +141,10 @@ const data = {
                 windowUuid: item.getWindowuuid(),
                 tableId: item.getTableid(),
                 recordId: item.getRecordid(),
+                uuidRecord: item.getRecorduuid(),
                 tabUuid: tabUuid,
-                updated: new Date(item.getUpdated())
+                updated: new Date(item.getUpdated()),
+                description: item.getMenudescription()
               }
             })
             commit('setRecentItems', recentItems)

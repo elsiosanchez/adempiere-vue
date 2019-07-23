@@ -2,12 +2,13 @@
   <div class="block">
     <el-timeline>
       <el-timeline-item v-for="(item, index) of recentItems" :key="index" placement="top" type="primary" size="large" :timestamp="String(item.updated)">
-        <el-card>
-          <router-link :to="{ name: item.menuUuid }">
+        <router-link :to="{ name: item.menuUuid, params: { uuidRecord: (item.uuidRecord) ? item.uuidRecord : undefined }}">
+          <el-card>
             <h4>
               {{ item.displayName }}
               <el-tag v-show="checkOpened(item.menuUuid)">{{ $t('notifications.Opened') }}</el-tag>
             </h4>
+            <p>{{ item.description }}</p>
             <!-- <ul>
               <li v-show="item.menuName !==''">
                 Menu Name: {{ item.menuName }}
@@ -28,8 +29,8 @@
                 Tab UUID: {{ item.tabUuid }}
               </li>
             </ul> -->
-          </router-link>
-        </el-card>
+          </el-card>
+        </router-link>
       </el-timeline-item>
     </el-timeline>
   </div>
