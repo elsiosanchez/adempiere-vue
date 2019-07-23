@@ -157,7 +157,7 @@ export default {
       return undefined
     },
     getHeigthTable() {
-      if (this.getDataDetail !== 'undefined') {
+      if (this.getDataDetail !== undefined) {
         return this.$store.getters.getHeigth() - 180
       } else {
         return this.$store.getters.getHeigth()
@@ -191,7 +191,7 @@ export default {
      */
     generatePanel() {
       var panel = this.getterPanel
-      if (typeof panel === 'undefined' || panel.fieldList.length === 0) {
+      if (panel === undefined || panel.fieldList.length === 0) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.tabUuid,
           type: 'window'
@@ -270,7 +270,7 @@ export default {
         if (!this.isEmptyValue(this.search)) {
           let find = false
           Object.keys(rowItem).forEach(key => {
-            if (typeof rowItem[key] !== 'undefined' && String(rowItem[key]).includes(this.search)) {
+            if (rowItem[key] !== undefined && String(rowItem[key]).includes(this.search)) {
               find = true
               return find
             }

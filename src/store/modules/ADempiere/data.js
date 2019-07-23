@@ -8,7 +8,7 @@ const data = {
   },
   mutations: {
     recordSelection(state, payload) {
-      if (payload.index > -1 && typeof payload.index !== 'undefined') {
+      if (payload.index > -1 && payload.index !== undefined) {
         state.recordSelection.splice(payload.index, 1, payload)
       } else {
         state.recordSelection.push(payload)
@@ -19,15 +19,15 @@ const data = {
     },
     notifyCellTableChange: (state, payload) => {
       payload.row[payload.columnName] = payload.value
-      if (typeof payload.displayColumn !== 'undefined') {
+      if (payload.displayColumn !== undefined) {
         var key = 'DisplayColumn_' + payload.columnName
         payload.row[key] = payload.displayColumn
       }
     },
     notifyCellSelectionChange: (state, payload) => {
-      if (typeof payload.row !== 'undefined') {
+      if (payload.row !== undefined) {
         payload.row[payload.columnName] = payload.value
-        if (typeof payload.displayColumn !== 'undefined') {
+        if (payload.displayColumn !== undefined) {
           var key = 'DisplayColumn_' + payload.columnName
           payload.row[key] = payload.displayColumn
         }
@@ -94,9 +94,14 @@ const data = {
           })
       })
     },
+    /**
+     * Request list to view in table
+     * @param {string} params.table, tableName to search record data
+     * @param {string} params.criteria, criteria to search record data
+     */
     getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {
       return new Promise((resolve, reject) => {
-        getObjectListFromCriteria(objectParams.table, objectParams.criteria)
+        getObjectListFromCriteria(objectParams)
           .then(response => {
             const recordList = response.getRecordsList()
             var record = recordList.map(itemRecord => {
@@ -178,7 +183,7 @@ const data = {
       var data = state.recordSelection.find(itemRecord => {
         return itemRecord.containerUuid === containerUuid
       })
-      if (typeof data !== 'undefined') {
+      if (data !== undefined) {
         return data
       }
       return {
@@ -286,7 +291,7 @@ const data = {
       var languageList = state.recordSelection.find(
         record => record.containerUuid === roleUuid
       )
-      if (typeof languageList !== 'undefined') {
+      if (languageList !== undefined) {
         return languageList
       } else {
         return undefined

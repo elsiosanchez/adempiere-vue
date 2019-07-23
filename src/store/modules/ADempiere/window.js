@@ -3,8 +3,7 @@ import { convertContextInfoFromGRPC, convertFieldFromGRPC } from '@/utils/ADempi
 
 const window = {
   state: {
-    window: [],
-    recordSelected: {}
+    window: []
   },
   mutations: {
     addWindow(state, payload) {
@@ -18,9 +17,6 @@ const window = {
     },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
-    },
-    setRecordSelected(state, payload) {
-      state.recordSelected = payload
     }
   },
   actions: {
@@ -40,7 +36,7 @@ const window = {
             var childrenTabs = []
             var parentTabs = []
 
-            tabs.map(tabItem => {
+            tabs = tabs.map(tabItem => {
               var group = {}
               try {
                 group = {
@@ -61,17 +57,26 @@ const window = {
                 name: tabItem.getName(),
                 tableName: tabItem.getTablename(),
                 tabGroup: group,
-                linkColumnName: tabItem.getLinkcolumnname(),
                 sequence: tabItem.getSequence(),
                 tabLevel: tabItem.getTablevel(),
+                displayLogic: tabItem.getDisplaylogic(),
+                isView: tabItem.getIsview(),
+                isDocument: tabItem.getIsdocument(),
+                isInserRecrod: tabItem.getIsinsertrecord(),
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
-                parentColumnName: tabItem.getParentcolumnname(),
                 parentTab: Boolean(firstTab === tabItem.getTablename()),
-                contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo())
+                contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
+                // conditionals
+                linkColumnName: tabItem.getLinkcolumnname(),
+                parentColumnName: tabItem.getParentcolumnname(),
+                commitWarning: tabItem.getCommitwarning(),
+                query: tabItem.getQuery(),
+                whereClause: tabItem.getWhereclause(),
+                orderByClause: tabItem.getOrderbyclause()
               }
 
               //  Convert from gRPC process list
-              var actions = tabItem.getProcessesList().map((processItem) => {
+              var actions = tabItem.getProcessesList().map(processItem => {
                 return {
                   name: processItem.getName(),
                   type: 'process',
@@ -97,11 +102,6 @@ const window = {
                 parentTabs.push(tab)
               } else {
                 childrenTabs.push(tab)
-                dispatch('getObjectListFromCriteria', {
-                  containerUuid: tab.uuid,
-                  table: tab.tableName,
-                  criteria: "IsActive = 'Y'"
-                })
               }
               return tab
             })
@@ -120,12 +120,6 @@ const window = {
               ...newWindow,
               ...tabProperties
             }
-
-            dispatch('getObjectListFromCriteria', {
-              containerUuid: newWindow.currentTab.windowUuid,
-              table: newWindow.currentTab.tableName,
-              criteria: "uuid <> ''"
-            })
             commit('addWindow', newWindow)
             resolve(newWindow)
           })
@@ -161,8 +155,8 @@ const window = {
             fieldsList
               .filter(field => field.parentFieldsList && field.isActive)
               .forEach((field, index, list) => {
-                field.parentFieldsList.forEach((parentColumnName) => {
-                  var parentField = list.find((parentField) => {
+                field.parentFieldsList.forEach(parentColumnName => {
+                  var parentField = list.find(parentField => {
                     return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
                   })
                   if (parentField) {
@@ -212,11 +206,6 @@ const window = {
         window: window,
         tabUuid: params.containerUuid
       })
-    },
-    setRecordSelected: ({ commit }, object) => {
-      if (typeof object !== 'undefined') {
-        commit('setRecordSelected', object)
-      }
     }
   },
   getters: {
@@ -230,7 +219,7 @@ const window = {
       var window = getters.getWindow(windowUuid)
       if (window) {
         if (tabUuid) {
-          var tab = window.allTabs.find(
+          var tab = window.tabsList.find(
             tabItem => tabItem.uuid === tabUuid
           )
           return tab
@@ -239,15 +228,22 @@ const window = {
       }
       return window
     },
-    getTabProcess: (state, getters) => (windowUuid, tabUuid) => {
+    getTab: (state, getters) => (windowUuid, tabUuid) => {
       var window = getters.getWindow(windowUuid)
       if (window) {
-        var tab = window.tabsListParent.find(
-          tabItem => tabItem.uuid === tabUuid
-        )
-        return tab.processList
+        var tab = window.tabsList.find(tabItem => {
+          return tabItem.uuid === tabUuid
+        })
+        return tab
       }
       return window
+    },
+    getTabProcess: (state, getters) => (windowUuid, tabUuid) => {
+      var tab = getters.getTab(windowUuid, tabUuid)
+      if (tab) {
+        return tab.processList
+      }
+      return tab
     },
     getCurrentTab: (state, getters) => (windowUuid) => {
       var window = getters.getWindow(windowUuid)

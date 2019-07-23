@@ -137,7 +137,7 @@ export default {
         uuid = this.$route.meta.uuid
       }
       var browser = this.$store.getters.getBrowser(uuid)
-      if (typeof browser === 'undefined') {
+      if (browser === undefined) {
         this.$store.dispatch('getBrowserFromServer', uuid)
           .then(response => {
             this.browserMetadata = response

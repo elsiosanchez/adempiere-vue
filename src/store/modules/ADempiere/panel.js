@@ -23,13 +23,13 @@ const panel = {
       ).fieldList = payload.fieldList
     },
     changeFieldLogic(state, payload) {
-      if (typeof payload.isDisplayedFromLogic !== 'undefined') {
+      if (payload.isDisplayedFromLogic !== undefined) {
         payload.field.isDisplayedFromLogic = payload.isDisplayedFromLogic
       }
-      if (typeof payload.isMandatoryFromLogic !== 'undefined') {
+      if (payload.isMandatoryFromLogic !== undefined) {
         payload.field.isMandatoryFromLogic = payload.isMandatoryFromLogic
       }
-      if (typeof payload.isReportFromLogic !== 'undefined') {
+      if (payload.isReportFromLogic !== undefined) {
         payload.field.isReportFromLogic = payload.isReportFromLogic
       }
     },
@@ -256,7 +256,7 @@ const panel = {
     },
     getFieldsListFromPanel: (state, getters) => (containerUuid) => {
       var panel = getters.getPanel(containerUuid)
-      if (typeof panel === 'undefined') {
+      if (panel === undefined) {
         return []
       }
       return panel.fieldList
@@ -274,7 +274,7 @@ const panel = {
         itemPanel => itemPanel.uuid === containerUuid
       )
 
-      if (typeof panel === 'undefined') {
+      if (panel === undefined) {
         return panel
       }
       var fieldList = panel.fieldList.filter((itemField) => {

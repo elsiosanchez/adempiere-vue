@@ -199,7 +199,7 @@ export default {
           return true
         }
       })
-      if (typeof field !== 'undefined') {
+      if (field !== undefined) {
         return true
       }
       return false

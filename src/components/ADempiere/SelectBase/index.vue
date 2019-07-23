@@ -85,12 +85,12 @@ export default {
     }
 
     // enable to dataTable records
-    if (typeof this.metadata.displayColumn !== 'undefined') {
+    if (this.metadata.displayColumn !== undefined) {
       var key = this.metadata.value
-      if (typeof this.valueModel !== 'undefined') {
+      if (this.valueModel !== undefined) {
         key = this.valueModel
       }
-      if (typeof this.options.find(option => option.key === key) === 'undefined') {
+      if (this.options.find(option => option.key === key) === undefined) {
         this.options.push({
           key: key,
           label: this.metadata.displayColumn

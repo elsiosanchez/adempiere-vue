@@ -115,11 +115,11 @@ export default {
     },
     getCachedReport() {
       this.reportResult = this.getterCachedReport
-      if (typeof this.reportResult === 'undefined') {
+      if (this.reportResult === undefined) {
         this.$store.dispatch('getSessionProcessFromServer')
           .then(response => {
             this.reportResult = this.getterCachedReport
-            if (typeof this.reportResult === 'undefined') {
+            if (this.reportResult === undefined) {
               this.showNotification({
                 type: 'error',
                 title: 'error',

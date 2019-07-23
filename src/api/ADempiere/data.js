@@ -1,12 +1,12 @@
 import { getLanguage } from '@/lang/index'
 import { getToken } from '@/utils/auth'
-import DataRecord from '@adempiere/grpc-data-client'
+import BusinessData from '@adempiere/grpc-data-client'
 import { HOST_GRPC_DATA } from './constants'
 import { showMessage } from '@/utils/ADempiere/notification'
 
 // Get Instance for connection
 function Instance() {
-  return new DataRecord(
+  return new BusinessData(
     HOST_GRPC_DATA,
     getToken(),
     getLanguage() || 'en_US'
@@ -17,13 +17,30 @@ export function getObject(table, uuid = false) {
   return Instance.call(this).getEntity(Instance.call(this).getEntityRequest(table, uuid))
 }
 
-export function getCriteria(table) {
-  return Instance.call(this).getCriteria(table)
+export function getCriteria(tableName) {
+  return Instance.call(this).getCriteria(tableName)
 }
 
-export function getObjectListFromCriteria(table, criteria) {
-  const criteriaForList = Instance.call(this).getCriteria(table)
-  criteriaForList.setWhereclause(criteria)
+/**
+ *
+ * @param {string} object.tableName
+ * @param {string} object.query
+ * @param {string} object.whereClause
+ * @param {string} object.orderByClause
+ */
+export function getObjectListFromCriteria(object) {
+  const criteriaForList = getCriteria(object.tableName)
+
+  if (object.query) {
+    criteriaForList.setQuery(object.query)
+  }
+  if (object.whereClause) {
+    criteriaForList.setWhereclause(object.whereClause)
+  }
+  if (object.orderByClause) {
+    criteriaForList.setOrderbyclause(object.orderByClause)
+  }
+
   return Instance.call(this).requestObjectListFromCriteria(criteriaForList)
 }
 

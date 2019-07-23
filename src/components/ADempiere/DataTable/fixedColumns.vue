@@ -43,7 +43,7 @@ export default {
   methods: {
     getPanel() {
       var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-      if (typeof fieldList === 'undefined' || fieldList.length === 0) {
+      if (fieldList === undefined || fieldList.length === 0) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           type: this.panelType.trim()

@@ -60,7 +60,7 @@ export default {
     },
     getRecentItems() {
       var items = this.getterRecentItems
-      if (typeof items === 'undefined' || items.length < 1) {
+      if (items === undefined || items.length < 1) {
         this.$store.dispatch('getRecentItemsFromServer')
           .then(response => {
             this.recentItems = response

@@ -166,7 +166,7 @@ export default {
       }
     },
     relations() {
-      if (typeof this.$route.params.menuParentUuid !== 'undefined') {
+      if (this.$route.params.menuParentUuid !== undefined) {
         return this.$store.getters.getRelations(this.$route.params.menuParentUuid)
       }
       return this.$store.getters.getRelations(this.menuParentUuid)
@@ -185,7 +185,7 @@ export default {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
 
-      if (typeof this.actions !== 'undefined') {
+      if (this.actions !== undefined) {
         this.actions.forEach((item) => {
           item['disabled'] = false
         })
@@ -226,7 +226,7 @@ export default {
     showModal(type, action) {
       if (type === 'process') {
         var processData = this.$store.getters.getProcess(action.uuid)
-        if (typeof processData === 'undefined') {
+        if (processData === undefined) {
           this.$store.dispatch('getProcessFromServer', action.uuid)
             .then(response => {
               this.$store.dispatch('setShowDialog', { type: type, action: response })
@@ -247,7 +247,7 @@ export default {
           finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
           finalParameters.fieldsMandatory.length === 0) {
           var containerParams = this.$route.meta.uuid
-          if (typeof this.lastParameter !== 'undefined') {
+          if (this.lastParameter !== undefined) {
             containerParams = this.lastParameter
           }
           this.$store.dispatch(action.action, {
@@ -264,8 +264,8 @@ export default {
                 if (action.type === 'finishProcess') {
                   if (!action.payload.isError) {
                     var parentMenu = this.menuParentUuid
-                    if (typeof this.$route.params !== 'undefined') {
-                      if (typeof this.$route.params.menuParentUuid !== 'undefined') {
+                    if (this.$route.params !== undefined) {
+                      if (this.$route.params.menuParentUuid !== undefined) {
                         parentMenu = this.$route.params.menuParentUuid
                       }
                     }

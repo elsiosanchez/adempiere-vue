@@ -179,7 +179,7 @@ const process = {
       var process = state.process.find(
         item => item.uuid === processUuid
       )
-      if (typeof process === 'undefined') {
+      if (process === undefined) {
         return process
       }
       return process.parameterList

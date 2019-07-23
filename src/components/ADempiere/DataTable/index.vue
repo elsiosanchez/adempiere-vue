@@ -218,13 +218,6 @@ export default {
       }
     }
   },
-  watch: {
-    isLoaded() {
-      if (typeof this.tableName !== 'undefined') {
-        this.getData(this.tableName)
-      }
-    }
-  },
   created() {
     // get tab with uuid
     this.getPanel()
@@ -403,7 +396,7 @@ export default {
      */
     getPanel() {
       var panel = this.getterPanel
-      if (typeof panel === 'undefined' || panel.fieldList.length === 0) {
+      if (panel === undefined || panel.fieldList.length === 0) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           type: this.panelType.trim()
@@ -422,12 +415,8 @@ export default {
     generatePanel() {
       var panel = this.panel
       this.keyColumn = panel.keyColumn
-      this.fieldList = this.sortFields(panel.fieldList)
+      this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
       this.isLoaded = true
-      // this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
-      if (this.isEdit && this.panelType === 'window') {
-        this.getData(this.tableName)
-      }
     },
     /**
      * Sorts the column components according to the value that is obtained from
@@ -457,13 +446,6 @@ export default {
 </script>
 
 <style>
-  /* style in cursor if cell is no edit */
-  .cell-no-edit {
-    cursor: not-allowed !important;
-  }
-  .cell-edit {
-    cursor: pointer !important;
-  }
   .el-table th, .el-table td {
     padding: 12px 0;
     min-width: 0;
@@ -499,6 +481,14 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  /* style in cursor if cell is no edit */
+  .cell-no-edit {
+    cursor: not-allowed !important;
+  }
+  .cell-edit {
+    cursor: pointer !important;
+  }
+
   // .menu-table-container {
   //   max-height: 40px;
   // }

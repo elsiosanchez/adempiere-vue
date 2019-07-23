@@ -60,7 +60,7 @@ export default {
   },
   beforeMount() {
     // enable to dataTable records
-    if (typeof this.valueModel !== 'undefined' && this.value !== null) {
+    if (this.valueModel !== undefined && this.value !== null) {
       this.value = this.valueModel
     }
   },

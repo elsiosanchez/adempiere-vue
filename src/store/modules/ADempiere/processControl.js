@@ -45,7 +45,7 @@ const processControl = {
     // Supported Actions for it
     startProcess({ commit, dispatch, rootGetters }, params) {
       var reportExportType
-      if (typeof params.action.reportExportType === 'undefined') {
+      if (params.action.reportExportType === undefined) {
         reportExportType = params.reportFormat
       } else {
         reportExportType = params.action.reportExportType
@@ -53,7 +53,7 @@ const processControl = {
       var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
 
       var selection = []
-      if (typeof params.parentUuid !== undefined) {
+      if (params.parentUuid !== undefined) {
         selection = rootGetters.getSelectionToServer(params.parentUuid)
       }
       var processDefinition = rootGetters.getProcess(params.action.uuid)
@@ -85,7 +85,7 @@ const processControl = {
             reportExportType: ''
           }
 
-          if (typeof response.getOutput() !== 'undefined') {
+          if (response.getOutput() !== undefined) {
             var responseOutput = response.getOutput()
             output = {
               uuid: responseOutput.getUuid(),
@@ -99,7 +99,7 @@ const processControl = {
             }
           }
           var logList = response.getLogsList()
-          if (typeof logList !== undefined) {
+          if (logList !== undefined) {
             logList = logList.map(itemLog => {
               return {
                 log: itemLog.getLog(),
@@ -188,7 +188,7 @@ const processControl = {
                 reportExportType: ''
               }
               var responseOutput = responseItem.getOutput()
-              if (typeof responseOutput !== 'undefined') {
+              if (responseOutput !== undefined) {
                 output = {
                   uuid: responseOutput.getUuid(),
                   name: responseOutput.getName(),
@@ -210,7 +210,7 @@ const processControl = {
               })
 
               var processMetadata = rootGetters.getProcess(responseItem.getUuid())
-              if (typeof processMetadata === 'undefined') {
+              if (processMetadata === undefined) {
                 dispatch('getProcessFromServer', responseItem.getUuid())
               }
               var process = {
@@ -242,7 +242,7 @@ const processControl = {
     },
     setShowDialog({ commit }, params) {
       if (params.type === 'process') {
-        if (typeof params.action === 'undefined') {
+        if (params.action === undefined) {
           commit('setMetadata', {
             id: null,
             uuid: '',
@@ -267,7 +267,7 @@ const processControl = {
           commit('setShowDialog')
         }
       } else if (params.type === 'search') {
-        if (typeof params.action === 'undefined') {
+        if (params.action === undefined) {
           commit('setCloseDialog')
         } else {
           commit('setMetadata', params.action)
@@ -294,7 +294,7 @@ const processControl = {
       commit('setReportValues', processOutput)
     },
     changeFormatReport({ commit }, reportFormat) {
-      if (typeof reportFormat !== 'undefined') {
+      if (reportFormat !== undefined) {
         commit('changeFormatReport', reportFormat)
       }
     }

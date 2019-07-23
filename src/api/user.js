@@ -13,7 +13,7 @@ function Instance() {
 
 // Make login by UserName and password, this function can return user data for show
 export function login(loginValues) {
-  if (typeof loginValues.role !== 'undefined' && loginValues.role.trim() !== '') {
+  if (loginValues.role !== undefined && loginValues.role.trim() !== '') {
     return Instance.call(this).requestLogin(
       loginValues.username,
       loginValues.password,
