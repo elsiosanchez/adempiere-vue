@@ -104,4 +104,10 @@ export default {
       text-align: right !important;
     }
   }
+  /* ADempiere Custom */
+  .el-input-number.is-controls-right .el-input__inner {
+    padding-left: 15px;
+    padding-right: 50px;
+    text-align: -webkit-right;
+  }
 </style>
