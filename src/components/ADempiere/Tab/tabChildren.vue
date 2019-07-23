@@ -76,6 +76,7 @@ export default {
         this.tabUuid = tabHTML.$attrs.tabuuid
         this.setCurrentTab()
       }
+      this.getData()
       // this.setPemantLink(tabHTML)
     },
     setPemantLink(tabHTML) {
@@ -89,6 +90,12 @@ export default {
         params: {
           tabNumber: tabHTML.name
         }
+      })
+    },
+    getData() {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.windowUuid,
+        containerUuid: this.tabUuid
       })
     }
   }

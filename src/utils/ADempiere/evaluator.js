@@ -22,7 +22,7 @@ class evaluator {
       defaultUndefined = true
     }
     // empty logic
-    if (typeof objectToEvaluate.logic === 'undefined' ||
+    if (objectToEvaluate.logic === undefined ||
       objectToEvaluate.logic === null ||
       objectToEvaluate.logic.trim() === '') {
       return defaultUndefined
@@ -84,7 +84,7 @@ class evaluator {
     }
     var logic = objectToEvaluate.conditional
     // not context info, not logic
-    if (typeof logic === 'undefined') {
+    if (logic === undefined) {
       return _defaultUndefined
     }
     var expr = /^(['"@a-zA-Z0-9\-_]){0,}((!*={1})|(!{1})|(<{1})|(>{1}))(["'@a-zA-Z0-9\-_]){0,}$/i
@@ -119,7 +119,7 @@ class evaluator {
         columnName: first
       })
       // in context exists this column name
-      if (typeof value === 'undefined') {
+      if (value === undefined) {
         console.log(
           '.The column ' + first + ' not exists in context.'
         )
@@ -204,7 +204,7 @@ class evaluator {
    */
   static parseDepends(parseString) {
     var listFields = []
-    if (parseString === null || typeof parseString === 'undefined') {
+    if (parseString === null || parseString === undefined) {
       // return array empy
       return listFields
     }

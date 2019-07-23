@@ -104,7 +104,7 @@ export default {
       if (action === undefined && this.windowRecordSelected !== undefined) {
         this.$router.push({ name: this.$route.name, params: { uuidRecord: this.windowRecordSelected.UUID }})
         this.closeDialog()
-      } else if (typeof action !== 'undefined') {
+      } else if (action !== undefined) {
         var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
         if ((finalParameters.fieldsMandatory.length > 0 && finalParameters.params.length >= finalParameters.fieldsMandatory.length) || finalParameters.fieldsMandatory.length === 0) {
           this.closeDialog()

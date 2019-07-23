@@ -4,18 +4,10 @@ import { showMessage } from '@/utils/ADempiere/notification'
 import language from '@/lang'
 
 const browserControl = {
-  state: {
-    browserSearch: []
-  },
-  mutations: {
-    addBrowserSearch(state, payload) {
-      state.browserSearch = payload
-    }
-  },
   actions: {
     /**
-     *
-     * @param {string} params.containerUuid, browsert to search record data
+     * Search with query criteria
+     * @param {string} params.containerUuid, browser to search record data
      * @param {boolean} params.clearSelection, clear selection after search
      */
     getBrowserSearch({ commit, dispatch, rootGetters }, params) {
@@ -91,11 +83,6 @@ const browserControl = {
             })
         }
       })
-    }
-  },
-  getters: {
-    getResponseBrowser: (state) => () => {
-      return state.browserSearch
     }
   }
 }

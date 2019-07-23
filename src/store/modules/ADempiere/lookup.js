@@ -69,7 +69,7 @@ const lookup = {
       var lookup = state.lookup.find(item => {
         return item.parsedQuery === params.parsedQuery && item.tableName === params.tableName
       })
-      if (typeof lookup === 'undefined') {
+      if (lookup === undefined) {
         return []
       }
       return lookup.list

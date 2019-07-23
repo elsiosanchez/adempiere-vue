@@ -7,7 +7,7 @@ import * as utils from './valueUtil.js'
  * @param {mixed} initialValue Value get of gRPC
  */
 export function convertValueFromGRPC(initialValue) {
-  if (typeof initialValue === 'undefined') {
+  if (initialValue === undefined) {
     return null
   }
   var returnValue = ''
@@ -282,12 +282,12 @@ export function parseContext(context) {
     context.columnName = token
 
     var ctxInfo = store.default.getters.getContext(context)	// get context
-    if ((typeof ctxInfo === 'undefined' || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
+    if ((ctxInfo === undefined || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
       context.parentUuid = null
       context.containerUuid = null
       ctxInfo = store.default.getters.getContext(context)	// get global context
     }
-    if (typeof ctxInfo === 'undefined' || ctxInfo.length === 0) {
+    if (ctxInfo === undefined || ctxInfo.length === 0) {
       console.info('No Context for: ' + token)
     } else { outStr = outStr + ctxInfo } // replace context with Context
 
@@ -321,7 +321,7 @@ export function convertContextInfoFromGRPC(contextInfoGRPC) {
     isActive: '',
     messageText: convertMessageTextFromGRPC(undefined)
   }
-  if (typeof contextInfoGRPC !== 'undefined') {
+  if (contextInfoGRPC !== undefined) {
     contextInfo = {
       id: contextInfoGRPC.getId(),
       uuid: contextInfoGRPC.getUuid(),
@@ -347,7 +347,7 @@ export function convertMessageTextFromGRPC(messageTextGRPC) {
     msgTip: '',
     isActive: ''
   }
-  if (typeof messageTextGRPC !== 'undefined') {
+  if (messageTextGRPC !== undefined) {
     messageText = {
       id: messageTextGRPC.getId(),
       // uuid: messageText.getUuid(),
@@ -367,7 +367,7 @@ export function convertMessageTextFromGRPC(messageTextGRPC) {
  * @return {array} fieldList
  */
 export function assignedGroup(fieldList) {
-  if (typeof fieldList === 'undefined' || fieldList.length <= 0) {
+  if (fieldList === undefined || fieldList.length <= 0) {
     return fieldList
   }
 
@@ -378,7 +378,7 @@ export function assignedGroup(fieldList) {
   fieldList.forEach(fieldElement => {
     // change the first field group, change the band
     if (!firstChangeGroup) {
-      if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
+      if (fieldElement.fieldGroup.name !== undefined &&
         fieldElement.fieldGroup.name !== null &&
         fieldElement.fieldGroup.name !== '' &&
         currentGroup !== fieldElement.fieldGroup.name &&
@@ -391,7 +391,7 @@ export function assignedGroup(fieldList) {
     //  assigns the following field items to the current field group whose
     //  field group is '' or null
     if (firstChangeGroup) {
-      if (typeof fieldElement.fieldGroup.name !== 'undefined' &&
+      if (fieldElement.fieldGroup.name !== undefined &&
         fieldElement.fieldGroup.name !== null &&
         fieldElement.fieldGroup.name !== '') {
         currentGroup = fieldElement.fieldGroup.name

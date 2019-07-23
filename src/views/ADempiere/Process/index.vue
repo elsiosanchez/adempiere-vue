@@ -84,7 +84,7 @@ export default {
         uuid = this.$route.meta.uuid
       }
       var process = this.$store.getters.getProcess(uuid)
-      if (typeof process === 'undefined') {
+      if (process === undefined) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: uuid,
           type: this.panelType

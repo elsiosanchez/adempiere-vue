@@ -22,7 +22,7 @@
       /> --> <!-- THIS IS NOT DOING ANYTHING -->
       <modal />
       <detail
-        :show-detail="typeof windowMetadata.tabsListChildren != 'undefined' && windowMetadata.tabsListChildren.length > 0"
+        :show-detail="windowMetadata.tabsListChildren != undefined && windowMetadata.tabsListChildren.length > 0"
         :is-showed-detail="windowMetadata.isShowedDetail"
         :panel-type="panelType"
         :container-uuid="windowUuid"
@@ -40,7 +40,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    style="padding: 100px 100px; heigth: 100%"
+    class="loading"
   />
 </template>
 
@@ -122,7 +122,7 @@ export default {
         uuid = this.windowUuid
       }
       var window = this.$store.getters.getWindow(uuid)
-      if (typeof window === 'undefined') {
+      if (window === undefined) {
         this.$store.dispatch('getWindowFromServer', uuid)
           .then(response => {
             this.windowMetadata = response
@@ -144,6 +144,10 @@ export default {
 </script>
 
 <style scoped>
+  .loading {
+    padding: 100px 100px;
+    height: 100%;
+  }
   .el-tabs__content {
     overflow: hidden;
     position: relative;

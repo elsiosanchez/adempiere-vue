@@ -104,7 +104,7 @@ const browser = {
             // //  Convert from gRPC process list
             var process = response.getProcess()
             var actions = []
-            if (typeof process !== 'undefined') {
+            if (process !== undefined) {
               actions.push({
                 name: process.getName(),
                 type: 'process',
@@ -120,7 +120,7 @@ const browser = {
               // TO DO convert gRPC attributes from response.getProcess() to object
               // Add process asociate in store
               var processStore = rootGetters.getProcess(process.getUuid())
-              if (typeof processStore === 'undefined') {
+              if (processStore === undefined) {
                 dispatch('getProcessFromServer', process.getUuid())
               }
             }

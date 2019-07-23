@@ -44,7 +44,7 @@ export default {
   },
   beforeMount() {
     // enable to dataTable records
-    if (typeof this.valueModel !== 'undefined') {
+    if (this.valueModel !== undefined) {
       this.value = this.valueModel
     }
   },

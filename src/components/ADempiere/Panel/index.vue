@@ -7,7 +7,7 @@
       label-width="200px"
     >
       <template
-        v-if="typeof firstGroup !== 'undefined' &&
+        v-if="firstGroup !== undefined &&
           firstGroup.groupFinal === ''"
       >
         <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
@@ -205,7 +205,7 @@ export default {
      */
     getPanel() {
       var fieldList = this.getterFieldList
-      if (typeof fieldList === 'undefined' || fieldList.length === 0) {
+      if (fieldList === undefined || fieldList.length === 0) {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
@@ -308,7 +308,7 @@ export default {
      * @return {array} res
      */
     groupFields(arr) {
-      if (typeof arr === 'undefined') {
+      if (arr === undefined) {
         return
       }
 
