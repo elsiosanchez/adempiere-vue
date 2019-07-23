@@ -35,6 +35,7 @@ const browser = {
 
             //  Convert from gRPC
             var fieldsRangeList = []
+            var isMandatoryParams = false
             fieldsList = fieldsList.map((fieldItem, index) => {
               var someAttributes = {
                 ...additionalAttributes,
@@ -54,7 +55,7 @@ const browser = {
                 field.isQueryCriteria = true
                 field.isShowedFromUser = true
               }
-
+              isMandatoryParams = field.isMandatory
               return field
             })
             fieldsList = fieldsList.concat(fieldsRangeList)
@@ -96,11 +97,11 @@ const browser = {
               isActive: response.getIsactive(),
               viewUuid: response.getViewuuid(),
               fieldList: fieldsList,
-              panelType: panelType,
+              // panelType: panelType,
               // app attributes
-              isShowedCriteria: Boolean(fieldsList.length > 0)
+              isMandatoryParams: isMandatoryParams,
+              isShowedCriteria: Boolean(fieldsList.length > 0 && isMandatoryParams)
             }
-
             // //  Convert from gRPC process list
             var process = response.getProcess()
             var actions = []
