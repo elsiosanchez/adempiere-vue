@@ -40,7 +40,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    class="loading"
+    class="loading-window"
   />
 </template>
 
@@ -144,7 +144,7 @@ export default {
 </script>
 
 <style scoped>
-  .loading {
+  .loading-window {
     padding: 100px 100px;
     height: 100%;
   }

@@ -92,8 +92,7 @@
 <script>
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import Item from './items'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
-import { showNotification } from '@/utils/ADempiere/notification.js'
+import { isEmptyValue, showNotification } from '@/utils/ADempiere'
 
 export default {
   name: 'ContextMenu',

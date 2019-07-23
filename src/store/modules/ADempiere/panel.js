@@ -6,8 +6,7 @@
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
 import evaluator from '@/utils/ADempiere/evaluator.js'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
-import { assignedGroup } from '@/utils/ADempiere'
+import { assignedGroup, isEmptyValue } from '@/utils/ADempiere'
 
 const panel = {
   state: {

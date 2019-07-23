@@ -36,8 +36,7 @@
 
 <script>
 import Panel from '@/components/ADempiere/Panel'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
-import { showNotification } from '@/utils/ADempiere/notification.js'
+import { isEmptyValue, showNotification } from '@/utils/ADempiere'
 // import SearchWindow from '@/views/ADempiere/SearchWindow'
 
 export default {

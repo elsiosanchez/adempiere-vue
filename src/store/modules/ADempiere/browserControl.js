@@ -1,6 +1,5 @@
 import { getBrowserSearch } from '@/api/ADempiere/data'
-import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
-import { showMessage } from '@/utils/ADempiere/notification'
+import { convertValueFromGRPC, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const browserControl = {

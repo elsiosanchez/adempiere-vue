@@ -366,7 +366,7 @@ export function convertMessageTextFromGRPC(messageTextGRPC) {
  * @param  {array} fieldList Field of List with
  * @return {array} fieldList
  */
-export function assignedGroup(fieldList) {
+export function assignedGroup(fieldList, assignedGroup = null) {
   if (fieldList === undefined || fieldList.length <= 0) {
     return fieldList
   }
@@ -401,7 +401,16 @@ export function assignedGroup(fieldList) {
 
     fieldElement.groupAssigned = currentGroup
     fieldElement.typeGroupAssigned = typeGroup
+
+    if (assignedGroup !== null) {
+      fieldElement.groupAssigned = assignedGroup
+    }
   })
 
   return fieldList
 }
+
+export * from '@/utils/ADempiere/auth.js'
+export * from '@/utils/ADempiere/evaluator.js'
+export * from '@/utils/ADempiere/notification.js'
+export * from '@/utils/ADempiere/valueUtil.js'

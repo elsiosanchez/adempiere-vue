@@ -10,7 +10,7 @@
         v-if="firstGroup !== undefined &&
           firstGroup.groupFinal === ''"
       >
-        <div v-show="size > 0 && firstGroup.activeFields > 0" class="cards-not-group">
+        <div v-show="firstGroup.activeFields > 0" class="cards-not-group">
           <div
             v-if="(group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
@@ -55,7 +55,6 @@
                   && (group.groupType == 'T' && group.groupName == item.groupFinal)
                   || (group.groupType !== 'T' && item.typeGroup !== 'T')"
                 :key="key"
-                :style="columnGroup(item.groupFinal)"
                 class="card"
               >
                 <el-card
@@ -84,7 +83,7 @@
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
-                        :in-group="true"
+                        :in-group="mutipleGroups"
                       />
                     </template>
                   </el-row>
@@ -101,7 +100,7 @@
       :element-loading-text="$t('notifications.loading')"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.8)"
-      class="load-panel"
+      class="loading-panel"
     />
   </div>
 </template>
@@ -159,8 +158,8 @@ export default {
       uuidRecord: this.$route.params.uuidRecord,
       fieldGroups: [],
       firstGroup: {},
-      size: 0,
-      groupsView: 0
+      groupsView: 0,
+      mutipleGroups: false
     }
   },
   computed: {
@@ -176,29 +175,16 @@ export default {
   created() {
     // get tab with uuid
     this.getPanel()
+    if (this.panelType === 'window') {
+      this.mutipleGroups = true
+    }
   },
   methods: {
     cards() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.$store.state.app.device === 'mobile' || this.groupsView < 2 || !this.mutipleGroups) {
         return 'cards-not-group'
       }
-      return 'cards'
-    },
-    columnGroup(group) {
-      var style = {}
-      if (this.groupsView === 1) {
-        style['column-count'] = 1
-      }
-      if (this.groupsView === 2) {
-        style['column-count'] = 1
-      }
-      if (group === '' && this.groupsView > 2) {
-        style['column-count'] = 1
-      }
-      if (this.$store.state.app.device === 'mobile') {
-        style['column-count'] = 1
-      }
-      return style
+      return 'cards-in-group'
     },
     /**
      * Get the tab object with all its attributes as well as the fields it contains
@@ -222,12 +208,13 @@ export default {
     generatePanel(fieldList) {
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
-      this.firstGroup = undefined
-      if (this.fieldGroups[0]) {
-        this.firstGroup = this.fieldGroups[0]
-        this.size = this.firstGroup.metadataFields.length
+      var firstGroup
+      if (this.fieldGroups[0] && this.fieldGroups[0].groupFinal === '') {
+        firstGroup = this.fieldGroups[0]
+        this.fieldGroups.shift()
       }
-      this.fieldGroups.shift()
+      this.firstGroup = firstGroup
+
       this.isLoadPanel = true
       if (this.panelType === 'window' && (this.uuidRecord || this.isEdit)) {
         this.getData(this.tableName, this.uuidRecord)
@@ -320,7 +307,7 @@ export default {
           }
           return res
         }, [])
-        .map((itemGroup) => {
+        .map(itemGroup => {
           return {
             groupFinal: itemGroup,
             metadataFields: arr.filter(itemField => {
@@ -358,22 +345,19 @@ export default {
 </script>
 
 <style scoped>
-  .load-panel{
+  .loading-panel {
     padding: 100px;
     height: 100%;
   }
-</style>
-<style>
-  .cards {
+
+  .cards-in-group {
     column-count: 2;  /*numbers of columns */
     column-gap: 1em;
-    margin-top: 10px;
   }
-
   .cards-not-group {
     column-count: 1; /* numbers of columns */
     column-gap: 1em;
-    margin-top: 10px;
+    margin-bottom: 5px;
   }
 
   .card {
@@ -384,6 +368,11 @@ export default {
     perspective: 1000;
     backface-visibility: hidden;
   }
+  .el-card {
+    width: 100% !important;
+  }
+</style>
+<style>
   .select-filter {
     width: 280px !important;
     float: right;
@@ -393,8 +382,5 @@ export default {
     width: 60% !important;
     float: right;
     top: 0px;
-  }
-  .el-card {
-    width: 100% !important;
   }
 </style>

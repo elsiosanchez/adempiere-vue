@@ -40,7 +40,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    style="padding: 100px 100px; heigth: 100%"
+    class="loading-process"
   />
 </template>
 
@@ -105,6 +105,11 @@ export default {
 </script>
 
 <style scoped >
+  .loading-process {
+    padding: 100px 100px;
+    height: 100%;
+  }
+
   .title {
     color: #000000;
     text-size-adjust: 20px;

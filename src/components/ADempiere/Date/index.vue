@@ -17,8 +17,7 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
-import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
+import { clientDateTime, isEmptyValue } from '@/utils/ADempiere'
 
 export default {
   name: 'Date',
