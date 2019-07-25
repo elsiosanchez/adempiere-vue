@@ -87,6 +87,9 @@ export default {
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
+      this.value = ''
+    } else {
+      this.remoteMethod()
     }
 
     // enable to dataTable records
