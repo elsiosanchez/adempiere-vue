@@ -24,13 +24,14 @@ const windowControl = {
         })
 
         dispatch('getObjectListFromCriteria', {
+          parentUuid: params.parentUuid,
+          containerUuid: params.containerUuid,
           tableName: tab.tableName,
           query: parsedQuery,
           whereClause: parsedWhereClause,
           orderByClause: tab.orderByClause
         })
           .then(response => {
-            console.log(response)
             resolve(response)
           })
           .catch(error => {
