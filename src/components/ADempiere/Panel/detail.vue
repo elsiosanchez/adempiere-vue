@@ -205,7 +205,7 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 0;
-    width: calc(119% - #{$sideBarWidth});
+    width: calc(115% - #{$sideBarWidth});
     transition: width 0.28s;
   }
   .container-up {

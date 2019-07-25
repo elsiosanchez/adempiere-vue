@@ -1,7 +1,7 @@
 <template>
   <el-form :label-position="labelPosition">
     <div class="table-root">
-      <div class="table-header">
+      <div>
         <!-- <icon-element icon="el-icon-search">
           <el-input
             v-model="searchTable"
@@ -11,16 +11,16 @@
             clearable
           />
         </icon-element> -->
-        <el-menu :default-active="MenuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="MenuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-more" />
             </template>
-            <el-menu-item index="optional"> {{ $t('components.filterableItems') }} </el-menu-item>
-            <el-menu-item index="fixed"> {{ $t('components.fixedleItems') }} </el-menu-item>
+            <el-menu-item index="optional" @click="OptionalPanel()"> {{ $t('components.filterableItems') }} </el-menu-item>
+            <el-menu-item index="fixed" @click="FixedPanel()"> {{ $t('components.fixedleItems') }} </el-menu-item>
           </el-submenu>
         </el-menu>
-        <icon-element v-show="fixed" icon="el-icon-star-off">
+        <icon-element v-show="fixed" icon="el-icon-news">
           <fixed-columns
             :container-uuid="containerUuid"
             :panel-type="panelType"
@@ -31,9 +31,12 @@
           v-show="optional"
           :container-uuid="containerUuid"
           :panel-type="panelType"
-          class="header-search-select"
-          style="width: 227px;margin-top: 20px;"
+          class="fiel-optional"
         />
+      </div>
+      <div v-show="this.$store.state.app.device === 'mobile'" class="panel-expand">
+        <i class="el-icon-upload2" @click="ExpandPanel()" />
+        <i class="el-icon-download" @click="RestorePanel()" />
       </div>
     </div>
     <el-table
@@ -178,6 +181,7 @@ export default {
       sortable: null,
       oldprocessListData: [],
       newprocessListData: [],
+      Expand: false,
       currentPage: 1
     }
   },
@@ -204,17 +208,21 @@ export default {
       if (this.panelType !== 'window') {
         var table = ''
         if (this.getDataDetail.length === 0 && this.getshowCriteria && this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 480
+          table = this.$store.getters.getHeigth() - 490
         } else if (this.getDataDetail.length === 0 && !this.getshowCriteria && this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 270
+          table = this.$store.getters.getHeigth() - 290
         } else if (!this.getshowCriteria && !this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 270
+          table = this.$store.getters.getHeigth() - 290
         } else if (!this.getParamsBrowser && this.getshowCriteria) {
           table = this.$store.getters.getHeigth() - 400
         }
         return table
       } else {
-        return this.$store.getters.getHeigth() - 480
+        if (!this.Expand) {
+          return this.$store.getters.getHeigth() - 400
+        } else {
+          return this.$store.getters.getHeigth() - 190
+        }
       }
     }
   },
@@ -236,12 +244,17 @@ export default {
       }
       return 'menu-table'
     },
-    handleSelect(key, keyPath) {
-      if (key === 'optional') {
-        this.optional = !this.optional
-      } else {
-        this.fixed = !this.fixed
-      }
+    OptionalPanel() {
+      this.optional = !this.optional
+    },
+    FixedPanel() {
+      this.fixed = !this.fixed
+    },
+    ExpandPanel() {
+      this.Expand = true
+    },
+    RestorePanel() {
+      this.Expand = false
     },
     /**
      * ASOCIATE WITH SEARCH INPUT
@@ -257,23 +270,25 @@ export default {
       })
     },
     setSort() {
-      const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
-        setData: function(dataTransfer) {
-          // to avoid Firefox bug
-          // Detail see : https://github.com/RubaXa/Sortable/issues/1012
-          dataTransfer.setData('Text', '')
-        },
-        onEnd: evt => {
-          const targetRow = this.getDataDetail.splice(evt.oldIndex, 1)[0]
-          this.getDataDetail.splice(evt.newIndex, 0, targetRow)
+      if (this.$store.state.app.device === 'mobile') {
+        const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+        this.sortable = Sortable.create(el, {
+          ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
+          setData: function(dataTransfer) {
+            // to avoid Firefox bug
+            // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+            dataTransfer.setData('Text', '')
+          },
+          onEnd: evt => {
+            const targetRow = this.getDataDetail.splice(evt.oldIndex, 1)[0]
+            this.getDataDetail.splice(evt.newIndex, 0, targetRow)
 
-          // for show the changes, you can delete in you code
-          const tempIndex = this.newgetDataDetail.splice(evt.oldIndex, 1)[0]
-          this.newgetDataDetail.splice(evt.newIndex, 0, tempIndex)
-        }
-      })
+            // for show the changes, you can delete in you code
+            const tempIndex = this.newgetDataDetail.splice(evt.oldIndex, 1)[0]
+            this.newgetDataDetail.splice(evt.newIndex, 0, tempIndex)
+          }
+        })
+      }
     },
     changeOrder() {
       var reversed = this.getDataDetail.reverse()
@@ -479,6 +494,16 @@ export default {
     border-bottom: 0px !important;
     color: #303133;
   }
+  .panel-expand {
+    float: right;
+    padding-top: 7%;
+    padding-right: 2%;
+  }
+  .fiel-optional {
+    width: 227px;
+    float: right;
+    margin-top: 20px;
+  }
 </style>
 <style lang="scss" scoped>
   /* style in cursor if cell is no edit */
@@ -495,16 +520,6 @@ export default {
 
   .table-root {
     padding-right: 0px;
-    .table-header {
-      text-align: right;
-      width: 100%;
-      border: 1px solid transparent;
-      // padding-bottom: 5px;
-      // position: fixed;
-      // display: inline-block;
-      // float: right;
-      // line-height: 25px;
-    }
     .table-footer {
       bottom: 0px;
       float: right;
