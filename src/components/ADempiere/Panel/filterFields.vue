@@ -10,7 +10,7 @@
     @change="addField"
   >
     <el-option
-      v-for="(item, key) in fieldListOptional"
+      v-for="(item, key) in getFieldListOptional.fieldListOptional"
       :key="key"
       :label="item.name"
       :value="item.columnName"
@@ -33,60 +33,28 @@ export default {
     groupField: {
       type: String,
       default: undefined
-    },
-    isFirstGroup: {
-      type: Boolean,
-      default: true
     }
   },
   data() {
     return {
-      selectedFields: [], // fields optional showed
-      fieldListOptional: [] // all available fields to show
+      selectedFields: [] // fields optional showed
     }
   },
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getterFieldsListFromPanel() {
+      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    },
+    getFieldListOptional() {
+      return this.$store.getters.getFieldsListNotMandatory(this.containerUuid, this.panelType, this.groupField)
     }
   },
-  created() {
-    this.getPanel()
+  updated() {
+    this.selectedFields = this.getFieldListOptional.fieldListSelected
   },
   methods: {
-    isDisplayed(field) {
-      var isBrowserDisplayed = this.panelType === 'browser' && field.isQueryCriteria // browser query criteria
-      var isWindowDisplayed = this.panelType !== 'browser' && field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result
-      var isDisplayed = field.isActive && (isBrowserDisplayed || isWindowDisplayed) // Available fields to show
-
-      if (isDisplayed && field.isShowedFromUser) {
-        // showed displayed in view
-        this.selectedFields.push(field.columnName)
-      }
-      return isDisplayed
-    },
-    getPanel() {
-      var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-      if (fieldList === undefined || fieldList.length === 0) {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType.trim()
-        }).then(response => {
-          this.generatePanel(response.fieldList)
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
-        })
-      } else {
-        this.generatePanel(fieldList)
-      }
-    },
-    generatePanel(fieldList) {
-      this.fieldListOptional = fieldList.filter(fieldItem => {
-        if (!fieldItem.isMandatory && this.groupField === fieldItem.groupAssigned) {
-          return this.isDisplayed(fieldItem)
-        }
-      })
-    },
     /**
      * @param {array} selectedValues
      */
