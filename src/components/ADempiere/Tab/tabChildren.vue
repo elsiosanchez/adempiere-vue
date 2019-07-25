@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       tableName: [],
-      loading: false,
+      isLoading: false,
       currentTab: this.$route.params.tabNumber,
       uuidRecord: this.$route.params.uuidRecord,
       tabUuid: '',
@@ -60,6 +60,7 @@ export default {
     if (this.tabsList.length >= 0) {
       this.tabUuid = this.tabsList[0].uuid
     }
+    this.getData()
   },
   methods: {
     setCurrentTab() {
@@ -101,31 +102,3 @@ export default {
   }
 }
 </script>
-
-<style scoped >
-  .el-tabs__header {
-    padding: 0;
-    position: relative;
-    margin: 0 0 15px;
-    width: 90%;
-  }
-  .el-tabs--border-card {
-    width: -webkit-fill-available;
-    background: #FFFFFF;
-    border: 1px solid #DCDFE6;
-    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
-  }
-  .paneltab {
-    border: 1px solid #FFFFFF;
-  }
-
-  .el-row {
-    margin-bottom: 20px;
-  }
-
-  .el-col {
-    border-radius: 4px;
-    left: 150px;
-  }
-</style>
