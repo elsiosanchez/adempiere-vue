@@ -173,7 +173,7 @@ export default {
       return (this.field.isReadOnly || this.field.isReadOnlyFromLogic) && !this.field.isQueryCriteria
     },
     isMandatory() {
-      return this.field.isMandatory && this.field.isMandatoryFromLogic
+      return this.field.isMandatory || this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
       if (this.inTable) {

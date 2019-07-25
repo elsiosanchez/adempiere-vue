@@ -260,6 +260,29 @@ const panel = {
       }
       return panel.fieldList
     },
+    // all available fields not mandatory to show, used in component panel/filterFields.vue
+    getFieldsListNotMandatory: (state, getters) => (containerUuid, panelType, groupField) => {
+      var fieldListSelected = []
+      var fieldListOptional = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
+        var isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (!isMandatory && groupField === fieldItem.groupAssigned) {
+          var isBrowserDisplayed = panelType === 'browser' && fieldItem.isQueryCriteria // browser query criteria
+          var isWindowDisplayed = panelType !== 'browser' && fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic // window, process and report, browser result
+          var isDisplayed = fieldItem.isActive && (isBrowserDisplayed || isWindowDisplayed) // Available fields to show
+
+          if (isDisplayed && fieldItem.isShowedFromUser) {
+            // showed displayed in view
+            fieldListSelected.push(fieldItem.columnName)
+          }
+          return isDisplayed
+        }
+      })
+
+      return {
+        fieldListOptional: fieldListOptional,
+        fieldListSelected: fieldListSelected
+      }
+    },
     getFieldFromColumnName: (state, getters) => (columnName, containerUuid) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
       return fieldList.find(field => field.columnName === columnName)
