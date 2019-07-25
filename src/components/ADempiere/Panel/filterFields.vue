@@ -1,7 +1,7 @@
 <template>
   <el-select
     v-model="selectedFields"
-    :filterable="true"
+    :filterable="!isMobile"
     :placeholder="$t('components.filterableItems')"
     multiple
     collapse-tags
@@ -43,6 +43,11 @@ export default {
     return {
       selectedFields: [], // fields optional showed
       fieldListOptional: [] // all available fields to show
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   created() {

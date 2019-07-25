@@ -1,7 +1,7 @@
 <template>
   <el-select
     v-model="columnsFixed"
-    :filterable="true"
+    :filterable="!isMobile"
     :placeholder="$t('components.fixedleItems')"
     multiple
     size="mini"
@@ -35,6 +35,11 @@ export default {
     return {
       columnsFixed: [], // columns showed
       columnListAvailable: [] // available fields
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   created() {

@@ -15,7 +15,7 @@
     <el-form-item :label="$t('profile.changeRole')">
       <el-select
         v-model="value"
-        :filterable="true"
+        :filterable="!isMobile"
         value-key="key"
         @change="handleChange"
       >
@@ -72,6 +72,9 @@ export default {
     },
     getterLanguageList() {
       return this.$store.getters.getLanguageList(this.getRol.uuid)
+    },
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   created() {

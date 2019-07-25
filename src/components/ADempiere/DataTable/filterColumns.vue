@@ -1,7 +1,7 @@
 <template>
   <el-select
     v-model="columnsShowed"
-    :filterable="true"
+    :filterable="!isMobile"
     :placeholder="$t('components.filterableItems')"
     multiple
     size="mini"
@@ -36,6 +36,11 @@ export default {
     return {
       columnsShowed: [], // columns showed
       columnListAvailable: [] // available fields
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   created() {

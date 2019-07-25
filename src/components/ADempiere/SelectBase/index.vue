@@ -1,7 +1,7 @@
 <template>
   <el-select
     v-model="value"
-    :filterable="true"
+    :filterable="!isMobile"
     :placeholder="metadata.help"
     :loading="loading"
     value-key="key"
@@ -50,6 +50,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     getterOptions() {
       var lookupList = this.$store.getters.getLookupList({
         parsedQuery: this.parsedQuery,
