@@ -13,18 +13,18 @@
     <el-main>
       <div class="containert">
         <div class="menu" />
-        <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title2">{{ browserMetadata.name }}</el-button>
+        <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
       </div>
       <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
         <el-popover
           v-if="!isEmptyValue(browserMetadata.name)"
           placement="top-start"
           :title="browserMetadata.name"
-          width="400"
+          class="cssClassHelp"
           trigger="hover"
         >
           <div v-html="browserMetadata.help" />
-          <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" class="title2">
+          <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">
             {{ browserMetadata.name }}
           </el-button>
         </el-popover>
@@ -121,6 +121,18 @@ export default {
   },
   methods: {
     isEmptyValue,
+    cssClassTitle() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'title-mobile'
+      }
+      return 'title'
+    },
+    cssClassHelp() {
+      if (this.$store.state.app.device === 'mobile') {
+        return 'content-help-mobile'
+      }
+      return 'content-help'
+    },
     handleChange(value) {
       var showCriteria = false
       if (this.activeSearch.length > 0) {
@@ -200,7 +212,17 @@ export default {
   .menu {
     height: 40px;
   }
-  .title2 {
+  .title {
+    position: fixed;
+    left: 40%;
+    top: 128px;
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 100%;
+    font-weight: 605!important;
+    /* left: 50%; */
+  }
+  .title-mobile {
     position: fixed;
     top: 128px;
     color: #000000;
@@ -213,6 +235,18 @@ export default {
     width: 100%;
     height: 200%;
     padding-left: 15px !important;
+  }
+  .content-help-mobile {
+    width: 50%;
+    height: 50%;
+    padding-left: 15px !important;
+  }
+  .center{
+    text-align: center;
+  }
+  .w-33 {
+    width: 33.33%;
+    background-color: orange;
   }
   .container-panel {
     bottom: 0;
