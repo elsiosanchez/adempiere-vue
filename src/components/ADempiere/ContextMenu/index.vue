@@ -1,10 +1,10 @@
 <template>
   <div :class="isMobileClassmenu() + ' container-context-menu'">
-    <el-button v-show="device==='mobile' && isReport " icon="el-icon-printer" class="Run-Report" circle @click.native="runAction(actions[0])" />
+    <el-button v-show="device==='mobile' && isReport " icon="el-icon-view" class="Run-Report" circle @click.native="runAction(actions[0])" />
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
       <el-submenu v-show="device==='mobile' && isReport" style="position: fixed;left: 80%;top: 17%;" index="1">
         <template slot="title">
-          <i class="el-icon-document" style="position: fixed;left: 75%;top: 17%;" />
+          <i class="el-icon-document" style="position: fixed;left: 75%;top: 91px;" />
         </template>
         <template v-for="(action) in actions">
           <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
@@ -34,7 +34,15 @@
             {{ $t('components.contextMenuActions') }}
           </template>
           <template v-for="(action, index) in actions">
-            <el-menu-item :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
+            <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
+              <template slot="title">
+                {{ action.name }}
+              </template>
+              <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+                {{ child.name }}
+              </el-menu-item>
+            </el-submenu>
+            <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
               {{ action.name }}
             </el-menu-item>
           </template>
