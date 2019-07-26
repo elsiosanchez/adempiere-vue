@@ -1,5 +1,18 @@
 <template>
   <div :class="isMobileClassmenu() + ' container-context-menu'">
+    <el-button v-show="device==='mobile' && isReport " icon="el-icon-view" class="Run-Report" circle @click.native="runAction(actions[0])" />
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
+      <el-submenu v-show="device==='mobile' && isReport" class="icon-menu" index="1">
+        <template slot="title">
+          <el-button v-show="device==='mobile' && isReport " icon="el-icon-document" class="List-Report" circle />
+        </template>
+        <template v-for="(action) in actions">
+          <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+            {{ child.name }}
+          </el-menu-item>
+        </template>
+      </el-submenu>
+    </el-menu>
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
       <el-submenu v-if="device==='mobile'" class="el-menu-item" index="1">
         <template slot="title">
@@ -316,6 +329,20 @@ export default {
 </script>
 
 <style>
+  .Run-Report {
+    position: absolute;
+    right: 102%;
+    border: 0;
+  }
+  .icon-menu {
+    position: absolute;
+    right: 140%;
+    margin-top: -38%;
+  }
+  .List-Report {
+    border: 0;
+    background: transparent;
+  }
   .container-context-menu {
     z-index: 1;
   }

@@ -4,7 +4,7 @@
       :menu-parent-uuid="$route.meta.parentUuid"
       :container-uuid="containerUuid"
       :parent-panel="panelType"
-      :report="processMetadata.isReport"
+      :is-report="processMetadata.isReport"
     />
     <el-row :gutter="20">
       <el-col :span="24">
