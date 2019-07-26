@@ -64,7 +64,7 @@ const actions = {
     })
   },
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         if (!response) {
@@ -77,6 +77,17 @@ const actions = {
 
         var rol = response.rolesList.find(itemRol => {
           return itemRol.uuid === getCurrentRole()
+        })
+
+        dispatch('setMultipleContext', [
+          // { columnName: '#AD_USER_ID', value: response.id },
+          { columnName: '#AD_USER_NAME', value: response.name },
+          { columnName: '#AD_Role_ID', value: rol.id },
+          { columnName: '#AD_Role_Name', value: rol.name },
+          { columnName: '#AD_CLIENT_ID', value: rol.clientId },
+          { columnName: '#AD_CLIENT_Name', value: rol.clientName }
+        ], {
+          root: true
         })
 
         commit('SET_ROLES_LIST', response.rolesList)

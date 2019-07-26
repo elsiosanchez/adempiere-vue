@@ -4,7 +4,8 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 const data = {
   state: {
     recordSelection: [], // record data and selection
-    recentItems: []
+    recentItems: [],
+    recordView: []
   },
   mutations: {
     recordSelection(state, payload) {
@@ -65,28 +66,22 @@ const data = {
       })
       commit('deleteRecordContainer', record)
     },
-    getObject: ({ dispatch }, objectParams) => {
+    getObject: ({ commit }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObject(objectParams.table, objectParams.recordUuid)
           .then(response => {
             var map = response.getValuesMap()
             var newValue = {}
 
-            for (const [key, value] of map.entries()) {
+            map.forEach((value, key) => {
               var valueResult = map.get(key)
               var tempValue = null
               if (valueResult) {
                 tempValue = convertValueFromGRPC(value)
               }
               newValue[key] = tempValue
+            })
 
-              dispatch('setContext', {
-                parentUuid: objectParams.parentUuid,
-                containerUuid: objectParams.containerUuid,
-                columnName: key,
-                value: tempValue
-              })
-            }
             resolve(newValue)
           })
           .catch(err => {

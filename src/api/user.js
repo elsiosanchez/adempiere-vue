@@ -47,11 +47,13 @@ export function getInfo(token) {
           organizationList: itemRol.getOrganizationsList()
         }
       })
+      // ADD user.id in request
+      var user = session.getUserinfo()
 
       const response = {
-        name: session.getUserinfo().getName(),
-        comments: session.getUserinfo().getComments(),
-        description: session.getUserinfo().getDescription(),
+        name: user.getName(),
+        comments: user.getComments(),
+        description: user.getDescription(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
         introduction: session.getUserinfo().getDescription(),

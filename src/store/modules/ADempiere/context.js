@@ -3,18 +3,8 @@ import { contextInitial } from '@/utils/ADempiere/dataEmulation.js'
 
 const context = {
   state: {
-    context: {
-      account: {},
-      // containers: new Map(),
-      containers: contextInitial(),
-      global: {
-        lang: 'en_US',
-        Login: {
-          RememberMe: null
-        },
-        UI: 'Vue.js'
-      }
-    }
+    context: contextInitial()
+    // context: new Map()
   },
   mutations: {
     setContext(state, payload) {
@@ -26,7 +16,7 @@ const context = {
       if (payload.containerUuid !== undefined) {
         container = payload.containerUuid + '|'
       }
-      state.context.containers.set(
+      state.context.set(
         parent + container + payload.columnName,
         payload.value
       )
@@ -35,6 +25,11 @@ const context = {
   actions: {
     setContext: ({ commit }, objectValue) => {
       commit('setContext', objectValue)
+    },
+    setMultipleContext: ({ commit }, valuesToSetter) => {
+      valuesToSetter.forEach(itemToSetter => {
+        commit('setContext', itemToSetter)
+      })
     }
   },
   getters: {
@@ -54,7 +49,7 @@ const context = {
         container = findedContext.containerUuid + '|'
       }
       var key = parent + container + findedContext.columnName
-      return state.context.containers.get(key)
+      return state.context.get(key)
     }
   }
 }

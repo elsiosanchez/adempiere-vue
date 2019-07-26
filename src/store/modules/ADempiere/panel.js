@@ -145,7 +145,7 @@ const panel = {
     },
     notifyFieldChange({ commit, state, dispatch, getters }, params) {
       //  Call context management
-      commit('setContext', {
+      dispatch('setContext', {
         ...params,
         value: params.newValue
       })
