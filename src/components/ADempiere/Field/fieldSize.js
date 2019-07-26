@@ -21,6 +21,16 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
+    type: 'Color',
+    size: {
+      xs: 6,
+      sm: 6,
+      md: 6,
+      lg: 6,
+      xl: 6
+    }
+  },
+  {
     type: 'Date',
     size: {
       xs: 24,
@@ -101,3 +111,14 @@ export const FIELD_DISPLAY_SIZES = [
     }
   }
 ]
+
+export const DEFAULT_SIZE = {
+  type: 'YesNo',
+  size: {
+    xs: 6,
+    sm: 8,
+    md: 8,
+    lg: 6,
+    xl: 6
+  }
+}

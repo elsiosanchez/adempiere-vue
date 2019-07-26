@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading">
+  <div v-if="isLoading" class="view-base">
     <context-menu
       :menu-parent-uuid="$route.meta.parentUuid"
       :container-uuid="containerUuid"
@@ -105,6 +105,11 @@ export default {
 </script>
 
 <style scoped >
+  .view-base {
+    height: 100%;
+    min-height: calc(100vh - 84px);
+  }
+
   .loading-process {
     padding: 100px 100px;
     height: 100%;
