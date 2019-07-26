@@ -216,7 +216,7 @@ export default {
       this.firstGroup = firstGroup
 
       this.isLoadPanel = true
-      if (this.panelType === 'window' && (this.uuidRecord || this.isEdit)) {
+      if (this.panelType === 'window' && this.$route.params.action !== 'create-new' && (this.uuidRecord || this.isEdit)) {
         this.getData(this.tableName, this.uuidRecord)
       }
     },

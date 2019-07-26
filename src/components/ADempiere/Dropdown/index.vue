@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     redirect(item) {
-      this.$router.push({ name: item.name, params: { childs: item.children }})
+      this.$router.push({ name: item.name, params: { childs: item.children, action: 'create-new' }})
     },
     isMobile() {
       if (this.device === 'mobile') {

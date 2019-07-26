@@ -80,7 +80,7 @@ function getChildFromAction(menu, index) {
   let selectedComponent
   if (action === 'W') {
     selectedComponent = () => import('@/views/ADempiere/Window')
-    routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid() + '/:uuidRecord?'
+    routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid() + '/:action?'
   } else if (action === 'S') {
     selectedComponent = () => import('@/views/ADempiere/Browser')
   } else if (action === 'P' || action === 'R') {
