@@ -103,10 +103,10 @@ export default {
       return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
     isReadWrite: {
-      get: function() {
+      get: () => {
         return this.isReadOnly
       },
-      set: function(newValue) {
+      set: (newValue) => {
         this.isReadOnly = newValue
         if (this.field.columnName === 'IsActive') {
           this.isReadOnly = false
@@ -119,7 +119,8 @@ export default {
       })
 
       if (sizeFieldFromType === undefined) {
-        console.warn('size no found:', this.field.name)
+        console.warn('Field size no found:', this.field.name)
+        sizeFieldFromType = {}
         sizeFieldFromType.size = DEFAULT_SIZE
       }
 
@@ -182,13 +183,7 @@ export default {
       return this.field.isMandatory || this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
-      if (this.inTable) {
-        return undefined
-      }
-      if (this.field.isFieldOnly) {
-        return undefined
-      }
-      if (this.verifyIsFieldOnly(this.field.displayType)) {
+      if (this.inTable || this.field.isFieldOnly || this.verifyIsFieldOnly(this.field.displayType)) {
         return undefined
       }
       return this.field.name
@@ -205,10 +200,7 @@ export default {
           return true
         }
       })
-      if (field !== undefined) {
-        return true
-      }
-      return false
+      return Boolean(field)
     }
   }
 }

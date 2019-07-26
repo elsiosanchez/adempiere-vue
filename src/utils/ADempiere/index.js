@@ -1,4 +1,4 @@
-import REFERENCES from '@/components/ADempiere/Field/references'
+import REFERENCES, { FIELD_NOT_SHOWED } from '@/components/ADempiere/Field/references'
 import evaluator from '@/utils/ADempiere/evaluator.js'
 import * as utils from './valueUtil.js'
 
@@ -207,6 +207,18 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
     field.defaultValue = field.defaultValueTo
     field.parsedDefaultValue = field.parsedDefaultValueTo
   }
+
+  // hidden field type button
+  var notShowedField = FIELD_NOT_SHOWED.find(itemField => {
+    if (field.displayType === itemField.id) {
+      return true
+    }
+  })
+  if (notShowedField) {
+    field.isDisplayedFromLogic = false
+    field.isDisplayed = false
+  }
+
   return field
 }
 
@@ -289,7 +301,9 @@ export function parseContext(context) {
     }
     if (ctxInfo === undefined || ctxInfo.length === 0) {
       console.info('No Context for: ' + token)
-    } else { outStr = outStr + ctxInfo } // replace context with Context
+    } else {
+      outStr = outStr + ctxInfo // replace context with Context
+    }
 
     inStr = inStr.substring(j + 1, inStr.length)	// from second @
     i = inStr.indexOf('@')

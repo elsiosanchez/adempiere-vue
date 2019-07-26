@@ -7,22 +7,14 @@
       :modal-metadata="windowMetadata"
     />
     <el-row :gutter="20">
-      <tab
+      <tab-parent
         :window-uuid="windowUuid"
         :tabs-list="windowMetadata.tabsListParent"
-        :is-edit="isEdit"
         class="tab-window"
       />
-      <!-- <modal
-        :visible="isVisibleDialog"
-        :metadata="processMetadata"
-        :parent-uuid="windowUuid"
-        :parent-panel="panelType"
-        @closeDialog="isVisibleDialog=false"
-      /> --> <!-- THIS IS NOT DOING ANYTHING -->
-      <modal />
-      <detail
-        :show-detail="windowMetadata.tabsListChildren != undefined && windowMetadata.tabsListChildren.length > 0"
+      <modal-dialog />
+      <split-panel
+        :show-detail="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
         :is-showed-detail="windowMetadata.isShowedDetail"
         :panel-type="panelType"
         :container-uuid="windowUuid"
@@ -31,7 +23,7 @@
           :window-uuid="windowUuid"
           :tabs-list="windowMetadata.tabsListChildren"
         />
-      </detail>
+      </split-panel>
     </el-row>
   </div>
   <div
@@ -45,40 +37,30 @@
 </template>
 
 <script>
-import Tab from '@/components/ADempiere/Tab'
+import TabParent from '@/components/ADempiere/Tab'
 import TabChildren from '@/components/ADempiere/Tab/tabChildren'
-import Detail from '@/components/ADempiere/Panel/detail'
+import SplitPanel from '@/components/ADempiere/Panel/detail'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Modal from '@/components/ADempiere/Dialog'
+import ModalDialog from '@/components/ADempiere/Dialog'
 
 export default {
   name: 'Window',
   components: {
-    Tab,
+    TabParent,
     TabChildren,
-    Detail,
+    SplitPanel,
     ContextMenu,
-    Modal
-  },
-  props: {
-    isEdit: {
-      type: Boolean,
-      default: false
-    }
+    ModalDialog
   },
   data() {
     return {
       windowMetadata: {},
       windowUuid: this.$route.meta.uuid,
-      containerUuid: this.$route.meta.uuid,
       panelType: 'window',
-      showPanel: true,
       isLoading: false,
-      uuidRecord: this.$route.params.uuidRecord,
-      isVisibleDialog: this.$store.state.processControl.visibleDialog,
-      processMetadata: {}
+      uuidRecord: this.$route.params.uuidRecord
     }
   },
   computed: {
@@ -88,55 +70,29 @@ export default {
     getTabList() {
       return this.$store.getters.getTabsList(this.windowUuid)
     },
-    sidebar() {
-      return this.$store.state.app.sidebar
-    },
-    device() {
-      return this.$store.state.app.device
-    },
-    classObj() {
-      return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
-      }
+    getterWindow() {
+      return this.$store.getters.getWindow(this.windowUuid)
     }
   },
   created() {
-    this.getWindow(this.windowUuid)
+    this.getWindow()
   },
   methods: {
-    isMobileClassmenu() {
-      const cssClass = 'container-submenu'
-      if (this.device === 'mobile') {
-        return cssClass + '-mobile'
-      }
-      return cssClass
-    },
-    handleChange() {
-      this.showPanel = !this.showPanel
-    },
-    getWindow(uuid = null) {
-      if (!uuid) {
-        uuid = this.windowUuid
-      }
-      var window = this.$store.getters.getWindow(uuid)
-      if (window === undefined) {
-        this.$store.dispatch('getWindowFromServer', uuid)
+    getWindow() {
+      var window = this.getterWindow
+      if (window) {
+        this.windowMetadata = window
+        this.isLoading = true
+      } else {
+        this.$store.dispatch('getWindowFromServer', this.windowUuid)
           .then(response => {
             this.windowMetadata = response
-            this.windowMetadata.panelType = 'search'
             this.isLoading = true
           })
-          .catch(err => {
+          .catch(error => {
             this.isLoading = true
-            console.warn('Dictionary Window - Error ' + err.code + ': ' + err.message)
+            console.warn('Dictionary Window - Error ' + error.code + ': ' + error.message)
           })
-      } else {
-        this.windowMetadata = window
-        this.windowMetadata.panelType = 'search'
-        this.isLoading = true
       }
     }
   }

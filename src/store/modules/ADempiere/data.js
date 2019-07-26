@@ -180,7 +180,7 @@ const data = {
       var data = state.recordSelection.find(itemRecord => {
         return itemRecord.containerUuid === containerUuid
       })
-      if (data !== undefined) {
+      if (data) {
         return data
       }
       return {
@@ -288,11 +288,7 @@ const data = {
       var languageList = state.recordSelection.find(
         record => record.containerUuid === roleUuid
       )
-      if (languageList !== undefined) {
-        return languageList
-      } else {
-        return undefined
-      }
+      return languageList
     }
   }
 }
