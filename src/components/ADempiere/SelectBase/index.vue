@@ -78,6 +78,9 @@ export default {
   watch: {
     valueModel(value) {
       this.value = value
+      if (!this.isEmptyValue(this.value)) {
+        this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, this.value)
+      }
     }
   },
   created() {
