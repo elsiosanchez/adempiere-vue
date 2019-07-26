@@ -30,13 +30,26 @@ const contextMenu = {
       return state.contextMenu.find(item => item.containerUuid === containerUuid)
     },
     getRelations: (state, getters, rootState) => (containerUuid) => {
-      var menuRelations = rootState.permission.addRoutes.find(
+      var menuRelations
+      rootState.permission.addRoutes.forEach((route) => {
+        if (route.name === containerUuid) {
+          menuRelations = route.children
+        } else if (route.name !== containerUuid && route.children) {
+          route.children.forEach((child) => {
+            if (child.name === containerUuid) {
+              menuRelations = route.children
+            }
+          })
+        }
+      })
+      return menuRelations
+      /* var menuRelations = rootState.permission.addRoutes.find(
         item => item.name === containerUuid
       )
       if (menuRelations === undefined) {
         return []
       }
-      return menuRelations.children
+      return menuRelations.children */
     },
     getActions: (state) => (containerUuid) => {
       var menu = state.contextMenu.find(
