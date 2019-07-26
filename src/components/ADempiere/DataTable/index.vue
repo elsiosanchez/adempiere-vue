@@ -109,8 +109,9 @@
       <div style="float: right;">
         <el-pagination
           layout="slot, total, prev, pager, next"
-          :current-page="currentPage"
+          :current-page.sync="currentPage"
           :total="getDataDetail.length"
+          @size-change="handleSizeChange"
           @current-change="handleChangePage"
         >
           <template v-slot>
@@ -219,7 +220,7 @@ export default {
         return table
       } else {
         if (!this.Expand) {
-          return this.$store.getters.getHeigth() - 400
+          return this.$store.getters.getHeigth() - 540
         } else {
           return this.$store.getters.getHeigth() - 190
         }
@@ -270,7 +271,7 @@ export default {
       })
     },
     setSort() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.$store.state.app.device === 'desktop') {
         const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
         this.sortable = Sortable.create(el, {
           ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
@@ -456,6 +457,9 @@ export default {
         pageNumber: newPage
       })
     }
+    // handleSizeChange(val) {
+    //   console.log(`${val} items per page`)
+    // }
   }
 }
 </script>
