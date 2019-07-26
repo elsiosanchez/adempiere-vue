@@ -7,6 +7,7 @@
       :last-parameter="$route.params.processUuid"
       :report-format="reportFormatValue"
     />
+    <br>
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="content">

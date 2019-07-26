@@ -2,9 +2,9 @@
   <div :class="isMobileClassmenu() + ' container-context-menu'">
     <el-button v-show="device==='mobile' && isReport " icon="el-icon-view" class="Run-Report" circle @click.native="runAction(actions[0])" />
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
-      <el-submenu v-show="device==='mobile' && isReport" style="position: fixed;left: 80%;top: 17%;" index="1">
+      <el-submenu v-show="device==='mobile' && isReport" class="icon-menu" index="1">
         <template slot="title">
-          <i class="el-icon-document" style="position: fixed;left: 75%;top: 91px;" />
+          <el-button v-show="device==='mobile' && isReport " icon="el-icon-document" class="List-Report" circle />
         </template>
         <template v-for="(action) in actions">
           <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
@@ -330,9 +330,18 @@ export default {
 
 <style>
   .Run-Report {
-    border:0;
-    position: fixed;
-    left: 80%;
+    position: absolute;
+    right: 102%;
+    border: 0;
+  }
+  .icon-menu {
+    position: absolute;
+    right: 140%;
+    margin-top: -38%;
+  }
+  .List-Report {
+    border: 0;
+    background: transparent;
   }
   .container-context-menu {
     z-index: 1;
