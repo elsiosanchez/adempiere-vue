@@ -1,5 +1,5 @@
 import { getBrowser } from '@/api/ADempiere/dictionary'
-import { convertFieldFromGRPC, evalutateTypeField } from '@/utils/ADempiere'
+import { convertFieldFromGRPC, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 
 const browser = {
   state: {
@@ -55,6 +55,11 @@ const browser = {
                 field.isQueryCriteria = true
                 field.isShowedFromUser = true
               }
+
+              if (!isEmptyValue(field.parsedDefaultValue) && String(field.parsedDefaultValue) !== '-1') {
+                field.isShowedFromUser = true
+              }
+
               isMandatoryParams = field.isMandatory
               return field
             })

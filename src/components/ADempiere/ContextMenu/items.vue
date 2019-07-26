@@ -7,7 +7,7 @@
   >
     {{ item.meta.title }}
   </el-menu-item>
-  <el-submenu v-else :index="item.meta.title" popper-append-to-body>
+  <el-submenu v-else v-show="!item.hidden" :index="item.meta.title" popper-append-to-body>
     <template slot="title">
       {{ item.meta.title }}
     </template>

@@ -15,7 +15,7 @@
     <el-option
       v-for="(item, key) in options"
       :key="key"
-      :value="String(item.key)"
+      :value="item.key"
       :label="item.label"
     />
   </el-select>
@@ -78,6 +78,9 @@ export default {
   watch: {
     valueModel(value) {
       this.value = value
+      if (!this.isEmptyValue(this.value)) {
+        this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, this.value)
+      }
     }
   },
   created() {

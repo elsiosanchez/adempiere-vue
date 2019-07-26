@@ -476,14 +476,14 @@ export default {
    /* .el-submenu {
     float: right !important;
   } */
-  .menu-table{
+  .menu-table {
     width: 75px;
     float: right;
     /* position: absolute;
     bottom: 388px;
     right: 9px; */
   }
-  .menu-table-mobile{
+  .menu-table-mobile {
     width: 35px;
     float: right;
     /* position: absolute;

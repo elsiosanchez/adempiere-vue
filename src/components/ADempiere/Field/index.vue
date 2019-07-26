@@ -49,7 +49,7 @@
 
 <script>
 import { FIELD_ONLY } from '@/components/ADempiere/Field/references'
-import { FIELD_DISPLAY_SIZES } from '@/components/ADempiere/Field/fieldSize'
+import { FIELD_DISPLAY_SIZES, DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
 
 /**
  * This is the base component for linking the components according to the
@@ -117,6 +117,12 @@ export default {
       var sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
         return item.type === this.field.componentPath
       })
+
+      if (sizeFieldFromType === undefined) {
+        console.warn('size no found:', this.field.name)
+        sizeFieldFromType.size = DEFAULT_SIZE
+      }
+
       var sizeField = sizeFieldFromType.size
       var newSizes = {}
       if (this.inTable) {
