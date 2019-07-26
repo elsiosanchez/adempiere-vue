@@ -15,7 +15,7 @@
     <el-option
       v-for="(item, key) in options"
       :key="key"
-      :value="String(item.key)"
+      :value="item.key"
       :label="item.label"
     />
   </el-select>
