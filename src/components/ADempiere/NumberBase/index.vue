@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { isEmptyValue } from '@/utils/ADempiere'
+
 export default {
   name: 'NumberBase',
   props: {
@@ -40,14 +42,14 @@ export default {
   },
   computed: {
     maxValue() {
-      if (this.metadata.valueMin) {
-        return this.metadata.valueMin
+      if (!this.isEmptyValue(this.metadata.valueMax)) {
+        return Number(this.metadata.valueMax)
       }
       return Infinity
     },
     minValue() {
-      if (this.metadata.valueMax) {
-        return this.metadata.valueMax
+      if (!this.isEmptyValue(this.metadata.valueMin)) {
+        return Number(this.metadata.valueMin)
       }
       return -Infinity
     },
@@ -67,6 +69,7 @@ export default {
     }
   },
   methods: {
+    isEmptyValue,
     handleChange() {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
