@@ -215,6 +215,14 @@ const panel = {
           clearSelection: true
         })
       }
+      if (panel.panelType === 'window' && isDisplayed) {
+        dispatch('editEntity', {
+          containerUuid: params.containerUuid
+          // tableId: panel.tableId
+          // uuid: panel.recordUuid
+          // id: panel.recordId
+        })
+      }
     },
     getPanelAndFields({ dispatch }, params) {
       if (params.type === 'process' || params.type === 'report') {

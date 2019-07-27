@@ -13,8 +13,67 @@ function Instance() {
   )
 }
 
-export function getObject(table, uuid = false) {
-  return Instance.call(this).getEntity(Instance.call(this).getEntityRequest(table, uuid))
+export function getObject(table, uuid = false, id = false) {
+  return Instance.call(this).getEntity(
+    Instance.call(this).getEntityRequest(table, uuid, id)
+  )
+}
+
+/**
+ * Create entity
+ * @param {integer} parameters.tableId
+ * @param {array}   parameters.attributesList
+ */
+export function createEntity(parameters) {
+  var entityRequest = Instance.call(this).getCreateEntityRequest()
+  entityRequest.setTableid(parameters.tableId)
+  if (parameters.attributesList !== undefined && parameters.attributesList.length > 0) {
+    parameters.attributesList.forEach(attribute => {
+      const convertedAttribute = Instance.call(this).convertParameter(attribute)
+      entityRequest.addAttributes(convertedAttribute)
+    })
+  }
+  //  Create Entity
+  return Instance.call(this).createEntity(entityRequest)
+}
+
+/**
+ * Update entity
+ * @param {integer} parameters.tableId
+ * @param {integer} parameters.tableId
+ * @param {integer} parameters.tableId
+ * @param {array}   parameters.attributesList
+ */
+export function updateEntity(parameters) {
+  var entityRequest = Instance.call(this).getUpdateEntityRequest()
+  entityRequest.setTableid(parameters.tableId)
+  entityRequest.setRecordid(parameters.recordId)
+  entityRequest.setUuid(parameters.uuid)
+  if (parameters.attributesList !== undefined && parameters.attributesList.length > 0) {
+    parameters.attributesList.forEach(attribute => {
+      const convertedAttribute = Instance.call(this).convertParameter(attribute)
+      entityRequest.addAttributes(convertedAttribute)
+    })
+  }
+  //  Update Entity
+  return Instance.call(this).updateEntity(entityRequest)
+}
+
+/**
+ * Delete entity
+ * @param {integer} parameters.tableId
+ * @param {integer} parameters.tableId
+ * @param {integer} parameters.tableId
+ * @param {array}   parameters.attributesList
+ */
+export function deleteEntity(parameters) {
+  var entityRequest = Instance.call(this).getUpdateEntityRequest()
+  entityRequest.setTableid(parameters.tableId)
+  entityRequest.setRecordid(parameters.recordId)
+  entityRequest.setUuid(parameters.uuid)
+
+  //  Delete Entity
+  return Instance.call(this).deleteEntity(entityRequest)
 }
 
 export function getCriteria(tableName) {
@@ -112,18 +171,21 @@ export function runProcess(process) {
   return Instance.call(this).requestProcess(processRequest)
 }
 
-// Request a browser search
-// This function allows follow structure:
-// browser.uuid
-// browser.query
-// browser.whereClause
-// browser.orderByClause
-// browser.parameters [
-//   {
-//     columnName,
-//     value
-//   }
-// ]
+/**
+ * Request a browser search
+ * This function allows follow structure:
+ * @param {string} browser.uuid
+ * @param {string} browser.query
+ * @param {string} browser.whereClause
+ * @param {string} browser.orderByClause
+ * @param {array}  browser.parameters
+ * [
+ *   {
+ *     columnName,
+ *     value
+ *   }
+ * ]
+ */
 export function getBrowserSearch(browser) {
   var notificationParams = {
     title: 'Loading...',

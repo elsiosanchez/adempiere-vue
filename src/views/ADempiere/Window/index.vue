@@ -44,6 +44,7 @@ import SplitPanel from '@/components/ADempiere/Panel/detail'
 // the submenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
+import { createEntity, updateEntity } from '@/api/ADempiere/data'
 
 export default {
   name: 'Window',
@@ -64,12 +65,6 @@ export default {
     }
   },
   computed: {
-    /**
-     * DETERMINATE USED
-     */
-    getTabList() {
-      return this.$store.getters.getTabsList(this.windowUuid)
-    },
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
     }
@@ -77,7 +72,44 @@ export default {
   created() {
     this.getWindow()
   },
+  mounted() {
+    this.createNew()
+    this.updatedExist()
+  },
   methods: {
+    createEntity,
+    updateEntity,
+    createNew() {
+      this.createEntity({
+        tableId: 135, // test table,
+        attributesList: [
+          { colunmName: 'AD_Client_ID', value: 0 },
+          { colunmName: 'AD_Org_ID', value: 0 },
+          { colunmName: 'Name', value: 'test 1333' },
+          { colunmName: 'Description', value: 'TEST 333' }
+        ]
+      }).then(response => {
+        console.log('created', response)
+      }).catch(error => {
+        console.warn('created', error)
+      })
+    },
+    updatedExist() {
+      this.updateEntity({
+        tableId: 135, // test table,
+        recordId: 1000014,
+        attributesList: [
+          { colunmName: 'AD_Client_ID', value: 0 },
+          { colunmName: 'AD_Org_ID', value: 0 },
+          { colunmName: 'Name', value: 'test 1333' },
+          { colunmName: 'Description', value: 'TEST 333' }
+        ]
+      }).then(response => {
+        console.log('updated', response)
+      }).catch(error => {
+        console.warn('updated', error)
+      })
+    },
     getWindow() {
       var window = this.getterWindow
       if (window) {
