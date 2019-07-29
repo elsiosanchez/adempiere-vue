@@ -358,8 +358,8 @@ export default {
   .container-submenu {
     position: absolute;
     height: 39px !important;
-    right: 10px;
-    top: 0;
+    right: 0;
+    top: -1px;
   }
 
   ul.el-menu-demo > .el-menu-item {

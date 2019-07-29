@@ -155,7 +155,7 @@ export default {
       gutterRow: 0,
       isLoadPanel: false,
       isLoadRecord: false,
-      uuidRecord: this.$route.params.uuidRecord,
+      uuidRecord: this.$route.params.action,
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,

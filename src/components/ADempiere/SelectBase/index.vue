@@ -41,7 +41,6 @@ export default {
       value: this.metadata.value,
       isLoading: false,
       options: [],
-      list: [],
       showControls: true,
       blanckOption: {
         label: ' ',
@@ -85,11 +84,12 @@ export default {
   },
   created() {
     this.options = this.getterOptions
-    // this.getData()
   },
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
+    } else {
+      this.checkDefaultValue()
     }
 
     // enable to dataTable records
@@ -132,26 +132,26 @@ export default {
         })
       }
     },
-    getData() {
-      var value
-      if (!this.isEmptyValue(this.metadata.value)) {
-        value = this.metadata.value
-      } else if (!this.isEmptyValue(this.valueModel)) {
-        value = this.valueModel
-      }
-
-      this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, value)
-    },
     getDataTrigger(tableName, directQuery, value) {
+      var parsedValue
+      if (isNaN(value)) {
+        parsedValue = value
+      } else {
+        parsedValue = parseInt(value)
+      }
       this.$store.dispatch('getLookup', {
         tableName: tableName,
         directQuery: directQuery,
-        value: value
+        value: parsedValue
       })
         .then(response => {
-          this.value = response.label
-          this.options.push(response)
-          this.options.unshift(this.blanckOption)
+          if (response.label !== null) {
+            this.value = response.label
+            this.options.push(response)
+            this.options.unshift(this.blanckOption)
+          } else {
+            this.getDataLookupList(true)
+          }
         })
         .catch(error => {
           console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
@@ -179,6 +179,7 @@ export default {
           this.isLoading = false
           this.options = response
           this.options.unshift(this.blanckOption)
+          this.loading = false
         })
         .catch(error => {
           this.isLoading = false
@@ -193,6 +194,11 @@ export default {
         value: this.value
       })
       this.options.push(this.blanckOption)
+    },
+    checkDefaultValue() {
+      if (!this.isEmptyValue(this.metadata.defaultValue) && !this.isEmptyValue(this.metadata.value)) {
+        this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, this.metadata.value)
+      }
     }
   }
 }

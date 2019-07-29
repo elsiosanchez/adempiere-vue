@@ -21,10 +21,6 @@ const lookup = {
   actions: {
     getLookup: ({ commit }, objectParams) => {
       return new Promise((resolve, reject) => {
-        // getLookup({
-        //   tableName: 'C_PaymentTerm',
-        //   parsedDirectQuery: "SELECT C_PaymentTerm.C_PaymentTerm_ID,NULL,NVL(C_PaymentTerm_Trl.Name,'-1'),C_PaymentTerm.IsActive FROM C_PaymentTerm INNER JOIN C_PaymentTerm_TRL ON (C_PaymentTerm.C_PaymentTerm_ID=C_PaymentTerm_Trl.C_PaymentTerm_ID AND C_PaymentTerm_Trl.AD_Language='es_MX') WHERE C_PaymentTerm.C_PaymentTerm_ID=?"
-        // }, 106)
         getLookup(objectParams, objectParams.value)
           .then(response => {
             const map = response.getValuesMap()
@@ -35,7 +31,7 @@ const lookup = {
             commit('addLoockupItem', {
               option: option,
               value: objectParams.value,
-              parsedDirectQuery: objectParams.parsedDirectQuery,
+              parsedDirectQuery: objectParams.directQuery,
               tableName: objectParams.tableName,
               roleUuid: getCurrentRole()
             })
