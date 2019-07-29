@@ -34,7 +34,7 @@
           class="fiel-optional"
         />
       </div>
-      <div v-show="this.$store.state.app.device === 'mobile'" class="panel-expand">
+      <div v-show="isMobile && panelType === 'window'" class="panel-expand">
         <i class="el-icon-upload2" @click="ExpandPanel()" />
         <i class="el-icon-download" @click="RestorePanel()" />
       </div>
@@ -65,7 +65,6 @@
         min-width="50"
         :class-name="'is-cell-selection'"
       />
-
       <template v-for="(item, key) in fieldList">
         <el-table-column
           v-if="isDisplayed(item)"
@@ -186,6 +185,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
@@ -237,7 +239,7 @@ export default {
   },
   methods: {
     classTableMenu() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.isMobile) {
         return 'menu-table-mobile'
       } else if (this.$store.state.app.sidebar.opened) {
         return 'menu-table'
@@ -270,7 +272,7 @@ export default {
       })
     },
     setSort() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.isMobile) {
         const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
         this.sortable = Sortable.create(el, {
           ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
