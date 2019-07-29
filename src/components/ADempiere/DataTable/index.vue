@@ -183,7 +183,7 @@ export default {
       oldprocessListData: [],
       newprocessListData: [],
       Expand: false,
-      currentPage: 1
+      currentPage: 0
     }
   },
   computed: {
@@ -458,10 +458,15 @@ export default {
       return arr
     },
     handleChangePage(newPage) {
+      if (newPage === 1) {
+        newPage = 0
+      } else {
+        newPage = parseInt(this.getNextPageToken)
+      }
       this.currentPage = newPage
       this.$store.dispatch('setPageNumber', {
         containerUuid: this.containerUuid,
-        pageNumber: this.getNextPageToken
+        pageNumber: newPage
       })
       console.log(this.currentPage)
     }
