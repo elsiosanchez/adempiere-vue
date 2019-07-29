@@ -1,7 +1,4 @@
-import {
-  runProcess,
-  requestProcessActivity
-} from '@/api/ADempiere/data'
+import { runProcess, requestProcessActivity } from '@/api/ADempiere'
 import { showNotification } from '@/utils/ADempiere/notification'
 import language from '@/lang'
 
@@ -308,7 +305,7 @@ const processControl = {
     },
     getRunningProcess: (state, rootGetters) => {
       Array.prototype.push.apply(state.sessionProcess, state.process)
-      var processList = state.sessionProcess.map((item) => {
+      var processList = state.sessionProcess.map(item => {
         var process = rootGetters.getProcess(item.processUuid)
         return {
           ...process,
@@ -322,7 +319,7 @@ const processControl = {
       return processList
     },
     // getProcessFinalized: (state, rootGetters) => {
-    //   var procesfinalized = state.process.map((item) => {
+    //   var procesfinalized = state.process.map(item => {
     //     var process = rootGetters.getProcess(item.processUuid)
     //     return {
     //       ...process,

@@ -91,9 +91,9 @@ export default {
         }).then(response => {
           this.processMetadata = response
           this.isLoading = true
-        }).catch(err => {
+        }).catch(error => {
           this.isLoading = true
-          console.log('Dictionary Process - Error ' + err.code + ': ' + err.message)
+          console.log('Dictionary Process - Error ' + error.code + ': ' + error.message)
         })
       } else {
         this.isLoading = true

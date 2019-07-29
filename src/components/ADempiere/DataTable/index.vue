@@ -420,8 +420,8 @@ export default {
         }).then(response => {
           this.panel = response
           this.generatePanel()
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        }).catch(error => {
+          console.warn('Field Load Error ' + error.code + ': ' + error.message)
           this.isLoaded = false
         })
       } else {

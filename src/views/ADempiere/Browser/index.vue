@@ -155,9 +155,9 @@ export default {
             this.browserMetadata = response
             this.isLoading = true
           })
-          .catch(err => {
+          .catch(error => {
             this.isLoading = true
-            console.log('Dictionary browse - Error ' + err.code + ': ' + err.message)
+            console.log('Dictionary browse - Error ' + error.code + ': ' + error.message)
           })
       } else {
         this.isLoading = true

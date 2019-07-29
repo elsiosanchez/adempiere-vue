@@ -1,4 +1,4 @@
-import { getBrowser } from '@/api/ADempiere/dictionary'
+import { getBrowser as getBrowserFromDictionary } from '@/api/ADempiere'
 import { convertFieldFromGRPC, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 
 const browser = {
@@ -19,7 +19,7 @@ const browser = {
   actions: {
     getBrowserFromServer: ({ commit, dispatch, rootGetters }, browserUuid) => {
       return new Promise((resolve, reject) => {
-        getBrowser(browserUuid)
+        getBrowserFromDictionary(browserUuid)
           .then(response => {
             var panelType = 'browser'
             var fieldsList = response.getFieldsList()
@@ -102,7 +102,7 @@ const browser = {
               isActive: response.getIsactive(),
               viewUuid: response.getViewuuid(),
               fieldList: fieldsList,
-              // panelType: panelType,
+              panelType: panelType,
               // app attributes
               isMandatoryParams: isMandatoryParams,
               isShowedCriteria: Boolean(fieldsList.length > 0 && isMandatoryParams)
@@ -144,9 +144,9 @@ const browser = {
             dispatch('setContextMenu', contextMenu)
             resolve(newBrowser)
           })
-          .catch(err => {
-            console.warn('Dictionary Browser - Error ' + err.code + ': ' + err.message)
-            reject(err)
+          .catch(error => {
+            console.warn('Dictionary Browser - Error ' + error.code + ': ' + error.message)
+            reject(error)
           })
       })
     },

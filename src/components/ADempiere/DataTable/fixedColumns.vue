@@ -54,8 +54,8 @@ export default {
           type: this.panelType.trim()
         }).then(response => {
           this.generatePanel(response.fieldList)
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        }).catch(error => {
+          console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
       } else {
         this.generatePanel(fieldList)

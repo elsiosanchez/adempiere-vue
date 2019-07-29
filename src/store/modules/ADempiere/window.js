@@ -1,4 +1,7 @@
-import { getWindow as gettingWindow, getTab } from '@/api/ADempiere/dictionary'
+import {
+  getWindow as getWindowFromDictionary,
+  getTab as getTabfromDictionary
+} from '@/api/ADempiere'
 import { convertContextInfoFromGRPC, convertFieldFromGRPC } from '@/utils/ADempiere'
 
 const window = {
@@ -22,7 +25,7 @@ const window = {
   actions: {
     getWindowFromServer: ({ commit, dispatch }, windowUuid) => {
       return new Promise((resolve, reject) => {
-        gettingWindow(windowUuid)
+        getWindowFromDictionary(windowUuid)
           .then(response => {
             var newWindow = {
               id: response.getId(),
@@ -123,15 +126,15 @@ const window = {
             commit('addWindow', newWindow)
             resolve(newWindow)
           })
-          .catch(err => {
-            console.warn('Dictionary Window (State Window) - Error ' + err.code + ': ' + err.message)
-            reject(err)
+          .catch(error => {
+            console.warn('Dictionary Window (State Window) - Error ' + error.code + ': ' + error.message)
+            reject(error)
           })
       })
     },
     getTabAndFieldFromServer: ({ commit, dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
-        getTab(objectParams.containerUuid)
+        getTabfromDictionary(objectParams.containerUuid)
           .then(response => {
             var panelType = 'window'
             var fieldsList = response.getFieldsList()
@@ -181,9 +184,9 @@ const window = {
             dispatch('addPanel', panel)
             resolve(panel)
           })
-          .catch(err => {
-            console.warn('Dictionary Tab (State Window) - Error ' + err.code + ': ' + err.message)
-            reject(err)
+          .catch(error => {
+            console.warn('Dictionary Tab (State Window) - Error ' + error.code + ': ' + error.message)
+            reject(error)
           })
       })
     },

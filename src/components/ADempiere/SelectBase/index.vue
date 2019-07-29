@@ -3,7 +3,7 @@
     v-model="value"
     :filterable="!isMobile"
     :placeholder="metadata.help"
-    :loading="loading"
+    :loading="isLoading"
     value-key="key"
     class="select-base"
     clearable
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       value: this.metadata.value,
-      loading: false,
+      isLoading: false,
       options: [],
       list: [],
       showControls: true,
@@ -153,8 +153,8 @@ export default {
           this.options.push(response)
           this.options.unshift(this.blanckOption)
         })
-        .catch(err => {
-          console.warn('Get Lookup, Select Base - Error ' + err.code + ': ' + err.message)
+        .catch(error => {
+          console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
         })
     },
     /**
@@ -170,19 +170,19 @@ export default {
       }
     },
     remoteMethod() {
-      this.loading = true
+      this.isLoading = true
       this.$store.dispatch('getLookupList', {
         tableName: this.metadata.reference.tableName,
         query: this.parsedQuery
       })
         .then(response => {
-          this.loading = false
+          this.isLoading = false
           this.options = response
           this.options.unshift(this.blanckOption)
         })
-        .catch(err => {
-          this.loading = false
-          console.warn('Get Lookup List, Select Base - Error ' + err.code + ': ' + err.message)
+        .catch(error => {
+          this.isLoading = false
+          console.warn('Get Lookup List, Select Base - Error ' + error.code + ': ' + error.message)
         })
     },
     clearLookup() {

@@ -1,4 +1,4 @@
-import { getProcess as getProcessFromDictionary } from '@/api/ADempiere/dictionary'
+import { getProcess as getProcessFromDictionary } from '@/api/ADempiere'
 import { convertFieldFromGRPC, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 import i18n from '@/lang'
 
@@ -58,8 +58,8 @@ const process = {
             fieldDefinitionList
               .filter(field => field.parentFieldsList && field.isActive)
               .forEach((field, index, list) => {
-                field.parentFieldsList.forEach((parentColumnName) => {
-                  var parentField = list.find((parentField) => {
+                field.parentFieldsList.forEach(parentColumnName => {
+                  var parentField = list.find(parentField => {
                     return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
                   })
                   if (parentField) {
@@ -168,8 +168,9 @@ const process = {
             dispatch('setContextMenu', contextMenu)
             resolve(processDefinition)
           })
-          .catch(err => {
-            console.warn('Dictionary Process (State ) - Error ' + err)
+          .catch(error => {
+            console.warn('Dictionary Process (State ) - Error ' + error)
+            reject(error)
           })
       })
     }

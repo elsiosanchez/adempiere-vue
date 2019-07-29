@@ -198,8 +198,8 @@ export default {
           type: this.panelType.trim()
         }).then(response => {
           this.generatePanel(response.fieldList)
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        }).catch(error => {
+          console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
       } else {
         this.generatePanel(fieldList)
@@ -248,13 +248,13 @@ export default {
         .then(response => {
           this.dataRecords = response
         })
-        .catch(err => {
+        .catch(error => {
           this.$message({
             message: 'Error getting data records',
             type: 'error',
             showClose: true
           })
-          console.warn('DataRecord Panel - Error ' + err.code + ': ' + err.message)
+          console.warn('DataRecord Panel - Error ' + error.code + ': ' + error.message)
         })
       // }
     },

@@ -242,8 +242,8 @@ export default {
           this.$store.dispatch('getProcessFromServer', action.uuid)
             .then(response => {
               this.$store.dispatch('setShowDialog', { type: type, action: response })
-            }).catch(err => {
-              console.warn('ContextMenu: Dictionary Process (State) - Error ' + err.code + ': ' + err.message)
+            }).catch(error => {
+              console.warn('ContextMenu: Dictionary Process (State) - Error ' + error.code + ': ' + error.message)
             })
         } else {
           this.$store.dispatch('setShowDialog', { type: type, action: processData })

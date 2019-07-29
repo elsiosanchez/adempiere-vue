@@ -1,4 +1,4 @@
-import { getBrowserSearch } from '@/api/ADempiere/data'
+import { getBrowserSearch as getBrowserSearchFromData } from '@/api/ADempiere'
 import { convertValueFromGRPC, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -37,7 +37,7 @@ const browserControl = {
             parameters: finalParameters.params
           }
           // Add validation compare browserSearchQueryParameters
-          getBrowserSearch(browserSearchQueryParameters)
+          getBrowserSearchFromData(browserSearchQueryParameters)
             .then(response => {
               const recordList = response.getRecordsList()
               var record = recordList.map(itemRecord => {
@@ -72,13 +72,13 @@ const browserControl = {
               })
               resolve(record)
             })
-            .catch(err => {
+            .catch(error => {
               showMessage({
                 title: language.t('notifications.error'),
                 message: language.t('notifications.errorSearch'),
                 type: 'error'
               })
-              reject(err)
+              reject(error)
             })
         }
       })

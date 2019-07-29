@@ -31,11 +31,11 @@ const contextMenu = {
     },
     getRelations: (state, getters, rootState) => (containerUuid) => {
       var menuRelations
-      rootState.permission.addRoutes.forEach((route) => {
+      rootState.permission.addRoutes.forEach(route => {
         if (route.name === containerUuid) {
           menuRelations = route.children
         } else if (route.name !== containerUuid && route.children) {
-          route.children.forEach((child) => {
+          route.children.forEach(child => {
             if (child.name === containerUuid) {
               menuRelations = route.children
             }

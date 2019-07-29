@@ -25,7 +25,7 @@ export function showNotification(params) {
     }
     //  For logs
     if (params.logs !== undefined) {
-      params.logs.forEach((logResult) => {
+      params.logs.forEach(logResult => {
         if (logResult !== undefined) {
           message = message + '<br>' + logResult.log
         }

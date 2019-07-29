@@ -3,6 +3,24 @@ import evaluator from '@/utils/ADempiere/evaluator.js'
 import * as utils from './valueUtil.js'
 
 /**
+ * Determinate if field is displayed
+ * @param {object}  field
+ * @param {boolean} inTable
+ * @param {boolean} evaluateMandatory
+ * @returns {boolean}
+ */
+export function fieldIsDisplayed(field, inTable = false) {
+  const isMandatory = field.isMandatory && field.isMandatoryFromLogic
+
+  const isBrowserDisplayed = field.isQueryCriteria // browser query criteria
+  const isWindowDisplayed = field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result
+  const isDisplayedView = (field.panelType === 'browser' && isBrowserDisplayed) || (field.panelType !== 'browser' && isWindowDisplayed)
+
+  //  Verify for displayed and is active
+  return field.isActive && isDisplayedView && (isMandatory || field.isShowedFromUser || inTable)
+}
+
+/**
  * Converted the gRPC value to the value needed
  * @param {mixed} initialValue Value get of gRPC
  */
@@ -71,7 +89,7 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
   var zoomWindowList = []
   if (reference) {
     if (reference.getWindowsList()) {
-      zoomWindowList = reference.getWindowsList().map((zoomWindow) => {
+      zoomWindowList = reference.getWindowsList().map(zoomWindow => {
         return {
           id: zoomWindow.getId(),
           uuid: zoomWindow.getUuid(),

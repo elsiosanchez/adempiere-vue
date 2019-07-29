@@ -50,6 +50,7 @@
 <script>
 import { FIELD_ONLY } from '@/components/ADempiere/Field/references'
 import { FIELD_DISPLAY_SIZES, DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
+import { fieldIsDisplayed } from '@/utils/ADempiere'
 
 /**
  * This is the base component for linking the components according to the
@@ -167,13 +168,9 @@ export default {
     this.field = this.metadataField
   },
   methods: {
+    fieldIsDisplayed,
     isDisplayed() {
-      var isBrowserDisplayed = this.field.isQueryCriteria // browser query criteria
-      var isWindowDisplayed = this.field.isDisplayed && this.field.isDisplayedFromLogic // window, process and report, browser result
-      var isDisplayed = (this.panelType === 'browser' && isBrowserDisplayed) || (this.panelType !== 'browser' && isWindowDisplayed)
-
-      //  Verify for displayed and is active
-      return this.field.isActive && isDisplayed && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
+      return this.fieldIsDisplayed(this.field, this.inTable)
     },
     isReadOnly() {
       // CHECK ATTRIBUTE isUpdateable

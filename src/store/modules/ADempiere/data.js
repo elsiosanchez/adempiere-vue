@@ -1,4 +1,4 @@
-import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere/data'
+import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
 import { convertValueFromGRPC } from '@/utils/ADempiere'
 
 const data = {
@@ -84,8 +84,8 @@ const data = {
 
             resolve(newValue)
           })
-          .catch(err => {
-            reject(err)
+          .catch(error => {
+            reject(error)
           })
       })
     },

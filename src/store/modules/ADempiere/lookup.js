@@ -1,4 +1,4 @@
-import { getLookup, getLookupList } from '@/api/ADempiere/data'
+import { getLookup, getLookupList } from '@/api/ADempiere'
 import { convertValueFromGRPC, getCurrentRole } from '@/utils/ADempiere'
 
 const lookup = {
@@ -41,8 +41,8 @@ const lookup = {
             })
             resolve(option)
           })
-          .catch(err => {
-            reject(err)
+          .catch(error => {
+            reject(error)
           })
       })
     },
@@ -73,8 +73,8 @@ const lookup = {
             })
             resolve(options)
           })
-          .catch(err => {
-            reject(err)
+          .catch(error => {
+            reject(error)
           })
       })
     },

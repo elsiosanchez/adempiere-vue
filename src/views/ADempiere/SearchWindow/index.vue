@@ -197,8 +197,8 @@ export default {
           type: 'window'
         }).then(response => {
           this.fieldList = this.sortFields(response.fieldList)
-        }).catch(err => {
-          console.warn('Field Load Error ' + err.code + ': ' + err.message)
+        }).catch(error => {
+          console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
       } else {
         this.fieldList = this.sortFields(panel.fieldList)

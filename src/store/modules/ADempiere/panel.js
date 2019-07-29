@@ -6,7 +6,7 @@
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
 import evaluator from '@/utils/ADempiere/evaluator.js'
-import { assignedGroup, isEmptyValue } from '@/utils/ADempiere'
+import { assignedGroup, fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
 
 const panel = {
   state: {
@@ -54,7 +54,7 @@ const panel = {
       var keyColumn = ''
       var selectionColumn = []
 
-      params.fieldList.forEach((itemField) => {
+      params.fieldList.forEach(itemField => {
         if (itemField.isKey) {
           keyColumn = itemField.columnName
         }
@@ -83,7 +83,7 @@ const panel = {
       var panel = getters.getPanel(params.containerUuid)
       var showsFieldsWithValue = false
       var hiddenFieldsWithValue = false
-      var newFields = panel.fieldList.map((itemField) => {
+      var newFields = panel.fieldList.map(itemField => {
         if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
           // if it isShowedFromUser it is false, and it has some value, it means
           // that it is going to show, therefore the SmartBrowser must be searched
@@ -116,7 +116,7 @@ const panel = {
     },
     changeFieldAttributesBoolean({ commit, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
-      var newFields = panel.fieldList.map((itemField) => {
+      var newFields = panel.fieldList.map(itemField => {
         if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
           itemField[params.attribute] = params.valueAttrbute
           return itemField
@@ -134,7 +134,7 @@ const panel = {
       state.panel
         .find(item => item.uuid === params.containerUuid).fieldList
         .filter(field => field.dependentFieldsList !== undefined)
-        .forEach((actionField) => {
+        .forEach(actionField => {
           dispatch('notifyFieldChange', {
             parentUuid: params.parentUuid,
             containerUuid: params.containerUuid,
@@ -207,15 +207,14 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-      var isMandatory = field.isMandatory && field.isMandatoryFromLogic
-      var isDisplayed = field.isDisplayed && field.isDisplayedFromLogic && (isMandatory || field.isShowedFromUser)
-      if (panel.panelType === 'browser' && isDisplayed) {
+
+      if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
         dispatch('getBrowserSearch', {
           containerUuid: params.containerUuid,
           clearSelection: true
         })
       }
-      if (panel.panelType === 'window' && isDisplayed) {
+      if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
         dispatch('editEntity', {
           containerUuid: params.containerUuid
           // tableId: panel.tableId
@@ -303,11 +302,10 @@ const panel = {
       var panel = state.panel.find(
         itemPanel => itemPanel.uuid === containerUuid
       )
-
       if (panel === undefined) {
         return panel
       }
-      var fieldList = panel.fieldList.filter((itemField) => {
+      var fieldList = panel.fieldList.filter(itemField => {
         return !isEmptyValue(itemField.value)
       })
 
@@ -318,7 +316,8 @@ const panel = {
      * get field list visible and with values
      */
     getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false) => {
-      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      const panel = getters.getPanel(containerUuid)
+      const fieldList = panel.fieldList
       const fields = fieldList.length
       var params = []
       var fieldsMandatory = []
@@ -326,8 +325,12 @@ const panel = {
 
       if (fields > 0) {
         params = fieldList.filter(fieldItem => {
+          var isBrowserDisplayed = fieldItem.isQueryCriteria // browser query criteria
+          var isWindowDisplayed = fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic // window, process and report, browser result
+          var isDisplayedView = (panel.panelType === 'browser' && isBrowserDisplayed) || (panel.panelType !== 'browser' && isWindowDisplayed)
+
           const isMandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
-          const isDisplayed = fieldItem.isActive && fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic && (fieldItem.isShowedFromUser || isMandatory)
+          const isDisplayed = fieldItem.isActive && isDisplayedView && (fieldItem.isShowedFromUser || isMandatory)
           // mandatory fields
           if (isMandatory) {
             fieldsMandatory.push(fieldItem)
