@@ -34,7 +34,7 @@
           class="fiel-optional"
         />
       </div>
-      <div v-show="this.$store.state.app.device === 'mobile'" class="panel-expand">
+      <div v-show="isMobile && panelType === 'window" class="panel-expand">
         <i class="el-icon-upload2" @click="ExpandPanel()" />
         <i class="el-icon-download" @click="RestorePanel()" />
       </div>
@@ -186,6 +186,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
