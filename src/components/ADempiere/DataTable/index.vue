@@ -457,18 +457,16 @@ export default {
       }
       return arr
     },
-    handleChangePage(newPage) {
-      if (newPage === 1) {
-        newPage = 0
+    handleChangePage(val) {
+      if (val === 1) {
+        val = 0
       } else {
-        newPage = parseInt(this.getNextPageToken)
+        val = parseInt(this.getNextPageToken)
+        this.$store.dispatch('setPageNumber', {
+          containerUuid: this.containerUuid,
+          pageNumber: val
+        })
       }
-      this.currentPage = newPage
-      this.$store.dispatch('setPageNumber', {
-        containerUuid: this.containerUuid,
-        pageNumber: newPage
-      })
-      console.log(this.currentPage)
     }
   }
 }
