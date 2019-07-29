@@ -109,6 +109,7 @@
         <el-pagination
           layout="slot, total, prev, pager, next"
           :current-page="currentPage"
+          :page-size="Pagination"
           :total="getDataDetail.length"
           @current-change="handleChangePage"
         >
@@ -167,6 +168,7 @@ export default {
       searchTable: '', // text from search
       showSearch: false, // show input from search,
       panel: {},
+      Pagination: 100,
       fieldList: [],
       MenuTable: '1',
       optional: false,
@@ -190,6 +192,10 @@ export default {
     },
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
+    },
+    getNextPageToken() {
+      console.log(this.$store.getters.getDataNextPageToken(this.containerUuid))
+      return this.$store.getters.getDataNextPageToken(this.containerUuid)
     },
     getDataDetail() {
       return this.$store.getters.getDataRecordDetail(this.containerUuid)
@@ -221,7 +227,7 @@ export default {
         return table
       } else {
         if (!this.Expand) {
-          return this.$store.getters.getHeigth() - 400
+          return this.$store.getters.getHeigth() - 500
         } else {
           return this.$store.getters.getHeigth() - 190
         }
@@ -272,7 +278,7 @@ export default {
       })
     },
     setSort() {
-      if (this.isMobile) {
+      if (!this.isMobile) {
         const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
         this.sortable = Sortable.create(el, {
           ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
@@ -455,8 +461,9 @@ export default {
       this.currentPage = newPage
       this.$store.dispatch('setPageNumber', {
         containerUuid: this.containerUuid,
-        pageNumber: newPage
+        pageNumber: this.getNextPageToken
       })
+      console.log(this.currentPage)
     }
   }
 }
