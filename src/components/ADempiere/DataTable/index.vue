@@ -50,7 +50,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="Datatable()"
+      :data="datatable()"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -460,7 +460,7 @@ export default {
       }
       return arr
     },
-    Datatable() {
+    datatable() {
       var datatable = this.getDataDetail
       if (this.page === this.getNextToken) {
         return datatable.slice(99,)
