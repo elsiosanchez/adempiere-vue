@@ -107,7 +107,7 @@ const browser = {
               isMandatoryParams: isMandatoryParams,
               isShowedCriteria: Boolean(fieldsList.length > 0 && isMandatoryParams)
             }
-            // //  Convert from gRPC process list
+            //  Convert from gRPC process list
             var process = response.getProcess()
             var actions = []
             if (process !== undefined) {
@@ -125,10 +125,10 @@ const browser = {
 
               // TO DO convert gRPC attributes from response.getProcess() to object
               // Add process asociate in store
-              var processStore = rootGetters.getProcess(process.getUuid())
-              if (processStore === undefined) {
-                dispatch('getProcessFromServer', process.getUuid())
-              }
+              // var processStore = rootGetters.getProcess(process.getUuid())
+              // if (processStore === undefined) {
+              //   dispatch('getProcessFromServer', process.getUuid())
+              // }
             }
 
             //  Add process menu

@@ -137,5 +137,9 @@ export default {
     changeRole: 'Cambiar rol',
     changeLanguage: 'Cambiar idioma',
     changeLanguagePlaceholder: 'Elija un idioma'
+  },
+  window: {
+    newRecord: 'Nuevo Registro',
+    deleteRecord: 'Eliminar Registro'
   }
 }

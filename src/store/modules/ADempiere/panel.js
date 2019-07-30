@@ -315,7 +315,7 @@ const panel = {
     /**
      * get field list visible and with values
      */
-    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false) => {
+    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = []) => {
       const panel = getters.getPanel(containerUuid)
       const fieldList = panel.fieldList
       const fields = fieldList.length
@@ -325,6 +325,11 @@ const panel = {
 
       if (fields > 0) {
         params = fieldList.filter(fieldItem => {
+          // columns to exclude
+          if (withOut.find(subitem => subitem.toLowerCase() === fieldItem.columnName.toLowerCase())) {
+            return false
+          }
+
           var isBrowserDisplayed = fieldItem.isQueryCriteria // browser query criteria
           var isWindowDisplayed = fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic // window, process and report, browser result
           var isDisplayedView = (panel.panelType === 'browser' && isBrowserDisplayed) || (panel.panelType !== 'browser' && isWindowDisplayed)

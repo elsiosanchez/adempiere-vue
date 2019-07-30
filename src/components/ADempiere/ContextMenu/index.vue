@@ -150,7 +150,8 @@ export default {
       references: [],
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
-      metadataMenu: {}
+      metadataMenu: {},
+      uuidRecord: this.$route.params.action
     }
   },
   computed: {
@@ -322,6 +323,12 @@ export default {
         }
       } else if (action.type === 'process') {
         this.showModal(action.type, action)
+      } else if (action.type === 'dataAction') {
+        this.$store.dispatch(action.action, {
+          ...action,
+          containerUuid: this.containerUuid,
+          recordUuid: this.uuidRecord
+        })
       }
     }
   }

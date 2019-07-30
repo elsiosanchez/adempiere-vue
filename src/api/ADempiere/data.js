@@ -21,12 +21,12 @@ export function getObject(table, uuid = false, id = false) {
 
 /**
  * Create entity
- * @param {integer} parameters.tableId
+ * @param {string} parameters.tableName
  * @param {array}   parameters.attributesList
  */
 export function createEntity(parameters) {
   var entityRequest = Instance.call(this).getCreateEntityRequest()
-  entityRequest.setTableid(parameters.tableId)
+  entityRequest.setTablename(parameters.tableName)
   if (parameters.attributesList !== undefined && parameters.attributesList.length > 0) {
     parameters.attributesList.forEach(attribute => {
       const convertedAttribute = Instance.call(this).convertParameter(attribute)
@@ -39,16 +39,16 @@ export function createEntity(parameters) {
 
 /**
  * Update entity
- * @param {integer} parameters.tableId
- * @param {integer} parameters.tableId
- * @param {integer} parameters.tableId
+ * @param {string}  parameters.tableName
+ * @param {integer} parameters.recordId
+ * @param {string}  parameters.recordUuid
  * @param {array}   parameters.attributesList
  */
 export function updateEntity(parameters) {
   var entityRequest = Instance.call(this).getUpdateEntityRequest()
-  entityRequest.setTableid(parameters.tableId)
+  entityRequest.setTablename(parameters.tableName)
   entityRequest.setRecordid(parameters.recordId)
-  entityRequest.setUuid(parameters.uuid)
+  entityRequest.setUuid(parameters.recordUuid)
   if (parameters.attributesList !== undefined && parameters.attributesList.length > 0) {
     parameters.attributesList.forEach(attribute => {
       const convertedAttribute = Instance.call(this).convertParameter(attribute)
@@ -61,16 +61,16 @@ export function updateEntity(parameters) {
 
 /**
  * Delete entity
- * @param {integer} parameters.tableId
- * @param {integer} parameters.tableId
- * @param {integer} parameters.tableId
+ * @param {string}  parameters.tableName
+ * @param {integer} parameters.recordId
+ * @param {string}  parameters.recordUuid
  * @param {array}   parameters.attributesList
  */
 export function deleteEntity(parameters) {
   var entityRequest = Instance.call(this).getUpdateEntityRequest()
-  entityRequest.setTableid(parameters.tableId)
+  entityRequest.setTablename(parameters.tablename)
   entityRequest.setRecordid(parameters.recordId)
-  entityRequest.setUuid(parameters.uuid)
+  entityRequest.setUuid(parameters.recordUuid)
 
   //  Delete Entity
   return Instance.call(this).deleteEntity(entityRequest)

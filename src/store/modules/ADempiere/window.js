@@ -3,6 +3,7 @@ import {
   getTab as getTabfromDictionary
 } from '@/api/ADempiere'
 import { convertContextInfoFromGRPC, convertFieldFromGRPC } from '@/utils/ADempiere'
+import language from '@/lang'
 
 const window = {
   state: {
@@ -79,7 +80,24 @@ const window = {
               }
 
               //  Convert from gRPC process list
-              var actions = tabItem.getProcessesList().map(processItem => {
+              var actions = []
+              actions.push(
+                {
+                  name: language.t('window.newRecord'),
+                  processName: language.t('window.newRecord'),
+                  type: 'dataAction',
+                  action: 'setNewEntity',
+                  uuidParent: newWindow.uuid
+                },
+                {
+                  name: language.t('window.deleteRecord'),
+                  processName: language.t('window.deleteRecord'),
+                  type: 'dataAction',
+                  action: 'deleteEntity',
+                  uuidParent: newWindow.uuid
+                }
+              )
+              var processList = tabItem.getProcessesList().map(processItem => {
                 return {
                   name: processItem.getName(),
                   type: 'process',
@@ -92,6 +110,8 @@ const window = {
                   isDirectPrint: processItem.getIsdirectprint()
                 }
               })
+              actions = actions.concat(processList)
+
               //  Add process menu
               var contextMenu = {
                 containerUuid: tab.uuid,

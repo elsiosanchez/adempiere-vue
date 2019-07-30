@@ -130,7 +130,7 @@ export default {
     },
     tableName: {
       type: String,
-      default: ''
+      default: undefined
     },
     group: {
       type: Object,
@@ -159,12 +159,15 @@ export default {
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
-      mutipleGroups: false
+      mutipleGroups: Boolean(this.panelType === 'window')
     }
   },
   computed: {
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    },
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   watch: {
@@ -175,13 +178,10 @@ export default {
   created() {
     // get tab with uuid
     this.getPanel()
-    if (this.panelType === 'window') {
-      this.mutipleGroups = true
-    }
   },
   methods: {
     cards() {
-      if (this.$store.state.app.device === 'mobile' || this.groupsView < 2 || !this.mutipleGroups) {
+      if (this.isMobile || this.groupsView < 2 || !this.mutipleGroups) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -191,7 +191,9 @@ export default {
      */
     getPanel() {
       var fieldList = this.getterFieldList
-      if (fieldList === undefined || fieldList.length === 0) {
+      if (fieldList && fieldList.length > 0) {
+        this.generatePanel(fieldList)
+      } else {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
@@ -201,8 +203,6 @@ export default {
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
-      } else {
-        this.generatePanel(fieldList)
       }
     },
     generatePanel(fieldList) {
@@ -224,8 +224,8 @@ export default {
      * @param  {string} table Table name in BD
      * @param  {string} uuidRecord Universal Unique Identifier Record
      */
-    getData(table = '', uuidRecord = null) {
-      if (table === null || table === '') {
+    getData(table = null, uuidRecord = null) {
+      if (!table) {
         this.$message({
           message: 'Error getting data records',
           type: 'error',

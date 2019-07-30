@@ -16,7 +16,7 @@
           :metadata="item"
           :table-name="item.tableName"
           :group="item.tabGroup"
-          :is-edit="isEdit"
+          :is-edit="true"
           :panel-type="panelType"
         />
       </el-tab-pane>
@@ -28,7 +28,7 @@
 import Panel from '@/components/ADempiere/Panel'
 
 export default {
-  name: 'Tab',
+  name: 'TabParent',
   components: {
     Panel
   },
@@ -48,8 +48,7 @@ export default {
   },
   data() {
     return {
-      tableName: [],
-      loading: false,
+      isLoading: false,
       currentTab: this.$route.params.tabNumber,
       uuidRecord: this.$route.params.uuidRecord,
       tabUuid: '',
@@ -94,18 +93,3 @@ export default {
   }
 }
 </script>
-
-<style scoped >
-  .paneltab {
-    border: 1px solid blue;
-  }
-
-  .el-row {
-    margin-bottom: 20px;
-  }
-
-  .el-col {
-    border-radius: 4px;
-    left: 150px;
-  }
-</style>

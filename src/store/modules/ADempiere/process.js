@@ -1,6 +1,6 @@
 import { getProcess as getProcessFromDictionary } from '@/api/ADempiere'
 import { convertFieldFromGRPC, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
-import i18n from '@/lang'
+import language from '@/lang'
 
 const process = {
   state: {
@@ -77,9 +77,9 @@ const process = {
               }
             })
             //  Default Action
-            var processActions = []
-            processActions.push({
-              name: i18n.t('components.RunProcess'),
+            var actions = []
+            actions.push({
+              name: language.t('components.RunProcess'),
               processName: response.getName(),
               type: 'action',
               action: 'startProcess',
@@ -92,7 +92,7 @@ const process = {
               isDirectPrint: response.getIsdirectprint(),
               reportExportType: undefined
             }, {
-              name: i18n.t('components.ChangeParameters'),
+              name: language.t('components.ChangeParameters'),
               processName: response.getName(),
               type: 'process',
               action: 'changeParameters',
@@ -106,7 +106,7 @@ const process = {
             })
 
             var summaryAction = {
-              name: i18n.t('components.RunProcessAs'),
+              name: language.t('components.RunProcessAs'),
               processName: response.getName(),
               type: 'summary',
               action: '',
@@ -121,7 +121,7 @@ const process = {
             }
             reportExportTypeList.forEach(actionValue => {
               var action = {
-                name: i18n.t('components.ExportTo') + ' (' + actionValue.name + ')',
+                name: language.t('components.ExportTo') + ' (' + actionValue.name + ')',
                 processName: response.getName(),
                 type: 'action',
                 action: 'startProcess',
@@ -138,7 +138,7 @@ const process = {
               summaryAction.childs.push(action)
             })
             //  Add summary Actions
-            processActions.push(summaryAction)
+            actions.push(summaryAction)
 
             var processDefinition = {
               id: response.getId(),
@@ -160,7 +160,7 @@ const process = {
             var contextMenu = {
               containerUuid: response.getUuid(),
               relations: [],
-              actions: processActions,
+              actions: actions,
               references: []
             }
             dispatch('addPanel', processDefinition)

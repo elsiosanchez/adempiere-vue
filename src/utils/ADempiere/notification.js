@@ -1,10 +1,10 @@
 import { Message, Notification } from 'element-ui'
-import i18n from '@/lang'
+import language from '@/lang'
 
 export function hasTranslation(text) {
-  const hasKey = i18n.te('notifications.' + text)
+  const hasKey = language.te('notifications.' + text)
   if (hasKey) {
-    const translatedText = i18n.t('notifications.' + text)
+    const translatedText = language.t('notifications.' + text)
 
     return translatedText
   }

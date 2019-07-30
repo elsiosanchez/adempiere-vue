@@ -4,6 +4,7 @@ import { convertValueFromGRPC } from '@/utils/ADempiere'
 const data = {
   state: {
     recordSelection: [], // record data and selection
+    recordDetail: [],
     recentItems: [],
     recordView: []
   },
@@ -39,6 +40,15 @@ const data = {
     },
     setPageNumber(state, payload) {
       payload.data.pageNumber = payload.pageNumber
+    },
+    setRecordDetail(state, payload) {
+      var dataDetail = state.recordDetail.filter(itemData => {
+        if (itemData.uuid !== payload.uuid) {
+          return true
+        }
+      })
+      dataDetail.push(payload)
+      state.recordDetail = dataDetail
     }
   },
   actions: {
@@ -82,6 +92,12 @@ const data = {
               newValue[key] = tempValue
             })
 
+            commit('setRecordDetail', {
+              data: newValue,
+              id: response.getId(),
+              uuid: response.getUuid(),
+              tableName: response.getTablename()
+            })
             resolve(newValue)
           })
           .catch(error => {
@@ -211,8 +227,8 @@ const data = {
      *    { columname, value }
      * ]
      */
-    getParamsProcessToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
-      var fieldList = rootGetters.getPanelParameters(containerUuid, true)
+    getParamsProcessToServer: (state, getters, rootState, rootGetters) => (containerUuid, withOut = []) => {
+      var fieldList = rootGetters.getPanelParameters(containerUuid, true, withOut)
       var parameters = []
       if (fieldList.fields > 0) {
         var fieldListRange = []

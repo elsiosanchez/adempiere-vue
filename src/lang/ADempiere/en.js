@@ -162,5 +162,9 @@ export default {
     changeRole: 'Change role',
     changeLanguage: 'Change language',
     changeLanguagePlaceholder: 'Choose a language'
+  },
+  window: {
+    newRecord: 'New Record',
+    deleteRecord: 'Delete Record'
   }
 }

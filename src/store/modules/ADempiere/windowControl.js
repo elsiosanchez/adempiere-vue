@@ -6,19 +6,24 @@ const windowControl = {
     /**
      * Create entity
      * @param {integer} createEntityRequest.tableId
-     * @param {array} createEntityRequest.attributesList
+     * @param {array}   createEntityRequest.attributesList
      */
     setNewEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
-        var finalAttributes = rootGetters.getParamsProcessToServer(params.containerUuid)
+        var panel = rootGetters.getPanel(params.containerUuid)
+        // delete key from attributes
+        var primaryKey = panel.tableName + '_ID'
+        var finalAttributes = rootGetters.getParamsProcessToServer(params.containerUuid, [primaryKey])
+
         if ((finalAttributes.fieldsMandatory.length > 0 &&
           finalAttributes.params.length >= finalAttributes.fieldsMandatory.length) ||
           finalAttributes.fieldsMandatory.length === 0) {
           createEntity({
-            tableId: 0, // params.tableId,
+            tableName: panel.tableName,
             attributesList: finalAttributes
           })
             .then(response => {
+              console.log('new record sucess', response)
               resolve(response)
             })
             .catch(error => {
@@ -34,18 +39,18 @@ const windowControl = {
      */
     editEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
+        // attributes or fields
         var finalAttributes = rootGetters.getParamsProcessToServer(params.containerUuid)
         if ((finalAttributes.fieldsMandatory.length > 0 &&
           finalAttributes.params.length >= finalAttributes.fieldsMandatory.length) ||
           finalAttributes.fieldsMandatory.length === 0) {
           updateEntity({
-            tableId: 0, // params.tableId,
-            recordId: params.recordId,
-            uuid: params.uuid,
+            tableName: params.tableName,
+            uuid: params.recordUuid,
             attributesList: finalAttributes
           })
             .then(response => {
-              console.info('edit entity', response)
+              console.info('edit entity sucess', response)
               resolve(response)
             })
             .catch(error => {
@@ -57,16 +62,19 @@ const windowControl = {
     /**
      * Create entity
      * @param {integer} createEntityRequest.tableId
-     * @param {array} createEntityRequest.attributesList
+     * @param {array}   createEntityRequest.attributesList
      */
     deleteEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
-        deleteEntity({
-          tableId: 0, // params.tableId,
-          recordId: params.recordId,
-          uuid: params.uuid
-        })
+        var panel = rootGetters.getPanel(params.containerUuid)
+        var objectToDelete = {
+          tableName: panel.tableName,
+          recordUuid: params.recordUuid
+        }
+
+        deleteEntity(objectToDelete)
           .then(response => {
+            console.log('delete entity sucess', response)
             resolve(response)
           })
           .catch(error => {
