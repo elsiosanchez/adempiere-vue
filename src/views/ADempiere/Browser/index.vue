@@ -91,17 +91,20 @@ export default {
     }
   },
   computed: {
-    getParamsProcessToServer() {
-      return this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
-    },
     getDataDetail() {
       return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    },
+    getContainerIsReadyForSubmit() {
+      return this.$store.getters.isReadyForSubmit(this.containerUuid)
     },
     cssClass() {
       if (this.$store.state.app.sidebar.opened) {
         return 'container-panel-open'
       }
       return 'container-panel'
+    },
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   watch: {
@@ -122,13 +125,13 @@ export default {
   methods: {
     isEmptyValue,
     cssClassTitle() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.isMobile) {
         return 'title-mobile'
       }
       return 'title'
     },
     cssClassHelp() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.isMobile) {
         return 'content-help-mobile'
       }
       return 'content-help'
@@ -165,15 +168,10 @@ export default {
       }
     },
     defaultSearch() {
-      if (this.getDataDetail.length <= 0) {
-        var finalParameters = this.getParamsProcessToServer
-        if ((finalParameters.fieldsMandatory.length > 0 &&
-          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
-          finalParameters.fieldsMandatory.length === 0) {
-          this.$store.dispatch('getBrowserSearch', {
-            containerUuid: this.browserUuid
-          })
-        }
+      if (this.getDataDetail.length <= 0 && this.getContainerIsReadyForSubmit) {
+        this.$store.dispatch('getBrowserSearch', {
+          containerUuid: this.browserUuid
+        })
       }
     }
   }

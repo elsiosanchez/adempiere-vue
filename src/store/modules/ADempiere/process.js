@@ -4,8 +4,7 @@ import language from '@/lang'
 
 const process = {
   state: {
-    process: [],
-    processesList: []
+    process: []
   },
   mutations: {
     addProcess(state, payload) {
@@ -13,7 +12,6 @@ const process = {
     },
     dictionaryResetCacheProcess(state, payload) {
       state.process = payload
-      state.processesList = payload
     }
   },
   actions: {
@@ -181,18 +179,6 @@ const process = {
         item => item.uuid === processUuid
       )
       return process
-    },
-    getParametersList: (state) => (processUuid) => {
-      var process = state.process.find(
-        item => item.uuid === processUuid
-      )
-      if (process === undefined) {
-        return process
-      }
-      return process.parameterList
-    },
-    getProcessListTab: (state) => {
-      return state.processesList
     }
   }
 }

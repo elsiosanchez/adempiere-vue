@@ -104,8 +104,8 @@ export default {
         this.$router.push({ name: this.$route.name, params: { uuidRecord: this.windowRecordSelected.UUID }})
         this.closeDialog()
       } else if (action !== undefined) {
-        var finalParameters = this.$store.getters.getParamsProcessToServer(action.uuid)
-        if ((finalParameters.fieldsMandatory.length > 0 && finalParameters.params.length >= finalParameters.fieldsMandatory.length) || finalParameters.fieldsMandatory.length === 0) {
+        var isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
+        if (isReadyForSubmit) {
           this.closeDialog()
           this.$store.dispatch('startProcess', {
             action: action,
@@ -136,11 +136,7 @@ export default {
               this.$router.push('/')
             })
         } else {
-          var emptyField = finalParameters.fieldsMandatory.find(filed => {
-            if (this.isEmptyValue(filed.value)) {
-              return true
-            }
-          })
+          var emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({
             type: 'warning',
             title: this.$t('notifications.emptyValues'),

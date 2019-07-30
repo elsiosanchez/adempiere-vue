@@ -1,7 +1,7 @@
 import { getLanguage } from '@/lang/index'
 import { getToken } from '@/utils/auth'
 import BusinessData from '@adempiere/grpc-data-client'
-import { HOST_GRPC_DATA } from './constants'
+import { HOST_GRPC_DATA } from '@/api/ADempiere/constants'
 import { showMessage } from '@/utils/ADempiere/notification'
 
 // Get Instance for connection
@@ -21,7 +21,7 @@ export function getObject(table, uuid = false, id = false) {
 
 /**
  * Create entity
- * @param {string} parameters.tableName
+ * @param {string}  parameters.tableName
  * @param {array}   parameters.attributesList
  */
 export function createEntity(parameters) {
@@ -208,7 +208,6 @@ export function getBrowserSearch(browser) {
       browserRequest.addParameters(convertedParameter)
     })
   }
-  // browserRequest.setParametersList(convertParameter())
   //  Run browser
   return Instance.call(this).requestBrowser(browserRequest)
 }

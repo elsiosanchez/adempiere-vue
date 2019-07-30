@@ -238,19 +238,6 @@ const window = {
       )
       return window
     },
-    getTabsList: (state, getters) => (windowUuid, tabUuid = null) => {
-      var window = getters.getWindow(windowUuid)
-      if (window) {
-        if (tabUuid) {
-          var tab = window.tabsList.find(
-            tabItem => tabItem.uuid === tabUuid
-          )
-          return tab
-        }
-        return window.tabsListParent
-      }
-      return window
-    },
     getTab: (state, getters) => (windowUuid, tabUuid) => {
       var window = getters.getWindow(windowUuid)
       if (window) {
@@ -258,20 +245,6 @@ const window = {
           return tabItem.uuid === tabUuid
         })
         return tab
-      }
-      return window
-    },
-    getTabProcess: (state, getters) => (windowUuid, tabUuid) => {
-      var tab = getters.getTab(windowUuid, tabUuid)
-      if (tab) {
-        return tab.processList
-      }
-      return tab
-    },
-    getCurrentTab: (state, getters) => (windowUuid) => {
-      var window = getters.getWindow(windowUuid)
-      if (window) {
-        return window.currentTab
       }
       return window
     }

@@ -1,7 +1,7 @@
 import { getLanguage } from '@/lang/index'
 import { getToken } from '@/utils/auth'
 import Dictionary from '@adempiere/grpc-dictionary-client'
-import { HOST_GRPC_DICTIONARY } from './constants'
+import { HOST_GRPC_DICTIONARY } from '@/api/ADempiere/constants'
 
 // Get Instance for connection
 function Instance() {

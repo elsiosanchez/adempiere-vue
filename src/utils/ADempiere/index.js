@@ -1,6 +1,6 @@
 import REFERENCES, { FIELD_NOT_SHOWED } from '@/components/ADempiere/Field/references'
 import evaluator from '@/utils/ADempiere/evaluator.js'
-import * as utils from './valueUtil.js'
+import * as valueUtil from '@/utils/ADempiere/valueUtil.js'
 
 /**
  * Determinate if field is displayed
@@ -9,15 +9,15 @@ import * as utils from './valueUtil.js'
  * @param {boolean} evaluateMandatory
  * @returns {boolean}
  */
-export function fieldIsDisplayed(field, inTable = false) {
-  const isMandatory = field.isMandatory && field.isMandatoryFromLogic
+export function fieldIsDisplayed(field, inTable = false, evaluateMandatory = true) {
+  const isMandatory = field.isMandatory || field.isMandatoryFromLogic
 
   const isBrowserDisplayed = field.isQueryCriteria // browser query criteria
   const isWindowDisplayed = field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result
   const isDisplayedView = (field.panelType === 'browser' && isBrowserDisplayed) || (field.panelType !== 'browser' && isWindowDisplayed)
 
   //  Verify for displayed and is active
-  return field.isActive && isDisplayedView && (isMandatory || field.isShowedFromUser || inTable)
+  return field.isActive && isDisplayedView && ((isMandatory && evaluateMandatory) || field.isShowedFromUser || inTable)
 }
 
 /**
@@ -286,7 +286,7 @@ export function getParentFields(fieldGRPC) {
 export function parseContext(context) {
   const store = require('@/store')
   var value = String(context.value)
-  if (utils.isEmptyValue(value)) { return '' }
+  if (valueUtil.isEmptyValue(value)) { return '' }
 
   // var instances = value.length - value.replace('@', '').length
   // if ((instances > 0) && (instances % 2) !== 0) { // could be an email address
@@ -442,7 +442,8 @@ export function assignedGroup(fieldList, assignedGroup = null) {
   return fieldList
 }
 
+export default evaluator // from '@/utils/ADempiere/evaluator.js'
 export * from '@/utils/ADempiere/auth.js'
-export * from '@/utils/ADempiere/evaluator.js'
+export * from '@/utils/ADempiere/dataEmulation.js'
 export * from '@/utils/ADempiere/notification.js'
 export * from '@/utils/ADempiere/valueUtil.js'

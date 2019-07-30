@@ -255,10 +255,8 @@ export default {
     },
     runAction(action) {
       if (action.type === 'action') {
-        var finalParameters = this.$store.getters.getParamsProcessToServer(this.$route.meta.uuid)
-        if ((finalParameters.fieldsMandatory.length > 0 &&
-          finalParameters.params.length >= finalParameters.fieldsMandatory.length) ||
-          finalParameters.fieldsMandatory.length === 0) {
+        var isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
+        if (isReadyForSubmit) {
           var containerParams = this.$route.meta.uuid
           if (this.lastParameter !== undefined) {
             containerParams = this.lastParameter
@@ -309,11 +307,7 @@ export default {
           }
           return false
         } else {
-          var emptyField = finalParameters.fieldsMandatory.find(filed => {
-            if (this.isEmptyValue(filed.value)) {
-              return true
-            }
-          })
+          var emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({
             type: 'warning',
             title: this.$t('notifications.emptyValues'),
@@ -325,9 +319,7 @@ export default {
         this.showModal(action.type, action)
       } else if (action.type === 'dataAction') {
         this.$store.dispatch(action.action, {
-          ...action,
-          containerUuid: this.containerUuid,
-          recordUuid: this.uuidRecord
+          containerUuid: this.containerUuid
         })
       }
     }

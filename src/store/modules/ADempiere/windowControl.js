@@ -1,5 +1,5 @@
 import { createEntity, updateEntity, deleteEntity } from '@/api/ADempiere'
-import { parseContext } from '@/utils/ADempiere'
+import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
 
 const windowControl = {
   actions: {
@@ -7,14 +7,36 @@ const windowControl = {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(params.containerUuid)
         // delete key from attributes
-        var finalAttributes = rootGetters.getFilledColumnNamesAndValues(params.containerUuid)
+        var finalAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid)
         createEntity({
           tableName: panel.tableName,
           attributesList: finalAttributes
         })
           .then(response => {
-            console.log('new record sucess', response)
-            resolve(response)
+            var map = response.getValuesMap()
+            var newValue = {}
+            map.forEach((value, key) => {
+              var valueResult = map.get(key)
+              var tempValue = null
+              if (valueResult) {
+                tempValue = convertValueFromGRPC(value)
+              }
+              newValue[key] = tempValue
+            })
+
+            var result = {
+              data: newValue,
+              recordUuid: response.getUuid(),
+              recordId: response.getId(),
+              tableName: response.getTablename()
+            }
+            console.log('new record sucess', result)
+            dispatch('setRecordIdentifier', {
+              recordId: result.recordId,
+              recordUuid: result.recordUuid,
+              containerUuid: params.containerUuid
+            })
+            resolve(result)
           })
           .catch(error => {
             reject(error)
@@ -23,24 +45,32 @@ const windowControl = {
     },
     updateCurrentEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
+        var panel = rootGetters.getPanel(params.containerUuid)
         // attributes or fields
-        var finalAttributes = rootGetters.getParamsProcessToServer(params.containerUuid)
-        if ((finalAttributes.fieldsMandatory.length > 0 &&
-          finalAttributes.params.length >= finalAttributes.fieldsMandatory.length) ||
-          finalAttributes.fieldsMandatory.length === 0) {
-          updateEntity({
-            tableName: params.tableName,
-            uuid: params.recordUuid,
-            attributesList: finalAttributes
+        var finalAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid)
+        updateEntity({
+          tableName: panel.tableName,
+          uuid: params.recordUuid,
+          attributesList: finalAttributes
+        })
+          .then(response => {
+            var map = response.getValuesMap()
+            var newValue = {}
+            map.forEach((value, key) => {
+              var valueResult = map.get(key)
+              var tempValue = null
+              if (valueResult) {
+                tempValue = convertValueFromGRPC(value)
+              }
+              newValue[key] = tempValue
+            })
+
+            console.info('edit entity sucess', newValue)
+            resolve(response)
           })
-            .then(response => {
-              console.info('edit entity sucess', response)
-              resolve(response)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
@@ -49,7 +79,7 @@ const windowControl = {
         var panel = rootGetters.getPanel(params.containerUuid)
         var objectToDelete = {
           tableName: panel.tableName,
-          recordUuid: params.recordUuid
+          recordUuid: panel.recordUuid
         }
 
         deleteEntity(objectToDelete)
@@ -58,6 +88,7 @@ const windowControl = {
             resolve(response)
           })
           .catch(error => {
+            console.warn('Delete Entity - Error ', error.message, ', Code:', error.code)
             reject(error)
           })
       })

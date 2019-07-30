@@ -168,6 +168,9 @@ export default {
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getRecordIdentifier() {
+      return this.$store.getters.getRecordIdentifier(this.containerUuid)
     }
   },
   watch: {
@@ -236,6 +239,15 @@ export default {
       }
       if (uuidRecord === ':uuidRecord') {
         uuidRecord = undefined
+      }
+
+      if (uuidRecord === this.getRecordIdentifier.uuidRecord) {
+        return
+      } else {
+        this.$store.dispatch('setRecordIdentifier', {
+          containerUuid: this.containerUuid,
+          recordUuid: uuidRecord
+        })
       }
 
       // if (this.isLoadRecord === false) {

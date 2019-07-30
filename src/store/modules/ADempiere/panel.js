@@ -5,8 +5,7 @@
 // - Window: Just need storage tab and fields
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
-import evaluator from '@/utils/ADempiere/evaluator.js'
-import { assignedGroup, fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
+import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
 
 const panel = {
   state: {
@@ -47,6 +46,10 @@ const panel = {
       payload.field.oldValue = payload.field.value
       payload.field.value = payload.newValue
       payload.field.valueTo = payload.valueTo
+    },
+    setRecordIdentifier(state, payload) {
+      payload.panel.recordUuid = payload.recordUuid
+      payload.panel.recordId = payload.recordId
     }
   },
   actions: {
@@ -72,13 +75,14 @@ const panel = {
 
       params.keyColumn = keyColumn
       params.selectionColumn = selectionColumn
-
+      params.recordUuid = null
       params.fieldList = assignedGroup(params.fieldList)
       commit('addPanel', params)
     },
     addFields({ commit }, params) {
       commit('addFields', params)
     },
+    // REFACTORY ACTION WITH isReadyForSubmit
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
       var showsFieldsWithValue = false
@@ -208,22 +212,23 @@ const panel = {
         })
       })
       // TODO: refactory for it and change for a standard method
-      if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
-        dispatch('getBrowserSearch', {
-          containerUuid: params.containerUuid,
-          clearSelection: true
-        })
-      }
-      if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
-        if (getters.isReadyForSummit(params.containerUuid)) {
-          var uuid = getters.getUuid(params.containerUuid)
-          if (isEmptyValue(uuid)) {
+      if (fieldIsDisplayed(field) && getters.isReadyForSubmit(params.containerUuid)) {
+        if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
+          dispatch('getBrowserSearch', {
+            containerUuid: params.containerUuid,
+            clearSelection: true
+          })
+        }
+        if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
+          var identifier = getters.getRecordIdentifier(params.containerUuid)
+          if (isEmptyValue(identifier.recordUuid)) {
             dispatch('createNewEntity', {
               containerUuid: params.containerUuid
             })
           } else {
             dispatch('updateCurrentEntity', {
-              containerUuid: params.containerUuid
+              containerUuid: params.containerUuid,
+              recordUuid: identifier.recordUuid
             })
           }
         }
@@ -255,6 +260,14 @@ const panel = {
         })
       }
     },
+    setRecordIdentifier({ commit, getters }, params) {
+      var panel = getters.getPanel(params.containerUuid)
+      commit('setRecordIdentifier', {
+        panel: panel,
+        recordId: params.recordId,
+        recordUuid: params.recordUuid
+      })
+    },
     dictionaryResetCache({ commit }, param = []) {
       commit('dictionaryResetCache', param)
       commit('dictionaryResetCacheWindow', param)
@@ -273,15 +286,31 @@ const panel = {
       }
       return panel.fieldList
     },
-    getFilledColumnNamesAndValues: (state, getters) => (containerUuid) => {
-      return getters.getColumnNamesAndValues(containerUuid) // .filter(attribute => !isEmptyValue(attribute.value))
-    },
-    isReadyForSummit: (state, getters) => (containerUuid) => {
-      var field = getters.getFieldsListFromPanel(containerUuid).find(field => field.isMandatory && field.isDisplayed && isEmptyValue(field.value))
-      if (field !== undefined) {
-        return false
+    /**
+     * @param {string}  containerUuid
+     * @param {boolean} evaluateShowed, indicate if evaluate showed fields
+     */
+    isReadyForSubmit: (state, getters) => (containerUuid, evaluateShowed = true) => {
+      var panel = getters.getPanel(containerUuid)
+      var id = '_id'
+      if (panel.tableName) {
+        id = panel.tableName.toLowerCase() + id
       }
-      return true
+      var field = panel.fieldList.find(fieldItem => {
+        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (isMandatory && isEmptyValue(fieldItem.value) && fieldItem.columnName.toLowerCase() !== id) {
+          return true
+        }
+      })
+      var isReady = Boolean(field)
+      return !isReady
+    },
+    getEmptyMandatory: (state, getters) => (containerUuid) => {
+      return getters.getPanel(containerUuid).find(itemField => {
+        if (itemField.isMandatory && itemField.isMandatoryFromLogic && isEmptyValue(itemField.value)) {
+          return true
+        }
+      })
     },
     // all available fields not mandatory to show, used in component panel/filterFields.vue
     getFieldsListNotMandatory: (state, getters) => (containerUuid, panelType, groupField) => {
@@ -305,53 +334,23 @@ const panel = {
         fieldListSelected: fieldListSelected
       }
     },
-    getFieldFromColumnName: (state, getters) => (columnName, containerUuid) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      return fieldList.find(field => field.columnName === columnName)
-    },
-    getFieldFromUuid: (state, getters) => (uuid, containerUuid) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      return fieldList.find(field => field.uuid === uuid)
-    },
-    getUuid: (state, getters) => (containerUuid) => {
-      var field = getters.getFieldsListFromPanel(containerUuid).find(field => field.columnName === 'UUID')
-      if (field !== undefined) {
-        return field.value
+    getRecordIdentifier: (state, getters) => (containerUuid) => {
+      var panel = getters.getPanel(containerUuid)
+      return {
+        recordUuid: panel.recordUuid,
+        recordId: panel.recordId
       }
-      return undefined
     },
     getColumnNamesAndValues: (state, getters) => (containerUuid) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
       var attributes = []
-      var fieldListRange = []
       attributes = fieldList.map(fieldItem => {
-        if (fieldItem.isRange) {
-          fieldListRange.push({
-            columnName: fieldItem.columnName + '_To',
-            value: fieldItem.valueTo
-          })
-        }
         return {
           columnName: fieldItem.columnName,
           value: fieldItem.value
         }
       })
-      attributes = attributes.concat(fieldListRange)
       return attributes
-    },
-    getChangedFieldsList: (state) => (containerUuid) => {
-      var panel = state.panel.find(
-        itemPanel => itemPanel.uuid === containerUuid
-      )
-      if (panel === undefined) {
-        return panel
-      }
-      var fieldList = panel.fieldList.filter(itemField => {
-        return !isEmptyValue(itemField.value)
-      })
-
-      // fields with not empty value
-      return fieldList
     },
     /**
      * get field list visible and with values
@@ -403,6 +402,40 @@ const panel = {
         fields: fields,
         params: params,
         fieldsMandatory: fieldsMandatory
+      }
+    },
+    /**
+     * Getter converter selection params with value format
+     * [
+     *    { columname, value },
+     *    { columname, value },
+     *    { columname, value },
+     *    { columname, value }
+     * ]
+     */
+    getParamsProcessToServer: (state, getters) => (containerUuid, withOut = []) => {
+      var fieldList = getters.getPanelParameters(containerUuid, true, withOut)
+      var parameters = []
+      if (fieldList.fields > 0) {
+        var fieldListRange = []
+        parameters = fieldList.params.map(fieldItem => {
+          if (fieldItem.isRange) {
+            fieldListRange.push({
+              columnName: fieldItem.columnName + '_To',
+              value: fieldItem.valueTo
+            })
+          }
+          return {
+            columnName: fieldItem.columnName,
+            value: fieldItem.value
+          }
+        })
+        parameters = parameters.concat(fieldListRange)
+      }
+      return {
+        params: parameters,
+        fields: fieldList.fields,
+        fieldsMandatory: fieldList.fieldsMandatory
       }
     }
   }

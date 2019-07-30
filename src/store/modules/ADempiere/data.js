@@ -219,40 +219,6 @@ const data = {
       return data.pageNumber
     },
     /**
-     * Getter converter selection params with value format
-     * [
-     *    { columname, value },
-     *    { columname, value },
-     *    { columname, value },
-     *    { columname, value }
-     * ]
-     */
-    getParamsProcessToServer: (state, getters, rootState, rootGetters) => (containerUuid, withOut = []) => {
-      var fieldList = rootGetters.getPanelParameters(containerUuid, true, withOut)
-      var parameters = []
-      if (fieldList.fields > 0) {
-        var fieldListRange = []
-        parameters = fieldList.params.map(fieldItem => {
-          if (fieldItem.isRange) {
-            fieldListRange.push({
-              columnName: fieldItem.columnName + '_To',
-              value: fieldItem.valueTo
-            })
-          }
-          return {
-            columnName: fieldItem.columnName,
-            value: fieldItem.value
-          }
-        })
-        parameters = parameters.concat(fieldListRange)
-      }
-      return {
-        params: parameters,
-        fields: fieldList.fields,
-        fieldsMandatory: fieldList.fieldsMandatory
-      }
-    },
-    /**
      * Getter converter selection data record in format
      * [
      *  {

@@ -1,5 +1,5 @@
 // Delete when get global context and account context
-import { contextInitial } from '@/utils/ADempiere/dataEmulation.js'
+import { contextInitial } from '@/utils/ADempiere'
 
 const context = {
   state: {
