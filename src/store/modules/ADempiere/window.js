@@ -86,7 +86,7 @@ const window = {
                   name: language.t('window.newRecord'),
                   processName: language.t('window.newRecord'),
                   type: 'dataAction',
-                  action: 'setNewEntity',
+                  action: 'createEntity',
                   uuidParent: newWindow.uuid
                 },
                 {

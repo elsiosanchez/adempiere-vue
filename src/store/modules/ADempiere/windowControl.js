@@ -3,41 +3,25 @@ import { parseContext } from '@/utils/ADempiere'
 
 const windowControl = {
   actions: {
-    /**
-     * Create entity
-     * @param {integer} createEntityRequest.tableId
-     * @param {array}   createEntityRequest.attributesList
-     */
-    setNewEntity({ commit, dispatch, rootGetters }, params) {
+    createNewEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(params.containerUuid)
         // delete key from attributes
-        var primaryKey = panel.tableName + '_ID'
-        var finalAttributes = rootGetters.getParamsProcessToServer(params.containerUuid, [primaryKey])
-
-        if ((finalAttributes.fieldsMandatory.length > 0 &&
-          finalAttributes.params.length >= finalAttributes.fieldsMandatory.length) ||
-          finalAttributes.fieldsMandatory.length === 0) {
-          createEntity({
-            tableName: panel.tableName,
-            attributesList: finalAttributes
+        var finalAttributes = rootGetters.getFilledColumnNamesAndValues(params.containerUuid)
+        createEntity({
+          tableName: panel.tableName,
+          attributesList: finalAttributes
+        })
+          .then(response => {
+            console.log('new record sucess', response)
+            resolve(response)
           })
-            .then(response => {
-              console.log('new record sucess', response)
-              resolve(response)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }
+          .catch(error => {
+            reject(error)
+          })
       })
     },
-    /**
-     * Create entity
-     * @param {integer} createEntityRequest.tableId
-     * @param {array} createEntityRequest.attributesList
-     */
-    editEntity({ commit, dispatch, rootGetters }, params) {
+    updateCurrentEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         // attributes or fields
         var finalAttributes = rootGetters.getParamsProcessToServer(params.containerUuid)
@@ -59,11 +43,7 @@ const windowControl = {
         }
       })
     },
-    /**
-     * Create entity
-     * @param {integer} createEntityRequest.tableId
-     * @param {array}   createEntityRequest.attributesList
-     */
+
     deleteEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(params.containerUuid)

@@ -207,7 +207,7 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-
+      // TODO: refactory for it and change for a standard method
       if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
         dispatch('getBrowserSearch', {
           containerUuid: params.containerUuid,
@@ -215,12 +215,18 @@ const panel = {
         })
       }
       if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
-        dispatch('editEntity', {
-          containerUuid: params.containerUuid
-          // tableId: panel.tableId
-          // uuid: panel.recordUuid
-          // id: panel.recordId
-        })
+        if (getters.isReadyForSummit(params.containerUuid)) {
+          var uuid = getters.getUuid(params.containerUuid)
+          if (isEmptyValue(uuid)) {
+            dispatch('createNewEntity', {
+              containerUuid: params.containerUuid
+            })
+          } else {
+            dispatch('updateCurrentEntity', {
+              containerUuid: params.containerUuid
+            })
+          }
+        }
       }
     },
     getPanelAndFields({ dispatch }, params) {
@@ -267,6 +273,16 @@ const panel = {
       }
       return panel.fieldList
     },
+    getFilledColumnNamesAndValues: (state, getters) => (containerUuid) => {
+      return getters.getColumnNamesAndValues(containerUuid) // .filter(attribute => !isEmptyValue(attribute.value))
+    },
+    isReadyForSummit: (state, getters) => (containerUuid) => {
+      var field = getters.getFieldsListFromPanel(containerUuid).find(field => field.isMandatory && field.isDisplayed && isEmptyValue(field.value))
+      if (field !== undefined) {
+        return false
+      }
+      return true
+    },
     // all available fields not mandatory to show, used in component panel/filterFields.vue
     getFieldsListNotMandatory: (state, getters) => (containerUuid, panelType, groupField) => {
       var fieldListSelected = []
@@ -284,7 +300,6 @@ const panel = {
           return isDisplayed
         }
       })
-
       return {
         fieldListOptional: fieldListOptional,
         fieldListSelected: fieldListSelected
@@ -297,6 +312,32 @@ const panel = {
     getFieldFromUuid: (state, getters) => (uuid, containerUuid) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
       return fieldList.find(field => field.uuid === uuid)
+    },
+    getUuid: (state, getters) => (containerUuid) => {
+      var field = getters.getFieldsListFromPanel(containerUuid).find(field => field.columnName === 'UUID')
+      if (field !== undefined) {
+        return field.value
+      }
+      return undefined
+    },
+    getColumnNamesAndValues: (state, getters) => (containerUuid) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var attributes = []
+      var fieldListRange = []
+      attributes = fieldList.map(fieldItem => {
+        if (fieldItem.isRange) {
+          fieldListRange.push({
+            columnName: fieldItem.columnName + '_To',
+            value: fieldItem.valueTo
+          })
+        }
+        return {
+          columnName: fieldItem.columnName,
+          value: fieldItem.value
+        }
+      })
+      attributes = attributes.concat(fieldListRange)
+      return attributes
     },
     getChangedFieldsList: (state) => (containerUuid) => {
       var panel = state.panel.find(
