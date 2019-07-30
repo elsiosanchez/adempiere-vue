@@ -50,7 +50,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="getDataDetail"
+      :data="Datatable()"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -183,7 +183,8 @@ export default {
       oldprocessListData: [],
       newprocessListData: [],
       Expand: false,
-      currentPage: 0
+      currentPage: 0,
+      page: ''
     }
   },
   computed: {
@@ -193,12 +194,14 @@ export default {
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
-    getNextPageToken() {
-      console.log(this.$store.getters.getDataNextPageToken(this.containerUuid))
-      return this.$store.getters.getDataNextPageToken(this.containerUuid)
+    getAllRecords() {
+      return this.$store.getters.getDataAllRecord(this.containerUuid)
     },
     getDataDetail() {
       return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    },
+    getNextToken() {
+      return this.$store.getters.getPageNextToken(this.containerUuid)
     },
     getPageCount() {
       return this.$store.getters.getPageCount(this.containerUuid)
@@ -457,16 +460,25 @@ export default {
       }
       return arr
     },
-    handleChangePage(val) {
-      if (val === 1) {
-        val = 0
-      } else {
-        val = parseInt(this.getNextPageToken)
-        this.$store.dispatch('setPageNumber', {
-          containerUuid: this.containerUuid,
-          pageNumber: val
-        })
+    Datatable() {
+      var datatable = this.getDataDetail
+      if (this.page === this.getNextToken) {
+        return datatable.slice(99,)
       }
+      return datatable
+    },
+    handleChangePage(newPage) {
+      if (newPage > 1) {
+        this.currentPage = newPage
+        this.page = this.getNextToken
+      } else {
+        this.currentPage = newPage
+        this.page = newPage
+      }
+      this.$store.dispatch('setPageNumber', {
+        containerUuid: this.containerUuid,
+        pageNumber: this.page
+      })
     }
   }
 }

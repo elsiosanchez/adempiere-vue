@@ -98,7 +98,6 @@ const data = {
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams)
           .then(response => {
-            console.log(response.getNextPageToken())
             const recordList = response.getRecordsList()
             var record = recordList.map(itemRecord => {
               const map = itemRecord.getValuesMap()
@@ -108,7 +107,6 @@ const data = {
               })
               return values
             })
-
             var selection = rootGetters.getDataRecordSelection(objectParams.containerUuid)
             commit('recordSelection', {
               containerUuid: objectParams.containerUuid,
@@ -196,9 +194,12 @@ const data = {
       var data = getters.getDataRecordAndSelection(containerUuid)
       return data.record
     },
-    getDataNextPageToken: (state, getters) => (containerUuid) => {
+    getDataAllRecord: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
-      console.log(data.nextPage)
+      return data.record
+    },
+    getPageNextToken: (state, getters) => (containerUuid) => {
+      var data = getters.getDataRecordAndSelection(containerUuid)
       return data.nextPage
     },
     getDataRecordSelection: (state, getters) => (containerUuid) => {
@@ -207,7 +208,6 @@ const data = {
     },
     getPageCount: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
-      console.log(data.pageNumber)
       return data.pageNumber
     },
     /**
