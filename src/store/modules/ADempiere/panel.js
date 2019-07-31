@@ -291,7 +291,6 @@ const panel = {
       if (field !== undefined) {
         isReady = false
       }
-      console.log(field)
       return isReady
     },
     getEmptyMandatory: (state, getters) => (containerUuid) => {

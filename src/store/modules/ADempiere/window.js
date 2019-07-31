@@ -193,7 +193,6 @@ const window = {
               field.columnName = 'UUID'
               fieldsList.push(field)
             }
-            console.log(fieldsList)
             //  Panel for save on store
             var panel = {
               id: response.getId(),
