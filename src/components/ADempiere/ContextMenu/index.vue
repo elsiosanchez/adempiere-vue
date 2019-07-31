@@ -94,7 +94,7 @@
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
-        <el-menu-item index="3" @click="showModal('search', undefined)">
+        <el-menu-item index="3" @click="showModal('window', undefined)">
           {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </template>

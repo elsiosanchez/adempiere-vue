@@ -263,7 +263,7 @@ const processControl = {
           commit('setMetadata', params.action)
           commit('setShowDialog')
         }
-      } else if (params.type === 'search') {
+      } else if (params.type === 'window') {
         if (params.action === undefined) {
           commit('setCloseDialog')
         } else {

@@ -10,19 +10,19 @@
   >
     {{ modalMetadata.description }}
     <panel
-      v-if="modalMetadata.panelType !== 'search' && modalMetadata.uuid !== ''"
+      v-if="modalMetadata.panelType === 'process' && modalMetadata.uuid !== ''"
       :parent-uuid="parentUuid"
       :container-uuid="modalMetadata.uuid"
       :metadata="modalMetadata"
       :is-view="false"
       :panel-type="'process'"
     />
-    <!-- <search-window
-      v-else
+    <search-window
+      v-else-if="isLoaded(modalMetadata)"
       :tab-uuid="modalMetadata.currentTab.uuid"
       :window-uuid="modalMetadata.currentTab.windowUuid"
       :table-name="modalMetadata.currentTab.tableName"
-    /> -->
+    />
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">
         {{ $t('components.dialogCancelButton') }}
@@ -37,12 +37,12 @@
 <script>
 import Panel from '@/components/ADempiere/Panel'
 import { isEmptyValue, showNotification } from '@/utils/ADempiere'
-// import SearchWindow from '@/views/ADempiere/SearchWindow'
+import SearchWindow from '@/views/ADempiere/SearchWindow'
 
 export default {
   name: 'ModalProcess',
   components: {
-    // SearchWindow,
+    SearchWindow,
     Panel
   },
   props: {
@@ -98,6 +98,9 @@ export default {
         type: this.modalMetadata.panelType,
         action: undefined
       })
+      this.$nextTick(function() {
+        console.log(this.modalMetadata)
+      })
     },
     runAction(action) {
       if (action === undefined && this.windowRecordSelected !== undefined) {
@@ -145,6 +148,12 @@ export default {
           })
         }
       }
+    },
+    isLoaded(obj) {
+      if (Object.keys(obj).length === 0) {
+        return false
+      }
+      return true
     }
   }
 }

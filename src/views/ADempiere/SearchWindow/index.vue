@@ -1,29 +1,31 @@
 <template>
-  <el-container style=" border: 1px solid #eee">
-    <el-header style="height: 16px;">
+  <!-- <el-container style=" border: 1px solid #eee"> -->
+  <!-- <el-header style="height: 16px;">
       <div v-show="searchable" :class="{'show':showSearch}" align="left" class="search-detail">
         <el-button type="text" @click="clearFilter">{{ $t('components.resetAllFilters') }}</el-button>
         <el-button type="text" @click="isFixed = !isFixed">Fixed Column key</el-button>
       </div>
-    </el-header>
-    <el-main>
-      <el-table
-        ref="dragTable"
-        :data="filterResult()"
-        :border="true"
-        :highlight-current-row="true"
-        :height="getHeigthTable"
-        @row-click="setCurrentRow"
-        @current-change="handleCurrentChange"
-      >
-        <template v-for="(item, index) in fieldList">
-          <el-table-column :key="index" :label="item.name" sortable>
-            <template slot-scope="scope">
-              {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
-            </template>
-          </el-table-column>
-        </template>
-        <!-- <el-table-column
+    </el-header> -->
+  <el-main>
+    <el-table
+      ref="dragTable"
+      v-loading="loading"
+      :data="filterResult()"
+      :border="true"
+      :highlight-current-row="true"
+      :height="getHeigthTable"
+      size="mini"
+      @row-click="setCurrentRow"
+      @current-change="handleCurrentChange"
+    >
+      <template v-for="(item, index) in fieldList">
+        <el-table-column :key="index" :label="item.name" sortable>
+          <template slot-scope="scope">
+            {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
+          </template>
+        </el-table-column>
+      </template>
+      <!-- <el-table-column
           prop="c_bpartner_id"
           label="c_bpartner_id"
           width="180"
@@ -97,12 +99,12 @@
           width="180"
           sortable
         /> -->
-      </el-table>
-      <div class="table-footer">
-        {{ $t('table.dataTable.records') }}: {{ tableRecords.length }}
-      </div>
-    </el-main>
-  </el-container>
+    </el-table>
+    <div class="table-footer">
+      {{ $t('table.dataTable.records') }}: {{ tableRecords.length }}
+    </div>
+  </el-main>
+  <!-- </el-container> -->
 </template>
 
 <script>
@@ -143,7 +145,8 @@ export default {
       newdatalist: [],
       isFixed: true,
       fieldList: [],
-      recordSelected: {}
+      recordSelected: {},
+      loading: true
     }
   },
   computed: {

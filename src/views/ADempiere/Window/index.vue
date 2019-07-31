@@ -76,11 +76,13 @@ export default {
       var window = this.getterWindow
       if (window) {
         this.windowMetadata = window
+        this.windowMetadata.panelType = this.panelType
         this.isLoading = true
       } else {
         this.$store.dispatch('getWindowFromServer', this.windowUuid)
           .then(response => {
             this.windowMetadata = response
+            this.windowMetadata.panelType = this.panelType
             this.isLoading = true
           })
           .catch(error => {
