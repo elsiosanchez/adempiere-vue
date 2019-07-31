@@ -41,8 +41,10 @@ export default {
   .components-container {
     position: relative;
     height: 100vh;
+    margin-top: 0px;
+    margin-right: 10px;
+    margin-left: 10px;
   }
-
   .left-container {
     background-color: #F38181;
     height: 100%;

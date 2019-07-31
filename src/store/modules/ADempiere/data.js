@@ -42,6 +42,8 @@ const data = {
       payload.data.pageNumber = payload.pageNumber
     },
     setRecordDetail(state, payload) {
+      console.log(state)
+      console.log(payload)
       var dataDetail = state.recordDetail.filter(itemData => {
         if (itemData.uuid !== payload.uuid) {
           return true
@@ -80,6 +82,7 @@ const data = {
       return new Promise((resolve, reject) => {
         getObject(objectParams.table, objectParams.recordUuid)
           .then(response => {
+            console.log(response)
             var map = response.getValuesMap()
             var newValues = {}
             console.log(map)

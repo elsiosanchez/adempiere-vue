@@ -13,6 +13,7 @@ const panel = {
   },
   mutations: {
     addPanel(state, payload) {
+      console.log(state)
       state.panel.push(payload)
     },
     addFields(state, payload) {
@@ -73,6 +74,7 @@ const panel = {
       params.selectionColumn = selectionColumn
       params.recordUuid = null
       params.fieldList = assignedGroup(params.fieldList)
+      console.log(params)
       commit('addPanel', params)
     },
     addFields({ commit }, params) {

@@ -203,7 +203,9 @@ const window = {
               tableName: response.getTablename(),
               linkColumnName: response.getLinkcolumnname(),
               parentColumnName: response.getParentcolumnname(),
-              panelType: panelType
+              panelType: panelType,
+              // add attribute Single row design
+              isSinglerow: response.getIssinglerow()
             }
 
             dispatch('addPanel', panel)
