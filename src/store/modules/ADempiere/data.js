@@ -123,12 +123,12 @@ const data = {
               })
               return values
             })
-
             var selection = rootGetters.getDataRecordSelection(objectParams.containerUuid)
             commit('recordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,
-              selection: selection
+              selection: selection,
+              nextPage: response.getNextPageToken()
             })
             resolve(record)
           })
@@ -192,7 +192,7 @@ const data = {
     }
   },
   getters: {
-    getDataRecordAndSelection: (state) => (containerUuid) => {
+    getDataRecordAndSelection: (state, rootGetters) => (containerUuid) => {
       var data = state.recordSelection.find(itemRecord => {
         return itemRecord.containerUuid === containerUuid
       })
@@ -209,6 +209,14 @@ const data = {
     getDataRecordDetail: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
       return data.record
+    },
+    getDataAllRecord: (state, getters) => (containerUuid) => {
+      var data = getters.getDataRecordAndSelection(containerUuid)
+      return data.record
+    },
+    getPageNextToken: (state, getters) => (containerUuid) => {
+      var data = getters.getDataRecordAndSelection(containerUuid)
+      return data.nextPage
     },
     getDataRecordSelection: (state, getters) => (containerUuid) => {
       var selection = getters.getDataRecordAndSelection(containerUuid)

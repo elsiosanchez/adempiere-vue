@@ -50,7 +50,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="getDataDetail"
+      :data="dataTable()"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -109,6 +109,7 @@
         <el-pagination
           layout="slot, total, prev, pager, next"
           :current-page="currentPage"
+          :page-size="Pagination"
           :total="getDataDetail.length"
           @current-change="handleChangePage"
         >
@@ -167,6 +168,7 @@ export default {
       searchTable: '', // text from search
       showSearch: false, // show input from search,
       panel: {},
+      Pagination: 100,
       fieldList: [],
       MenuTable: '1',
       optional: false,
@@ -181,7 +183,8 @@ export default {
       oldprocessListData: [],
       newprocessListData: [],
       Expand: false,
-      currentPage: 1
+      currentPage: 0,
+      page: ''
     }
   },
   computed: {
@@ -191,8 +194,14 @@ export default {
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
+    getAllRecords() {
+      return this.$store.getters.getDataAllRecord(this.containerUuid)
+    },
     getDataDetail() {
       return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    },
+    getNextToken() {
+      return this.$store.getters.getPageNextToken(this.containerUuid)
     },
     getPageCount() {
       return this.$store.getters.getPageCount(this.containerUuid)
@@ -221,7 +230,7 @@ export default {
         return table
       } else {
         if (!this.Expand) {
-          return this.$store.getters.getHeigth() - 400
+          return this.$store.getters.getHeigth() - 500
         } else {
           return this.$store.getters.getHeigth() - 190
         }
@@ -272,7 +281,7 @@ export default {
       })
     },
     setSort() {
-      if (this.isMobile) {
+      if (!this.isMobile) {
         const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
         this.sortable = Sortable.create(el, {
           ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
@@ -451,11 +460,24 @@ export default {
       }
       return arr
     },
+    dataTable() {
+      var dataTable = this.getDataDetail
+      if (this.page === this.getNextToken) {
+        return dataTable.slice(99,)
+      }
+      return dataTable
+    },
     handleChangePage(newPage) {
-      this.currentPage = newPage
+      if (newPage > 1) {
+        this.currentPage = newPage
+        this.page = this.getNextToken
+      } else {
+        this.currentPage = newPage
+        this.page = newPage
+      }
       this.$store.dispatch('setPageNumber', {
         containerUuid: this.containerUuid,
-        pageNumber: newPage
+        pageNumber: this.page
       })
     }
   }
