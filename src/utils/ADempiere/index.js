@@ -24,7 +24,7 @@ export function fieldIsDisplayed(field, inTable = false, evaluateMandatory = tru
  * Converted the gRPC value to the value needed
  * @param {mixed} initialValue Value get of gRPC
  */
-export function convertValueFromGRPC(initialValue) {
+export function convertValue(initialValue) {
   if (initialValue === undefined) {
     return null
   }
@@ -33,7 +33,6 @@ export function convertValueFromGRPC(initialValue) {
     case 0:
       returnValue = initialValue.getIntvalue()
       break
-
     case 1:
       returnValue = initialValue.getLongvalue()
       break
@@ -41,19 +40,14 @@ export function convertValueFromGRPC(initialValue) {
     case 2:
       returnValue = initialValue.getDoublevalue()
       break
-
     case 3:
       returnValue = initialValue.getBooleanvalue()
-      // if (returnValue) {
-      //   returnValue = 'Yes'
-      // } else {
-      //   returnValue = 'No'
-      // }
       break
-
     case 4:
-    case 5:
       returnValue = initialValue.getStringvalue()
+      break
+    case 5:
+      returnValue = initialValue.getLongvalue()
       break
   }
   return returnValue
@@ -64,7 +58,7 @@ export function convertValueFromGRPC(initialValue) {
  * @param {object} fieldGRPC
  * @param {object} moreAttributes
  */
-export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange = false) {
+export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) {
   var group = {}
   var isShowedFromUser = false
 
@@ -238,6 +232,77 @@ export function convertFieldFromGRPC(fieldGRPC, moreAttributes = {}, typeRange =
   }
 
   return field
+}
+
+// Default template for injected fields
+export function getFieldTemplate() {
+  var group = {
+    name: '',
+    fieldGroupType: ''
+  }
+  var zoomWindowList = []
+  var referenceValue = {
+    tableName: '',
+    keyColumnName: '',
+    displayColumnName: '',
+    query: '',
+    parsedQuery: '',
+    directQuery: '',
+    parsedDirectQuery: '',
+    validationCode: '',
+    zoomWindowList: zoomWindowList
+  }
+  return {
+    id: 0,
+    uuid: '',
+    name: '',
+    description: '',
+    help: '',
+    columnName: '',
+    fieldGroup: group,
+    displayType: 10,
+    componentPath: 'Button',
+    referenceType: 'Button',
+    isFieldOnly: false,
+    isRange: false,
+    isSameLine: false,
+    sequence: 0,
+    seqNoGrid: 0,
+    isIdentifier: 0,
+    isKey: false,
+    isSelectionColumn: false,
+    isUpdateable: true,
+    formatPattern: undefined,
+    VFormat: undefined,
+    value: undefined,
+    valueTo: undefined,
+    defaultValue: undefined,
+    parsedDefaultValue: undefined,
+    defaultValueTo: undefined,
+    parsedDefaultValueTo: undefined,
+    valueMin: undefined,
+    valueMax: undefined,
+    //
+    isDisplayed: false,
+    isActive: true,
+    isMandatory: false,
+    isReadOnly: false,
+    isDisplayedFromLogic: false,
+    isReadOnlyFromLogic: false,
+    isMandatoryFromLogic: false,
+    //
+    callout: undefined,
+    isQueryCriteria: false,
+    displayLogic: undefined,
+    mandatoryLogic: undefined,
+    readOnlyLogic: undefined,
+    parentFieldsList: undefined,
+    dependentFieldsList: [],
+    reference: referenceValue,
+    contextInfo: undefined,
+    isShowedFromUser: false,
+    isFixedTableColumn: false
+  }
 }
 
 /**

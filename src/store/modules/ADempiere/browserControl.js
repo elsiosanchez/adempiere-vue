@@ -1,5 +1,5 @@
 import { getBrowserSearch as getBrowserSearchFromData } from '@/api/ADempiere'
-import { convertValueFromGRPC, parseContext, showMessage } from '@/utils/ADempiere'
+import { convertValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const browserControl = {
@@ -40,7 +40,7 @@ const browserControl = {
               const map = itemRecord.getValuesMap()
               var values = {}
               map.forEach((value, key) => {
-                values[key] = convertValueFromGRPC(value)
+                values[key] = convertValue(value)
               })
 
               // datatables attribute

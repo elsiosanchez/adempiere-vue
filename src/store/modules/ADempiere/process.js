@@ -1,5 +1,5 @@
 import { getProcess as getProcessFromDictionary } from '@/api/ADempiere'
-import { convertFieldFromGRPC, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
+import { convertField, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const process = {
@@ -45,10 +45,10 @@ const process = {
               }
 
               if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
-                fieldsRangeList.push(convertFieldFromGRPC(fieldItem, someAttributes, true))
+                fieldsRangeList.push(convertField(fieldItem, someAttributes, true))
               }
 
-              return convertFieldFromGRPC(fieldItem, someAttributes)
+              return convertField(fieldItem, someAttributes)
             })
             fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
 

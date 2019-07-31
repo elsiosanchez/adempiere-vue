@@ -1,5 +1,5 @@
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
-import { convertValueFromGRPC } from '@/utils/ADempiere'
+import { convertValue } from '@/utils/ADempiere'
 
 const data = {
   state: {
@@ -76,29 +76,29 @@ const data = {
       })
       commit('deleteRecordContainer', record)
     },
-    getObject: ({ commit }, objectParams) => {
+    getEntity: ({ commit }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObject(objectParams.table, objectParams.recordUuid)
           .then(response => {
             var map = response.getValuesMap()
-            var newValue = {}
-
+            var newValues = {}
+            console.log(map)
             map.forEach((value, key) => {
               var valueResult = map.get(key)
               var tempValue = null
               if (valueResult) {
-                tempValue = convertValueFromGRPC(value)
+                tempValue = convertValue(value)
               }
-              newValue[key] = tempValue
+              newValues[key] = tempValue
             })
 
             commit('setRecordDetail', {
-              data: newValue,
+              data: newValues,
               id: response.getId(),
               uuid: response.getUuid(),
               tableName: response.getTablename()
             })
-            resolve(newValue)
+            resolve(newValues)
           })
           .catch(error => {
             reject(error)
@@ -119,7 +119,7 @@ const data = {
               const map = itemRecord.getValuesMap()
               var values = {}
               map.forEach((value, key) => {
-                values[key] = convertValueFromGRPC(value)
+                values[key] = convertValue(value)
               })
               return values
             })

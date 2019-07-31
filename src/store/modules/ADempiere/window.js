@@ -2,7 +2,7 @@ import {
   getWindow as getWindowFromDictionary,
   getTab as getTabfromDictionary
 } from '@/api/ADempiere'
-import { convertContextInfoFromGRPC, convertFieldFromGRPC } from '@/utils/ADempiere'
+import { convertContextInfoFromGRPC, convertField, getFieldTemplate } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const window = {
@@ -167,7 +167,7 @@ const window = {
 
             //  Convert from gRPC
             fieldsList = fieldsList.map((item, index) => {
-              item = convertFieldFromGRPC(item, {
+              item = convertField(item, {
                 ...additionalAttributes,
                 fieldListIndex: index
               })
@@ -188,6 +188,12 @@ const window = {
                 })
               })
 
+            if (!fieldsList.find(field => field.columnName === 'UUID')) {
+              var field = getFieldTemplate()
+              field.columnName = 'UUID'
+              fieldsList.push(field)
+            }
+            console.log(fieldsList)
             //  Panel for save on store
             var panel = {
               id: response.getId(),

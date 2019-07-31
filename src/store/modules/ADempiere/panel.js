@@ -46,10 +46,6 @@ const panel = {
       payload.field.oldValue = payload.field.value
       payload.field.value = payload.newValue
       payload.field.valueTo = payload.valueTo
-    },
-    setRecordIdentifier(state, payload) {
-      payload.panel.recordUuid = payload.recordUuid
-      payload.panel.recordId = payload.recordId
     }
   },
   actions: {
@@ -219,16 +215,18 @@ const panel = {
             clearSelection: true
           })
         }
+        console.log('Epale')
         if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
-          var identifier = getters.getRecordIdentifier(params.containerUuid)
-          if (isEmptyValue(identifier.recordUuid)) {
+          var uuid = getters.getUuid(params.containerUuid)
+          console.log(uuid)
+          if (isEmptyValue(uuid)) {
             dispatch('createNewEntity', {
               containerUuid: params.containerUuid
             })
           } else {
             dispatch('updateCurrentEntity', {
               containerUuid: params.containerUuid,
-              recordUuid: identifier.recordUuid
+              recordUuid: uuid
             })
           }
         }
@@ -260,14 +258,6 @@ const panel = {
         })
       }
     },
-    setRecordIdentifier({ commit, getters }, params) {
-      var panel = getters.getPanel(params.containerUuid)
-      commit('setRecordIdentifier', {
-        panel: panel,
-        recordId: params.recordId,
-        recordUuid: params.recordUuid
-      })
-    },
     dictionaryResetCache({ commit }, param = []) {
       commit('dictionaryResetCache', param)
       commit('dictionaryResetCacheWindow', param)
@@ -291,19 +281,18 @@ const panel = {
      * @param {boolean} evaluateShowed, indicate if evaluate showed fields
      */
     isReadyForSubmit: (state, getters) => (containerUuid, evaluateShowed = true) => {
-      var panel = getters.getPanel(containerUuid)
-      var id = '_id'
-      if (panel.tableName) {
-        id = panel.tableName.toLowerCase() + id
-      }
-      var field = panel.fieldList.find(fieldItem => {
+      var field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        if (isMandatory && isEmptyValue(fieldItem.value) && fieldItem.columnName.toLowerCase() !== id) {
+        if (isMandatory && isEmptyValue(fieldItem.value)) {
           return true
         }
       })
-      var isReady = Boolean(field)
-      return !isReady
+      var isReady = true
+      if (field !== undefined) {
+        isReady = false
+      }
+      console.log(field)
+      return isReady
     },
     getEmptyMandatory: (state, getters) => (containerUuid) => {
       return getters.getPanel(containerUuid).find(itemField => {
@@ -334,12 +323,12 @@ const panel = {
         fieldListSelected: fieldListSelected
       }
     },
-    getRecordIdentifier: (state, getters) => (containerUuid) => {
-      var panel = getters.getPanel(containerUuid)
-      return {
-        recordUuid: panel.recordUuid,
-        recordId: panel.recordId
+    getUuid: (state, getters) => (containerUuid) => {
+      var uuid = getters.getColumnNamesAndValues(containerUuid).find(field => field.columnName === 'UUID')
+      if (uuid !== undefined) {
+        return uuid.value
       }
+      return undefined
     },
     getColumnNamesAndValues: (state, getters) => (containerUuid) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)

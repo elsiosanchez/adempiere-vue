@@ -1,5 +1,5 @@
 import { createEntity, updateEntity, deleteEntity } from '@/api/ADempiere'
-import { convertValueFromGRPC, parseContext } from '@/utils/ADempiere'
+import { convertValue, parseContext } from '@/utils/ADempiere'
 
 const windowControl = {
   actions: {
@@ -19,7 +19,7 @@ const windowControl = {
               var valueResult = map.get(key)
               var tempValue = null
               if (valueResult) {
-                tempValue = convertValueFromGRPC(value)
+                tempValue = convertValue(value)
               }
               newValue[key] = tempValue
             })
@@ -31,11 +31,6 @@ const windowControl = {
               tableName: response.getTablename()
             }
             console.log('new record sucess', result)
-            dispatch('setRecordIdentifier', {
-              recordId: result.recordId,
-              recordUuid: result.recordUuid,
-              containerUuid: params.containerUuid
-            })
             resolve(result)
           })
           .catch(error => {
@@ -60,7 +55,7 @@ const windowControl = {
               var valueResult = map.get(key)
               var tempValue = null
               if (valueResult) {
-                tempValue = convertValueFromGRPC(value)
+                tempValue = convertValue(value)
               }
               newValue[key] = tempValue
             })

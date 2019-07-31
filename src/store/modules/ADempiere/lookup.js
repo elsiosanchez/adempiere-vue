@@ -1,5 +1,5 @@
 import { getLookup, getLookupList } from '@/api/ADempiere'
-import { convertValueFromGRPC, getCurrentRole } from '@/utils/ADempiere'
+import { convertValue, getCurrentRole } from '@/utils/ADempiere'
 
 const lookup = {
   state: {
@@ -25,8 +25,8 @@ const lookup = {
           .then(response => {
             const map = response.getValuesMap()
             var option = {
-              label: convertValueFromGRPC(map.get('DisplayColumn')),
-              key: convertValueFromGRPC(map.get('KeyColumn'))
+              label: convertValue(map.get('DisplayColumn')),
+              key: convertValue(map.get('KeyColumn'))
             }
             commit('addLoockupItem', {
               option: option,
@@ -54,8 +54,8 @@ const lookup = {
             var options = []
             recordList.forEach(element => {
               const map = element.getValuesMap()
-              const name = convertValueFromGRPC(map.get('DisplayColumn'))
-              const key = convertValueFromGRPC(map.get('KeyColumn'))
+              const name = convertValue(map.get('DisplayColumn'))
+              const key = convertValue(map.get('KeyColumn'))
               options.push({
                 label: name,
                 key: key

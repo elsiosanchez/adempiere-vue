@@ -1,5 +1,5 @@
 import { getBrowser as getBrowserFromDictionary } from '@/api/ADempiere'
-import { convertFieldFromGRPC, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
+import { convertField, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 
 const browser = {
   state: {
@@ -43,10 +43,10 @@ const browser = {
               }
               if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
                 fieldsRangeList.push(
-                  convertFieldFromGRPC(fieldItem, someAttributes, true)
+                  convertField(fieldItem, someAttributes, true)
                 )
               }
-              var field = convertFieldFromGRPC(fieldItem, someAttributes)
+              var field = convertField(fieldItem, someAttributes)
               if (query.includes('@' + field.columnName + '@') || whereClause.includes('@' + field.columnName + '@')) {
                 field.isMandatory = true
                 field.isMandatoryFromLogic = true
