@@ -9,7 +9,8 @@ const processControl = {
     reportList: [],
     metadata: {},
     process: [],
-    sessionProcess: []
+    sessionProcess: [],
+    initializedProcess: []
   },
   mutations: {
     addStartedProcess(state, payload) {
@@ -34,6 +35,9 @@ const processControl = {
     setSessionProcess(state, payload) {
       state.sessionProcess = payload.processList
     },
+    setInitializedProcess(state, payload) {
+      state.initializedProcess.push(payload)
+    },
     changeFormatReport(state, payload) {
       state.reportFormat = payload
     }
@@ -54,14 +58,16 @@ const processControl = {
         selection = rootGetters.getSelectionToServer(params.parentUuid)
       }
       var processDefinition = rootGetters.getProcess(params.action.uuid)
-
       var processToRun = {
         uuid: processDefinition.uuid,
         name: processDefinition.name,
+        description: processDefinition.description,
         reportExportType: reportExportType,
         parameters: finalParameters.params,
-        selection: selection
+        selection: selection,
+        isProcessing: true
       }
+      commit('setInitializedProcess', processToRun)
       showNotification({
         title: language.t('notifications.processing'),
         message: processDefinition.name,
@@ -304,19 +310,21 @@ const processControl = {
       return process
     },
     getRunningProcess: (state, rootGetters) => {
-      Array.prototype.push.apply(state.sessionProcess, state.process)
-      var processList = state.sessionProcess.map(item => {
-        var process = rootGetters.getProcess(item.processUuid)
-        return {
-          ...process,
-          instanceUuid: item.instanceUuid,
-          output: item.output,
-          isError: item.isError,
-          logs: item.logs,
-          summary: item.summary
-        }
+      return new Promise((resolve, reject) => {
+        Array.prototype.push.apply(state.sessionProcess, state.process)
+        var processList = state.sessionProcess.map(item => {
+          var process = rootGetters.getProcess(item.processUuid)
+          return {
+            ...process,
+            instanceUuid: item.instanceUuid,
+            output: item.output,
+            isError: item.isError,
+            logs: item.logs,
+            summary: item.summary
+          }
+        })
+        resolve(processList)
       })
-      return processList
     },
     // getProcessFinalized: (state, rootGetters) => {
     //   var procesfinalized = state.process.map(item => {
@@ -352,6 +360,9 @@ const processControl = {
         item => item.instanceUuid === instanceUuid
       )
       return sessionProcess
+    },
+    getInitializedProcess: (state) => {
+      return state.initializedProcess
     }
   }
 }
