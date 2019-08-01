@@ -1,5 +1,5 @@
 import { getBrowserSearch as getBrowserSearchFromData } from '@/api/ADempiere'
-import { convertValue, parseContext, showMessage } from '@/utils/ADempiere'
+import { convertValuesMapToObject, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const browserControl = {
@@ -12,7 +12,7 @@ const browserControl = {
     getBrowserSearch({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         // parameters isQueryCriteria
-        var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
+        var finalParameters = rootGetters.getParametersProcessToServer(params.containerUuid)
         var browser = rootGetters.getBrowser(params.containerUuid)
         var parsedQuery = parseContext({
           parentUuid: params.containerUuid,
@@ -37,11 +37,7 @@ const browserControl = {
           .then(response => {
             const recordList = response.getRecordsList()
             var record = recordList.map(itemRecord => {
-              const map = itemRecord.getValuesMap()
-              var values = {}
-              map.forEach((value, key) => {
-                values[key] = convertValue(value)
-              })
+              var values = convertValuesMapToObject(itemRecord.getValuesMap())
 
               // datatables attribute
               values.isEdit = false

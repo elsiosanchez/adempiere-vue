@@ -86,7 +86,7 @@ const window = {
                   name: language.t('window.newRecord'),
                   processName: language.t('window.newRecord'),
                   type: 'dataAction',
-                  action: 'createEntity',
+                  action: 'resetPanelToNew',
                   uuidParent: newWindow.uuid
                 },
                 {
@@ -94,6 +94,13 @@ const window = {
                   processName: language.t('window.deleteRecord'),
                   type: 'dataAction',
                   action: 'deleteEntity',
+                  uuidParent: newWindow.uuid
+                },
+                {
+                  name: language.t('window.undoNew'),
+                  processName: language.t('window.undoNew'),
+                  type: 'dataAction',
+                  action: 'undoPanelToNew',
                   uuidParent: newWindow.uuid
                 }
               )

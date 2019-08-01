@@ -165,6 +165,11 @@ export default {
   },
   window: {
     newRecord: 'New Record',
-    deleteRecord: 'Delete Record'
+    deleteRecord: 'Delete Record',
+    undoNew: 'Undo New Record'
+  },
+  data: {
+    emtpyTableName: 'Error: Table Name is not defined',
+    errorGetData: 'Error getting data records'
   }
 }

@@ -36,7 +36,6 @@ export function convertValue(initialValue) {
     case 1:
       returnValue = initialValue.getLongvalue()
       break
-
     case 2:
       returnValue = initialValue.getDoublevalue()
       break
@@ -51,6 +50,19 @@ export function convertValue(initialValue) {
       break
   }
   return returnValue
+}
+
+export function convertValuesMapToObject(map) {
+  var objectConverted = {}
+  map.forEach((value, key) => {
+    var valueResult = map.get(key)
+    var tempValue = null
+    if (valueResult) {
+      tempValue = convertValue(value)
+    }
+    objectConverted[key] = tempValue
+  })
+  return objectConverted
 }
 
 /**

@@ -1,5 +1,5 @@
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
-import { convertValue } from '@/utils/ADempiere'
+import { convertValuesMapToObject } from '@/utils/ADempiere'
 
 const data = {
   state: {
@@ -76,21 +76,14 @@ const data = {
       })
       commit('deleteRecordContainer', record)
     },
-    getEntity: ({ commit }, objectParams) => {
+    getEntity: ({ commit, dispatch }, parameters) => {
       return new Promise((resolve, reject) => {
-        getObject(objectParams.table, objectParams.recordUuid)
+        getObject(parameters.table, parameters.recordUuid)
           .then(response => {
             var map = response.getValuesMap()
-            var newValues = {}
-            console.log(map)
-            map.forEach((value, key) => {
-              var valueResult = map.get(key)
-              var tempValue = null
-              if (valueResult) {
-                tempValue = convertValue(value)
-              }
-              newValues[key] = tempValue
-            })
+            var newValues = convertValuesMapToObject(map)
+            console.log('map', map)
+            console.log('object', newValues)
 
             commit('setRecordDetail', {
               data: newValues,
@@ -117,10 +110,7 @@ const data = {
             const recordList = response.getRecordsList()
             var record = recordList.map(itemRecord => {
               const map = itemRecord.getValuesMap()
-              var values = {}
-              map.forEach((value, key) => {
-                values[key] = convertValue(value)
-              })
+              var values = convertValuesMapToObject(map)
               return values
             })
             var selection = rootGetters.getDataRecordSelection(objectParams.containerUuid)

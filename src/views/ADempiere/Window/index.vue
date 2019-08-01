@@ -2,6 +2,7 @@
   <div v-if="isLoading" class="view-base">
     <context-menu
       :menu-parent-uuid="$route.meta.parentUuid"
+      :parent-uuid="windowUuid"
       :container-uuid="windowMetadata.currentTabUuid"
       :parent-panel="panelType"
       :modal-metadata="windowMetadata"

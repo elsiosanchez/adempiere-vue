@@ -55,7 +55,7 @@ export function loadMainMenu() {
         ]
       }
     ]
-    menu.getChildsList().forEach((menu) => {
+    menu.getChildsList().forEach(menu => {
       const optionMenu = getRouteFromMenuItem(menu)
       if (menu.getIssummary()) {
         menu.getChildsList().forEach((menu, index) => {
@@ -98,6 +98,7 @@ function getChildFromAction(menu, index) {
     meta: {
       isIndex: actionAttributes.isIndex,
       title: menu.getName(),
+      description: menu.getDescription(),
       uuid: menu.getReferenceuuid(),
       type: actionAttributes.name,
       parentUuid: menu.getParentuuid(),
@@ -127,6 +128,7 @@ function getRouteFromMenuItem(menu) {
     name: menu.getUuid(),
     meta: {
       title: menu.getName(),
+      description: menu.getDescription(),
       type: actionAttributes.name,
       icon: actionAttributes.icon,
       noCache: true
@@ -141,6 +143,7 @@ function getRouteFromMenuItem(menu) {
           isIndex: actionAttributes.isIndex,
           parentUuid: menu.getUuid(),
           title: menu.getName(),
+          description: menu.getDescription(),
           type: actionAttributes.name,
           icon: actionAttributes.icon,
           noCache: true
@@ -182,6 +185,7 @@ function convertAction(action) {
       break
     case 'T':
       actionAttributes.name = 'task'
+      actionAttributes.icon = 'size'
       break
     case 'W':
       actionAttributes.name = 'window'

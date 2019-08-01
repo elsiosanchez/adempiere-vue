@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import { isEmptyValue } from '@/utils/ADempiere'
 import Field from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 
@@ -166,6 +167,9 @@ export default {
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
     },
+    getterRecordUuid() {
+      return this.$store.getters.getUuid(this.containerUuid)
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     }
@@ -180,6 +184,7 @@ export default {
     this.getPanel()
   },
   methods: {
+    isEmptyValue,
     cards() {
       if (this.isMobile || this.groupsView < 2 || !this.mutipleGroups) {
         return 'cards-not-group'
@@ -225,9 +230,13 @@ export default {
      * @param  {string} uuidRecord Universal Unique Identifier Record
      */
     getData(table = null, uuidRecord = null) {
+      // break get data, this record is the same
+      if (!isEmptyValue(uuidRecord) && uuidRecord === this.getterRecordUuid) {
+        return
+      }
       if (!table) {
         this.$message({
-          message: 'Error getting data records',
+          message: this.$t('data.emtpyTableName'),
           type: 'error',
           showClose: true
         })
@@ -237,24 +246,29 @@ export default {
       if (uuidRecord === ':uuidRecord') {
         uuidRecord = undefined
       }
-
-      // if (this.isLoadRecord === false) {
       this.$store.dispatch('getEntity', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid,
         table: table,
         recordUuid: uuidRecord
       })
         .then(response => {
           this.dataRecords = response
+
+          this.$store.dispatch('notifyPanelChange', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid,
+            newValues: response
+          })
         })
         .catch(error => {
           this.$message({
-            message: 'Error getting data records',
+            message: this.$t('data.errorGetData'),
             type: 'error',
             showClose: true
           })
           console.warn('DataRecord Panel - Error ' + error.code + ': ' + error.message)
         })
-      // }
     },
     /**
      * Order the fields, then assign the groups to each field, and finally group

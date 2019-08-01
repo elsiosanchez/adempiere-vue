@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { clientDateTime, isEmptyValue } from '@/utils/ADempiere'
+import { isEmptyValue } from '@/utils/ADempiere'
 
 export default {
   name: 'Date',
@@ -59,13 +59,12 @@ export default {
   },
   beforeMount() {
     // enable to dataTable records
-    if (this.valueModel !== undefined && this.value !== null) {
+    if (this.metadata.inTable && this.valueModel !== undefined && this.value !== null) {
       this.value = this.valueModel
     }
   },
   methods: {
     isEmptyValue,
-    clientDateTime,
     /**
      * Parse the date format to be compatible with element-ui
      */
@@ -87,7 +86,7 @@ export default {
         .replace(/[h]/gi, 'H')
         .replace(/[aA]/gi, '')
     },
-    convertTimestamp(value) {
+    convertDateToTimestamp(value) {
       return (new Date(value)).getTime()
     },
     handleChange(value) {

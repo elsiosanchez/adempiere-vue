@@ -103,6 +103,7 @@ export default {
     afterLoader() {
       return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
+    // TODO: Determinate used
     isReadWrite: {
       get: () => {
         return this.isReadOnly
@@ -155,7 +156,7 @@ export default {
       if (this.inTable) {
         return 'in-table'
       }
-      return undefined
+      return ''
     }
   },
   watch: {
@@ -173,8 +174,7 @@ export default {
       return this.fieldIsDisplayed(this.field, this.inTable)
     },
     isReadOnly() {
-      // CHECK ATTRIBUTE isUpdateable
-      return (this.field.isReadOnly || this.field.isReadOnlyFromLogic) && !this.field.isQueryCriteria
+      return (this.field.isReadOnly || this.field.isReadOnlyFromLogic || !this.field.isUpdateable) && !this.field.isQueryCriteria
     },
     isMandatory() {
       return this.field.isMandatory || this.field.isMandatoryFromLogic

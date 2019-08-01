@@ -119,6 +119,11 @@ export default {
       default: undefined
     },
     // uuid of the component where it is called
+    parentUuid: {
+      type: String,
+      required: true
+    },
+    // uuid of the component where it is called
     containerUuid: {
       type: String,
       required: true
@@ -318,8 +323,15 @@ export default {
       } else if (action.type === 'process') {
         this.showModal(action.type, action)
       } else if (action.type === 'dataAction') {
+        if (action.action === 'resetPanelToNew') {
+          this.$router.push({
+            name: this.$route.name,
+            params: { action: 'create-new' }
+          })
+        }
         this.$store.dispatch(action.action, {
-          containerUuid: this.containerUuid
+          containerUuid: this.containerUuid,
+          parentUuid: this.parentUuid
         })
       }
     }

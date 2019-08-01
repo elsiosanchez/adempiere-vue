@@ -58,13 +58,16 @@ export default {
     }
   },
   watch: {
+    'metadata.value'(value) {
+      this.value = value
+    },
     valueModel(value) {
       this.value = Number(value)
     }
   },
   beforeMount() {
     // enable to dataTable records
-    if (this.valueModel !== undefined) {
+    if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = Number(this.valueModel)
     }
   },

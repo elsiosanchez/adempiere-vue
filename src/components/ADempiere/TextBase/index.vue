@@ -38,6 +38,7 @@ export default {
       type: [String, Number],
       default: undefined
     },
+    // Only used when prop type='TextArea'
     rows: {
       type: Number,
       default: 5
@@ -45,20 +46,29 @@ export default {
   },
   data() {
     return {
-      value: String(this.metadata.value),
+      value: this.metadata.value,
       isReadOnly: false,
       patternFileName: '[A-Za-zñÑ0-9-_]{1,}',
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
     }
   },
   watch: {
+    'metadata.value'(value) {
+      if (!value) {
+        value = ''
+      }
+      this.value = value
+    },
     valueModel(value) {
+      if (!value) {
+        value = ''
+      }
       this.value = value
     }
   },
   beforeMount() {
     // enable to dataTable records
-    if (this.valueModel !== undefined) {
+    if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = String(this.valueModel)
     }
   },

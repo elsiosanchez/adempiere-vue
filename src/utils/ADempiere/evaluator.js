@@ -34,7 +34,7 @@ class evaluator {
     var it = stList.length
 
     if (((it / 2) - ((it + 1) / 2)) === 0) {
-      console.log(
+      console.info(
         'Logic does not comply with format "<expression> [<logic> <expression>]"' +
         '  -->  ' + objectToEvaluate.logic
       )
@@ -63,7 +63,7 @@ class evaluator {
             conditional: element
           })
         } else {
-          console.log("Logic operant '|' or '&' expected  -->  " + objectToEvaluate.logic)
+          console.info("Logic operant '|' or '&' expected  -->  " + objectToEvaluate.logic)
           return defaultUndefined
         }
       }
@@ -91,7 +91,7 @@ class evaluator {
     var st = expr.test(logic)
 
     if (!st) {
-      console.log(
+      console.info(
         ".Logic tuple does not comply with format '@context@=value' where operand" +
         " could be one of '=!^><'  -->  " + logic
       )
@@ -119,8 +119,8 @@ class evaluator {
         columnName: first
       })
       // in context exists this column name
-      if (value === undefined) {
-        console.log(
+      if (value === null || value === undefined) {
+        console.info(
           '.The column ' + first + ' not exists in context.'
         )
         return _defaultUndefined
@@ -128,10 +128,10 @@ class evaluator {
       firstEval = value	// replace with it's value
     }
 
-    if (firstEval === null) {
+    if (firstEval === null || firstEval === undefined) {
       return _defaultUndefined
     }
-    if (typeof firstEval !== 'boolean') {
+    if (typeof firstEval === 'string') {
       firstEval = firstEval.replace(/['"]/g, '').trim()	// strip ' and "
     }
 
@@ -151,8 +151,12 @@ class evaluator {
     secondEval = secondEval.replace(/['"]/g, '').trim()	//	strip ' and "
 
     //	Handling of ID compare (null => 0)
-    if (first.indexOf('_ID') !== -1 && firstEval.length === 0) { firstEval = '0' }
-    if (second.indexOf('_ID') !== -1 && secondEval.length === 0) { secondEval = '0' }
+    if (first.indexOf('_ID') !== -1 && firstEval.length === 0) {
+      firstEval = '0'
+    }
+    if (second.indexOf('_ID') !== -1 && secondEval.length === 0) {
+      secondEval = '0'
+    }
 
     //	Logical Comparison
     var result = this.evaluateLogicTuple(firstEval, operand, secondEval)

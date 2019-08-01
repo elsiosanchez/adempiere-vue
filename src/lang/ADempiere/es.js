@@ -140,6 +140,11 @@ export default {
   },
   window: {
     newRecord: 'Nuevo Registro',
-    deleteRecord: 'Eliminar Registro'
+    deleteRecord: 'Eliminar Registro',
+    undoNew: 'Descartar Nuevo Registro'
+  },
+  data: {
+    emtpyTableName: 'Error: El nombre de la tabla no esta definida',
+    errorGetData: 'Error obteniendo los datos de registro'
   }
 }

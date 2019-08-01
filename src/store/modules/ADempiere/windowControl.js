@@ -1,8 +1,23 @@
 import { createEntity, updateEntity, deleteEntity } from '@/api/ADempiere'
-import { convertValue, parseContext } from '@/utils/ADempiere'
+import { convertValuesMapToObject, parseContext } from '@/utils/ADempiere'
 
 const windowControl = {
   actions: {
+    resetPanelToNew({ dispatch, rootGetters }, params) {
+      var defaultAttributes = rootGetters.getColumnNamesAndDefaultValues(params.containerUuid, true)
+      console.log(defaultAttributes)
+      dispatch('notifyPanelChange', {
+        containerUuid: params.containerUuid,
+        newValues: defaultAttributes
+      })
+    },
+    undoPanelToNew({ dispatch, rootGetters }, params) {
+      var oldAttributes = rootGetters.getColumnNamesAndOldValues(params.containerUuid, true)
+      dispatch('notifyPanelChange', {
+        containerUuid: params.containerUuid,
+        newValues: oldAttributes
+      })
+    },
     createNewEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(params.containerUuid)
@@ -13,24 +28,15 @@ const windowControl = {
           attributesList: finalAttributes
         })
           .then(response => {
-            var map = response.getValuesMap()
-            var newValue = {}
-            map.forEach((value, key) => {
-              var valueResult = map.get(key)
-              var tempValue = null
-              if (valueResult) {
-                tempValue = convertValue(value)
-              }
-              newValue[key] = tempValue
-            })
+            var newValues = convertValuesMapToObject(response.getValuesMap())
 
             var result = {
-              data: newValue,
+              data: newValues,
               recordUuid: response.getUuid(),
               recordId: response.getId(),
               tableName: response.getTablename()
             }
-            console.log('new record sucess', result)
+            console.info('new record sucess', result, finalAttributes)
             resolve(result)
           })
           .catch(error => {
@@ -42,25 +48,15 @@ const windowControl = {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(params.containerUuid)
         // attributes or fields
-        var finalAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid)
+        var finalAttributes = rootGetters.getColumnNamesAndValuesChanged(params.containerUuid)
         updateEntity({
           tableName: panel.tableName,
           uuid: params.recordUuid,
           attributesList: finalAttributes
         })
           .then(response => {
-            var map = response.getValuesMap()
-            var newValue = {}
-            map.forEach((value, key) => {
-              var valueResult = map.get(key)
-              var tempValue = null
-              if (valueResult) {
-                tempValue = convertValue(value)
-              }
-              newValue[key] = tempValue
-            })
-
-            console.info('edit entity sucess', newValue)
+            // var newValues = convertValuesMapToObject(response.getValuesMap())
+            // console.info('edit entity sucess', newValues, finalAttributes)
             resolve(response)
           })
           .catch(error => {
@@ -68,7 +64,6 @@ const windowControl = {
           })
       })
     },
-
     deleteEntity({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(params.containerUuid)
@@ -79,7 +74,7 @@ const windowControl = {
 
         deleteEntity(objectToDelete)
           .then(response => {
-            console.log('delete entity sucess', response)
+            console.info('delete entity sucess', response)
             resolve(response)
           })
           .catch(error => {

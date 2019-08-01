@@ -15,11 +15,6 @@ const panel = {
     addPanel(state, payload) {
       state.panel.push(payload)
     },
-    addFields(state, payload) {
-      state.panel.find(
-        item => item.uuid === payload.containerUuid
-      ).fieldList = payload.fieldList
-    },
     changeFieldLogic(state, payload) {
       if (payload.isDisplayedFromLogic !== undefined) {
         payload.field.isDisplayedFromLogic = payload.isDisplayedFromLogic
@@ -75,9 +70,6 @@ const panel = {
       params.fieldList = assignedGroup(params.fieldList)
       commit('addPanel', params)
     },
-    addFields({ commit }, params) {
-      commit('addFields', params)
-    },
     // REFACTORY ACTION WITH isReadyForSubmit
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
@@ -130,28 +122,39 @@ const panel = {
         newPanel: panel
       })
     },
-    notifyPanelChange({ state, dispatch }, params) {
-      state.panel
-        .find(item => item.uuid === params.containerUuid).fieldList
-        .filter(field => field.dependentFieldsList !== undefined)
-        .forEach(actionField => {
+    /**
+     * Changed panel when receive or reset panel to new record
+     * @param {string} params.parentUuid
+     * @param {string} params.containerUuid
+     * @param {object} params.newValues
+     */
+    notifyPanelChange({ dispatch, getters }, params) {
+      var fieldList = getters.getFieldsListFromPanel(params.containerUuid)
+
+      fieldList.forEach(actionField => {
+        if (params.newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
             parentUuid: params.parentUuid,
             containerUuid: params.containerUuid,
             columnName: actionField.columnName,
-            newValue: actionField.value
+            newValue: params.newValues[actionField.columnName]
           })
-        })
+        }
+      })
     },
     notifyFieldChange({ commit, state, dispatch, getters }, params) {
+      var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
+      var fieldList = panel.fieldList
+      var field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
+      // the field has not changed, then the action is broken
+      if (params.newValue === field.value) {
+        return
+      }
       //  Call context management
       dispatch('setContext', {
         ...params,
         value: params.newValue
       })
-      var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
-      var fieldList = panel.fieldList
-      var field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
       commit('changeFieldValue', {
         field: field,
         newValue: params.newValue,
@@ -208,23 +211,23 @@ const panel = {
         })
       })
       // TODO: refactory for it and change for a standard method
-      if (fieldIsDisplayed(field) && getters.isReadyForSubmit(params.containerUuid)) {
+      if (getters.isReadyForSubmit(params.containerUuid)) {
         if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
           dispatch('getBrowserSearch', {
             containerUuid: params.containerUuid,
             clearSelection: true
           })
         }
-        console.log('Epale')
         if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
           var uuid = getters.getUuid(params.containerUuid)
-          console.log(uuid)
           if (isEmptyValue(uuid)) {
             dispatch('createNewEntity', {
+              parentUuid: params.parentUuid,
               containerUuid: params.containerUuid
             })
           } else {
             dispatch('updateCurrentEntity', {
+              parentUuid: params.parentUuid,
               containerUuid: params.containerUuid,
               recordUuid: uuid
             })
@@ -287,11 +290,8 @@ const panel = {
           return true
         }
       })
-      var isReady = true
-      if (field !== undefined) {
-        isReady = false
-      }
-      return isReady
+
+      return Boolean(field)
     },
     getEmptyMandatory: (state, getters) => (containerUuid) => {
       return getters.getPanel(containerUuid).find(itemField => {
@@ -324,7 +324,7 @@ const panel = {
     },
     getUuid: (state, getters) => (containerUuid) => {
       var uuid = getters.getColumnNamesAndValues(containerUuid).find(field => field.columnName === 'UUID')
-      if (uuid !== undefined) {
+      if (uuid) {
         return uuid.value
       }
       return undefined
@@ -340,6 +340,57 @@ const panel = {
       })
       return attributes
     },
+    getColumnNamesAndValuesChanged: (state, getters) => (containerUuid) => {
+      var fieldListChanged = getters.getFieldsListFromPanel(containerUuid)
+        .filter(fieldItem => {
+          if (fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) {
+            return true
+          }
+          if (fieldItem.value !== fieldItem.oldValue &&
+            !isEmptyValue(fieldItem.value) === !isEmptyValue(fieldItem.oldValue)) {
+            return true
+          }
+        })
+        .map(fieldItem => {
+          return {
+            columnName: fieldItem.columnName,
+            value: fieldItem.value
+          }
+        })
+      return fieldListChanged
+    },
+    getColumnNamesAndDefaultValues: (state, getters) => (containerUuid, objectReturn = false) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var attributesList = []
+      var attributesObject = {}
+      attributesList = fieldList.map(fieldItem => {
+        attributesObject[fieldItem.columnName] = fieldItem.parsedDefaultValue
+        return {
+          columnName: fieldItem.columnName,
+          value: fieldItem.parsedDefaultValue
+        }
+      })
+      if (objectReturn) {
+        return attributesObject
+      }
+      return attributesList
+    },
+    getColumnNamesAndOldValues: (state, getters) => (containerUuid, objectReturn = false) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var attributesList = []
+      var attributesObject = {}
+      attributesList = fieldList.map(fieldItem => {
+        attributesObject[fieldItem.columnName] = fieldItem.oldValue
+        return {
+          columnName: fieldItem.columnName,
+          value: fieldItem.oldValue
+        }
+      })
+      if (objectReturn) {
+        return attributesObject
+      }
+      return attributesList
+    },
     /**
      * get field list visible and with values
      */
@@ -354,7 +405,7 @@ const panel = {
       if (fields > 0) {
         params = fieldList.filter(fieldItem => {
           // columns to exclude
-          if (withOut.find(subitem => subitem.toLowerCase() === fieldItem.columnName.toLowerCase())) {
+          if (withOut.find(subItem => subItem === fieldItem.columnName)) {
             return false
           }
 
@@ -401,7 +452,7 @@ const panel = {
      *    { columname, value }
      * ]
      */
-    getParamsProcessToServer: (state, getters) => (containerUuid, withOut = []) => {
+    getParametersProcessToServer: (state, getters) => (containerUuid, withOut = []) => {
       var fieldList = getters.getPanelParameters(containerUuid, true, withOut)
       var parameters = []
       if (fieldList.fields > 0) {

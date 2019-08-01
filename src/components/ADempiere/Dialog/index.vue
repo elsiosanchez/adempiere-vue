@@ -74,8 +74,11 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     width() {
-      if (this.$store.state.app.device === 'mobile') {
+      if (this.isMobile) {
         return 80
       }
       return 50

@@ -47,7 +47,7 @@ const processControl = {
       } else {
         reportExportType = params.action.reportExportType
       }
-      var finalParameters = rootGetters.getParamsProcessToServer(params.containerUuid)
+      var finalParameters = rootGetters.getParametersProcessToServer(params.containerUuid)
 
       var selection = []
       if (params.parentUuid !== undefined) {
