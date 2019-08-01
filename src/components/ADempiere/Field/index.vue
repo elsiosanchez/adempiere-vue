@@ -161,7 +161,9 @@ export default {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
-      return (this.field.isReadOnly || this.field.isReadOnlyFromLogic || !this.field.isUpdateable) && !this.field.isQueryCriteria
+      return (this.field.isReadOnly || this.field.isReadOnlyFromLogic) ||
+        (this.panelType === 'window' && !this.field.isUpdateable) ||
+        (this.panelType === 'browser' && !this.field.isQueryCriteria && !this.inTable)
     },
     isMandatory() {
       return this.field.isMandatory || this.field.isMandatoryFromLogic
