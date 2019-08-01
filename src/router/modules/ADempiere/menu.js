@@ -60,9 +60,11 @@ export function loadMainMenu() {
       if (menu.getIssummary()) {
         menu.getChildsList().forEach((menu, index) => {
           optionMenu.children.push(getChildFromAction(menu, index = 0))
+          optionMenu.meta.childs.push(getChildFromAction(menu, index = 0))
         })
       } else {
         optionMenu.children.push(getChildFromAction(menu))
+        optionMenu.meta.childs.push(getChildFromAction(menu))
       }
       asyncRouterMap.push(optionMenu)
     })
@@ -76,18 +78,18 @@ export function loadMainMenu() {
 function getChildFromAction(menu, index) {
   const action = menu.getAction()
   var actionAttributes = convertAction(action)
-  var routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid()
+  var routeIdentifier = actionAttributes.name + '/' + menu.getId()
   let selectedComponent
   if (action === 'W') {
     selectedComponent = () => import('@/views/ADempiere/Window')
-    routeIdentifier = actionAttributes.name + '/' + menu.getReferenceuuid() + '/:action?'
+    routeIdentifier = actionAttributes.name + '/' + menu.getId() + '/:action?'
   } else if (action === 'S') {
     selectedComponent = () => import('@/views/ADempiere/Browser')
   } else if (action === 'P' || action === 'R') {
     selectedComponent = () => import('@/views/ADempiere/Process')
   } else {
-    routeIdentifier = actionAttributes.name + '/' + menu.getUuid()
     selectedComponent = () => import('@/views/ADempiere/Summary')
+    routeIdentifier = '/' + menu.getId()
   }
   var option = {
     path: routeIdentifier,
@@ -104,13 +106,15 @@ function getChildFromAction(menu, index) {
       parentUuid: menu.getParentuuid(),
       icon: actionAttributes.icon,
       alwaysShow: true,
-      noCache: false
+      noCache: false,
+      childs: []
     }
   }
   if (option.meta.type === 'summary') {
     option['children'] = []
     menu.getChildsList().forEach((child, index) => {
       option.children.push(getChildFromAction(child, index = 1))
+      option.meta.childs.push(getChildFromAction(child, index = 1))
     })
   }
   return option
@@ -122,8 +126,8 @@ function getRouteFromMenuItem(menu) {
   var actionAttributes = convertAction(action)
   var optionMenu = []
   optionMenu = {
-    path: '/' + menu.getUuid().replace(/ /g, ''),
-    redirect: '/' + menu.getUuid().replace(/ /g, '') + '/index',
+    path: '/' + menu.getId(),
+    redirect: '/' + menu.getId() + '/index',
     component: Layout,
     name: menu.getUuid(),
     meta: {
@@ -131,7 +135,8 @@ function getRouteFromMenuItem(menu) {
       description: menu.getDescription(),
       type: actionAttributes.name,
       icon: actionAttributes.icon,
-      noCache: true
+      noCache: true,
+      childs: []
     },
     children: [
       {
@@ -146,7 +151,8 @@ function getRouteFromMenuItem(menu) {
           description: menu.getDescription(),
           type: actionAttributes.name,
           icon: actionAttributes.icon,
-          noCache: true
+          noCache: true,
+          breadcrumb: false
         }
       }
     ]
