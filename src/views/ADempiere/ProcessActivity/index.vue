@@ -1,10 +1,10 @@
 <template>
-  <div v-if="processListData.length > 0" class="app-container">
+  <div v-if="serverProcessList.length > 0 || getProcessListData.length > 0" class="app-container">
     <h3 class="warn-content text-center">
       {{ $t('route.ProcessActivity') }}
     </h3>
 
-    <el-table ref="dragTable" :data="processListData" :stripe="true" class="table" border>
+    <el-table ref="dragTable" :data="(serverProcessList.length > 0) ? serverProcessList : getProcessListData" :stripe="true" class="table" border>
       <template v-for="(item, key) in tableColumns">
         <el-table-column :key="key" :label="generateTitle(item)">
           <template slot-scope="scope">
@@ -39,13 +39,14 @@
                 </el-tag>
                 <span v-else>{{ scope.row[item] }}</span>
               </span>
-              <el-popover title="Log Info or Summary" trigger="click" style="max-width: 300px;">
-                <template v-for="(log, index) in scope.row.Report.logs">
-                  <div :key="index">
-                    <span>{{ $t('views.logs') }}</span>
-                    <p>{{ log.log }}</p>
-                  </div>
-                </template>
+              <el-popover v-if="scope.row.Report.logs.length > 0 || scope.row.Report.summary!==''" :title="$t('views.logs')" trigger="click" style="max-width: 300px;">
+                <el-scrollbar wrap-class="popover-scroll">
+                  <template v-for="(log, index) in scope.row.Report.logs">
+                    <div :key="index">
+                      <p>{{ log }}</p>
+                    </div>
+                  </template>
+                </el-scrollbar>
                 <span v-if="scope.row.Report.summary!==''">{{ $t('views.summary') }}</span>
                 <p>{{ scope.row.Report.summary }}</p>
                 <el-button v-if="scope.row.Report.instanceUuid==='undefined' && scope.row.Report.logs.length>0 || scope.row.Report.summary!==''" slot="reference" type="text" icon="el-icon-document">{{ $t('views.log') }}</el-button>
@@ -56,6 +57,9 @@
       </template>
     </el-table>
   </div>
+  <h1 v-else class="text-center">
+    {{ $t('views.noProcess') }}
+  </h1>
 </template>
 <script>
 import Sortable from 'sortablejs'
@@ -67,51 +71,40 @@ export default {
       tableColumns: ['Name', 'Description', 'Status'],
       showDialog: false,
       sortable: null,
+      serverProcessList: [],
       oldprocessListData: [],
       newprocessListData: []
     }
   },
   computed: {
-    processRunnings() {
-      return this.$store.getters.getRunningProcess
+    initializedProcess() {
+      return this.$store.getters.getInitializedProcess
     },
     processFinalized() {
       return this.$store.getters.getProcessFinalized
     },
-    processListData() {
-      // Array.prototype.push.apply(this.processRunnings, this.processFinalized)
-      var processListData = this.processRunnings.map(item => {
+    getProcessListData() {
+      var processListData = this.initializedProcess.map(item => {
         var reportInfo = {
-          instanceUuid: 'undefined',
+          instanceUuid: (item.instanceUuid !== undefined) ? item.instanceUuid : 'undefined',
           processUuid: item.uuid,
-          isError: false,
-          summary: item.summary,
+          isError: item.isError,
+          summary: (item.summary) ? item.summary : '',
           resultTableId: 0,
-          logs: item.logs,
+          logs: [],
           output: {
-            ...item.output,
             isRootInsert: false,
             elm: {}
           }
         }
-        var status = this.checkStatus(item.isError)
         return {
           Name: item.name,
           Description: item.description,
-          Summary: item.summary,
-          Status: status,
+          Summary: '',
+          Status: (item.isProcessing) ? this.$t('notifications.processing') : this.$t('notifications.error'),
           Report: reportInfo
         }
       })
-      // var vegetables = ['parsnip', 'potato']
-      // var moreVegs = ['celery', 'beetroot']
-
-      // Merge the second array into the first one
-      // Equivalent to vegetables.push('celery', 'beetroot');
-
-      // console.log(this.processRunnings)
-      // processListData.push(this.processFinalized)
-      // console.log(processListData)
       return processListData
     }
   },
@@ -119,9 +112,43 @@ export default {
     this.$store.dispatch('getSessionProcessFromServer')
   },
   mounted() {
-    this.getList()
+    // this.getList()
+    this.processRunnings()
   },
   methods: {
+    processRunnings() {
+      var processRunnings
+      this.$store.getters.getRunningProcess
+        .then(response => {
+          if (response.length > 0) {
+            processRunnings = response.map(item => {
+              var reportInfo = {
+                instanceUuid: 'undefined',
+                processUuid: item.uuid,
+                isError: false,
+                summary: item.summary,
+                resultTableId: 0,
+                logs: item.logs,
+                output: {
+                  ...item.output,
+                  isRootInsert: false,
+                  elm: {}
+                }
+              }
+              var status = this.checkStatus(item.isError)
+              return {
+                Name: item.name,
+                Description: item.description,
+                Summary: item.summary,
+                Status: status,
+                Report: reportInfo
+              }
+            })
+            this.serverProcessList = processRunnings
+            this.$forceUpdate()
+          }
+        })
+    },
     async getList() {
       this.oldprocessListData = this.processListData.map(v => v.id)
       this.newprocessListData = this.oldprocessListData.slice()
@@ -180,5 +207,8 @@ export default {
   .name-wrapper {
     color: #409eff;
     cursor: pointer;
+  }
+  .popover-scroll {
+    max-height: 200px
   }
 </style>

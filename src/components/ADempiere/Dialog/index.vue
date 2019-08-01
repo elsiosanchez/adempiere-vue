@@ -101,9 +101,6 @@ export default {
         type: this.modalMetadata.panelType,
         action: undefined
       })
-      this.$nextTick(function() {
-        console.log(this.modalMetadata)
-      })
     },
     runAction(action) {
       if (action === undefined && this.windowRecordSelected !== undefined) {

@@ -121,7 +121,7 @@ export default {
     // uuid of the component where it is called
     parentUuid: {
       type: String,
-      required: true
+      default: undefined
     },
     // uuid of the component where it is called
     containerUuid: {

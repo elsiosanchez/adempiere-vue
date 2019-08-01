@@ -49,6 +49,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import { showMessage } from '@/utils/ADempiere'
 
 export default {
   name: 'ProfileRole',
@@ -82,9 +83,15 @@ export default {
     this.getLanguage()
   },
   methods: {
+    showMessage,
     handleChange(valueSelected) {
       this.$store.dispatch('user/changeRoles', valueSelected)
         .then(response => {
+          this.showMessage({
+            title: this.$t('notifications.succesful'),
+            message: this.$t('notifications.successChangeRole'),
+            type: 'success'
+          })
           this.$store.dispatch('permission/generateRoutes', response.name)
         })
     },

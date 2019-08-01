@@ -243,9 +243,7 @@ export default {
         console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }
-      if (uuidRecord === ':uuidRecord') {
-        uuidRecord = undefined
-      }
+
       this.$store.dispatch('getEntity', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,

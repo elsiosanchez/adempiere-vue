@@ -25,7 +25,8 @@ export default {
     emptyValues: 'Parametro(s) con valores vacios',
     fieldMandatory: 'El campo es obligatorio',
     Opened: 'Abierto',
-    requestError: 'Error al ejecutar la petición'
+    requestError: 'Error al ejecutar la petición',
+    successChangeRole: 'El rol se ha cambiado'
   },
   navbar: {
     logOut: 'Salir',

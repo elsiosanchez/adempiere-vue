@@ -19,6 +19,8 @@ export function contextInitial() {
 
   contex.set('#AD_Org_ID', 0)
   contex.set('#AD_Org_Name', '*')
+  contex.set('#AD_Client_ID', 0)
+  contex.set('#AD_Client_Name', 'System')
   contex.set('#SysAdmin', 'Y')
   contex.set('#User_Level', 'S')
 

@@ -70,27 +70,33 @@ const panel = {
       params.fieldList = assignedGroup(params.fieldList)
       commit('addPanel', params)
     },
-    // REFACTORY ACTION WITH isReadyForSubmit
+    // used by components/fields/filterFields
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
       var showsFieldsWithValue = false
       var hiddenFieldsWithValue = false
       var newFields = panel.fieldList.map(itemField => {
-        if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
-          // if it isShowedFromUser it is false, and it has some value, it means
-          // that it is going to show, therefore the SmartBrowser must be searched
-          if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
-            showsFieldsWithValue = true
+        const isMandatory = itemField.isMandatory || itemField.isMandatoryFromLogic
+        if (!isMandatory && fieldIsDisplayed(itemField)) {
+          if (itemField.groupAssigned === params.groupField) {
+            if (params.fieldsUser.length > 0 &&
+              params.fieldsUser.includes(itemField.columnName)) {
+              // if it isShowedFromUser it is false, and it has some value, it means
+              // that it is going to show, therefore the SmartBrowser must be searched
+              if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
+                showsFieldsWithValue = true
+              }
+              itemField.isShowedFromUser = true
+              return itemField
+            }
+            // if it isShowedFromUser it is true, and it has some value, it means
+            // that it is going to hidden, therefore the SmartBrowser must be searched
+            if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
+              hiddenFieldsWithValue = true
+            }
+            itemField.isShowedFromUser = false
           }
-          itemField.isShowedFromUser = true
-          return itemField
         }
-        // if it isShowedFromUser it is true, and it has some value, it means
-        // that it is going to hidden, therefore the SmartBrowser must be searched
-        if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
-          hiddenFieldsWithValue = true
-        }
-        itemField.isShowedFromUser = false
         return itemField
       })
       panel.fieldList = newFields
@@ -284,14 +290,15 @@ const panel = {
      * @param {boolean} evaluateShowed, indicate if evaluate showed fields
      */
     isReadyForSubmit: (state, getters) => (containerUuid, evaluateShowed = true) => {
-      var field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var field = fieldList.find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        if (isMandatory && isEmptyValue(fieldItem.value)) {
+        if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(fieldItem.value)) {
           return true
         }
       })
 
-      return Boolean(field)
+      return Boolean(!field)
     },
     getEmptyMandatory: (state, getters) => (containerUuid) => {
       return getters.getPanel(containerUuid).find(itemField => {
@@ -300,27 +307,19 @@ const panel = {
         }
       })
     },
-    // all available fields not mandatory to show, used in component panel/filterFields.vue
-    getFieldsListNotMandatory: (state, getters) => (containerUuid, panelType, groupField) => {
-      var fieldListSelected = []
+    // all available fields not mandatory to show, used in components panel/filterFields.vue
+    getFieldsListNotMandatory: (state, getters) => (containerUuid, evaluateShowed = true) => {
       var fieldListOptional = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
-        var isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        if (!isMandatory && groupField === fieldItem.groupAssigned) {
-          var isBrowserDisplayed = panelType === 'browser' && fieldItem.isQueryCriteria // browser query criteria
-          var isWindowDisplayed = panelType !== 'browser' && fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic // window, process and report, browser result
-          var isDisplayed = fieldItem.isActive && (isBrowserDisplayed || isWindowDisplayed) // Available fields to show
-
-          if (isDisplayed && fieldItem.isShowedFromUser) {
-            // showed displayed in view
-            fieldListSelected.push(fieldItem.columnName)
+        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (!isMandatory) {
+          const isDisplayed = fieldIsDisplayed(fieldItem)
+          if (evaluateShowed) {
+            return isDisplayed
           }
-          return isDisplayed
+          return !isMandatory
         }
       })
-      return {
-        fieldListOptional: fieldListOptional,
-        fieldListSelected: fieldListSelected
-      }
+      return fieldListOptional // all optionals (not mandatory) fields
     },
     getUuid: (state, getters) => (containerUuid) => {
       var uuid = getters.getColumnNamesAndValues(containerUuid).find(field => field.columnName === 'UUID')
@@ -329,16 +328,29 @@ const panel = {
       }
       return undefined
     },
-    getColumnNamesAndValues: (state, getters) => (containerUuid) => {
+    /**
+     * @param {string} containerUuid, unique identifier of the panel to search your list of fields
+     * @param {string} propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
+     * @param {string} isObjectReturn, define if is an object to return, else arraylist return
+     * @returns {array|object}
+     */
+    getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var attributes = []
-      attributes = fieldList.map(fieldItem => {
+      var attributesList = []
+      var attributesObject = {}
+      attributesList = fieldList.map(fieldItem => {
+        const valueToReturn = fieldItem[propertyName]
+        attributesObject[fieldItem.columnName] = valueToReturn
+
         return {
           columnName: fieldItem.columnName,
-          value: fieldItem.value
+          value: valueToReturn
         }
       })
-      return attributes
+      if (isObjectReturn) {
+        return attributesObject
+      }
+      return attributesList
     },
     getColumnNamesAndValuesChanged: (state, getters) => (containerUuid) => {
       var fieldListChanged = getters.getFieldsListFromPanel(containerUuid)
@@ -358,38 +370,6 @@ const panel = {
           }
         })
       return fieldListChanged
-    },
-    getColumnNamesAndDefaultValues: (state, getters) => (containerUuid, objectReturn = false) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var attributesList = []
-      var attributesObject = {}
-      attributesList = fieldList.map(fieldItem => {
-        attributesObject[fieldItem.columnName] = fieldItem.parsedDefaultValue
-        return {
-          columnName: fieldItem.columnName,
-          value: fieldItem.parsedDefaultValue
-        }
-      })
-      if (objectReturn) {
-        return attributesObject
-      }
-      return attributesList
-    },
-    getColumnNamesAndOldValues: (state, getters) => (containerUuid, objectReturn = false) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var attributesList = []
-      var attributesObject = {}
-      attributesList = fieldList.map(fieldItem => {
-        attributesObject[fieldItem.columnName] = fieldItem.oldValue
-        return {
-          columnName: fieldItem.columnName,
-          value: fieldItem.oldValue
-        }
-      })
-      if (objectReturn) {
-        return attributesObject
-      }
-      return attributesList
     },
     /**
      * get field list visible and with values

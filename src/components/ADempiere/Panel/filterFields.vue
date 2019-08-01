@@ -10,7 +10,7 @@
     @change="addField"
   >
     <el-option
-      v-for="(item, key) in getFieldListOptional.fieldListOptional"
+      v-for="(item, key) in getterFieldListOptional"
       :key="key"
       :label="item.name"
       :value="item.columnName"
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { isEmptyValue } from '@/utils/ADempiere'
+
 export default {
   name: 'FilterFields',
   props: {
@@ -26,13 +28,9 @@ export default {
       type: String,
       required: true
     },
-    panelType: {
-      type: String,
-      default: 'window'
-    },
     groupField: {
       type: String,
-      default: undefined
+      default: ''
     }
   },
   data() {
@@ -44,15 +42,27 @@ export default {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
-    getterFieldsListFromPanel() {
-      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    getterFieldListOptional() {
+      return this.$store.getters.getFieldsListNotMandatory(this.containerUuid).filter(fieldItem => {
+        return fieldItem.groupAssigned === this.groupField
+      })
     },
-    getFieldListOptional() {
-      return this.$store.getters.getFieldsListNotMandatory(this.containerUuid, this.panelType, this.groupField)
+    getFieldSelected() {
+      return this.getterFieldListOptional
+        .filter(fieldItem => {
+          return fieldItem.isShowedFromUser || !isEmptyValue(fieldItem.value)
+        })
+        .map(itemField => itemField.columnName)
     }
   },
+  created() {
+    this.selectedFields = this.getFieldSelected
+  },
   updated() {
-    this.selectedFields = this.getFieldListOptional.fieldListSelected
+    // setTimeout(() => {
+    //   //your code to be executed after 1 second
+    //   this.selectedFields = this.getFieldSelected
+    // }, 2000);
   },
   methods: {
     /**
@@ -62,7 +72,8 @@ export default {
       this.$store.dispatch('changeFieldShowedFromUser', {
         containerUuid: this.containerUuid,
         fieldsUser: selectedValues,
-        show: true
+        show: true,
+        groupField: this.groupField
       })
     }
   }

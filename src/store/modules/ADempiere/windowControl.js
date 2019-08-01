@@ -4,7 +4,7 @@ import { convertValuesMapToObject, parseContext } from '@/utils/ADempiere'
 const windowControl = {
   actions: {
     resetPanelToNew({ dispatch, rootGetters }, params) {
-      var defaultAttributes = rootGetters.getColumnNamesAndDefaultValues(params.containerUuid, true)
+      var defaultAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid, 'parsedDefaultValue', true)
       console.log(defaultAttributes)
       dispatch('notifyPanelChange', {
         containerUuid: params.containerUuid,
@@ -12,7 +12,7 @@ const windowControl = {
       })
     },
     undoPanelToNew({ dispatch, rootGetters }, params) {
-      var oldAttributes = rootGetters.getColumnNamesAndOldValues(params.containerUuid, true)
+      var oldAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid, 'oldValue', true)
       dispatch('notifyPanelChange', {
         containerUuid: params.containerUuid,
         newValues: oldAttributes
@@ -36,6 +36,10 @@ const windowControl = {
               recordId: response.getId(),
               tableName: response.getTablename()
             }
+            dispatch('notifyPanelChange', {
+              containerUuid: params.containerUuid,
+              newValues: newValues
+            })
             console.info('new record sucess', result, finalAttributes)
             resolve(result)
           })
