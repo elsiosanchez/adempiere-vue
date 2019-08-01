@@ -220,6 +220,7 @@ export default {
       this.olddatalist = this.tableRecords.map(v => v.id)
       this.newdatalist = this.olddatalist.slice()
       this.$nextTick(() => {
+        this.loading = false
         this.setSort()
       })
     },

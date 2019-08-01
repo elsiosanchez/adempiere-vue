@@ -80,6 +80,7 @@ const data = {
       return new Promise((resolve, reject) => {
         getObject(parameters.table, parameters.recordUuid)
           .then(response => {
+            console.log(response)
             var map = response.getValuesMap()
             var newValues = convertValuesMapToObject(map)
             console.log('map', map)
@@ -104,6 +105,7 @@ const data = {
      * @param {string} params.criteria, criteria to search record data
      */
     getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {
+      console.log(objectParams)
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams)
           .then(response => {
