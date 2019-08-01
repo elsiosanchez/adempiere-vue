@@ -246,24 +246,6 @@ const processControl = {
     setShowDialog({ commit }, params) {
       if (params.type === 'process' || params.type === 'report') {
         if (params.action === undefined) {
-          commit('setMetadata', {
-            id: null,
-            uuid: '',
-            name: '',
-            description: '',
-            parentUuid: '',
-            help: '',
-            isReport: null,
-            accessLevel: null,
-            showHelp: '',
-            isDirectPrint: null,
-            reportExportTypeList: [],
-            value: '',
-            panelType: params.type,
-            fieldList: [],
-            keyColumn: '',
-            selectionColumn: []
-          })
           commit('setCloseDialog')
         } else {
           commit('setMetadata', params.action)
