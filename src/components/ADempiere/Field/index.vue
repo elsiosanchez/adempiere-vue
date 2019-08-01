@@ -103,18 +103,6 @@ export default {
     afterLoader() {
       return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
-    // TODO: Determinate used
-    isReadWrite: {
-      get: () => {
-        return this.isReadOnly
-      },
-      set: (newValue) => {
-        this.isReadOnly = newValue
-        if (this.field.columnName === 'IsActive') {
-          this.isReadOnly = false
-        }
-      }
-    },
     sizeFieldResponsive() {
       var sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
         return item.type === this.field.componentPath
@@ -169,9 +157,8 @@ export default {
     this.field = this.metadataField
   },
   methods: {
-    fieldIsDisplayed,
     isDisplayed() {
-      return this.fieldIsDisplayed(this.field, this.inTable)
+      return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
       return (this.field.isReadOnly || this.field.isReadOnlyFromLogic || !this.field.isUpdateable) && !this.field.isQueryCriteria

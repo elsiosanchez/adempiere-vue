@@ -4,20 +4,20 @@ import * as valueUtil from '@/utils/ADempiere/valueUtil.js'
 
 /**
  * Determinate if field is displayed
- * @param {object}  field
- * @param {boolean} inTable
- * @param {boolean} evaluateMandatory
+ * @param {boolean} field.isActive
+ * @param {boolean} field.isDisplayed
+ * @param {boolean} field.isDisplayedFromLogic
+ * @param {boolean} field.isQueryCriteria
+ * @param {string}  field.panelType
  * @returns {boolean}
  */
-export function fieldIsDisplayed(field, inTable = false, evaluateMandatory = true) {
-  const isMandatory = field.isMandatory || field.isMandatoryFromLogic
-
+export function fieldIsDisplayed(field) {
   const isBrowserDisplayed = field.isQueryCriteria // browser query criteria
   const isWindowDisplayed = field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result
   const isDisplayedView = (field.panelType === 'browser' && isBrowserDisplayed) || (field.panelType !== 'browser' && isWindowDisplayed)
 
   //  Verify for displayed and is active
-  return field.isActive && isDisplayedView && ((isMandatory && evaluateMandatory) || field.isShowedFromUser || inTable)
+  return field.isActive && isDisplayedView
 }
 
 /**
