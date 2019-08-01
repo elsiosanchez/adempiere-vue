@@ -25,7 +25,8 @@ export default {
     emptyValues: 'Parameter(s) empty value',
     fieldMandatory: 'The field is mandatory',
     Opened: 'Opened',
-    requestError: 'Error executing the request'
+    requestError: 'Error executing the request',
+    successChangeRole: 'The role has been changed'
   },
   navbar: {
     dashboard: 'Dashboard',
