@@ -25,7 +25,7 @@
               :circle="true"
               @click="handleChange()"
             />
-
+            asdas
             <slot />
 
           </div>
@@ -106,7 +106,6 @@ export default {
     z-index: 0;
     width: calc(111% - 200px);
     transition: width 0.28s;
-    position: fixed;
     height: 20px;
     display: flex;
     color: #424242;
