@@ -6,6 +6,7 @@
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
 import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
+import router from '@/router'
 
 const panel = {
   state: {
@@ -231,6 +232,16 @@ const panel = {
               parentUuid: params.parentUuid,
               containerUuid: params.containerUuid
             })
+              .then(response => {
+                var oldRoute = router.app._route
+                router.push({
+                  name: oldRoute.name,
+                  params: {
+                    action: response.recordUuid
+                  }
+                })
+                dispatch('tagsView/delView', oldRoute, true)
+              })
           } else {
             dispatch('updateCurrentEntity', {
               parentUuid: params.parentUuid,
