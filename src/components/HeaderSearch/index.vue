@@ -77,7 +77,7 @@ export default {
       this.show = false
     },
     change(val) {
-      this.$router.push(val.path)
+      this.$router.push({ name: val.name, params: { action: 'create-new', childs: val.meta.childs }})
       this.search = ''
       this.options = []
       this.$nextTick(() => {
@@ -108,11 +108,12 @@ export default {
 
       for (const router of routes) {
         // skip hidden router
-        if (router.hidden) { continue }
-
+        if (router.meta && router.meta.isIndex) { continue }
         const data = {
           path: path.resolve(basePath, router.path),
-          title: [...prefixTitle]
+          title: [...prefixTitle],
+          meta: router.meta,
+          name: router.name
         }
 
         if (router.meta && router.meta.title) {

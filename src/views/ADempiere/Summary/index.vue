@@ -45,6 +45,8 @@ export default {
       var routeParent = this.routes.find(route => route.name === this.parentUuid)
       if (routeParent === undefined) {
         this.optionList = this.$route.params.childs
+      } else if (routeParent.meta && routeParent.meta.type === 'summary' && routeParent.meta.childs.length > 1) {
+        this.optionList = routeParent.children
       } else {
         this.optionList = routeParent.children.find(child => child.name === this.$route.name)
       }
