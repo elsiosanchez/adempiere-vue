@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
-
 export default {
   name: 'FilterFields',
   props: {
@@ -50,7 +48,7 @@ export default {
     getFieldSelected() {
       return this.getterFieldListOptional
         .filter(fieldItem => {
-          return fieldItem.isShowedFromUser || !isEmptyValue(fieldItem.value)
+          return fieldItem.isShowedFromUser
         })
         .map(itemField => itemField.columnName)
     }

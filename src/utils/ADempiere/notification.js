@@ -11,40 +11,43 @@ export function hasTranslation(text) {
   return text
 }
 
-export function showNotification(params) {
-  if (params !== undefined) {
-    var title = hasTranslation(params.title)
-    var message = hasTranslation(params.message)
+export function showNotification(parameters) {
+  if (parameters !== undefined) {
+    var title = hasTranslation(parameters.title)
+    var message = hasTranslation(parameters.message)
     //  For summary
-    if (params.summary !== undefined) {
+    if (parameters.summary !== undefined) {
       if (message !== undefined) {
-        message = message + '<br>' + params.summary
+        message = message + '<br>' + parameters.summary
       } else {
-        message = params.summary
+        message = parameters.summary
       }
     }
     //  For logs
-    if (params.logs !== undefined) {
-      params.logs.forEach(logResult => {
+    if (parameters.logs !== undefined) {
+      parameters.logs.forEach(logResult => {
         if (logResult !== undefined) {
           message = message + '<br>' + logResult.log
         }
       })
     }
+    if (parameters.name) {
+      message = parameters.name + message
+    }
     Notification({
       title: title,
-      message: message,
-      type: params.type,
+      message: `<div style="max-height: 100px; overflow-y: auto;">` + message + `</div>`,
+      type: parameters.type,
       position: 'bottom-right',
       dangerouslyUseHTMLString: true
     })
   }
 }
 
-export function showMessage(params) {
+export function showMessage(parameters) {
   Message({
-    message: params.message,
-    type: params.type,
+    message: parameters.message,
+    type: parameters.type,
     showClose: true
   })
 }
