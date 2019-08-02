@@ -1,13 +1,7 @@
 <template>
   <el-container style="height: 86vh; border: 1px solid #eee">
     <el-aside v-show="recordNavigation" width="30%">
-      <div class="w-33">
-        <div class="close">
-          <el-button type="text" icon="el-icon-circle-close-outline" circle @click="logNavigation()" />
-        </div>
-      </div>
-      <search-window
-        :tab-uuid="windowMetadata.currentTab.uuid"
+      <data-table
         :window-uuid="windowUuid"
         :table-name="windowMetadata.currentTab.tableName"
       />
@@ -43,7 +37,7 @@
         <div class="small-4 columns">
           <div class="w">
             <div class="open-left" />
-            <el-button v-show="!recordNavigation" icon="el-icon-caret-right" class="open-navegation" circle @click="logNavigation()" />
+            <el-button icon="el-icon-caret-right" class="open-navegation" circle @click="logNavigation()" />
           </div>
         </div>
       </el-main>
@@ -71,7 +65,8 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 // the submenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
-import SearchWindow from '@/views/ADempiere/SearchWindow'
+// import SearchWindow from '@/views/ADempiere/SearchWindow'
+import DataTable from '@/components/ADempiere/DataTable'
 
 export default {
   name: 'Window',
@@ -81,7 +76,8 @@ export default {
     //   SplitPanel,
     ContextMenu,
     //   // NavegationRecord,
-    SearchWindow,
+    // SearchWindow,
+    DataTable,
     ModalDialog
   },
   data() {
@@ -89,6 +85,7 @@ export default {
       windowMetadata: {},
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
+      tablePanel: 'tab',
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       panelDetail: true,
@@ -196,6 +193,7 @@ export default {
     position: fixed;
     top: 50%;
     display: none;
+    z-index: 3;
   }
   .button {
   display: none;
@@ -211,5 +209,13 @@ export default {
 }
 .open-left{
 width: 4%;height: 95%;position: absolute;top: 2%;
+}
+.el-button {
+    cursor: pointer;
+    background: #FFFFFF;
+    border: 1px solid #DCDFE6;
+    border-color: #DCDFE6;
+    color: white;
+    background: #008fd3;
 }
 </style>
