@@ -13,7 +13,6 @@
       :data="filterResult()"
       :border="true"
       :highlight-current-row="true"
-      :height="getHeigthTable"
       size="mini"
       @row-click="setCurrentRow"
       @current-change="handleCurrentChange"
@@ -161,9 +160,9 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== undefined) {
-        return this.$store.getters.getHeigth() - 180
+        return this.$store.getters.getHeigth() - 170
       } else {
-        return this.$store.getters.getHeigth()
+        return this.$store.getters.getHeigth() - 185
       }
     }
   },

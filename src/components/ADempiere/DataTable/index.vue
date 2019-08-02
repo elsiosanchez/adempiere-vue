@@ -219,7 +219,7 @@ export default {
       if (this.panelType !== 'window') {
         var table = ''
         if (this.getDataDetail.length === 0 && this.getshowCriteria && this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 490
+          table = this.$store.getters.getHeigth() - 520
         } else if (this.getDataDetail.length === 0 && !this.getshowCriteria && this.getParamsBrowser) {
           table = this.$store.getters.getHeigth() - 290
         } else if (!this.getshowCriteria && !this.getParamsBrowser) {

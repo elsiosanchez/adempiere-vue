@@ -1,59 +1,71 @@
 <template>
-  <el-container v-if="isLoading" class="view-base">
-    <context-menu
-      :menu-parent-uuid="$route.meta.parentUuid"
-      :parent-uuid="windowUuid"
-      :container-uuid="windowMetadata.currentTabUuid"
-      :parent-panel="panelType"
-      :modal-metadata="windowMetadata"
-    />
-    <br>
-    <el-aside v-show="navigation" width="500px">
+  <el-container style="height: 86vh; border: 1px solid #eee">
+    <el-aside v-show="navigationRecord" width="30%">
+      <div class="w-33">
+        <div class="close">
+          <el-button type="text" icon="el-icon-circle-close-outline" circle @click="logNavigation()" />
+        </div>
+      </div>
       <search-window
         :tab-uuid="windowMetadata.currentTab.uuid"
         :window-uuid="windowUuid"
         :table-name="windowMetadata.currentTab.tableName"
       />
-      <el-button icon="el-icon-error" circle @click="logNavigation()" />
     </el-aside>
-    <el-main>
-      <el-row :gutter="20">
-        <el-button icon="el-icon-search" circle @click="logNavigation()" />
+
+    <el-container>
+      <el-header style="height: 40px;">
+        <context-menu
+          :menu-parent-uuid="$route.meta.parentUuid"
+          :parent-uuid="windowUuid"
+          :container-uuid="windowMetadata.currentTabUuid"
+          :parent-panel="panelType"
+          :modal-metadata="windowMetadata"
+        />
+      </el-header>
+
+      <el-main>
         <tab-parent
           :window-uuid="windowUuid"
           :tabs-list="windowMetadata.tabsListParent"
           class="tab-window"
         />
+        <div class="small-4 columns">
+          <div class="wrapper">
+            <div
+              v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+              class="open-detail"
+            />
+            <el-button v-show="!panelDetail" icon="el-icon-caret-top" class="open-table-detail" circle @click="panelDetail = !panelDetail" />
+          </div>
+        </div>
         <modal-dialog />
-        <!-- <navegation-record /> -->
-        <split-panel
-          :show-detail="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-          :is-showed-detail="windowMetadata.isShowedDetail"
-          :panel-type="panelType"
-          :container-uuid="windowUuid"
-        >
-          <tab-children
-            :window-uuid="windowUuid"
-            :tabs-list="windowMetadata.tabsListChildren"
-          />
-        </split-panel>
-      </el-row>
-    </el-main>
+        <div class="small-4 columns">
+          <div class="w">
+            <div class="open-left" />
+            <el-button v-show="!navigationRecord" icon="el-icon-caret-right" class="open-navegation" circle @click="logNavigation()" />
+          </div>
+        </div>
+      </el-main>
+      <el-header v-show="panelDetail && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0" style="height: auto;">
+        <div class="w-33">
+          <div class="center">
+            <el-button icon="el-icon-caret-bottom" circle @click="panelDetail = !panelDetail" />
+          </div>
+        </div>
+        <tab-children
+          :window-uuid="windowUuid"
+          :tabs-list="windowMetadata.tabsListChildren"
+        />
+      </el-header>
+    </el-container>
   </el-container>
-  <div
-    v-else
-    v-loading="!isLoading"
-    :element-loading-text="$t('notifications.loading')"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(255, 255, 255, 0.8)"
-    class="loading-window"
-  />
 </template>
 
 <script>
 import TabParent from '@/components/ADempiere/Tab'
 import TabChildren from '@/components/ADempiere/Tab/tabChildren'
-import SplitPanel from '@/components/ADempiere/Panel/detail'
+// import SplitPanel from '@/components/ADempiere/Panel/detail'
 // import NavegationRecord from '@/components/ADempiere/Panel/navegationRecord'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
@@ -66,9 +78,9 @@ export default {
   components: {
     TabParent,
     TabChildren,
-    SplitPanel,
+    //   SplitPanel,
     ContextMenu,
-    // NavegationRecord,
+    //   // NavegationRecord,
     SearchWindow,
     ModalDialog
   },
@@ -78,8 +90,9 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
-      navigation: false,
-      uuidRecord: this.$route.params.uuidRecord
+      uuidRecord: this.$route.params.uuidRecord,
+      panelDetail: true,
+      navigationRecord: false
     }
   },
   computed: {
@@ -111,57 +124,34 @@ export default {
       }
     },
     logNavigation() {
-      this.navigation = !this.navigation
-      this.$store.dispatch('getObjectListFromCriteria', {
-        containerUuid: this.windowUuid,
-        tableName: this.windowMetadata.currentTab.tableName,
-        /* query: `select * from ${this.windowMetadata.currentTab.tableName}` */
-        whereClause: "IsActive = 'Y'"
-      })
+      this.navigationRecord = !this.navigationRecord
+      if (this.navigationRecord === true) {
+        this.$store.dispatch('getObjectListFromCriteria', {
+          containerUuid: this.windowUuid,
+          tableName: this.windowMetadata.currentTab.tableName,
+          /* query: `select * from ${this.windowMetadata.currentTab.tableName}` */
+          whereClause: "IsActive = 'Y'"
+        })
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-  .view-base {
-    height: 100%;
-    min-height: calc(100vh - 84px);
-  }
-
-  .loading-window {
-    padding: 100px 100px;
-    height: 100%;
-  }
-  .el-tabs__content {
-    overflow: hidden;
-    position: relative;
-    padding-top: 0px;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  .tab-window {
-    z-index: 9;
-  }
-  .el-row {
-    margin-bottom: 20px;
-  }
-
-  .el-col {
-    border-radius: 4px;
-    left: 10px;
-  }
-  .el-main {
-    background-color: #ffffff;
+  .el-header {
+    background-color: #fff;
     color: #333;
-    text-align: center;
-    width: 100%;
+    line-height: 21px;
+  }
+
+  .el-aside {
+    color: #333;
   }
   aside {
-    background: #ffffff;
-    padding: 8px 24px;
-    margin-bottom: 20px;
-    z-index: 3;
+    background: #fff;
+    padding: 0px;
+    margin-bottom: 0px;
     border-radius: 2px;
     display: block;
     line-height: 32px;
@@ -170,5 +160,56 @@ export default {
     color: #2c3e50;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  .el-main {
+    display: block;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    overflow: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-top: 0px;
+    padding-right: 20px;
+    padding-bottom: 0px;
+    padding-left: 20px;
+}
+.center{
+    text-align: center;
+  }
+  .close{
+    text-align: right;
+  }
+  .w-33 {
+    width: 100%;
+    background-color: transparent;
+  }
+  .open-table-detail {
+    position: absolute;
+    right: 50%;
+    bottom: 4%;
+    display: none;
+  }
+  .open-navegation {
+    position: fixed;
+    top: 50%;
+    display: none;
+  }
+  .button {
+  display: none;
+}
+.wrapper:hover .open-table-detail {
+  display: inline-block;
+}
+.w:hover .open-navegation {
+  display: inline-block;
+}
+.open-detail{
+  width: 100%;height: 20px; position: absolute;bottom: 5%;
+}
+.open-left{
+width: 4%;height: 95%;position: absolute;top: 2%;
 }
 </style>
