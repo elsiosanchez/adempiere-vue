@@ -161,9 +161,11 @@ export default {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
-      return (this.field.isReadOnly || this.field.isReadOnlyFromLogic) ||
-        (this.panelType === 'window' && !this.field.isUpdateable) ||
-        (this.panelType === 'browser' && !this.field.isQueryCriteria && !this.inTable)
+      var isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
+      var isUpdatableColumnBrowserResult = (this.panelType === 'browser' && this.inTable) && isUpdateableAllFields // && !this.field.isUpdateable
+      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable) || (isUpdateableAllFields && this.panelType !== 'browser')
+
+      return isUpdateableFieldWindow || isUpdatableColumnBrowserResult
     },
     isMandatory() {
       return this.field.isMandatory || this.field.isMandatoryFromLogic

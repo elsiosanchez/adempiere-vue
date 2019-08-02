@@ -80,7 +80,7 @@
           :fixed="item.isFixedTableColumn"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.isEdit && !item.isReadOnly">
+            <template v-if="scope.row.isEdit && !(item.isReadOnly || isReadOnlyFromLogic)">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
@@ -163,7 +163,6 @@ export default {
   },
   data() {
     return {
-      loading: true,
       labelPosition: 'top',
       searchTable: '', // text from search
       showSearch: false, // show input from search,

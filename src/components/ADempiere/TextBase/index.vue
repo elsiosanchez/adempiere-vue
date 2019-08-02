@@ -47,7 +47,6 @@ export default {
   data() {
     return {
       value: this.metadata.value,
-      isReadOnly: false,
       patternFileName: '[A-Za-zñÑ0-9-_]{1,}',
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
     }
