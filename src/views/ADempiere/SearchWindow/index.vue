@@ -13,7 +13,6 @@
       :data="filterResult()"
       :border="true"
       :highlight-current-row="true"
-      :height="getHeigthTable"
       size="mini"
       @row-click="setCurrentRow"
       @current-change="handleCurrentChange"
@@ -25,80 +24,6 @@
           </template>
         </el-table-column>
       </template>
-      <!-- <el-table-column
-          prop="c_bpartner_id"
-          label="c_bpartner_id"
-          width="180"
-          sortable
-          :fixed="isFixed"
-          column-key="c_bpartner_id"
-          :filters="[{text: '50005', value: ' 50005'},{text: '113', value:113}]"
-          :filter-method="filterHandler"
-        />
-        <el-table-column
-          prop="ad_client_id"
-          label="ad_client_id"
-          width="180"
-          sortable
-          :filters="[{text: '11', value:11}]"
-          :filter-method="filterHandler"
-        />
-        <el-table-column
-          prop="ad_org_id"
-          label="ad_org_id"
-          width="180"
-          sortable
-          :filters="[{text: '0', value:0},{text: '11', value:11}]"
-          :filter-method="filterHandler"
-        />
-        <el-table-column
-          prop="isactive"
-          label="isactive"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="created"
-          label="created"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="createdby"
-          label="createdby"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="updated"
-          label="updated"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="updated"
-          label="updated"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="updatedby"
-          label="updatedby"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="value"
-          label="value"
-          width="180"
-          sortable
-        />
-        <el-table-column
-          prop="name"
-          label="name"
-          width="180"
-          sortable
-        /> -->
     </el-table>
     <div class="table-footer">
       {{ $t('table.dataTable.records') }}: {{ tableRecords.length }}
@@ -161,9 +86,9 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== undefined) {
-        return this.$store.getters.getHeigth() - 180
+        return this.$store.getters.getHeigth() - 170
       } else {
-        return this.$store.getters.getHeigth()
+        return this.$store.getters.getHeigth() - 185
       }
     }
   },
@@ -220,6 +145,7 @@ export default {
       this.olddatalist = this.tableRecords.map(v => v.id)
       this.newdatalist = this.olddatalist.slice()
       this.$nextTick(() => {
+        this.loading = false
         this.setSort()
       })
     },

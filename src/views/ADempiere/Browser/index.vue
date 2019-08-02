@@ -11,9 +11,10 @@
       @closeDialog="isVisisbleDialog=true"
     />
     <el-main>
-      <div class="containert">
-        <div class="menu" />
-        <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+      <div class="w-33">
+        <div class="center">
+          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+        </div>
       </div>
       <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
         <el-popover
@@ -24,11 +25,13 @@
           trigger="hover"
         >
           <div v-html="browserMetadata.help" />
-          <el-button v-if="!isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">
-            {{ browserMetadata.name }}
-          </el-button>
+          <div class="w-33">
+            <div class="center">
+              <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+            </div>
+          </div>
         </el-popover>
-        <el-collapse-item name="opened-criteria">
+        <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
           <panel
             :container-uuid="containerUuid"
             :metadata="browserMetadata"
@@ -216,9 +219,6 @@ export default {
     height: 40px;
   }
   .title {
-    position: fixed;
-    left: 40%;
-    top: 128px;
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;
@@ -248,8 +248,8 @@ export default {
     text-align: center;
   }
   .w-33 {
-    width: 33.33%;
-    background-color: orange;
+    width: 100%;
+    background-color: transparent;
   }
   .container-panel {
     bottom: 0;
