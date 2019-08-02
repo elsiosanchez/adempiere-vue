@@ -270,7 +270,7 @@ const data = {
       var languageList = state.recordSelection.find(
         record => record.containerUuid === roleUuid
       )
-      return languageList
+      return languageList || []
     }
   }
 }

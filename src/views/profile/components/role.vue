@@ -108,9 +108,11 @@ export default {
       }
     },
     getLanguage() {
+      var tableLanguage = 'AD_Language'
       this.$store.dispatch('getObjectListFromCriteria', {
         containerUuid: this.getRol.uuid,
-        table: 'AD_Language',
+        table: tableLanguage,
+        query: `SELECT * FROM ${tableLanguage}`,
         whereClause: `LanguageIso = '${this.languageCookie}' AND IsActive = 'Y'`
       })
         .then(response => {
@@ -121,8 +123,8 @@ export default {
             }
           })
         })
-        .catch(err => {
-          console.warn('Error getting language list' + err.code + ': ' + err.message)
+        .catch(error => {
+          console.warn('Error getting language list:', error.message + '. Code: ', error.code)
         })
     }
   }
