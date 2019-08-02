@@ -1,6 +1,6 @@
 <template>
   <el-container style="height: 86vh; border: 1px solid #eee">
-    <el-aside v-show="navigationRecord" width="30%">
+    <el-aside v-show="recordNavigation" width="30%">
       <div class="w-33">
         <div class="close">
           <el-button type="text" icon="el-icon-circle-close-outline" circle @click="logNavigation()" />
@@ -43,7 +43,7 @@
         <div class="small-4 columns">
           <div class="w">
             <div class="open-left" />
-            <el-button v-show="!navigationRecord" icon="el-icon-caret-right" class="open-navegation" circle @click="logNavigation()" />
+            <el-button v-show="!recordNavigation" icon="el-icon-caret-right" class="open-navegation" circle @click="logNavigation()" />
           </div>
         </div>
       </el-main>
@@ -92,7 +92,7 @@ export default {
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       panelDetail: true,
-      navigationRecord: false
+      recordNavigation: false
     }
   },
   computed: {
@@ -124,8 +124,8 @@ export default {
       }
     },
     logNavigation() {
-      this.navigationRecord = !this.navigationRecord
-      if (this.navigationRecord === true) {
+      this.recordNavigation = !this.recordNavigation
+      if (this.recordNavigation === true) {
         this.$store.dispatch('getObjectListFromCriteria', {
           containerUuid: this.windowUuid,
           tableName: this.windowMetadata.currentTab.tableName,
