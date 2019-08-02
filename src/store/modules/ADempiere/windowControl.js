@@ -48,14 +48,16 @@ const windowControl = {
           })
       })
     },
-    updateCurrentEntity({ commit, dispatch, rootGetters }, params) {
+    updateCurrentEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
-        var panel = rootGetters.getPanel(params.containerUuid)
+        var panel = rootGetters.getPanel(parameters.containerUuid)
+        var recordUuid = rootGetters.getUuid(parameters.containerUuid)
+
         // attributes or fields
-        var finalAttributes = rootGetters.getColumnNamesAndValuesChanged(params.containerUuid)
+        var finalAttributes = rootGetters.getColumnNamesAndValuesChanged(parameters.containerUuid)
         updateEntity({
           tableName: panel.tableName,
-          uuid: params.recordUuid,
+          recordUuid: recordUuid,
           attributesList: finalAttributes
         })
           .then(response => {
@@ -68,15 +70,15 @@ const windowControl = {
           })
       })
     },
-    deleteEntity({ commit, dispatch, rootGetters }, params) {
+    deleteEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
-        var panel = rootGetters.getPanel(params.containerUuid)
-        var objectToDelete = {
-          tableName: panel.tableName,
-          recordUuid: panel.recordUuid
-        }
+        var panel = rootGetters.getPanel(parameters.containerUuid)
+        var recordUuid = rootGetters.getUuid(parameters.containerUuid)
 
-        deleteEntity(objectToDelete)
+        deleteEntity({
+          tableName: panel.tableName,
+          recordUuid: recordUuid
+        })
           .then(response => {
             console.info('delete entity sucess', response)
             resolve(response)

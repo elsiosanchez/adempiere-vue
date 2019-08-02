@@ -47,7 +47,9 @@ export function createEntity(parameters) {
 export function updateEntity(parameters) {
   var entityRequest = Instance.call(this).getUpdateEntityRequest()
   entityRequest.setTablename(parameters.tableName)
-  entityRequest.setRecordid(parameters.recordId)
+  if (parameters.recordId) {
+    entityRequest.setRecordid(parameters.recordId)
+  }
   entityRequest.setUuid(parameters.recordUuid)
   if (parameters.attributesList !== undefined && parameters.attributesList.length > 0) {
     parameters.attributesList.forEach(attribute => {
@@ -69,7 +71,9 @@ export function updateEntity(parameters) {
 export function deleteEntity(parameters) {
   var entityRequest = Instance.call(this).getUpdateEntityRequest()
   entityRequest.setTablename(parameters.tablename)
-  entityRequest.setRecordid(parameters.recordId)
+  if (parameters.recordId) {
+    entityRequest.setRecordid(parameters.recordId)
+  }
   entityRequest.setUuid(parameters.recordUuid)
 
   //  Delete Entity
