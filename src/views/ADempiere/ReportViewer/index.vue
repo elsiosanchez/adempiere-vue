@@ -161,7 +161,7 @@ export default {
 	.content {
     width: 100%;
     height: -webkit-fill-available;
-    padding: 10px;
+    padding: 20px;
     position: absolute;
     top: 0%;
   }
