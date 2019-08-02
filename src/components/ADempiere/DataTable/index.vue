@@ -1,5 +1,5 @@
 <template>
-  <el-form :label-position="labelPosition">
+  <el-form label-position="top">
     <div class="table-root">
       <div>
         <!-- <icon-element icon="el-icon-search">
@@ -163,7 +163,6 @@ export default {
   },
   data() {
     return {
-      labelPosition: 'top',
       searchTable: '', // text from search
       showSearch: false, // show input from search,
       panel: {},
@@ -421,20 +420,20 @@ export default {
      */
     getPanel() {
       var panel = this.getterPanel
-      if (panel === undefined || panel.fieldList.length === 0) {
+      if (panel && panel.fieldList.length > 0) {
+        this.panel = panel
+        this.generatePanel()
+      } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
-          type: this.panelType.trim()
+          type: this.panelType
         }).then(response => {
           this.panel = response
           this.generatePanel()
         }).catch(error => {
-          console.warn('Field Load Error ' + error.code + ': ' + error.message)
+          console.warn('FieldList Load Error ' + error.code + ': ' + error.message)
           this.isLoaded = false
         })
-      } else {
-        this.panel = panel
-        this.generatePanel()
       }
     },
     generatePanel() {

@@ -1,8 +1,10 @@
 <template>
-  <el-container style="height: 86vh; border: 1px solid #eee">
+  <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
     <el-aside v-show="recordNavigation" width="30%">
       <data-table
         :window-uuid="windowUuid"
+        :parent-uuid="windowUuid"
+        :container-uuid="windowMetadata.currentTab.uuid"
         :table-name="windowMetadata.currentTab.tableName"
       />
     </el-aside>
@@ -30,21 +32,39 @@
               v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
               class="open-detail"
             />
-            <el-button v-show="!panelDetail" icon="el-icon-caret-top" class="open-table-detail" circle @click="panelDetail = !panelDetail" />
+            <el-button
+              v-show="!panelDetail"
+              icon="el-icon-caret-top"
+              class="open-table-detail"
+              circle
+              @click="panelDetail = !panelDetail"
+            />
           </div>
         </div>
         <modal-dialog />
         <div class="small-4 columns">
           <div class="w">
             <div class="open-left" />
-            <el-button icon="el-icon-caret-right" class="open-navegation" circle @click="logNavigation()" />
+            <el-button
+              icon="el-icon-caret-right"
+              class="open-navegation"
+              circle
+              @click="logNavigation()"
+            />
           </div>
         </div>
       </el-main>
-      <el-header v-show="panelDetail && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0" style="height: auto;">
+      <el-header
+        v-if="panelDetail && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+        style="height: auto;"
+      >
         <div class="w-33">
           <div class="center">
-            <el-button icon="el-icon-caret-bottom" circle @click="panelDetail = !panelDetail" />
+            <el-button
+              icon="el-icon-caret-bottom"
+              circle
+              @click="panelDetail = !panelDetail"
+            />
           </div>
         </div>
         <tab-children
@@ -54,6 +74,14 @@
       </el-header>
     </el-container>
   </el-container>
+  <div
+    v-else
+    v-loading="!isLoading"
+    :element-loading-text="$t('notifications.loading')"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.8)"
+    class="loading-browser"
+  />
 </template>
 
 <script>
@@ -73,9 +101,9 @@ export default {
   components: {
     TabParent,
     TabChildren,
-    //   SplitPanel,
+    // SplitPanel,
     ContextMenu,
-    //   // NavegationRecord,
+    // NavegationRecord,
     // SearchWindow,
     DataTable,
     ModalDialog
@@ -85,7 +113,6 @@ export default {
       windowMetadata: {},
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
-      tablePanel: 'tab',
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
       panelDetail: true,
@@ -120,14 +147,17 @@ export default {
           })
       }
     },
+    /**
+     * TODO: Check usage, observe the getData() function in the parentTab
+     */
     logNavigation() {
       this.recordNavigation = !this.recordNavigation
-      if (this.recordNavigation === true) {
-        this.$store.dispatch('getObjectListFromCriteria', {
-          containerUuid: this.windowUuid,
-          tableName: this.windowMetadata.currentTab.tableName,
-          /* query: `select * from ${this.windowMetadata.currentTab.tableName}` */
-          whereClause: "IsActive = 'Y'"
+      if (this.recordNavigation) {
+        var tab = this.windowMetadata.currentTab
+
+        this.$store.dispatch('getDataListTab', {
+          parentUuid: this.windowUuid,
+          containerUuid: tab.uuid
         })
       }
     }
@@ -172,8 +202,8 @@ export default {
     padding-right: 20px;
     padding-bottom: 0px;
     padding-left: 20px;
-}
-.center{
+  }
+  .center{
     text-align: center;
   }
   .close{
@@ -196,26 +226,28 @@ export default {
     z-index: 3;
   }
   .button {
-  display: none;
-}
-.wrapper:hover .open-table-detail {
-  display: inline-block;
-}
-.w:hover .open-navegation {
-  display: inline-block;
-}
-.open-detail{
-  width: 100%;height: 20px; position: absolute;bottom: 5%;
-}
-.open-left{
-width: 4%;height: 95%;position: absolute;top: 2%;
-}
-.el-button {
+    display: none;
+  }
+  .wrapper:hover .open-table-detail {
+    display: inline-block;
+  }
+  .w:hover .open-navegation {
+    display: inline-block;
+  }
+  .open-detail {
+    width: 100%;height: 20px;
+    position: absolute;bottom: 5%;
+  }
+  .open-left {
+    width: 4%;height: 95%;
+    position: absolute;top: 2%;
+  }
+  .el-button {
     cursor: pointer;
     background: #FFFFFF;
     border: 1px solid #DCDFE6;
     border-color: #DCDFE6;
     color: white;
     background: #008fd3;
-}
+  }
 </style>

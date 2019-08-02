@@ -49,17 +49,17 @@ export default {
   methods: {
     getPanel() {
       var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-      if (fieldList === undefined || fieldList.length === 0) {
+      if (fieldList && fieldList.length > 0) {
+        this.generatePanel(fieldList)
+      } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
-          type: this.panelType.trim()
+          type: this.panelType
         }).then(response => {
           this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
-      } else {
-        this.generatePanel(fieldList)
       }
     },
     generatePanel(fieldList) {

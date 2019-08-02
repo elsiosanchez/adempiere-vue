@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
+import { getLanguage } from '@/lang'
 import { showMessage } from '@/utils/ADempiere'
 
 export default {
@@ -69,7 +69,7 @@ export default {
       return this.$store.getters['user/getRoles']
     },
     languageCookie() {
-      return Cookies.get('language')
+      return getLanguage()
     },
     getterLanguageList() {
       return this.$store.getters.getLanguageList(this.getRol.uuid)
@@ -80,7 +80,7 @@ export default {
   },
   created() {
     this.value = this.getRol.uuid
-    this.getLanguage()
+    this.getLanguageData()
   },
   methods: {
     showMessage,
@@ -103,11 +103,11 @@ export default {
         if (this.getterLanguageList.length > 0) {
           this.languageList = this.getterLanguageList
         } else {
-          this.getLanguage()
+          this.getLanguageData()
         }
       }
     },
-    getLanguage() {
+    getLanguageData() {
       var tableLanguage = 'AD_Language'
       this.$store.dispatch('getObjectListFromCriteria', {
         containerUuid: this.getRol.uuid,

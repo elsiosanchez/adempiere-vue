@@ -57,9 +57,7 @@ export default {
     }
   },
   created() {
-    if (this.tabsList.length >= 0) {
-      this.tabUuid = this.tabsList[0].uuid
-    }
+    this.tabUuid = this.tabsList[0].uuid
     this.getData()
   },
   methods: {
@@ -80,6 +78,9 @@ export default {
       this.getData()
       // this.setPemantLink(tabHTML)
     },
+    /**
+     * TODO: Verify use
+     */
     setPemantLink(tabHTML) {
       this.$route.params.tabNumber = tabHTML.name
       this.currentTab = this.$route.params.tabNumber

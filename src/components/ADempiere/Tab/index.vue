@@ -56,9 +56,8 @@ export default {
     }
   },
   created() {
-    if (this.tabsList.length >= 0) {
-      this.tabUuid = this.tabsList[0].uuid
-    }
+    this.tabUuid = this.tabsList[0].uuid
+    this.getData()
   },
   methods: {
     setCurrentTab() {
@@ -76,7 +75,11 @@ export default {
         this.setCurrentTab()
       }
       // this.setPemantLink(tabHTML)
+      this.getData()
     },
+    /**
+     * TODO: Verify use
+     */
     setPemantLink(tabHTML) {
       this.$route.params.tabNumber = tabHTML.name
       this.currentTab = this.$route.params.tabNumber
@@ -88,6 +91,12 @@ export default {
         params: {
           tabNumber: tabHTML.name
         }
+      })
+    },
+    getData() {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.windowUuid,
+        containerUuid: this.tabUuid
       })
     }
   }
