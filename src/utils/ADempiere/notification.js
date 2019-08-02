@@ -33,7 +33,7 @@ export function showNotification(params) {
     }
     Notification({
       title: title,
-      message: message,
+      message: `<div style="max-height: 100px; overflow-y: auto;">` + message + `</div>`,
       type: params.type,
       position: 'bottom-right',
       dangerouslyUseHTMLString: true
