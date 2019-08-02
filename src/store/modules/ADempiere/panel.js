@@ -312,7 +312,7 @@ const panel = {
       return Boolean(!field)
     },
     getEmptyMandatory: (state, getters) => (containerUuid) => {
-      return getters.getPanel(containerUuid).find(itemField => {
+      return getters.getFieldsListFromPanel(containerUuid).find(itemField => {
         if (itemField.isMandatory && itemField.isMandatoryFromLogic && isEmptyValue(itemField.value)) {
           return true
         }
