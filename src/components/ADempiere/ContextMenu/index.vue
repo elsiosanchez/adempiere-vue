@@ -295,7 +295,7 @@ export default {
                         name: 'Report Viewer',
                         params: {
                           menuParentUuid: parentMenu,
-                          processUuid: action.payload.processUuid,
+                          processId: action.payload.processId,
                           instanceUuid: action.payload.instanceUuid,
                           fileName: action.payload.output.fileName
                         }

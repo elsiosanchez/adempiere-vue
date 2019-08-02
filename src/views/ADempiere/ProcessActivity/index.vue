@@ -19,7 +19,7 @@
                   name: 'Report Viewer',
                   params: {
                     instanceUuid: scope.row.Report.instanceUuid,
-                    processUuid: scope.row.Report.processUuid,
+                    processId: scope.row.Report.processId,
                     fileName: scope.row.Report.output.fileName
                   }
                 }"
@@ -88,6 +88,7 @@ export default {
         var reportInfo = {
           instanceUuid: (item.instanceUuid !== undefined) ? item.instanceUuid : 'undefined',
           processUuid: item.uuid,
+          processId: item.id,
           isError: item.isError,
           summary: (item.summary) ? item.summary : '',
           resultTableId: 0,
@@ -125,6 +126,7 @@ export default {
               var reportInfo = {
                 instanceUuid: 'undefined',
                 processUuid: item.uuid,
+                processId: item.id,
                 isError: false,
                 summary: item.summary,
                 resultTableId: 0,

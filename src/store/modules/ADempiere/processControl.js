@@ -60,6 +60,7 @@ const processControl = {
       var processDefinition = rootGetters.getProcess(params.action.uuid)
       var processToRun = {
         uuid: processDefinition.uuid,
+        id: processDefinition.id,
         name: processDefinition.name,
         description: processDefinition.description,
         reportExportType: reportExportType,
@@ -133,6 +134,7 @@ const processControl = {
             url: link.href,
             download: link.download,
             processUuid: processToRun.uuid.trim(),
+            processId: processToRun.id,
             processName: processToRun.processName,
             isError: response.getIserror(),
             isProcessing: response.getIsprocessing(),
@@ -150,6 +152,7 @@ const processControl = {
             action: processToRun.name,
             instanceUuid: '',
             processUuid: processToRun.uuid.trim(),
+            processId: processToRun.id,
             processName: processToRun.processName,
             isError: true,
             isProcessing: false,
@@ -218,6 +221,7 @@ const processControl = {
               }
               var process = {
                 processUuid: responseItem.getUuid(),
+                processId: responseItem.getId(),
                 instanceUuid: responseItem.getInstanceuuid(),
                 isError: responseItem.getIserror(),
                 isProcessing: responseItem.getIsprocessing(),

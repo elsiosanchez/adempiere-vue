@@ -42,10 +42,10 @@ export function loadMainMenu() {
         path: '/report-viewer',
         component: Layout,
         hidden: true,
-        redirect: 'report-viewer/:processUuid/:instanceUuid/:fileName',
+        redirect: 'report-viewer/:processId/:instanceUuid/:fileName',
         children: [
           {
-            path: ':processUuid/:instanceUuid/:fileName',
+            path: ':processId/:instanceUuid/:fileName',
             component: () => import('@/views/ADempiere/ReportViewer'),
             name: 'Report Viewer',
             meta: {

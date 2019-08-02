@@ -4,7 +4,7 @@
       :container-uuid="reportResult.processUuid"
       :parent-panel="panelType"
       :is-report="true"
-      :last-parameter="$route.params.processUuid"
+      :last-parameter="reportResult.processUuid"
       :report-format="reportFormatValue"
     />
     <br>
@@ -93,20 +93,20 @@ export default {
       return this.reportContent
     },
     processMetadataValue() {
-      return this.$store.getters.getProcess(this.$route.params.processUuid)
+      return this.$store.getters.getProcessById(this.$route.params.processId)
     },
     getterCachedReport() {
       return this.$store.getters.getCachedReport(this.$route.params.instanceUuid)
     }
   },
-  created() {
+  mounted() {
     this.getCachedReport()
   },
   methods: {
     isEmptyValue,
     showNotification,
     displayReport(reportResult) {
-      if (!this.isError) {
+      if (!reportResult.isError) {
         this.reportFormat = reportResult.output.reportExportType
         this.reportContent = reportResult.output.output
         this.reportHeader = reportResult.output.name

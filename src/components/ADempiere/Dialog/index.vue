@@ -124,7 +124,7 @@ export default {
                   this.$router.push({
                     name: 'Report Viewer',
                     params: {
-                      processUuid: action.payload.processUuid,
+                      processId: action.payload.processId,
                       instanceUuid: action.payload.instanceUuid,
                       fileName: action.payload.output.fileName
                     }

@@ -82,6 +82,7 @@ const process = {
               type: 'action',
               action: 'startProcess',
               uuid: response.getUuid(),
+              id: response.getId(),
               description: response.getDescription(),
               help: response.getHelp(),
               isReport: response.getIsreport(),
@@ -95,6 +96,7 @@ const process = {
               type: 'process',
               action: 'changeParameters',
               uuid: response.getUuid(),
+              id: response.getId(),
               description: response.description,
               help: response.getHelp(),
               isReport: response.getIsreport(),
@@ -110,6 +112,7 @@ const process = {
               action: '',
               childs: [],
               uuid: response.getUuid(),
+              id: response.getId(),
               description: response.getDescription(),
               help: response.getHelp(),
               isReport: response.getIsreport(),
@@ -124,6 +127,7 @@ const process = {
                 type: 'action',
                 action: 'startProcess',
                 uuid: response.getUuid(),
+                id: response.getId(),
                 description: actionValue.description,
                 help: response.getHelp(),
                 isReport: response.getIsreport(),
@@ -177,6 +181,12 @@ const process = {
     getProcess: (state) => (processUuid) => {
       var process = state.process.find(
         item => item.uuid === processUuid
+      )
+      return process
+    },
+    getProcessById: (state) => (processId) => {
+      var process = state.process.find(
+        item => item.id === parseInt(processId)
       )
       return process
     }
