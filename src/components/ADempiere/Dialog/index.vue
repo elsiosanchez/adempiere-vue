@@ -10,7 +10,7 @@
   >
     {{ modalMetadata.description }}
     <panel
-      v-if="modalMetadata.panelType === 'process' && modalMetadata.uuid !== ''"
+      v-if="(modalMetadata.panelType === 'process' || modalMetadata.panelType === 'report') && modalMetadata.uuid !== ''"
       :parent-uuid="parentUuid"
       :container-uuid="modalMetadata.uuid"
       :metadata="modalMetadata"
