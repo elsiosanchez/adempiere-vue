@@ -105,7 +105,6 @@ const data = {
      * @param {string} params.criteria, criteria to search record data
      */
     getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {
-      console.log(objectParams)
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams)
           .then(response => {

@@ -203,29 +203,27 @@ export default {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
 
-      if (this.actions !== undefined) {
-        this.actions.forEach((item) => {
-          item['disabled'] = false
+      if (this.actions && this.actions.length > 0) {
+        this.actions.forEach(itemAction => {
+          // if no exists set prop with value
+          itemAction.disabled = false
+          if (this.$route.name !== 'Report Viewer' && itemAction.action === 'changeParameters') {
+            itemAction.disabled = true
+          }
+          if (this.$route.meta.type === 'report' && itemAction.action === 'startProcess') {
+            itemAction.reportExportType = 'html'
+            itemAction.disabled = true
+          }
+          if (this.$route.meta.type === 'process' && itemAction.type === 'summary') {
+            itemAction.disabled = true
+          }
+
+          if (itemAction.type === 'dataAction') {
+            if (this.$route.params.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
+              itemAction.disabled = true
+            }
+          }
         })
-        if (this.$route.name !== 'Report Viewer') {
-          var index = this.actions.findIndex(item => item.action === 'changeParameters')
-          if (index !== -1) {
-            this.actions[index].disabled = true
-          }
-        }
-        if (this.$route.meta.type === 'report') {
-          index = this.actions.findIndex(item => item.action === 'startProcess')
-          if (index !== -1) {
-            this.actions[index].reportExportType = 'html'
-            this.actions[index].disabled = true
-          }
-        }
-        if (this.$route.meta.type === 'process') {
-          index = this.actions.findIndex(item => item.type === 'summary')
-          if (index !== -1) {
-            this.actions[index].disabled = true
-          }
-        }
       }
     },
     isMobileClassmenu() {

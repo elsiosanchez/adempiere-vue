@@ -252,28 +252,44 @@ const panel = {
         }
       }
     },
-    getPanelAndFields({ dispatch }, params) {
-      if (params.type === 'process' || params.type === 'report') {
-        return dispatch('getProcessFromServer', params.containerUuid)
+    getPanelAndFields({ dispatch }, parameters) {
+      if (parameters.type === 'process' || parameters.type === 'report') {
+        return dispatch('getProcessFromServer', parameters.containerUuid)
           .then(response => {
             if (response) {
               return response
             }
           })
-      } else if (params.type === 'browser') {
-        return dispatch('getBrowserFromServer', params.containerUuid)
+          .catch(error => {
+            return error
+          })
+      } else if (parameters.type === 'browser') {
+        return dispatch('getBrowserFromServer', parameters.containerUuid)
           .then(response => {
             if (response) {
               return response
             }
           })
-      } else if (params.type === 'window') {
+          .catch(error => {
+            return {
+              ...error,
+              moreInfo: 'Dictionary getTabAndFieldFromServer Window (State Panel)',
+              parameters: parameters
+            }
+          })
+      } else if (parameters.type === 'window') {
         return dispatch('getTabAndFieldFromServer', {
-          parentUuid: params.parentUuid,
-          containerUuid: params.containerUuid
+          parentUuid: parameters.parentUuid,
+          containerUuid: parameters.containerUuid
         }).then(response => {
           if (response) {
             return response
+          }
+        }).catch(error => {
+          return {
+            ...error,
+            moreInfo: 'Dictionary getTabAndFieldFromServer Window (State Panel)',
+            parameters: parameters
           }
         })
       }

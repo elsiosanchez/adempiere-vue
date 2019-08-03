@@ -95,13 +95,6 @@ const window = {
                   type: 'dataAction',
                   action: 'deleteEntity',
                   uuidParent: newWindow.uuid
-                },
-                {
-                  name: language.t('window.undoNew'),
-                  processName: language.t('window.undoNew'),
-                  type: 'dataAction',
-                  action: 'undoPanelToNew',
-                  uuidParent: newWindow.uuid
                 }
               )
               var processList = tabItem.getProcessesList().map(processItem => {
