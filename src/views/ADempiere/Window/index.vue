@@ -6,6 +6,8 @@
         :parent-uuid="windowUuid"
         :container-uuid="windowMetadata.currentTab.uuid"
         :table-name="windowMetadata.currentTab.tableName"
+        :is-table-selection="false"
+        :is-showed-panel-record="true"
       />
     </el-aside>
 
@@ -148,18 +150,10 @@ export default {
       }
     },
     /**
-     * TODO: Check usage, observe the getData() function in the parentTab
+     * TODO: Add attribute in vuex store
      */
     logNavigation() {
       this.recordNavigation = !this.recordNavigation
-      if (this.recordNavigation) {
-        var tab = this.windowMetadata.currentTab
-
-        this.$store.dispatch('getDataListTab', {
-          parentUuid: this.windowUuid,
-          containerUuid: tab.uuid
-        })
-      }
     }
   }
 }

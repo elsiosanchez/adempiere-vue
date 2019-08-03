@@ -256,7 +256,8 @@ export default {
           this.$store.dispatch('notifyPanelChange', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
-            newValues: response
+            newValues: response,
+            isDontSendToEdit: true
           })
         })
         .catch(error => {

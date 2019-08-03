@@ -50,7 +50,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="dataTable()"
+      :data="getDataDetail"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -159,6 +159,11 @@ export default {
     isTableSelection: {
       type: Boolean,
       default: true
+    },
+    // Show check from selection row
+    isShowedPanelRecord: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -332,20 +337,31 @@ export default {
       }
     },
     handleRowClick(row, column, event) {
-      if (!row.isEdit) {
-        /*
-        var inSelection = this.getDataSelection.some(item => {
-          return JSON.stringify(item) === JSON.stringify(row)
+      if (this.isShowedPanelRecord) {
+        this.$store.dispatch('notifyPanelChange', {
+          isDontSendToEdit: true,
+          newValues: row,
+          containerUuid: this.containerUuid,
+          parentUuid: this.parentUuid
         })
-        if (inSelection) {
+      } else {
+        if (!row.isEdit) {
           row.isEdit = true
+          /*
+          var inSelection = this.getDataSelection.some(item => {
+            return JSON.stringify(item) === JSON.stringify(row)
+          })
+          if (inSelection) {
+            row.isEdit = true
+          }
+          */
         }
-        */
-        row.isEdit = true
       }
     },
     handleRowDblClick(row, column, event) {
-      this.confirmEdit(row, null, null)
+      if (!this.isShowedPanelRecord) {
+        this.confirmEdit(row, null, null)
+      }
     },
     handleSelection(rowsSelection, rowSelected) {
       // index.isEdit = !index.isEdit

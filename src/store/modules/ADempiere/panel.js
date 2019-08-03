@@ -131,20 +131,21 @@ const panel = {
     },
     /**
      * Changed panel when receive or reset panel to new record
-     * @param {string} params.parentUuid
-     * @param {string} params.containerUuid
-     * @param {object} params.newValues
+     * @param {string} parameters.parentUuid
+     * @param {string} parameters.containerUuid
+     * @param {object} parameters.newValues
      */
-    notifyPanelChange({ dispatch, getters }, params) {
-      var fieldList = getters.getFieldsListFromPanel(params.containerUuid)
+    notifyPanelChange({ dispatch, getters }, parameters) {
+      var fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
 
       fieldList.forEach(actionField => {
-        if (params.newValues[actionField.columnName] !== actionField.value) {
+        if (parameters.newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
-            parentUuid: params.parentUuid,
-            containerUuid: params.containerUuid,
+            isDontSendToEdit: parameters.isDontSendToEdit,
+            parentUuid: parameters.parentUuid,
+            containerUuid: parameters.containerUuid,
             columnName: actionField.columnName,
-            newValue: params.newValues[actionField.columnName]
+            newValue: parameters.newValues[actionField.columnName]
           })
         }
       })
@@ -218,7 +219,7 @@ const panel = {
         })
       })
       // TODO: refactory for it and change for a standard method
-      if (getters.isReadyForSubmit(params.containerUuid)) {
+      if (getters.isReadyForSubmit(params.containerUuid) && !params.isDontSendToEdit) {
         if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
           dispatch('getBrowserSearch', {
             containerUuid: params.containerUuid,
