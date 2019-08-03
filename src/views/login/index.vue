@@ -54,6 +54,15 @@
 
       <div style="position:relative">
         <div class="tips">
+          <span />
+          <span />
+        </div>
+        <div class="tips">
+          <span />
+          <span />
+        </div>
+        <!--
+        <div class="tips">
           <span>{{ $t('login.username') }} : admin</span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
@@ -63,6 +72,7 @@
           </span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
+        -->
 
         <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
