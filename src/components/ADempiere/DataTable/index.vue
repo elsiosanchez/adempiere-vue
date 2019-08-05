@@ -16,8 +16,8 @@
             <template slot="title">
               <i class="el-icon-more" />
             </template>
-            <el-menu-item index="optional" @click="OptionalPanel()"> {{ $t('components.filterableItems') }} </el-menu-item>
-            <el-menu-item index="fixed" @click="FixedPanel()"> {{ $t('components.fixedleItems') }} </el-menu-item>
+            <el-menu-item index="optional" @click="optionalPanel()"> {{ $t('components.filterableItems') }} </el-menu-item>
+            <el-menu-item index="fixed" @click="fixedPanel()"> {{ $t('components.fixedleItems') }} </el-menu-item>
           </el-submenu>
         </el-menu>
         <icon-element v-show="fixed" icon="el-icon-news">
@@ -35,8 +35,8 @@
         />
       </div>
       <div v-show="isMobile && panelType === 'window'" class="panel-expand">
-        <i class="el-icon-upload2" @click="ExpandPanel()" />
-        <i class="el-icon-download" @click="RestorePanel()" />
+        <i class="el-icon-upload2" @click="expandPanel()" />
+        <i class="el-icon-download" @click="restorePanel()" />
       </div>
     </div>
     <el-table
@@ -160,7 +160,7 @@ export default {
       type: Boolean,
       default: true
     },
-    // Show check from selection row
+    // Show check from selection row, send to panel form
     isShowedPanelRecord: {
       type: Boolean,
       default: false
@@ -187,7 +187,8 @@ export default {
       newprocessListData: [],
       Expand: false,
       currentPage: 0,
-      page: ''
+      page: '',
+      uuidCurrentRecordSelected: ''
     }
   },
   computed: {
@@ -258,16 +259,16 @@ export default {
       }
       return 'menu-table'
     },
-    OptionalPanel() {
+    optionalPanel() {
       this.optional = !this.optional
     },
-    FixedPanel() {
+    fixedPanel() {
       this.fixed = !this.fixed
     },
-    ExpandPanel() {
+    expandPanel() {
       this.Expand = true
     },
-    RestorePanel() {
+    restorePanel() {
       this.Expand = false
     },
     /**
@@ -338,12 +339,22 @@ export default {
     },
     handleRowClick(row, column, event) {
       if (this.isShowedPanelRecord) {
-        this.$store.dispatch('notifyPanelChange', {
-          isDontSendToEdit: true,
-          newValues: row,
-          containerUuid: this.containerUuid,
-          parentUuid: this.parentUuid
-        })
+        if (this.uuidCurrentRecordSelected !== row.UUID) {
+          this.uuidCurrentRecordSelected = row.UUID
+          // this.$store.dispatch('notifyPanelChange', {
+          //   parentUuid: this.parentUuid,
+          //   containerUuid: this.containerUuid,
+          //   newValues: row,
+          //   isDontSendToEdit: true,
+          //   fieldList: this.fieldList
+          // })
+          this.$router.push({
+            name: this.$route.name,
+            params: {
+              action: this.uuidCurrentRecordSelected
+            }
+          })
+        }
       } else {
         if (!row.isEdit) {
           row.isEdit = true

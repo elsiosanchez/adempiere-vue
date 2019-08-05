@@ -247,13 +247,13 @@ export default {
         recordUuid: uuidRecord
       })
         .then(response => {
-          this.dataRecords = response
-
+          // this.dataRecords = response
           this.$store.dispatch('notifyPanelChange', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             newValues: response,
-            isDontSendToEdit: true
+            isDontSendToEdit: true,
+            fieldList: this.fieldList
           })
         })
         .catch(error => {

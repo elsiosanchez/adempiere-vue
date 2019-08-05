@@ -136,7 +136,12 @@ const panel = {
      * @param {object} parameters.newValues
      */
     notifyPanelChange({ dispatch, getters }, parameters) {
-      var fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
+      var fieldList = []
+      if (parameters.fieldList && parameters.fieldList.length > 0) {
+        fieldList = parameters.fieldList
+      } else {
+        fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
+      }
 
       fieldList.forEach(actionField => {
         if (parameters.newValues[actionField.columnName] !== actionField.value) {
@@ -145,19 +150,35 @@ const panel = {
             parentUuid: parameters.parentUuid,
             containerUuid: parameters.containerUuid,
             columnName: actionField.columnName,
-            newValue: parameters.newValues[actionField.columnName]
+            newValue: parameters.newValues[actionField.columnName],
+            fieldList: fieldList,
+            field: actionField
           })
         }
       })
     },
     notifyFieldChange({ commit, state, dispatch, getters }, params) {
-      var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
-      var fieldList = panel.fieldList
-      var field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
+      var fieldList = []
+      // if fieldList is defined in notifyPanelChange
+      if (params.fieldList && params.fieldList.length > 0) {
+        fieldList = params.fieldList
+      } else {
+        var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
+        fieldList = panel.fieldList
+      }
+      var field = {}
+      // if field is defined in notifyPanelChange
+      if (params.field) {
+        field = params.field
+      } else {
+        field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
+      }
+
       // the field has not changed, then the action is broken
       if (params.newValue === field.value) {
         return
       }
+
       //  Call context management
       dispatch('setContext', {
         ...params,
@@ -312,6 +333,9 @@ const panel = {
         return []
       }
       return panel.fieldList
+    },
+    getFieldFromColumnName: (state, getters) => (containerUuid, columnName) => {
+      return getters.getFieldsListFromPanel(containerUuid).find(itemField => itemField.columnName === columnName)
     },
     /**
      * @param {string}  containerUuid

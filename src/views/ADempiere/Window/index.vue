@@ -2,7 +2,6 @@
   <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
     <el-aside v-show="recordNavigation" width="30%">
       <data-table
-        :window-uuid="windowUuid"
         :parent-uuid="windowUuid"
         :container-uuid="windowMetadata.currentTab.uuid"
         :table-name="windowMetadata.currentTab.tableName"
