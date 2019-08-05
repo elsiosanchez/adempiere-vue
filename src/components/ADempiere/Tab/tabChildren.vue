@@ -40,10 +40,6 @@ export default {
     tabsList: {
       type: [Array, Object],
       default: () => []
-    },
-    isEdit: {
-      type: Boolean,
-      default: false
     }
   },
   data() {

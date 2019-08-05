@@ -51,7 +51,7 @@ export default {
       if (fieldList === undefined || fieldList.length === 0) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
-          type: this.panelType.trim()
+          type: this.panelType
         }).then(response => {
           this.generatePanel(response.fieldList)
         }).catch(error => {

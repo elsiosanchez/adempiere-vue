@@ -324,7 +324,9 @@ export default {
         if (action.action === 'resetPanelToNew') {
           this.$router.push({
             name: this.$route.name,
-            params: { action: 'create-new' }
+            params: {
+              action: 'create-new'
+            }
           })
         }
         this.$store.dispatch(action.action, {

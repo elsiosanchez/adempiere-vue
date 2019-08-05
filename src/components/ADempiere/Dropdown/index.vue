@@ -5,7 +5,13 @@
         <el-row justify="space-around">
           <template v-for="(item, index) in items.children">
             <el-col :key="index" :span="isMobile()">
-              <el-card :key="index" shadow="never" class="custom-card" :body-style="{ padding: '10px', height: '100px' }" @click.native="redirect(item)">
+              <el-card
+                :key="index"
+                shadow="never"
+                class="custom-card"
+                :body-style="{ padding: '10px', height: '100px' }"
+                @click.native="redirect(item)"
+              >
                 <div class="icon-wrapper">
                   <svg-icon :icon-class="item.meta.icon" />
                 </div>
@@ -21,7 +27,12 @@
     </el-collapse>
   </el-col>
   <el-col v-else :span="isMobile()">
-    <el-card shadow="never" class="custom-card" :body-style="{ padding: '10px', height: '100px' }" @click.native="redirect(items)">
+    <el-card
+      shadow="never"
+      class="custom-card"
+      :body-style="{ padding: '10px', height: '100px' }"
+      @click.native="redirect(items)"
+    >
       <div class="icon-wrapper">
         <svg-icon :icon-class="items.meta.icon" />
       </div>
@@ -60,7 +71,13 @@ export default {
   },
   methods: {
     redirect(item) {
-      this.$router.push({ name: item.name, params: { childs: item.children, action: 'create-new' }})
+      this.$router.push({
+        name: item.name,
+        params: {
+          childs: item.children,
+          action: 'create-new'
+        }
+      })
     },
     isMobile() {
       if (this.device === 'mobile') {

@@ -140,10 +140,6 @@ export default {
         groupName: ''
       })
     },
-    isEdit: {
-      type: Boolean,
-      default: false
-    },
     panelType: {
       type: String,
       default: 'window'
@@ -202,7 +198,7 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          type: this.panelType.trim()
+          type: this.panelType
         }).then(response => {
           this.generatePanel(response.fieldList)
         }).catch(error => {
@@ -221,7 +217,7 @@ export default {
       this.firstGroup = firstGroup
 
       this.isLoadPanel = true
-      if (this.panelType === 'window' && this.$route.params.action !== 'create-new' && (this.uuidRecord || this.isEdit)) {
+      if (this.panelType === 'window' && this.uuidRecord && this.uuidRecord !== 'create-new') {
         this.getData(this.tableName, this.uuidRecord)
       }
     },

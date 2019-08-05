@@ -16,7 +16,6 @@
           :metadata="item"
           :table-name="item.tableName"
           :group="item.tabGroup"
-          :is-edit="true"
           :panel-type="panelType"
         />
       </el-tab-pane>
@@ -40,10 +39,6 @@ export default {
     tabsList: {
       type: [Array, Object],
       default: () => []
-    },
-    isEdit: {
-      type: Boolean,
-      default: false
     }
   },
   data() {

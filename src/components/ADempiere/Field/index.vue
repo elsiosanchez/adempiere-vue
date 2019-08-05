@@ -95,7 +95,8 @@ export default {
   },
   data() {
     return {
-      field: {}
+      field: {},
+      optionCRUD: this.$route.params.action
     }
   },
   computed: {
@@ -162,8 +163,9 @@ export default {
     },
     isReadOnly() {
       var isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
-      var isUpdatableColumnBrowserResult = (this.panelType === 'browser' && this.inTable) && isUpdateableAllFields // && !this.field.isUpdateable
-      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable) || (isUpdateableAllFields && this.panelType !== 'browser')
+      var isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
+      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && this.optionCRUD !== 'create-new') ||
+        (isUpdateableAllFields && this.panelType !== 'browser') // logic to window, report and process
 
       return isUpdateableFieldWindow || isUpdatableColumnBrowserResult
     },

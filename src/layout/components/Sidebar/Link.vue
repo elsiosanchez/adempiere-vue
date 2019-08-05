@@ -28,7 +28,12 @@ export default {
       } else if (route.meta.type === 'window') {
         return {
           is: 'router-link',
-          to: { name: route.name, params: { action: 'create-new' }}
+          to: {
+            name: route.name,
+            params: {
+              action: 'create-new'
+            }
+          }
         }
       }
       return {
