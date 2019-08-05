@@ -8,9 +8,10 @@
       <div v-else key="expand" class="sidebar-logo-link">
         <img v-if="logo" :src="logo" class="sidebar-logo" @click="dashboard()">
         <h1 class="sidebar-title" @click="dashboard()">{{ title }}</h1><br>
-        <p class="sidebar-sub-title" @click="profile()">
-          {{ getRol.name }} | {{ getRol.clientName }}
-        </p>
+        <el-tooltip placement="top" class="sidebar-sub-title">
+          <div slot="content">{{ getRol.clientName }}</div>
+          <el-button type="text" @click="profile()">{{ getRol.name }}</el-button>
+        </el-tooltip>
       </div>
     </transition>
   </div>
@@ -62,7 +63,7 @@ export default {
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
+  height: 60px;
   // line-height: 50px;
   background: #2b2f3a;
   text-align: center;
