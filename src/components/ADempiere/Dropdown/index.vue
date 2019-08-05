@@ -97,9 +97,10 @@ export default {
   }
   .icon-wrapper {
     height: 100%;
-    width: 13%;
+    width: 20%;
     float: left;
-    font-size: 20px;
+    font-size: 30px;
+    line-height: 65px;
     padding: 6px;
     transition: all 0.38s ease-out;
     border-radius: 6px;
@@ -114,6 +115,7 @@ export default {
   }
   .text-wrapper {
     margin-left: 50px;
+    padding-left: 15px;
     vertical-align: middle;
     height: 100%;
     font-size: 13px;

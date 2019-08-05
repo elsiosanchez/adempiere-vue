@@ -1,5 +1,14 @@
 <template>
   <div v-if="isIndex" class="app-container">
+    <el-popover
+      v-if="!isEmptyValue($route.meta.description)"
+      ref="routeDescription"
+      placement="top"
+      width="400"
+      trigger="hover"
+      :content="$route.meta.description"
+    />
+    <h3 v-popover:routeDescription class="description">{{ $route.meta.title }}</h3>
     <el-row :gutter="10">
       <template v-if="optionList.children">
         <template v-for="(item, key) in optionList.children">
@@ -19,6 +28,7 @@
 </template>
 <script>
 import Dropdown from '@/components/ADempiere/Dropdown'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 export default {
   name: 'Summary',
@@ -41,6 +51,7 @@ export default {
     this.generateRoutesPool()
   },
   methods: {
+    isEmptyValue,
     generateRoutesPool() {
       var routeParent = this.routes.find(route => route.name === this.parentUuid)
       if (routeParent === undefined) {
@@ -56,3 +67,9 @@ export default {
   }
 }
 </script>
+<style>
+  .description {
+    text-align: center;
+    cursor: default;
+  }
+</style>
