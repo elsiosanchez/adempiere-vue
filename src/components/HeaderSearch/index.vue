@@ -108,7 +108,7 @@ export default {
 
       for (const router of routes) {
         // skip hidden router
-        if (router.meta && router.meta.isIndex) { continue }
+        // if (router.meta && router.meta.isIndex) { continue }
         const data = {
           path: path.resolve(basePath, router.path),
           title: [...prefixTitle],

@@ -37,7 +37,7 @@ export default {
       return this.$route.meta.isIndex
     }
   },
-  mounted() {
+  beforeMount() {
     this.generateRoutesPool()
   },
   methods: {
@@ -45,10 +45,12 @@ export default {
       var routeParent = this.routes.find(route => route.name === this.parentUuid)
       if (routeParent === undefined) {
         this.optionList = this.$route.params.childs
-      } else if (routeParent.meta && routeParent.meta.type === 'summary' && routeParent.meta.childs.length > 1) {
-        this.optionList = routeParent.children
       } else {
-        this.optionList = routeParent.children.find(child => child.name === this.$route.name)
+        if (routeParent.children && routeParent.children.length > 1) {
+          this.optionList = routeParent
+        } else {
+          this.optionList = routeParent.children.find(child => child.name === this.$route.name)
+        }
       }
     }
   }

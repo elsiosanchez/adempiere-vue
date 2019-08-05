@@ -26,7 +26,8 @@ export default {
     fieldMandatory: 'The field is mandatory',
     Opened: 'Opened',
     requestError: 'Error executing the request',
-    successChangeRole: 'The role has been changed'
+    successChangeRole: 'The role has been changed',
+    errorChangeRole: 'The role has not been changed'
   },
   navbar: {
     dashboard: 'Dashboard',

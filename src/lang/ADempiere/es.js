@@ -26,7 +26,8 @@ export default {
     fieldMandatory: 'El campo es obligatorio',
     Opened: 'Abierto',
     requestError: 'Error al ejecutar la petición',
-    successChangeRole: 'El rol se ha cambiado'
+    successChangeRole: 'El rol se ha cambiado',
+    errorChangeRole: 'El rol no se ha cambiado'
   },
   navbar: {
     logOut: 'Salir',

@@ -85,10 +85,13 @@ export default {
   methods: {
     showMessage,
     handleChange(valueSelected) {
+      this.$message({
+        message: this.$t('notifications.loading'),
+        iconClass: 'el-icon-loading'
+      })
       this.$store.dispatch('user/changeRoles', valueSelected)
         .then(response => {
           this.showMessage({
-            title: this.$t('notifications.succesful'),
             message: this.$t('notifications.successChangeRole'),
             type: 'success'
           })
