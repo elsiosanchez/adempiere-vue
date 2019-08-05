@@ -19,6 +19,10 @@ const window = {
     changeShowedDetailWindow(state, payload) {
       payload.window.isShowedDetail = payload.changeShowedDetail
     },
+    changeShowedRecordWindow(state, payload) {
+      payload.tab.isShowedRecordNavigation = payload.isShowedRecordNavigation
+      payload.window.currentTab.isShowedRecordNavigation = payload.isShowedRecordNavigation
+    },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
     }
@@ -70,13 +74,16 @@ const window = {
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
                 parentTab: Boolean(firstTab === tabItem.getTablename()),
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
+                isSingleRow: tabItem.getIssinglerow(),
                 // conditionals
                 linkColumnName: tabItem.getLinkcolumnname(),
                 parentColumnName: tabItem.getParentcolumnname(),
                 commitWarning: tabItem.getCommitwarning(),
                 query: tabItem.getQuery(),
                 whereClause: tabItem.getWhereclause(),
-                orderByClause: tabItem.getOrderbyclause()
+                orderByClause: tabItem.getOrderbyclause(),
+                // app properties
+                isShowedRecordNavigation: tabItem.getIssinglerow()
               }
 
               //  Convert from gRPC process list
@@ -223,6 +230,19 @@ const window = {
         window: window,
         changeShowedDetail: params.isShowedDetail
       })
+    },
+    changeShowedRecordWindow: ({ commit, state }, params) => {
+      var window = state.window.find(itemWindow => {
+        return itemWindow.uuid === params.parentUuid
+      })
+      if (window) {
+        var tab = window.tabsList.find(item => item.uuid === params.containerUuid)
+        commit('changeShowedRecordWindow', {
+          window: window,
+          tab: tab,
+          isShowedRecordNavigation: params.isShowedRecordNavigation
+        })
+      }
     },
     /**
      * @param {string} params.parentUuid

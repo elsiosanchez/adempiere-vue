@@ -1,6 +1,6 @@
 <template>
   <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
-    <el-aside v-show="recordNavigation" width="30%">
+    <el-aside v-show="isShowedRecordNavigation" width="50%">
       <data-table
         :parent-uuid="windowUuid"
         :container-uuid="windowMetadata.currentTab.uuid"
@@ -34,11 +34,11 @@
               class="open-detail"
             />
             <el-button
-              v-show="!panelDetail"
+              v-show="!isShowedTabChildren"
               icon="el-icon-caret-top"
               class="open-table-detail"
               circle
-              @click="panelDetail = !panelDetail"
+              @click="handleChangeShowedTabChildren()"
             />
           </div>
         </div>
@@ -47,16 +47,16 @@
           <div class="w">
             <div class="open-left" />
             <el-button
-              icon="el-icon-caret-right"
+              :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
               class="open-navegation"
               circle
-              @click="logNavigation()"
+              @click="handleChangeShowedRecordNavigation()"
             />
           </div>
         </div>
       </el-main>
       <el-header
-        v-if="panelDetail && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+        v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
         style="height: auto;"
       >
         <div class="w-33">
@@ -64,7 +64,7 @@
             <el-button
               icon="el-icon-caret-bottom"
               circle
-              @click="panelDetail = !panelDetail"
+              @click="handleChangeShowedTabChildren()"
             />
           </div>
         </div>
@@ -88,13 +88,10 @@
 <script>
 import TabParent from '@/components/ADempiere/Tab'
 import TabChildren from '@/components/ADempiere/Tab/tabChildren'
-// import SplitPanel from '@/components/ADempiere/Panel/detail'
-// import NavegationRecord from '@/components/ADempiere/Panel/navegationRecord'
 // When supporting the processes, smart browser and reports,
 // the submenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
-// import SearchWindow from '@/views/ADempiere/SearchWindow'
 import DataTable from '@/components/ADempiere/DataTable'
 
 export default {
@@ -102,10 +99,7 @@ export default {
   components: {
     TabParent,
     TabChildren,
-    // SplitPanel,
     ContextMenu,
-    // NavegationRecord,
-    // SearchWindow,
     DataTable,
     ModalDialog
   },
@@ -116,8 +110,8 @@ export default {
       panelType: 'window',
       isLoading: false,
       uuidRecord: this.$route.params.uuidRecord,
-      panelDetail: true,
-      recordNavigation: false
+      isShowedTabChildren: true,
+      isShowedRecordNavigation: false
     }
   },
   computed: {
@@ -134,12 +128,16 @@ export default {
       if (window) {
         this.windowMetadata = window
         this.windowMetadata.panelType = this.panelType
+        this.isShowedRecordNavigation = this.windowMetadata.currentTab.isShowedRecordNavigation
+        this.isShowedTabChildren = this.windowMetadata.isShowedDetail
         this.isLoading = true
       } else {
         this.$store.dispatch('getWindowFromServer', this.windowUuid)
           .then(response => {
             this.windowMetadata = response
             this.windowMetadata.panelType = this.panelType
+            this.isShowedRecordNavigation = this.windowMetadata.currentTab.isShowedRecordNavigation
+            this.isShowedTabChildren = this.windowMetadata.isShowedDetail
             this.isLoading = true
           })
           .catch(error => {
@@ -148,11 +146,21 @@ export default {
           })
       }
     },
-    /**
-     * TODO: Add attribute in vuex store
-     */
-    logNavigation() {
-      this.recordNavigation = !this.recordNavigation
+    handleChangeShowedRecordNavigation() {
+      this.isShowedRecordNavigation = !this.isShowedRecordNavigation
+      this.$store.dispatch('changeShowedRecordWindow', {
+        parentUuid: this.windowUuid,
+        containerUuid: this.windowMetadata.currentTab.uuid, // act as parentUuid
+        isShowedRecordNavigation: this.isShowedRecordNavigation
+      })
+    },
+    handleChangeShowedTabChildren() {
+      this.isShowedTabChildren = !this.isShowedTabChildren
+      this.$store.dispatch('changeShowedDetail', {
+        panelType: this.panelType,
+        containerUuid: this.windowUuid, // act as parentUuid
+        isShowedDetail: this.isShowedTabChildren
+      })
     }
   }
 }
