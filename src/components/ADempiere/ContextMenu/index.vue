@@ -218,10 +218,15 @@ export default {
             itemAction.disabled = true
           }
 
-          if (itemAction.type === 'dataAction') {
-            if (this.$route.params.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
+          if (this.$route.meta.type === 'window') {
+            if (this.$route.params.action === 'create-new') {
               itemAction.disabled = true
             }
+            // if (itemAction.type === 'dataAction') {
+            //   if (this.$route.params.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
+            //     itemAction.disabled = true
+            //   }
+            // }
           }
         })
       }
