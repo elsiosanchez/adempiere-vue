@@ -80,11 +80,8 @@ const data = {
       return new Promise((resolve, reject) => {
         getObject(parameters.table, parameters.recordUuid)
           .then(response => {
-            console.log(response)
             var map = response.getValuesMap()
             var newValues = convertValuesMapToObject(map)
-            console.log('map', map)
-            console.log('object', newValues)
 
             commit('setRecordDetail', {
               data: newValues,
@@ -104,7 +101,7 @@ const data = {
      * @param {string} params.tableName, table name to search record data
      * @param {string} params.criteria, criteria to search record data
      */
-    getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {
+    getObjectListFromCriteria: ({ dispatch, rootGetters }, objectParams) => {
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria(objectParams)
           .then(response => {
@@ -115,7 +112,7 @@ const data = {
               return values
             })
             var selection = rootGetters.getDataRecordSelection(objectParams.containerUuid)
-            commit('recordSelection', {
+            dispatch('recordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,
               selection: selection,

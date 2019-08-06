@@ -70,7 +70,7 @@ export function updateEntity(parameters) {
  */
 export function deleteEntity(parameters) {
   var entityRequest = Instance.call(this).getUpdateEntityRequest()
-  entityRequest.setTablename(parameters.tablename)
+  entityRequest.setTablename(parameters.tableName)
   if (parameters.recordId) {
     entityRequest.setRecordid(parameters.recordId)
   }

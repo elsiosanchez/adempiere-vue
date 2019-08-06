@@ -174,6 +174,10 @@ export default {
   },
   data: {
     emtpyTableName: 'Error: Table Name is not defined',
-    errorGetData: 'Error getting data records'
+    errorGetData: 'Error getting data records',
+    createRecordSuccessful: 'New record created successfully',
+    createRecordError: 'Error creating new record',
+    deleteRecordSuccessful: 'Record deleted successfully',
+    deleteRecordError: 'Error deleting record'
   }
 }
