@@ -101,7 +101,7 @@ const data = {
     },
     /**
      * Request list to view in table
-     * @param {string} params.table, tableName to search record data
+     * @param {string} params.tableName, table name to search record data
      * @param {string} params.criteria, criteria to search record data
      */
     getObjectListFromCriteria: ({ commit, rootGetters }, objectParams) => {

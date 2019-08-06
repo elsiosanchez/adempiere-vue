@@ -114,7 +114,7 @@ export default {
       var tableLanguage = 'AD_Language'
       this.$store.dispatch('getObjectListFromCriteria', {
         containerUuid: this.getRol.uuid,
-        table: tableLanguage,
+        tableName: tableLanguage,
         query: `SELECT * FROM ${tableLanguage}`,
         whereClause: `LanguageIso = '${this.languageCookie}' AND IsActive = 'Y'`
       })
