@@ -183,6 +183,7 @@ export default {
   }
 
   .el-aside {
+    height: 100vh;
     color: #333;
   }
   aside {

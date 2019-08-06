@@ -238,7 +238,7 @@ export default {
         return table
       } else {
         if (this.parent) {
-          return this.$store.getters.getHeigth() - 210
+          return this.$store.getters.getHeigth() - 180
         } else {
           if (!this.Expand) {
             return this.$store.getters.getHeigth() - 550
