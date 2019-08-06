@@ -1,5 +1,5 @@
 import { createEntity, updateEntity, deleteEntity } from '@/api/ADempiere'
-import { convertValuesMapToObject, parseContext } from '@/utils/ADempiere'
+import { convertValuesMapToObject, isEmptyValue, parseContext } from '@/utils/ADempiere'
 
 const windowControl = {
   actions: {
@@ -8,7 +8,8 @@ const windowControl = {
       console.log(defaultAttributes)
       dispatch('notifyPanelChange', {
         containerUuid: params.containerUuid,
-        newValues: defaultAttributes
+        newValues: defaultAttributes,
+        isDontSendToEdit: true
       })
     },
     undoPanelToNew({ dispatch, rootGetters }, params) {
@@ -38,7 +39,8 @@ const windowControl = {
             }
             dispatch('notifyPanelChange', {
               containerUuid: params.containerUuid,
-              newValues: newValues
+              newValues: newValues,
+              isDontSendToEdit: true
             })
             console.info('new record sucess', result, finalAttributes)
             resolve(result)
@@ -98,18 +100,20 @@ const windowControl = {
     getDataListTab({ commit, dispatch, rootGetters }, params) {
       return new Promise((resolve, reject) => {
         var tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
-
         var parsedQuery = parseContext({
           parentUuid: params.containerUuid,
           containerUuid: params.containerUuid,
           value: tab.query
         })
-        var parsedWhereClause = parseContext({
-          parentUuid: params.containerUuid,
-          containerUuid: params.containerUuid,
-          value: tab.whereClause
-        })
 
+        var parsedWhereClause
+        if (!isEmptyValue(tab.whereClause)) {
+          parsedWhereClause = parseContext({
+            parentUuid: params.containerUuid,
+            containerUuid: params.containerUuid,
+            value: tab.whereClause
+          })
+        }
         dispatch('getObjectListFromCriteria', {
           parentUuid: params.parentUuid,
           containerUuid: params.containerUuid,

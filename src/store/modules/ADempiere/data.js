@@ -124,7 +124,6 @@ const data = {
             resolve(record)
           })
           .catch(error => {
-            console.log(error)
             reject(error)
           })
       })

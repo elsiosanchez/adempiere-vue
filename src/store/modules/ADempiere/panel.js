@@ -158,21 +158,9 @@ const panel = {
       })
     },
     notifyFieldChange({ commit, state, dispatch, getters }, params) {
-      var fieldList = []
-      // if fieldList is defined in notifyPanelChange
-      if (params.fieldList && params.fieldList.length > 0) {
-        fieldList = params.fieldList
-      } else {
-        var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
-        fieldList = panel.fieldList
-      }
-      var field = {}
-      // if field is defined in notifyPanelChange
-      if (params.field) {
-        field = params.field
-      } else {
-        field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
-      }
+      var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
+      var fieldList = panel.fieldList
+      var field = field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
 
       // the field has not changed, then the action is broken
       if (params.newValue === field.value) {
@@ -241,17 +229,16 @@ const panel = {
       })
       // TODO: refactory for it and change for a standard method
       if (getters.isReadyForSubmit(params.containerUuid) && !params.isDontSendToEdit) {
-        if (panel.panelType === 'browser' && fieldIsDisplayed(field)) {
+        if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
           dispatch('getBrowserSearch', {
             containerUuid: params.containerUuid,
             clearSelection: true
           })
         }
-        if (panel.panelType === 'window' && fieldIsDisplayed(field)) {
+        if (field.panelType === 'window' && fieldIsDisplayed(field)) {
           var uuid = getters.getUuid(params.containerUuid)
           if (isEmptyValue(uuid)) {
             dispatch('createNewEntity', {
-              parentUuid: params.parentUuid,
               containerUuid: params.containerUuid
             })
               .then(response => {
@@ -266,7 +253,6 @@ const panel = {
               })
           } else {
             dispatch('updateCurrentEntity', {
-              parentUuid: params.parentUuid,
               containerUuid: params.containerUuid,
               recordUuid: uuid
             })
