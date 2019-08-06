@@ -10,27 +10,29 @@
       :parent-uuid="containerUuid"
       @closeDialog="isVisisbleDialog=true"
     />
-    <el-main>
+    <el-header>
       <div class="w-33">
         <div class="center">
           <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
         </div>
       </div>
-      <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
-        <el-popover
-          v-if="!isEmptyValue(browserMetadata.name)"
-          placement="top-start"
-          :title="browserMetadata.name"
-          class="cssClassHelp"
-          trigger="hover"
-        >
-          <div v-html="browserMetadata.help" />
-          <div class="w-33">
-            <div class="center">
-              <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
-            </div>
+      <el-popover
+        v-if="!isEmptyValue(browserMetadata.name)"
+        placement="top-start"
+        :title="browserMetadata.name"
+        class="cssClassHelp"
+        trigger="hover"
+      >
+        <div v-html="browserMetadata.help" />
+        <div class="w-33">
+          <div class="center">
+            <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
           </div>
-        </el-popover>
+        </div>
+      </el-popover>
+    </el-header>
+    <el-main>
+      <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
         <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
           <panel
             :container-uuid="containerUuid"
@@ -226,8 +228,7 @@ export default {
     /* left: 50%; */
   }
   .title-mobile {
-    position: fixed;
-    top: 128px;
+    text-align: center;
     color: #000000;
     text-size-adjust: 20px;
     font-size: 100%;

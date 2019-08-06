@@ -34,7 +34,7 @@
           class="fiel-optional"
         />
       </div>
-      <div v-show="isMobile && panelType === 'window'" class="panel-expand">
+      <div v-show="!parent && panelType === 'window'" class="panel-expand">
         <i class="el-icon-upload2" @click="expandPanel()" />
         <i class="el-icon-download" @click="restorePanel()" />
       </div>
@@ -150,6 +150,10 @@ export default {
       type: String,
       default: 'window'
     },
+    parent: {
+      type: Boolean,
+      default: false
+    },
     // Show input section from search in data
     isSearchable: {
       type: Boolean,
@@ -233,10 +237,15 @@ export default {
         }
         return table
       } else {
-        if (!this.Expand) {
-          return this.$store.getters.getHeigth() - 500
+        if (this.parent) {
+          return this.$store.getters.getHeigth() - 180
         } else {
-          return this.$store.getters.getHeigth() - 190
+          if (!this.Expand) {
+            return this.$store.getters.getHeigth() - 550
+          } else {
+            return this.$store.getters.getHeigth() - 300
+          }
+          // return this.$store.getters.getHeigth() - 520
         }
       }
     }
@@ -545,8 +554,8 @@ export default {
   }
   .panel-expand {
     float: right;
-    padding-top: 7%;
-    padding-right: 2%;
+    padding-top: 2%;
+    padding-right: 0%;
   }
   .fiel-optional {
     width: 227px;

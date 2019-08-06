@@ -7,6 +7,7 @@
         :table-name="windowMetadata.currentTab.tableName"
         :is-table-selection="false"
         :is-showed-panel-record="true"
+        :parent="true"
       />
     </el-aside>
 
@@ -167,6 +168,14 @@ export default {
 </script>
 
 <style scoped>
+  .el-tabs__content {
+    overflow: hidden;
+    position: relative;
+    padding-top: 0px !important;
+    padding-right: 15px !important;
+    padding-bottom: 0px !important;
+    padding-left: 15px !important;
+  }
   .el-header {
     background-color: #fff;
     color: #333;
@@ -174,6 +183,7 @@ export default {
   }
 
   .el-aside {
+    height: 100vh;
     color: #333;
   }
   aside {
@@ -216,7 +226,7 @@ export default {
   }
   .open-table-detail {
     position: absolute;
-    right: 50%;
+    right: 49%;
     bottom: 4%;
     display: none;
   }
