@@ -107,7 +107,9 @@ export default {
       Name: 'Nombre',
       Description: 'Descripción',
       Action: 'Acción',
-      Status: 'Estado'
+      Status: 'Estado',
+      Logs: 'Bitacora',
+      Help: 'Ayuda'
     },
     dataTable: {
       search: 'Buscar',

@@ -181,21 +181,9 @@ const processControl = {
         requestProcessActivity()
           .then(response => {
             var responseList = response.getResponsesList().map(responseItem => {
-              var output = {
-                uuid: '',
-                name: '',
-                description: '',
-                fileName: '',
-                mimeType: '',
-                output: '',
-                outputStream: '',
-                outputStream_asB64: '',
-                outputStream_asU8: '',
-                reportExportType: ''
-              }
               var responseOutput = responseItem.getOutput()
               if (responseOutput !== undefined) {
-                output = {
+                var output = {
                   uuid: responseOutput.getUuid(),
                   name: responseOutput.getName(),
                   description: responseOutput.getDescription(),
@@ -214,14 +202,12 @@ const processControl = {
                   log: log.getLog()
                 }
               })
-
               var processMetadata = rootGetters.getProcess(responseItem.getUuid())
               if (processMetadata === undefined) {
                 dispatch('getProcessFromServer', responseItem.getUuid())
               }
               var process = {
                 processUuid: responseItem.getUuid(),
-                processId: responseItem.getId(),
                 instanceUuid: responseItem.getInstanceuuid(),
                 isError: responseItem.getIserror(),
                 isProcessing: responseItem.getIsprocessing(),
@@ -231,7 +217,6 @@ const processControl = {
                 resultTableId: responseItem.getResulttableid(),
                 summary: responseItem.getSummary()
               }
-
               return process
             })
 
@@ -295,37 +280,27 @@ const processControl = {
       )
       return process
     },
-    getRunningProcess: (state, rootGetters) => {
-      return new Promise((resolve, reject) => {
-        Array.prototype.push.apply(state.sessionProcess, state.process)
-        var processList = state.sessionProcess.map(item => {
-          var process = rootGetters.getProcess(item.processUuid)
-          return {
-            ...process,
-            instanceUuid: item.instanceUuid,
-            output: item.output,
-            isError: item.isError,
-            logs: item.logs,
-            summary: item.summary
-          }
-        })
-        resolve(processList)
-      })
+    getProcessOutput: (state) => (instanceUuid) => {
+      var process = state.process.find(
+        item => item.instanceUuid === instanceUuid
+      )
+      return process.output
     },
-    // getProcessFinalized: (state, rootGetters) => {
-    //   var procesfinalized = state.process.map(item => {
-    //     var process = rootGetters.getProcess(item.processUuid)
-    //     return {
-    //       ...process,
-    //       instanceUuid: item.instanceUuid,
-    //       output: item.output,
-    //       isError: item.isError,
-    //       logs: item.logs,
-    //       summary: item.summary
-    //     }
-    //   })
-    //   return procesfinalized
-    // },
+    getRunningProcess: (state, getters, rootState, rootGetters) => {
+      var processList = state.sessionProcess.map(item => {
+        var processOutput = getters.getProcessOutput(item.instanceUuid)
+        var process = rootGetters.getProcess(item.processUuid)
+        return {
+          ...process,
+          instanceUuid: item.instanceUuid,
+          output: processOutput,
+          isError: item.isError,
+          logs: item.logs,
+          summary: item.summary
+        }
+      })
+      return processList
+    },
     getProcessResult: (state) => {
       return state.reportObject
     },
@@ -347,8 +322,17 @@ const processControl = {
       )
       return sessionProcess
     },
-    getInitializedProcess: (state) => {
-      return state.initializedProcess
+    getInitializedProcess: (state, rootGetters) => {
+      var processList = state.initializedProcess.map(item => {
+        var process = rootGetters.getProcess(item.uuid)
+        return {
+          ...process,
+          isProcessing: item.isProcessing,
+          reportExportType: item.reportExportType,
+          selection: item.selection
+        }
+      })
+      return processList
     }
   }
 }

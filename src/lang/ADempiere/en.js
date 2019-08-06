@@ -107,7 +107,9 @@ export default {
       name: 'Name',
       description: 'Description',
       actions: 'Action',
-      status: 'State'
+      status: 'Status',
+      Logs: 'Logs',
+      Help: 'Help'
     },
     dataTable: {
       search: 'Search',
