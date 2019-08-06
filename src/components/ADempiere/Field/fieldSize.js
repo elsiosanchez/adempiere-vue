@@ -103,8 +103,8 @@ export const FIELD_DISPLAY_SIZES = [
   {
     type: 'YesNo',
     size: {
-      xs: 6,
-      sm: 8,
+      xs: 14,
+      sm: 12,
       md: 8,
       lg: 6,
       xl: 6

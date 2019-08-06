@@ -122,7 +122,6 @@ export default {
   },
   created() {
     this.getWindow()
-    console.log(this.$store.getters.getWindow(this.windowUuid).currentTab.isShowedRecordNavigation)
   },
   methods: {
     getWindow() {
