@@ -1,8 +1,6 @@
 <template>
   <el-upload
-    v-model="value"
     :show-file-list="false"
-    :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
     class="avatar-uploader"
     action="https://jsonplaceholder.typicode.com/posts/"
@@ -70,14 +68,14 @@ export default {
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
-      const isGIF = file.type === 'image/gif'
-      const isBMP = file.type === 'image/bmp'
+      // const isGIF = file.type === 'image/gif'
+      // const isBMP = file.type === 'image/bmp'
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
         this.$message.error(this.$t('components.imageError'))
       }
-      return isJPG || isPNG || isGIF || isBMP && isLt2M
+      return isJPG + isPNG + isLt2M
     }
   }
 }
