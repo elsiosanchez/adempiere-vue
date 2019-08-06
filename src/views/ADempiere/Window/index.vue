@@ -217,7 +217,7 @@ export default {
   }
   .open-table-detail {
     position: absolute;
-    right: 50%;
+    right: 49%;
     bottom: 4%;
     display: none;
   }
