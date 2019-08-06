@@ -241,7 +241,7 @@ export default {
           return this.$store.getters.getHeigth() - 210
         } else {
           if (!this.Expand) {
-            return this.$store.getters.getHeigth() - 500
+            return this.$store.getters.getHeigth() - 550
           } else {
             return this.$store.getters.getHeigth() - 300
           }

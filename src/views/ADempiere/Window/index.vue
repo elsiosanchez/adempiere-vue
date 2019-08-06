@@ -168,6 +168,14 @@ export default {
 </script>
 
 <style scoped>
+  .el-tabs__content {
+    overflow: hidden;
+    position: relative;
+    padding-top: 0px !important;
+    padding-right: 15px !important;
+    padding-bottom: 0px !important;
+    padding-left: 15px !important;
+  }
   .el-header {
     background-color: #fff;
     color: #333;
