@@ -7,6 +7,7 @@
         :table-name="windowMetadata.currentTab.tableName"
         :is-table-selection="false"
         :is-showed-panel-record="true"
+        :parent="true"
       />
     </el-aside>
 
@@ -121,6 +122,7 @@ export default {
   },
   created() {
     this.getWindow()
+    console.log(this.$store.getters.getWindow(this.windowUuid).currentTab.isShowedRecordNavigation)
   },
   methods: {
     getWindow() {
