@@ -237,7 +237,7 @@ export default {
         return table
       } else {
         if (this.isParent) {
-          return displayHeight - 180
+          return displayHeight - 210
         } else {
           if (!this.isExpand) {
             return displayHeight - 550
