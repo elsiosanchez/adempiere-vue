@@ -102,8 +102,15 @@ const data = {
      * @param {string} params.criteria, criteria to search record data
      */
     getObjectListFromCriteria: ({ dispatch, rootGetters }, objectParams) => {
+      var allData = rootGetters.getDataRecordAndSelection(objectParams.containerUuid)
       return new Promise((resolve, reject) => {
-        getObjectListFromCriteria(objectParams)
+        getObjectListFromCriteria({
+          tableName: objectParams.tableName,
+          query: objectParams.query,
+          whereClause: objectParams.whereClause,
+          orderByClause: objectParams.orderByClause,
+          nextPageToken: allData.nextPageToken
+        })
           .then(response => {
             const recordList = response.getRecordsList()
             var record = recordList.map(itemRecord => {
@@ -111,12 +118,12 @@ const data = {
               var values = convertValuesMapToObject(map)
               return values
             })
-            var selection = rootGetters.getDataRecordSelection(objectParams.containerUuid)
             dispatch('recordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,
-              selection: selection,
-              nextPage: response.getNextPageToken()
+              selection: allData.selection,
+              recordCount: response.getRecordcount(),
+              nextPageToken: response.getNextPageToken()
             })
             resolve(record)
           })
@@ -189,21 +196,22 @@ const data = {
       return {
         containerUuid: containerUuid,
         record: [],
+        recordCount: 0,
         selection: [],
         pageNumber: 1
       }
     },
-    getDataRecordDetail: (state, getters) => (containerUuid) => {
+    getDataRecordsList: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
       return data.record
     },
-    getDataAllRecord: (state, getters) => (containerUuid) => {
+    getDataRecordCount: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
-      return data.record
+      return data.recordCount
     },
     getPageNextToken: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
-      return data.nextPage
+      return data.nextPageToken
     },
     getDataRecordSelection: (state, getters) => (containerUuid) => {
       var selection = getters.getDataRecordAndSelection(containerUuid)

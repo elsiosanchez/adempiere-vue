@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     tableRecords() {
-      return this.$store.getters.getDataRecordDetail(this.windowUuid)
+      return this.$store.getters.getDataRecordsList(this.windowUuid)
     },
     getterPanel() {
       if (this.tabUuid !== undefined) {

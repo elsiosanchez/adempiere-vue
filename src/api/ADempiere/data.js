@@ -103,8 +103,11 @@ export function getObjectListFromCriteria(object) {
   if (object.orderByClause) {
     criteriaForList.setOrderbyclause(object.orderByClause)
   }
-
-  return Instance.call(this).requestObjectListFromCriteria(criteriaForList)
+  var nextPageToken
+  if (object.nextPageToken) {
+    nextPageToken = object.nextPageToken
+  }
+  return Instance.call(this).requestObjectListFromCriteria(criteriaForList, nextPageToken)
 }
 
 // Request a Lookup list data from Reference
@@ -204,6 +207,10 @@ export function getBrowserSearch(browser) {
   criteria.setQuery(browser.query)
   criteria.setWhereclause(browser.whereClause)
   criteria.setOrderbyclause(browser.orderByClause)
+
+  if (browser.nextPageToken) {
+    browserRequest.setPageToken(browser.nextPageToken)
+  }
   browserRequest.setCriteria(criteria)
   /* isQueryCriteria fields parameters */
   if (browser.parameters !== undefined) {

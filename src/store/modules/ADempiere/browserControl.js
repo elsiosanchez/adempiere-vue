@@ -10,6 +10,8 @@ const browserControl = {
      * @param {boolean} parameters.clearSelection, clear selection after search
      */
     getBrowserSearch({ commit, dispatch, rootGetters }, parameters) {
+      var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
+
       return new Promise((resolve, reject) => {
         // parameters isQueryCriteria
         var finalParameters = rootGetters.getParametersProcessToServer(parameters.containerUuid)
@@ -29,12 +31,17 @@ const browserControl = {
           })
         }
 
+        var nextPageToken
+        if (!isEmptyValue(allData.nextPageToken)) {
+          nextPageToken = allData.nextPageToken
+        }
         var browserSearchQueryParameters = {
           uuid: parameters.containerUuid,
           query: parsedQuery,
           whereClause: parsedWhereClause,
           orderByClause: browser.orderByClause,
-          parameters: finalParameters.parameters
+          parameters: finalParameters.parameters,
+          nextPageToken: nextPageToken
         }
         // Add validation compare browserSearchQueryParameters
         getBrowserSearchFromData(browserSearchQueryParameters)
@@ -51,7 +58,7 @@ const browserControl = {
 
             var selection = []
             if (!parameters.clearSelection) {
-              selection = rootGetters.getDataRecordSelection(parameters.containerUuid)
+              selection = allData.selection
             }
             var pageNumber = rootGetters.getPageCount(parameters.containerUuid)
 
@@ -59,7 +66,9 @@ const browserControl = {
               containerUuid: parameters.containerUuid,
               record: record,
               pageNumber: pageNumber,
-              selection: selection
+              selection: selection,
+              recordCount: response.getRecordcount(),
+              nextPageToken: response.getNextPageToken()
             })
             showMessage({
               title: language.t('notifications.succesful'),

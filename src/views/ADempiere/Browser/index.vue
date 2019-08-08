@@ -96,8 +96,8 @@ export default {
     }
   },
   computed: {
-    getDataDetail() {
-      return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    getDataRecords() {
+      return this.$store.getters.getDataRecordsList(this.containerUuid)
     },
     getContainerIsReadyForSubmit() {
       return this.$store.getters.isReadyForSubmit(this.containerUuid)
@@ -173,7 +173,7 @@ export default {
       }
     },
     defaultSearch() {
-      if (this.getDataDetail.length <= 0 && this.getContainerIsReadyForSubmit) {
+      if (this.getDataRecords.length <= 0 && this.getContainerIsReadyForSubmit) {
         this.$store.dispatch('getBrowserSearch', {
           containerUuid: this.browserUuid
         })

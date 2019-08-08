@@ -11,7 +11,7 @@
             clearable
           />
         </icon-element> -->
-        <el-menu :default-active="MenuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
+        <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-more" />
@@ -20,7 +20,7 @@
             <el-menu-item index="fixed" @click="fixedPanel()"> {{ $t('components.fixedleItems') }} </el-menu-item>
           </el-submenu>
         </el-menu>
-        <icon-element v-show="fixed" icon="el-icon-news">
+        <icon-element v-show="isFixed" icon="el-icon-news">
           <fixed-columns
             :container-uuid="containerUuid"
             :panel-type="panelType"
@@ -28,15 +28,15 @@
           />
         </icon-element>
         <filter-columns
-          v-show="optional"
+          v-show="isOptional"
           :container-uuid="containerUuid"
           :panel-type="panelType"
           class="fiel-optional"
         />
       </div>
-      <div v-show="!parent && panelType === 'window'" class="panel-expand">
+      <div v-show="!isParent && panelType === 'window'" class="panel-expand">
         <i class="el-icon-upload2" @click="expandPanel()" />
-        <i class="el-icon-download" @click="restorePanel()" />
+        <i class="el-icon-download" @click="expandPanel(false)" />
       </div>
     </div>
     <el-table
@@ -50,7 +50,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="getDataDetail"
+      :data="getterDataRecords"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -109,8 +109,8 @@
         <el-pagination
           layout="slot, total, prev, pager, next"
           :current-page="currentPage"
-          :page-size="Pagination"
-          :total="getDataDetail.length"
+          :page-size="defaultMaxPagination"
+          :total="getterTotalDataRecordCount"
           @current-change="handleChangePage"
         >
           <template v-slot>
@@ -150,7 +150,8 @@ export default {
       type: String,
       default: 'window'
     },
-    parent: {
+    // is used in root view with primary records
+    isParent: {
       type: Boolean,
       default: false
     },
@@ -175,21 +176,18 @@ export default {
       searchTable: '', // text from search
       showSearch: false, // show input from search,
       panel: {},
-      Pagination: 100,
+      defaultMaxPagination: 100,
       fieldList: [],
-      MenuTable: '1',
-      optional: false,
-      fixed: false,
+      menuTable: '1',
+      isOptional: false,
+      isFixed: false,
       isLoaded: false,
       keyColumn: '', // column as isKey in fieldList
       tableData: [],
-      multipleSelection: [],
       isEdit: false, // get data
       rowStyle: { height: '52px' },
       sortable: null,
-      oldprocessListData: [],
-      newprocessListData: [],
-      Expand: false,
+      isExpand: false,
       currentPage: 0,
       page: '',
       uuidCurrentRecordSelected: ''
@@ -202,11 +200,11 @@ export default {
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
-    getAllRecords() {
-      return this.$store.getters.getDataAllRecord(this.containerUuid)
+    getterDataRecords() {
+      return this.$store.getters.getDataRecordsList(this.containerUuid)
     },
-    getDataDetail() {
-      return this.$store.getters.getDataRecordDetail(this.containerUuid)
+    getterTotalDataRecordCount() {
+      return this.$store.getters.getDataRecordCount(this.containerUuid)
     },
     getNextToken() {
       return this.$store.getters.getPageNextToken(this.containerUuid)
@@ -224,28 +222,29 @@ export default {
       return this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
     },
     getHeigthTable() {
+      var displayHeight = this.$store.getters.getHeigth()
       if (this.panelType !== 'window') {
         var table = ''
-        if (this.getDataDetail.length === 0 && this.getshowCriteria && this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 520
-        } else if (this.getDataDetail.length === 0 && !this.getshowCriteria && this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 290
+        if (this.getterDataRecords.length === 0 && this.getshowCriteria && this.getParamsBrowser) {
+          table = displayHeight - 520
+        } else if (this.getterDataRecords.length === 0 && !this.getshowCriteria && this.getParamsBrowser) {
+          table = displayHeight - 290
         } else if (!this.getshowCriteria && !this.getParamsBrowser) {
-          table = this.$store.getters.getHeigth() - 290
+          table = displayHeight - 290
         } else if (!this.getParamsBrowser && this.getshowCriteria) {
-          table = this.$store.getters.getHeigth() - 400
+          table = displayHeight - 400
         }
         return table
       } else {
-        if (this.parent) {
-          return this.$store.getters.getHeigth() - 180
+        if (this.isParent) {
+          return displayHeight - 180
         } else {
-          if (!this.Expand) {
-            return this.$store.getters.getHeigth() - 550
+          if (!this.isExpand) {
+            return displayHeight - 550
           } else {
-            return this.$store.getters.getHeigth() - 300
+            return displayHeight - 300
           }
-          // return this.$store.getters.getHeigth() - 520
+          // return displayHeight - 520
         }
       }
     }
@@ -269,16 +268,13 @@ export default {
       return 'menu-table'
     },
     optionalPanel() {
-      this.optional = !this.optional
+      this.isOptional = !this.isOptional
     },
     fixedPanel() {
-      this.fixed = !this.fixed
+      this.isFixed = !this.isFixed
     },
-    expandPanel() {
-      this.Expand = true
-    },
-    restorePanel() {
-      this.Expand = false
+    expandPanel(option = true) {
+      this.isExpand = option
     },
     /**
      * ASOCIATE WITH SEARCH INPUT
@@ -287,7 +283,7 @@ export default {
       this.toggleSelection(this.getDataSelection)
     },
     async getList() {
-      this.oldgetDataDetail = this.getDataDetail.map(v => v.id)
+      this.oldgetDataDetail = this.getterDataRecords.map(v => v.id)
       this.newgetDataDetail = this.oldgetDataDetail.slice()
       this.$nextTick(() => {
         this.setSort()
@@ -304,8 +300,8 @@ export default {
             dataTransfer.setData('Text', '')
           },
           onEnd: evt => {
-            const targetRow = this.getDataDetail.splice(evt.oldIndex, 1)[0]
-            this.getDataDetail.splice(evt.newIndex, 0, targetRow)
+            const targetRow = this.getterDataRecords.splice(evt.oldIndex, 1)[0]
+            this.getterDataRecords.splice(evt.newIndex, 0, targetRow)
 
             // for show the changes, you can delete in you code
             const tempIndex = this.newgetDataDetail.splice(evt.oldIndex, 1)[0]
@@ -315,7 +311,7 @@ export default {
       }
     },
     changeOrder() {
-      var reversed = this.getDataDetail.reverse()
+      var reversed = this.getterDataRecords.reverse()
       return reversed
     },
     /**
@@ -392,12 +388,12 @@ export default {
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: rowsSelection,
-        record: this.getDataDetail
+        record: this.getterDataRecords
       })
     },
     isAllSelected(selection = 0) {
       if (selection > 0) {
-        var data = this.$store.getters.getDataRecordDetail(this.containerUuid)
+        var data = this.getterDataRecords
         return data.length === selection
       }
       return false
@@ -410,7 +406,7 @@ export default {
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: rowsSelection,
-        record: this.getDataDetail
+        record: this.getterDataRecords
       })
       // rowsSelection.forEach(row => {
       //   row.isEdit = selectAll
@@ -418,7 +414,7 @@ export default {
     },
     filterResult() {
       var data = []
-      data = this.getDataDetail.filter(rowItem => {
+      data = this.getterDataRecords.filter(rowItem => {
         if (this.searchTable.trim().length > 0) {
           let find = false
           Object.keys(rowItem).forEach(key => {
@@ -495,7 +491,7 @@ export default {
       return arr
     },
     dataTable() {
-      var dataTable = this.getDataDetail
+      var dataTable = this.getterDataRecords
       if (this.page === this.getNextToken) {
         return dataTable.slice(99,)
       }
