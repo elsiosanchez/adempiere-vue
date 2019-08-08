@@ -1,6 +1,7 @@
 <template>
   <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
-    <el-aside v-show="isShowedRecordNavigation" width="50%">
+
+    <el-aside v-if="isMobile" v-show="isShowedRecordNavigation" width="50%">
       <data-table
         :parent-uuid="windowUuid"
         :container-uuid="windowMetadata.currentTab.uuid"
@@ -10,7 +11,16 @@
         :parent="true"
       />
     </el-aside>
-
+    <el-aside v-else v-show="isShowedRecordNavigation" width="50%">
+      <data-table
+        :parent-uuid="windowUuid"
+        :container-uuid="windowMetadata.currentTab.uuid"
+        :table-name="windowMetadata.currentTab.tableName"
+        :is-table-selection="false"
+        :is-showed-panel-record="true"
+        :parent="true"
+      />
+    </el-aside>
     <el-container>
       <el-header style="height: 40px;">
         <context-menu
@@ -116,6 +126,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
     }
