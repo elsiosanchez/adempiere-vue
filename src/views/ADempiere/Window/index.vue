@@ -1,14 +1,14 @@
 <template>
   <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
 
-    <el-aside v-if="isMobile" v-show="isShowedRecordNavigation" width="50%">
+    <el-aside v-if="isMobile" v-show="isShowedRecordNavigation" width="100%">
       <data-table
         :parent-uuid="windowUuid"
         :container-uuid="windowMetadata.currentTab.uuid"
         :table-name="windowMetadata.currentTab.tableName"
         :is-table-selection="false"
         :is-showed-panel-record="true"
-        :parent="true"
+        :is-parent="true"
       />
     </el-aside>
     <el-aside v-else v-show="isShowedRecordNavigation" width="50%">
@@ -18,7 +18,7 @@
         :table-name="windowMetadata.currentTab.tableName"
         :is-table-selection="false"
         :is-showed-panel-record="true"
-        :parent="true"
+        :is-parent="true"
       />
     </el-aside>
     <el-container>
@@ -104,6 +104,7 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
+// import { Multipane, MultipaneResizer } from 'vue-multipane'
 
 export default {
   name: 'Window',
@@ -112,6 +113,8 @@ export default {
     TabChildren,
     ContextMenu,
     DataTable,
+    // Multipane,
+    // MultipaneResizer,
     ModalDialog
   },
   data() {
