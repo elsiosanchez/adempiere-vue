@@ -96,6 +96,7 @@ export default {
             type: 'success'
           })
           this.$store.dispatch('permission/generateRoutes', response.name)
+          location.reload()
         })
     },
     changeLanguage(languageValue) {
