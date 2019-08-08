@@ -1,26 +1,28 @@
 <template>
   <div v-if="!item.hidden" class="menu-wrapper">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <app-link v-if="onlyOneChild.meta" :to="onlyOneChild">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="generateTitle(onlyOneChild.meta.title)" />
-        </el-menu-item>
-      </app-link>
-    </template>
-
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
-      <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="generateTitle(item.meta.title)" />
+    <el-tooltip v-if="item.meta && item.meta.title" :content="item.meta.title" :placement="isCollapse">
+      <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+        <app-link v-if="onlyOneChild.meta" :to="onlyOneChild">
+          <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+            <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="generateTitle(onlyOneChild.meta.title)" />
+          </el-menu-item>
+        </app-link>
       </template>
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
-      />
-    </el-submenu>
+
+      <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+        <template slot="title">
+          <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="generateTitle(item.meta.title)" />
+        </template>
+        <sidebar-item
+          v-for="child in item.children"
+          :key="child.path"
+          :is-nest="true"
+          :item="child"
+          :base-path="resolvePath(child.path)"
+          class="nest-menu"
+        />
+      </el-submenu>
+    </el-tooltip>
   </div>
 </template>
 
@@ -31,6 +33,7 @@ import { isExternal } from '@/utils/validate'
 import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'SidebarItem',
@@ -56,6 +59,17 @@ export default {
     // TODO: refactor with render function
     this.onlyOneChild = null
     return {}
+  },
+  computed: {
+    ...mapGetters([
+      'sidebar'
+    ]),
+    isCollapse() {
+      if (this.sidebar.opened) {
+        return 'right'
+      }
+      return 'top'
+    }
   },
   methods: {
     hasOneShowingChild(children = [], parent) {
