@@ -60,6 +60,7 @@ export function loadMainMenu() {
       if (menu.getIssummary()) {
         menu.getChildsList().forEach((menu, index) => {
           optionMenu.children.push(getChildFromAction(menu, index = 0))
+          optionMenu.children[0].meta.childs.push(getChildFromAction(menu, index = 0))
           optionMenu.meta.childs.push(getChildFromAction(menu, index = 0))
         })
       } else {
@@ -95,7 +96,6 @@ function getChildFromAction(menu, index) {
     path: routeIdentifier,
     component: selectedComponent,
     name: menu.getUuid(),
-    // hidden: actionAttributes.hidden,
     hidden: index > 0,
     meta: {
       isIndex: actionAttributes.isIndex,
@@ -152,7 +152,8 @@ function getRouteFromMenuItem(menu) {
           type: actionAttributes.name,
           icon: actionAttributes.icon,
           noCache: true,
-          breadcrumb: false
+          breadcrumb: false,
+          childs: []
         }
       }
     ]
