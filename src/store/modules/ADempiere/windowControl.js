@@ -128,6 +128,48 @@ const windowControl = {
     },
     /**
      *
+     * @param {string} parameters.containerUuid
+     * @param {string} parameters.parentUuid
+     */
+    deleteSelectionDataList({ dispatch, rootGetters }, parameters) {
+      var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
+      // var panel = rootGetters.getPanel(parameters.containerUuid)
+      var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      allData.selection.forEach((record, index) => {
+        deleteEntity({
+          tableName: tab.tableName,
+          recordUuid: record.UUID
+        })
+          .then(() => {
+            // redirect to create new record
+            var oldRoute = router.app._route
+            if (record.UUID === oldRoute.params.action) {
+              router.push({
+                name: oldRoute.name,
+                params: {
+                  action: 'create-new'
+                }
+              })
+              // clear fields with default values
+              dispatch('resetPanelToNew', {
+                containerUuid: parameters.containerUuid
+              })
+              // delete view with uuid record delete
+              dispatch('tagsView/delView', oldRoute, true)
+            }
+
+            if ((index + 1) === allData.selection.length) {
+              // refresh record list
+              dispatch('getDataListTab', {
+                parentUuid: parameters.parentUuid,
+                containerUuid: parameters.containerUuid
+              })
+            }
+          })
+      })
+    },
+    /**
+     *
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
      * @param {boolean} parameters.clearSelection, clear selection after search
@@ -136,7 +178,7 @@ const windowControl = {
       return new Promise((resolve, reject) => {
         var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
         var parsedQuery = parseContext({
-          parentUuid: parameters.containerUuid,
+          parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
           value: tab.query
         })
@@ -144,7 +186,7 @@ const windowControl = {
         var parsedWhereClause
         if (!isEmptyValue(tab.whereClause)) {
           parsedWhereClause = parseContext({
-            parentUuid: parameters.containerUuid,
+            parentUuid: parameters.parentUuid,
             containerUuid: parameters.containerUuid,
             value: tab.whereClause
           })
