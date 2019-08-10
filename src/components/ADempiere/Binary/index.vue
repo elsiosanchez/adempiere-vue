@@ -27,6 +27,7 @@ export default {
       type: Object,
       required: true
     },
+    // value received from data result
     valueModel: {
       type: String,
       default: undefined
@@ -37,6 +38,15 @@ export default {
       value: this.metadata.value
     }
   },
+  computed: {
+    getterValue() {
+      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
+      if (field) {
+        return field.value
+      }
+      return undefined
+    }
+  },
   watch: {
     valueModel(value) {
       this.value = value
@@ -44,12 +54,12 @@ export default {
   },
   beforeMount() {
     // enable to dataTable records
-    if (this.valueModel !== undefined) {
+    if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = this.valueModel
     }
   },
   methods: {
-    handleChange() {
+    handleChange(value) {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,

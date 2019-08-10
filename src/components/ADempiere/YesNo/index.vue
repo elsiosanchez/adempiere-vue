@@ -5,7 +5,6 @@
     :active-text="$t('components.switchActiveText')"
     true-value="true"
     false-value="false"
-    :name="metadata.columnName"
     :disabled="metadata.readonly || metadata.disabled"
     @change="handleChange"
   />
@@ -19,6 +18,7 @@ export default {
       type: Object,
       required: true
     },
+    // value received from data result
     valueModel: {
       type: [String, Boolean],
       default: undefined
@@ -27,6 +27,15 @@ export default {
   data() {
     return {
       value: Boolean(this.metadata.value)
+    }
+  },
+  computed: {
+    getterValue() {
+      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
+      if (field) {
+        return field.value
+      }
+      return undefined
     }
   },
   watch: {
@@ -38,7 +47,7 @@ export default {
     this.handleChange() // activate logics
   },
   methods: {
-    handleChange() {
+    handleChange(value) {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,

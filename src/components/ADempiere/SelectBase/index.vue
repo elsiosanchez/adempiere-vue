@@ -31,6 +31,7 @@ export default {
       type: Object,
       required: true
     },
+    // value received from data result
     valueModel: {
       type: [Array, String, Number],
       default: () => ([])
@@ -49,6 +50,13 @@ export default {
     }
   },
   computed: {
+    getterValue() {
+      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
+      if (field) {
+        return field.value
+      }
+      return undefined
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -110,7 +118,7 @@ export default {
   methods: {
     parseContext,
     isEmptyValue,
-    handleChange() {
+    handleChange(value) {
       if (this.metadata.inTable) {
         var selected = this.options.find(option => option.key === this.value)
         this.$store.dispatch('notifyCellTableChange', {
