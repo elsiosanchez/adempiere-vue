@@ -1,90 +1,91 @@
 <template>
   <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
+    <multipane class="vertical-panes" layout="vertical">
+      <div v-show="isShowedRecordNavigation" class="pane" :style="{ minWidth: '10%', width: '100%', maxWidth: '100%' }">
+        <div>
+          <el-aside v-show="isShowedRecordNavigation" width="100%">
+            <data-table
+              :parent-uuid="windowUuid"
+              :container-uuid="windowMetadata.currentTab.uuid"
+              :table-name="windowMetadata.currentTab.tableName"
+              :is-table-selection="false"
+              :is-showed-panel-record="true"
+              :is-parent="true"
+            />
+          </el-aside>
+        </div>
+      </div>
+      <multipane-resizer />
+      <div class="pane" :style="{ width: '100%', maxWidth: '100%' }">
+        <div>
+          <el-container style="height: 80vh;">
+            <el-header style="height: 40px;">
+              <context-menu
+                :menu-parent-uuid="$route.meta.parentUuid"
+                :parent-uuid="windowUuid"
+                :container-uuid="windowMetadata.currentTabUuid"
+                :parent-panel="panelType"
+                :modal-metadata="windowMetadata"
+              />
+            </el-header>
 
-    <el-aside v-if="isMobile" v-show="isShowedRecordNavigation" width="50%">
-      <data-table
-        :parent-uuid="windowUuid"
-        :container-uuid="windowMetadata.currentTab.uuid"
-        :table-name="windowMetadata.currentTab.tableName"
-        :is-table-selection="false"
-        :is-showed-panel-record="true"
-        :parent="true"
-      />
-    </el-aside>
-    <el-aside v-else v-show="isShowedRecordNavigation" width="50%">
-      <data-table
-        :parent-uuid="windowUuid"
-        :container-uuid="windowMetadata.currentTab.uuid"
-        :table-name="windowMetadata.currentTab.tableName"
-        :is-table-selection="false"
-        :is-showed-panel-record="true"
-        :parent="true"
-      />
-    </el-aside>
-    <el-container>
-      <el-header style="height: 40px;">
-        <context-menu
-          :menu-parent-uuid="$route.meta.parentUuid"
-          :parent-uuid="windowUuid"
-          :container-uuid="windowMetadata.currentTabUuid"
-          :parent-panel="panelType"
-          :modal-metadata="windowMetadata"
-        />
-      </el-header>
+            <el-main>
+              <tab-parent
+                :window-uuid="windowUuid"
+                :tabs-list="windowMetadata.tabsListParent"
+                class="tab-window"
+              />
+              <div class="small-4 columns">
+                <div class="wrapper">
+                  <div
+                    v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                    class="open-detail"
+                  />
+                  <el-button
+                    v-show="!isShowedTabChildren"
+                    icon="el-icon-caret-top"
+                    class="open-table-detail"
+                    circle
+                    @click="handleChangeShowedTabChildren()"
+                  />
+                </div>
+              </div>
+              <modal-dialog />
+              <div class="small-4 columns">
+                <div class="w">
+                  <div class="open-left" />
+                  <el-button
+                    :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                    class="open-navegation"
+                    circle
+                    @click="handleChangeShowedRecordNavigation()"
+                  />
+                </div>
+              </div>
 
-      <el-main>
-        <tab-parent
-          :window-uuid="windowUuid"
-          :tabs-list="windowMetadata.tabsListParent"
-          class="tab-window"
-        />
-        <div class="small-4 columns">
-          <div class="wrapper">
-            <div
-              v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-              class="open-detail"
-            />
-            <el-button
-              v-show="!isShowedTabChildren"
-              icon="el-icon-caret-top"
-              class="open-table-detail"
-              circle
-              @click="handleChangeShowedTabChildren()"
-            />
-          </div>
+            </el-main>
+            <el-header
+              v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+              style="height: auto;"
+            >
+              <div class="w-33">
+                <div class="center">
+                  <el-button
+                    icon="el-icon-caret-bottom"
+                    circle
+                    @click="handleChangeShowedTabChildren()"
+                  />
+                </div>
+              </div>
+              <tab-children
+                :window-uuid="windowUuid"
+                :tabs-list="windowMetadata.tabsListChildren"
+              />
+            </el-header>
+          </el-container>
         </div>
-        <modal-dialog />
-        <div class="small-4 columns">
-          <div class="w">
-            <div class="open-left" />
-            <el-button
-              :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
-              class="open-navegation"
-              circle
-              @click="handleChangeShowedRecordNavigation()"
-            />
-          </div>
-        </div>
-      </el-main>
-      <el-header
-        v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-        style="height: auto;"
-      >
-        <div class="w-33">
-          <div class="center">
-            <el-button
-              icon="el-icon-caret-bottom"
-              circle
-              @click="handleChangeShowedTabChildren()"
-            />
-          </div>
-        </div>
-        <tab-children
-          :window-uuid="windowUuid"
-          :tabs-list="windowMetadata.tabsListChildren"
-        />
-      </el-header>
-    </el-container>
+      </div>
+    </multipane>
   </el-container>
   <div
     v-else
@@ -104,6 +105,7 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
+import { Multipane, MultipaneResizer } from 'vue-multipane'
 
 export default {
   name: 'Window',
@@ -112,6 +114,8 @@ export default {
     TabChildren,
     ContextMenu,
     DataTable,
+    Multipane,
+    MultipaneResizer,
     ModalDialog
   },
   data() {
@@ -215,12 +219,10 @@ export default {
   .el-main {
     display: block;
     -webkit-box-flex: 1;
-    -ms-flex: 1;
     flex: 1;
-    -ms-flex-preferred-size: auto;
     flex-basis: auto;
     overflow: auto;
-    -webkit-box-sizing: border-box;
+    height: 35vh;
     box-sizing: border-box;
     padding-top: 0px;
     padding-right: 20px;
@@ -274,4 +276,19 @@ export default {
     color: white;
     background: #008fd3;
   }
+.vertical-panes {
+  width: 100%;
+  height: 85vh;
+  border: 1px solid #ccc;
+}
+.vertical-panes > .pane {
+  text-align: left;
+  padding: 15px;
+  overflow: hidden;
+  background: #fff;
+}
+.vertical-panes > .pane ~ .pane {
+  border-left: 1px solid #ccc;
+}
+
 </style>
