@@ -1,7 +1,7 @@
 <template>
   <el-input-number
     v-model="value"
-    :type="typeInput"
+    type="number"
     :pattern="pattern"
     :min="minValue"
     :max="maxValue"
@@ -27,6 +27,7 @@ export default {
       type: Function,
       default: () => undefined
     },
+    // value received from data result
     valueModel: {
       type: Number,
       default: undefined
@@ -35,7 +36,6 @@ export default {
   data() {
     return {
       value: this.metadata.value,
-      typeInput: 'number',
       pattern: undefined,
       showControls: true
     }
@@ -58,9 +58,6 @@ export default {
     }
   },
   watch: {
-    'metadata.value'(value) {
-      this.value = value
-    },
     valueModel(value) {
       this.value = Number(value)
     }

@@ -1,6 +1,6 @@
 <template>
   <div v-if="!item.hidden" class="menu-wrapper">
-    <el-tooltip v-if="item.meta && item.meta.title" :content="item.meta.title" :placement="isCollapse">
+    <el-tooltip v-if="item.meta && item.meta.title" :content="generateTitle(item.meta.title)" :placement="isCollapse">
       <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
         <app-link v-if="onlyOneChild.meta" :to="onlyOneChild">
           <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">

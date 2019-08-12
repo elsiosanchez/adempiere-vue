@@ -102,3 +102,20 @@ export function clientDateTime(date = null, type = '') {
   }
   return currentDateTime.date + ' ' + currentDateTime.time
 }
+
+/**
+ *
+ * @param {object} objectToConvert, object to convert
+ * @param {string} nameKey, name from key in pairs
+ * @param {string} nameValue, name from value in pairs
+ */
+export function convertObjectToArrayPairs(objectToConvert, nameKey = 'columnName', nameValue = 'value') {
+  var result = Object.keys(objectToConvert).map(key => {
+    var returnPairs = {}
+    returnPairs[nameKey] = key
+    returnPairs[nameValue] = objectToConvert[key]
+    return returnPairs
+  })
+
+  return result
+}

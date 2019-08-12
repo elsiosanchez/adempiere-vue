@@ -16,8 +16,20 @@
             <template slot="title">
               <i class="el-icon-more" />
             </template>
-            <el-menu-item index="optional" @click="optionalPanel()"> {{ $t('components.filterableItems') }} </el-menu-item>
-            <el-menu-item index="fixed" @click="fixedPanel()"> {{ $t('components.fixedleItems') }} </el-menu-item>
+            <el-menu-item index="optional" @click="optionalPanel()">
+              {{ $t('components.filterableItems') }}
+            </el-menu-item>
+            <el-menu-item index="fixed" @click="fixedPanel()">
+              {{ $t('components.fixedleItems') }}
+            </el-menu-item>
+            <el-menu-item
+              v-if="panelType === 'window'"
+              :disabled="getDataSelection.length < 1"
+              index="delete"
+              @click="deleteSelection()"
+            >
+              Elimiar registros seleccionados
+            </el-menu-item>
           </el-submenu>
         </el-menu>
         <icon-element v-show="isFixed" icon="el-icon-news">
@@ -259,6 +271,13 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+    deleteSelection() {
+      this.$store.dispatch('deleteSelectionDataList', {
+        containerUuid: this.containerUuid,
+        parentUuid: this.parentUuid
+      })
+      console.log(this.getDataSelection)
+    },
     classTableMenu() {
       if (this.isMobile) {
         return 'menu-table-mobile'

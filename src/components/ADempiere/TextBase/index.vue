@@ -2,8 +2,6 @@
   <el-input
     v-model="value"
     :pattern="pattern"
-    :minlength="metadata.MinLength"
-    :maxlength="metadata.MaxLength"
     :rows="rows"
     :type="typeInput"
     :placeholder="metadata.help"
@@ -34,6 +32,7 @@ export default {
       type: Function,
       default: () => undefined
     },
+    // value received from data result
     valueModel: {
       type: [String, Number],
       default: undefined
@@ -51,13 +50,16 @@ export default {
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
     }
   },
-  watch: {
-    'metadata.value'(value) {
-      if (!value) {
-        value = ''
+  computed: {
+    getterValue() {
+      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
+      if (field) {
+        return field.value
       }
-      this.value = value
-    },
+      return undefined
+    }
+  },
+  watch: {
     valueModel(value) {
       if (!value) {
         value = ''
@@ -72,7 +74,7 @@ export default {
     }
   },
   methods: {
-    handleChange() {
+    handleChange(value) {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,

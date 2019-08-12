@@ -22,6 +22,7 @@ export default {
       type: Object,
       required: true
     },
+    // value received from data result
     valueModel: {
       type: String,
       default: ''
@@ -35,6 +36,14 @@ export default {
       rows: 5
     }
   },
+  watch: {
+    valueModel(value) {
+      if (!value) {
+        value = ''
+      }
+      this.value = value
+    }
+  },
   created() {
     if (this.metadata.inTable) {
       // avoid drastically changing the style of the table
@@ -43,8 +52,9 @@ export default {
     }
   },
   beforeMount() {
-    if (this.valueModel !== '') {
-      this.value = this.valueModel
+    // enable to dataTable records
+    if (this.metadata.inTable && this.valueModel !== undefined) {
+      this.value = String(this.valueModel)
     }
   }
 }

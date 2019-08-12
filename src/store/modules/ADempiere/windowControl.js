@@ -5,27 +5,27 @@ import router from '@/router'
 
 const windowControl = {
   actions: {
-    resetPanelToNew({ dispatch, rootGetters }, params) {
-      var defaultAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid, 'parsedDefaultValue', true)
+    resetPanelToNew({ dispatch, rootGetters }, parameters) {
+      var defaultAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
 
       dispatch('notifyPanelChange', {
-        containerUuid: params.containerUuid,
+        containerUuid: parameters.containerUuid,
         newValues: defaultAttributes,
         isDontSendToEdit: true
       })
     },
-    undoPanelToNew({ dispatch, rootGetters }, params) {
-      var oldAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid, 'oldValue', true)
+    undoPanelToNew({ dispatch, rootGetters }, parameters) {
+      var oldAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'oldValue', true)
       dispatch('notifyPanelChange', {
-        containerUuid: params.containerUuid,
+        containerUuid: parameters.containerUuid,
         newValues: oldAttributes
       })
     },
-    createNewEntity({ commit, dispatch, rootGetters }, params) {
+    createNewEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
-        var panel = rootGetters.getPanel(params.containerUuid)
+        var panel = rootGetters.getPanel(parameters.containerUuid)
         // delete key from attributes
-        var finalAttributes = rootGetters.getColumnNamesAndValues(params.containerUuid)
+        var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'value', false, true)
         createEntity({
           tableName: panel.tableName,
           attributesList: finalAttributes
@@ -46,7 +46,7 @@ const windowControl = {
 
             // update fields with new values
             dispatch('notifyPanelChange', {
-              containerUuid: params.containerUuid,
+              containerUuid: parameters.containerUuid,
               newValues: newValues,
               isDontSendToEdit: true
             })
@@ -64,15 +64,13 @@ const windowControl = {
         var recordUuid = rootGetters.getUuid(parameters.containerUuid)
 
         // attributes or fields
-        var finalAttributes = rootGetters.getColumnNamesAndValuesChanged(parameters.containerUuid)
+        var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid)
         updateEntity({
           tableName: panel.tableName,
           recordUuid: recordUuid,
           attributesList: finalAttributes
         })
           .then(response => {
-            // var newValues = convertValuesMapToObject(response.getValuesMap())
-            // console.info('edit entity sucess', newValues, finalAttributes)
             resolve(response)
           })
           .catch(error => {
@@ -130,6 +128,48 @@ const windowControl = {
     },
     /**
      *
+     * @param {string} parameters.containerUuid
+     * @param {string} parameters.parentUuid
+     */
+    deleteSelectionDataList({ dispatch, rootGetters }, parameters) {
+      var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
+      // var panel = rootGetters.getPanel(parameters.containerUuid)
+      var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      allData.selection.forEach((record, index) => {
+        deleteEntity({
+          tableName: tab.tableName,
+          recordUuid: record.UUID
+        })
+          .then(() => {
+            // redirect to create new record
+            var oldRoute = router.app._route
+            if (record.UUID === oldRoute.params.action) {
+              router.push({
+                name: oldRoute.name,
+                params: {
+                  action: 'create-new'
+                }
+              })
+              // clear fields with default values
+              dispatch('resetPanelToNew', {
+                containerUuid: parameters.containerUuid
+              })
+              // delete view with uuid record delete
+              dispatch('tagsView/delView', oldRoute, true)
+            }
+
+            if ((index + 1) === allData.selection.length) {
+              // refresh record list
+              dispatch('getDataListTab', {
+                parentUuid: parameters.parentUuid,
+                containerUuid: parameters.containerUuid
+              })
+            }
+          })
+      })
+    },
+    /**
+     *
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
      * @param {boolean} parameters.clearSelection, clear selection after search
@@ -138,7 +178,7 @@ const windowControl = {
       return new Promise((resolve, reject) => {
         var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
         var parsedQuery = parseContext({
-          parentUuid: parameters.containerUuid,
+          parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
           value: tab.query
         })
@@ -146,7 +186,7 @@ const windowControl = {
         var parsedWhereClause
         if (!isEmptyValue(tab.whereClause)) {
           parsedWhereClause = parseContext({
-            parentUuid: parameters.containerUuid,
+            parentUuid: parameters.parentUuid,
             containerUuid: parameters.containerUuid,
             value: tab.whereClause
           })

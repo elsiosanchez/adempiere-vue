@@ -367,24 +367,36 @@ const panel = {
       return undefined
     },
     /**
-     * @param {string} containerUuid, unique identifier of the panel to search your list of fields
-     * @param {string} propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
-     * @param {string} isObjectReturn, define if is an object to return, else arraylist return
+     * @param {string}  containerUuid, unique identifier of the panel to search your list of fields
+     * @param {string}  propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
+     * @param {boolean} isObjectReturn, define if is an object to return, else arraylist return
+     * @param {boolean} isObjectReturn, define if evaluate emty values
      * @returns {array|object}
      */
-    getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false) => {
+    getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false, isEvaluateValues = false) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
       var attributesList = []
       var attributesObject = {}
-      attributesList = fieldList.map(fieldItem => {
-        const valueToReturn = fieldItem[propertyName]
-        attributesObject[fieldItem.columnName] = valueToReturn
 
-        return {
-          columnName: fieldItem.columnName,
-          value: valueToReturn
-        }
-      })
+      attributesList = fieldList
+        .filter(fieldItem => {
+          if (isEvaluateValues) {
+            if (!isEmptyValue(fieldItem.value)) {
+              return true
+            }
+            return false
+          }
+          return true
+        })
+        .map(fieldItem => {
+          const valueToReturn = fieldItem[propertyName]
+          attributesObject[fieldItem.columnName] = valueToReturn
+
+          return {
+            columnName: fieldItem.columnName,
+            value: valueToReturn
+          }
+        })
       if (isObjectReturn) {
         return attributesObject
       }
