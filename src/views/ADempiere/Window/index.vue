@@ -1,7 +1,7 @@
 <template>
   <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
     <multipane class="vertical-panes" layout="vertical">
-      <div v-show="isShowedRecordNavigation" class="pane" :style="{ minWidth: '10%', width: '100%', maxWidth: '100%' }">
+      <div v-show="isShowedRecordNavigation" class="pane" :style="{ minWidth: '10%', width: '80%', maxWidth: '100%' }">
         <div>
           <el-aside v-show="isShowedRecordNavigation" width="100%">
             <data-table
