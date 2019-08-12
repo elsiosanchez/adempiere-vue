@@ -94,7 +94,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   /* if is controls width 100% in container */
   .el-input-number, .el-input {
     width: 100% !important; /* ADempiere Custom */
