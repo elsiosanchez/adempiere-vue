@@ -92,7 +92,7 @@
           :fixed="item.isFixedTableColumn"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.isEdit && !(item.isReadOnly || isReadOnlyFromLogic)">
+            <template v-if="scope.row.isEdit && !(item.isReadOnly || item.isReadOnlyFromLogic)">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
@@ -110,7 +110,13 @@
               />
             </template>
             <span v-else>
-              {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
+              <template v-if="typeof scope.row[item.columnName] === 'boolean'">
+                <!-- replace boolean true-false value for 'Yes' or 'Not' -->
+                {{ scope.row[item.columnName] ? $t('components.switchActiveText') : $t('components.switchInactiveText') }}
+              </template>
+              <template v-else>
+                {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
+              </template>
             </span>
           </template>
         </el-table-column>
