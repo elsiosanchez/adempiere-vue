@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div v-if="processActivity.length > 0" class="app-container">
     <el-timeline :reverse="true">
       <el-timeline-item
         v-for="(activity, index) in processActivity"
@@ -43,6 +43,9 @@
         </el-card>
       </el-timeline-item>
     </el-timeline>
+  </div>
+  <div v-else>
+    <h1 class="text-center">{{ $t('views.noProcess') }}</h1>
   </div>
 </template>
 <script>

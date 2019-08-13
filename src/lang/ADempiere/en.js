@@ -94,7 +94,7 @@ export default {
     SmartBrowser: 'Smart Browser',
     Process: 'Process',
     Window: 'Window',
-    noProcess: 'Oops! Not process running',
+    noProcess: 'Not process running',
     logs: 'Logs',
     log: 'Log',
     seeReport: 'See Report',

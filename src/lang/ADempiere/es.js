@@ -94,7 +94,7 @@ export default {
     SmartBrowser: 'Consulta Inteligente',
     Process: 'Proceso',
     Window: 'Ventana',
-    noProcess: '¡Uy! No hay procesos en ejecución',
+    noProcess: 'No hay procesos en ejecución',
     logs: 'Bitacoras',
     log: 'Bitacora',
     seeReport: 'Ver Reporte',
