@@ -164,7 +164,9 @@ export default {
     isReadOnly() {
       var isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
       var isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
-      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && this.optionCRUD !== 'create-new') ||
+
+      var crudType = this.optionCRUD !== 'create-new' !== this.inTable || this.inTable && this.field.recordUuid
+      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && crudType) ||
         (isUpdateableAllFields && this.panelType !== 'browser') // logic to window, report and process
 
       return isUpdateableFieldWindow || isUpdatableColumnBrowserResult

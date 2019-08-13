@@ -1,5 +1,5 @@
 import { createEntity, updateEntity, deleteEntity } from '@/api/ADempiere'
-import { convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
+import { convertObjectToArrayPairs, convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
 
@@ -77,6 +77,37 @@ const windowControl = {
             reject(error)
           })
       })
+    },
+    updateCurrentEntityFromTable({ commit, dispatch, rootGetters }, parameters) {
+      var panel = rootGetters.getPanel(parameters.containerUuid)
+
+      // TODO: Add support to Binary columns (BinaryData)
+      var columnsToDontSend = ['BinaryData']
+
+      // attributes or fields
+      var finalAttributes = convertObjectToArrayPairs(parameters.row)
+      finalAttributes = finalAttributes.filter(itemAttribute => {
+        if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
+          return false
+        }
+        var field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
+        if (!field || !field.isUpdateable) {
+          return false
+        }
+        return true
+      })
+
+      updateEntity({
+        tableName: panel.tableName,
+        recordUuid: parameters.row.UUID,
+        attributesList: finalAttributes
+      })
+        .then(response => {
+          console.log('Successful edition', response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     deleteEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {

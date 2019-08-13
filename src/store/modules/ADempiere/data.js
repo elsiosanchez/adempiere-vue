@@ -160,7 +160,7 @@ const data = {
           })
       })
     },
-    notifyCellTableChange: ({ commit, state }, objectParams) => {
+    notifyCellTableChange: ({ commit, state, dispatch, rootGetters }, objectParams) => {
       var recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === objectParams.containerUuid
       })
@@ -170,19 +170,30 @@ const data = {
       var rowSelection = recordSelection.selection.find(itemRecord => {
         return itemRecord[objectParams.keyColumn] === objectParams.rowKey
       })
-
-      commit('notifyCellSelectionChange', {
-        row: rowSelection,
-        value: objectParams.newValue,
-        columnName: objectParams.columnName,
-        displayColumn: objectParams.displayColumn
-      })
       commit('notifyCellTableChange', {
         row: row,
         value: objectParams.newValue,
         columnName: objectParams.columnName,
         displayColumn: objectParams.displayColumn
       })
+
+      if (objectParams.panelType === 'browser') {
+        commit('notifyCellSelectionChange', {
+          row: rowSelection,
+          value: objectParams.newValue,
+          columnName: objectParams.columnName,
+          displayColumn: objectParams.displayColumn
+        })
+      }
+      var isReady = rootGetters.isReadyForSubmitRowTable(objectParams.containerUuid, row)
+      if (objectParams.panelType === 'window') {
+        if (isReady) {
+          dispatch('updateCurrentEntityFromTable', {
+            containerUuid: objectParams.containerUuid,
+            row: row
+          })
+        }
+      }
     }
   },
   getters: {
@@ -220,6 +231,18 @@ const data = {
     getPageCount: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
       return data.pageNumber
+    },
+    getRowData: (state, getters) => (containerUuid, recordUuid) => {
+      var data = getters.getDataRecordsList(containerUuid)
+      if (data) {
+        var row = data.find(itemData => {
+          if (itemData.UUID === recordUuid) {
+            return true
+          }
+        })
+        return row
+      }
+      return undefined
     },
     /**
      * Getter converter selection data record in format

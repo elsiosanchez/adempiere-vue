@@ -129,7 +129,8 @@ export default {
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
           rowKey: this.metadata.rowKey,
-          displayColumn: selected.label
+          displayColumn: selected.label,
+          panelType: this.metadata.panelType
         })
       } else {
         this.$store.dispatch('notifyFieldChange', {

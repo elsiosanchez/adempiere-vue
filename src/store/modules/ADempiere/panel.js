@@ -338,6 +338,22 @@ const panel = {
 
       return Boolean(!field)
     },
+    /**
+     * @param {string}  containerUuid
+     * @param {object} dataRow, values
+     */
+    isReadyForSubmitRowTable: (state, getters) => (containerUuid, dataRow) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var field = fieldList.find(fieldItem => {
+        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        const value = dataRow[fieldItem.columnName]
+        if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(value)) {
+          return true
+        }
+      })
+
+      return Boolean(!field)
+    },
     getEmptyMandatory: (state, getters) => (containerUuid) => {
       return getters.getFieldsListFromPanel(containerUuid).find(itemField => {
         if (itemField.isMandatory && itemField.isMandatoryFromLogic && isEmptyValue(itemField.value)) {

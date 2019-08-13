@@ -21,7 +21,7 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: String,
+      type: [String, Number],
       default: undefined
     }
   },
@@ -61,7 +61,8 @@ export default {
           newValue: this.value,
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey
+          rowKey: this.metadata.rowKey,
+          panelType: this.metadata.panelType
         })
       } else {
         this.$store.dispatch('notifyFieldChange', {

@@ -28,7 +28,7 @@
               index="delete"
               @click="deleteSelection()"
             >
-              Elimiar registros seleccionados
+              {{ $t('table.dataTable.deleteSelection') }}
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -102,7 +102,8 @@
                   displayColumn: scope.row['DisplayColumn_' + item.columnName],
                   tableIndex: scope.$index,
                   rowKey: scope.row[keyColumn],
-                  keyColumn: keyColumn
+                  keyColumn: keyColumn,
+                  recordUuid: scope.row.UUID
                 }"
                 :record-data-fields="scope.row[item.columnName]"
                 size="mini"
@@ -277,6 +278,11 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+    addNewRow() {
+      this.$store.dispatch('addNewRow', {
+        containerUuid: this.containerUuid
+      })
+    },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
         containerUuid: this.containerUuid,
@@ -368,7 +374,7 @@ export default {
       }
     },
     handleRowClick(row, column, event) {
-      if (this.isShowedPanelRecord) {
+      if (this.isShowedPanelRecord && this.isParent) {
         if (this.uuidCurrentRecordSelected !== row.UUID) {
           this.uuidCurrentRecordSelected = row.UUID
           // this.$store.dispatch('notifyPanelChange', {

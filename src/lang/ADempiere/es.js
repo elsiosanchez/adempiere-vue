@@ -114,7 +114,8 @@ export default {
     dataTable: {
       search: 'Buscar',
       records: 'Registros',
-      selected: 'Seleccionados'
+      selected: 'Seleccionados',
+      deleteSelection: 'Elimiar registros seleccionados'
     }
   },
   tagsView: {

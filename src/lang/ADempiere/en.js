@@ -114,7 +114,8 @@ export default {
     dataTable: {
       search: 'Search',
       records: 'Records',
-      selected: 'Selected'
+      selected: 'Selected',
+      deleteSelection: 'Delete selected records'
     }
   },
   example: {

@@ -8,7 +8,6 @@
               :parent-uuid="windowUuid"
               :container-uuid="windowMetadata.currentTab.uuid"
               :table-name="windowMetadata.currentTab.tableName"
-              :is-table-selection="false"
               :is-showed-panel-record="true"
               :is-parent="true"
             />
