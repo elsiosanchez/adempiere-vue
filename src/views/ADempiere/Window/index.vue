@@ -42,9 +42,18 @@
                     class="open-detail"
                   />
                   <el-button
+                    v-if="!isMobile"
                     v-show="!isShowedTabChildren"
                     icon="el-icon-caret-top"
                     class="open-table-detail"
+                    circle
+                    @click="handleChangeShowedTabChildren()"
+                  />
+                  <el-button
+                    v-else
+                    v-show="!isShowedTabChildren"
+                    icon="el-icon-caret-top"
+                    class="open-table-detail-mobile"
                     circle
                     @click="handleChangeShowedTabChildren()"
                   />
@@ -66,7 +75,7 @@
             </el-main>
             <el-header
               v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-              style="height: auto;"
+              style="height: auto; padding-right: 35px !important"
             >
               <div class="w-33">
                 <div class="center">
@@ -239,9 +248,14 @@ export default {
     width: 100%;
     background-color: transparent;
   }
+  .open-table-detail-mobile {
+    position: absolute;
+    right: 50%;
+    bottom: 4%;
+  }
   .open-table-detail {
     position: absolute;
-    right: 49%;
+    right: 50%;
     bottom: 4%;
     display: none;
   }
