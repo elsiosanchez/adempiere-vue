@@ -101,7 +101,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    class="loading-browser"
+    class="loading-window"
   />
 </template>
 
@@ -303,5 +303,8 @@ export default {
 .vertical-panes > .pane ~ .pane {
   border-left: 1px solid #ccc;
 }
-
+.loading-window {
+  padding: 100px 100px;
+  height: 100%;
+}
 </style>
