@@ -74,20 +74,20 @@ export const constantRoutes = [
     path: '',
     component: Layout,
     redirect: 'dashboard',
-    meta: { title: 'dashboard', icon: 'dashboard', affix: true },
+    meta: { title: 'dashboard', icon: 'dashboard', affix: true, breadcrumb: false },
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+        meta: { title: 'dashboard', icon: 'dashboard', affix: true, breadcrumb: false }
       }
     ]
   },
   {
     path: '/documentation',
     component: Layout,
-    meta: { title: 'documentation', icon: 'documentation', affix: true },
+    meta: { title: 'documentation', icon: 'documentation', affix: true, breadcrumb: false },
     children: [
       {
         path: 'index',
@@ -101,7 +101,7 @@ export const constantRoutes = [
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',
-    meta: { title: 'guide', icon: 'guide', noCache: true },
+    meta: { title: 'guide', icon: 'guide', noCache: true, breadcrumb: false },
     children: [
       {
         path: 'index',

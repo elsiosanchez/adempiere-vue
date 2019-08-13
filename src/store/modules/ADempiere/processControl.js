@@ -208,6 +208,7 @@ const processControl = {
               }
               var process = {
                 processUuid: responseItem.getUuid(),
+                processId: responseItem.getId(),
                 instanceUuid: responseItem.getInstanceuuid(),
                 isError: responseItem.getIserror(),
                 isProcessing: responseItem.getIsprocessing(),
