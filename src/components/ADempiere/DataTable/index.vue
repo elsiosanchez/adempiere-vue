@@ -47,8 +47,8 @@
         />
       </div>
       <div v-show="!isParent && panelType === 'window'" class="panel-expand">
-        <i class="el-icon-upload2" @click="expandPanel()" />
-        <i class="el-icon-download" @click="expandPanel(false)" />
+        <i class="el-icon-arrow-up" @click="expandPanel()" />
+        <i class="el-icon-arrow-down" @click="expandPanel(false)" />
       </div>
     </div>
     <el-table
@@ -581,7 +581,7 @@ export default {
   }
   .panel-expand {
     float: right;
-    padding-top: 2%;
+    padding-top: 4%;
     padding-right: 0%;
   }
   .fiel-optional {
