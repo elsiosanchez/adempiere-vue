@@ -96,6 +96,7 @@ export default {
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
+      this.value = this.blanckOption
     } else {
       this.checkDefaultValue()
     }
@@ -154,13 +155,9 @@ export default {
         value: parsedValue
       })
         .then(response => {
-          if (response.label !== null) {
-            this.value = response.label
-            this.options.push(response)
-            this.options.unshift(this.blanckOption)
-          } else {
-            this.getDataLookupList(true)
-          }
+          this.value = response.label
+          this.options.push(response)
+          this.options.unshift(this.blanckOption)
         })
         .catch(error => {
           console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
