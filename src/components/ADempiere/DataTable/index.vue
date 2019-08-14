@@ -281,7 +281,7 @@ export default {
           if (!this.isExpand) {
             return displayHeight - 550
           } else {
-            return displayHeight - 300
+            return displayHeight - 340
           }
           // return displayHeight - 520
         }
