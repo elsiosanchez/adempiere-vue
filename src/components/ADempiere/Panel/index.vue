@@ -156,10 +156,14 @@ export default {
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
+      isShowRecordNavigation: false,
       mutipleGroups: Boolean(this.panelType === 'window')
     }
   },
   computed: {
+    getterIsShowedRecordNavigation() {
+      return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+    },
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
     },
@@ -182,7 +186,7 @@ export default {
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView < 2 || !this.mutipleGroups) {
+      if (this.isMobile || this.groupsView < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -217,8 +221,11 @@ export default {
       this.firstGroup = firstGroup
 
       this.isLoadPanel = true
-      if (this.panelType === 'window' && this.uuidRecord && this.uuidRecord !== 'create-new') {
-        this.getData(this.tableName, this.uuidRecord)
+      if (this.panelType === 'window') {
+        this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
+        if (this.uuidRecord && this.uuidRecord !== 'create-new') {
+          this.getData(this.tableName, this.uuidRecord)
+        }
       }
     },
     /**
