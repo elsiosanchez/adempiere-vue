@@ -78,7 +78,11 @@ export default {
   methods: {
     generateTitle, // generateTitle by vue-i18n
     isActive(route) {
-      return route.path === this.$route.path
+      if (route.name === 'Report Viewer') {
+        return route.path === this.$route.path
+      } else {
+        return route.name === this.$route.name
+      }
     },
     filterAffixTags(routes, basePath = '/') {
       let tags = []
@@ -121,7 +125,7 @@ export default {
       const tags = this.$refs.tag
       this.$nextTick(() => {
         for (const tag of tags) {
-          if (tag.to.path === this.$route.path) {
+          if (tag.to.name === this.$route.name) {
             this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
