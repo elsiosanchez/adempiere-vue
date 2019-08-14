@@ -45,13 +45,13 @@
           :panel-type="panelType"
           class="fiel-optional"
         />
-        <div style="display: flex;height: 20px;padding-top: 20px;">
+        <div style="display: flex;height: 20px;padding-top: 20px;float: right;">
           <el-button
             v-show="isParent && panelType === 'window'"
             type="text"
             icon="el-icon-search"
             style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
-            @click="tableSearch()"
+            @click="searchRecordNavegation()"
           />
           <transition name="el-fade-in-linear">
             <div v-show="showSearch">
@@ -64,25 +64,10 @@
             </div>
           </transition>
         </div>
-        <!-- <div v-show="showSearch">
-          <el-input
-            v-model="searchTable"
-            size="mini"
-            :placeholder="$t('table.dataTable.search')"
-            clearable
-          />
-        </div>
-        <el-button
-          v-show="isParent && panelType === 'window'"
-          type="text"
-          icon="el-icon-search"
-          style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
-          @click="tableSearch()"
-        /> -->
       </div>
-      <div class="panel-expand">
-        <i v-show="!isParent && panelType === 'window'" style="cursor: pointer;" class="el-icon-arrow-up" @click="expandPanel()" />
-        <i v-show="!isParent && panelType === 'window'" style="cursor: pointer;" class="el-icon-arrow-down" @click="expandPanel(false)" />
+      <div v-show="!isParent && panelType === 'window'" class="panel-expand">
+        <i style="cursor: pointer;" class="el-icon-arrow-up" @click="expandPanel()" />
+        <i style="cursor: pointer;" class="el-icon-arrow-down" @click="expandPanel(false)" />
       </div>
     </div>
     <el-table
@@ -244,8 +229,7 @@ export default {
       isExpand: false,
       currentPage: 0,
       page: '',
-      uuidCurrentRecordSelected: '',
-      Search: false
+      uuidCurrentRecordSelected: ''
     }
   },
   computed: {
@@ -304,15 +288,6 @@ export default {
       }
     }
   },
-  watch: {
-    show(value) {
-      if (value) {
-        document.body.addEventListener('click', this.close)
-      } else {
-        document.body.removeEventListener('click', this.close)
-      }
-    }
-  },
   created() {
     // get tab with uuid
     this.getPanel()
@@ -323,7 +298,7 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
-    tableSearch() {
+    searchRecordNavegation() {
       this.showSearch = !this.showSearch
     },
     addNewRow() {
