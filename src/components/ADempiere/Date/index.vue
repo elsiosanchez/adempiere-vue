@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
+import { clientDateTime, isEmptyValue } from '@/utils/ADempiere'
 
 export default {
-  name: 'Date',
+  name: 'DateBase',
   props: {
     metadata: {
       type: Object,
@@ -28,7 +28,7 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: String,
+      type: [String, Number],
       default: undefined
     }
   },
@@ -59,6 +59,14 @@ export default {
       return 'date' + time + range
     }
   },
+  watch: {
+    valueModel(value) {
+      if (typeof value === 'number') {
+        value = new Date(value)
+      }
+      this.value = value
+    }
+  },
   created() {
     this.checkValueFormat()
     if (this.metadata.isRange) {
@@ -72,6 +80,7 @@ export default {
     }
   },
   methods: {
+    clientDateTime,
     isEmptyValue,
     /**
      * Parse the date format to be compatible with element-ui
@@ -90,12 +99,19 @@ export default {
         format = format + ' hh:mm:ss A'
       }
       this.formatView = format
-      this.formatSend = format
-        .replace(/[h]/gi, 'H')
-        .replace(/[aA]/gi, '')
+      // this.formatSend = format
+      //   .replace(/[h]/gi, 'H')
+      //   .replace(/[aA]/gi, '')
     },
     convertDateToTimestamp(value) {
       return (new Date(value)).getTime()
+    },
+    convertTimestampToString(value) {
+      var newValue = Number(value)
+      if (isNaN(newValue)) {
+        return newValue
+      }
+      return value
     },
     handleChange(value) {
       var valueFirst, valueTo
@@ -108,6 +124,10 @@ export default {
       if (valueFirst == null) {
         valueFirst = ''
         valueTo = ''
+      }
+      if (typeof valueFirst !== 'object') {
+        valueFirst = new Date(valueFirst)
+        valueTo = new Date(valueTo)
       }
 
       if (this.metadata.inTable) {

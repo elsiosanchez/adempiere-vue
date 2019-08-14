@@ -69,12 +69,12 @@ export function zeroPad(number, pad = 2) {
  * @returns {object|string}
  */
 export function clientDateTime(date = null, type = '') {
-  if (typeof date === 'string') {
-    // instance the objet Data with date or time send
-    date = new Date(date)
-  } else {
+  if (date == null || date === undefined || date.trim() === '') {
     // instance the objet Data with current date from client
     date = new Date()
+  } else {
+    // instance the objet Data with date or time send
+    date = new Date(date)
   }
 
   const currentDate = date.getFullYear() +

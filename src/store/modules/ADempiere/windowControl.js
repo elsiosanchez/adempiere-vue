@@ -63,8 +63,22 @@ const windowControl = {
         var panel = rootGetters.getPanel(parameters.containerUuid)
         var recordUuid = rootGetters.getUuid(parameters.containerUuid)
 
+        // TODO: Add support to Binary columns (BinaryData)
+        var columnsToDontSend = ['BinaryData']
+
         // attributes or fields
-        var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid)
+        var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid) //, 'oldValue')
+        finalAttributes = finalAttributes.filter(itemAttribute => {
+          if (columnsToDontSend.includes(itemAttribute.columnName)) {
+            return false
+          }
+          var field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
+          if (!field || !field.isUpdateable) {
+            return false
+          }
+          return true
+        })
+
         updateEntity({
           tableName: panel.tableName,
           recordUuid: recordUuid,

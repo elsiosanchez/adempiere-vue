@@ -2,7 +2,7 @@
   <div class="block">
     <el-timeline>
       <el-timeline-item v-for="(item, index) of recentItems" :key="index" placement="top" type="primary" size="large" :timestamp="String(item.updated)">
-        <router-link :to="{ name: item.menuUuid, params: { uuidRecord: (item.uuidRecord) ? item.uuidRecord : undefined }}">
+        <router-link :to="{ name: item.menuUuid, params: { action: (item.uuidRecord) ? item.uuidRecord : undefined }}">
           <el-card>
             <h4>
               {{ item.displayName }}

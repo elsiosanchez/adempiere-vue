@@ -40,7 +40,7 @@ const browserControl = {
           query: parsedQuery,
           whereClause: parsedWhereClause,
           orderByClause: browser.orderByClause,
-          parameters: finalParameters.parameters,
+          parameters: finalParameters.params,
           nextPageToken: nextPageToken
         }
         // Add validation compare browserSearchQueryParameters

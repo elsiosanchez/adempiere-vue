@@ -67,8 +67,9 @@ export function convertValuesMapToObject(map) {
 
 /**
  * Converted gRPC attributes to object
- * @param {object} fieldGRPC
- * @param {object} moreAttributes
+ * @param {object}  fieldGRPC
+ * @param {object}  moreAttributes, additional attributes
+ * @param {boolean} typeRange, indicate if this field is a range used as _To
  */
 export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) {
   var group = {}
@@ -194,9 +195,9 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     parentFieldsList: getParentFields(fieldGRPC),
     dependentFieldsList: [],
     reference: referenceValue,
-    contextInfo: convertContextInfoFromGRPC(
-      fieldGRPC.getContextinfo()
-    ),
+    // contextInfo: convertContextInfoFromGRPC(
+    //   fieldGRPC.getContextinfo()
+    // ),
     // TODO: Add support on server
     // app attributes
     isShowedFromUser: isShowedFromUser,

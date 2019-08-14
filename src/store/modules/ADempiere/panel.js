@@ -167,6 +167,15 @@ const panel = {
         return
       }
 
+      if (field.componentPath === 'Date') {
+        if (typeof params.newValue === 'number') {
+          params.newValue = new Date(params.newValue)
+        }
+        if (typeof params.newValue === 'number') {
+          params.valueTo = new Date(params.valueTo)
+        }
+      }
+
       //  Call context management
       dispatch('setContext', {
         ...params,

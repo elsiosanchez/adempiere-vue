@@ -598,7 +598,7 @@ export default {
   }
   .panel-expand {
     float: right;
-    padding-top: 2%;
+    padding-top: 4%;
     padding-right: 0%;
   }
   .fiel-optional {
