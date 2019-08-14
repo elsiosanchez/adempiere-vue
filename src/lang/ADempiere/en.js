@@ -116,6 +116,12 @@ export default {
       records: 'Records',
       selected: 'Selected',
       deleteSelection: 'Delete selected records'
+    },
+    recentItems: {
+      search: 'Filter by name, description or date',
+      date: 'Date',
+      name: 'Name',
+      description: 'Description'
     }
   },
   example: {

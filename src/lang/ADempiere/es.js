@@ -116,6 +116,12 @@ export default {
       records: 'Registros',
       selected: 'Seleccionados',
       deleteSelection: 'Elimiar registros seleccionados'
+    },
+    recentItems: {
+      search: 'Filtrar por nombre, descripción o fecha',
+      date: 'Fecha',
+      name: 'Nombre',
+      description: 'Descripción'
     }
   },
   tagsView: {
