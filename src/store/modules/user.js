@@ -66,7 +66,7 @@ const actions = {
   // get user info
   getInfo({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo(getToken()).then(response => {
         if (!response) {
           reject('Verification failed, please Login again.')
         }
@@ -80,12 +80,12 @@ const actions = {
         })
 
         dispatch('setMultipleContext', [
-          // { columnName: '#AD_USER_ID', value: response.id },
-          { columnName: '#AD_USER_NAME', value: response.name },
+          // { columnName: '#AD_User_ID', value: response.id },
+          { columnName: '#AD_User_Name', value: response.name },
           { columnName: '#AD_Role_ID', value: rol.id },
           { columnName: '#AD_Role_Name', value: rol.name },
-          { columnName: '#AD_CLIENT_ID', value: rol.clientId },
-          { columnName: '#AD_CLIENT_Name', value: rol.clientName }
+          { columnName: '#AD_Client_ID', value: rol.clientId },
+          { columnName: '#AD_Client_Name', value: rol.clientName }
         ], {
           root: true
         })

@@ -46,7 +46,7 @@ const lookup = {
      * tableName,
      * query
      */
-    getLookupList: ({ commit }, objectParams) => {
+    getLookupList: ({ commit, getters, rootGetters }, objectParams) => {
       return new Promise((resolve, reject) => {
         getLookupList(objectParams)
           .then(response => {
@@ -61,11 +61,17 @@ const lookup = {
                 key: key
               })
             })
+
+            const clientId = rootGetters.getContext({
+              columnName: '#AD_Client_ID'
+            })
+
             commit('addLoockupList', {
               list: options,
               tableName: objectParams.tableName,
               parsedQuery: objectParams.query,
-              roleUuid: getCurrentRole()
+              roleUuid: getCurrentRole(),
+              clientId: clientId
             })
             resolve(options)
           })
@@ -93,19 +99,27 @@ const lookup = {
     }
   },
   getters: {
-    getLookupItem: (state) => (params) => {
+    getLookupItem: (state, getters, rootState, rootGetters) => (params) => {
+      const clientId = rootGetters.getContext({
+        columnName: '#AD_Client_ID'
+      })
       return state.lookupItem.find(itemLookup => {
         return itemLookup.parsedDirectQuery === params.parsedDirectQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
+          itemLookup.clientId === clientId &&
           itemLookup.value === params.value
       })
     },
-    getLookupList: (state) => (params) => {
+    getLookupList: (state, getters, rootState, rootGetters) => (params) => {
+      const clientId = rootGetters.getContext({
+        columnName: '#AD_Client_ID'
+      })
       var lookup = state.lookupList.find(itemLookup => {
         return itemLookup.parsedQuery === params.parsedQuery &&
           itemLookup.tableName === params.tableName &&
-          itemLookup.roleUuid === getCurrentRole()
+          itemLookup.roleUuid === getCurrentRole() &&
+          itemLookup.clientId === clientId
       })
       if (lookup === undefined) {
         return []
