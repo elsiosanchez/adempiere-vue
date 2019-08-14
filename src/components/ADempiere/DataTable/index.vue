@@ -45,7 +45,7 @@
           :panel-type="panelType"
           class="fiel-optional"
         />
-        <div style="display: flex;height: 20px;padding-top: 20px;float: right;">
+        <div style="display: flex;height: 20px;padding-top: 10px;float: right;">
           <el-button
             v-show="isParent && panelType === 'window'"
             type="text"
@@ -81,7 +81,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="filterResult()"
+      :data="showSearch ? filterResult() : getterDataRecords"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -476,12 +476,6 @@ export default {
             if (this.panel.selectionColumn.length > 0) {
               if (this.panel.selectionColumn.indexOf(key) > -1 &&
                 String(rowItem[key]).includes(String(this.searchTable))) {
-                find = true
-                return find
-              }
-            } else {
-              // not selection column, search in all rows
-              if (String(rowItem[key]).includes(String(this.searchTable))) {
                 find = true
                 return find
               }
