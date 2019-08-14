@@ -45,10 +45,44 @@
           :panel-type="panelType"
           class="fiel-optional"
         />
+        <div style="display: flex;height: 20px;padding-top: 20px;">
+          <el-button
+            v-show="isParent && panelType === 'window'"
+            type="text"
+            icon="el-icon-search"
+            style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
+            @click="tableSearch()"
+          />
+          <transition name="el-fade-in-linear">
+            <div v-show="showSearch">
+              <el-input
+                v-model="searchTable"
+                size="mini"
+                :placeholder="$t('table.dataTable.search')"
+                clearable
+              />
+            </div>
+          </transition>
+        </div>
+        <!-- <div v-show="showSearch">
+          <el-input
+            v-model="searchTable"
+            size="mini"
+            :placeholder="$t('table.dataTable.search')"
+            clearable
+          />
+        </div>
+        <el-button
+          v-show="isParent && panelType === 'window'"
+          type="text"
+          icon="el-icon-search"
+          style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
+          @click="tableSearch()"
+        /> -->
       </div>
-      <div v-show="!isParent && panelType === 'window'" class="panel-expand">
-        <i class="el-icon-upload2" @click="expandPanel()" />
-        <i class="el-icon-download" @click="expandPanel(false)" />
+      <div class="panel-expand">
+        <i v-show="!isParent && panelType === 'window'" style="cursor: pointer;" class="el-icon-arrow-up" @click="expandPanel()" />
+        <i v-show="!isParent && panelType === 'window'" style="cursor: pointer;" class="el-icon-arrow-down" @click="expandPanel(false)" />
       </div>
     </div>
     <el-table
@@ -62,7 +96,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="getterDataRecords"
+      :data="filterResult()"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -195,6 +229,7 @@ export default {
       searchTable: '', // text from search
       showSearch: false, // show input from search,
       panel: {},
+      show: false,
       defaultMaxPagination: 100,
       fieldList: [],
       menuTable: '1',
@@ -209,7 +244,8 @@ export default {
       isExpand: false,
       currentPage: 0,
       page: '',
-      uuidCurrentRecordSelected: ''
+      uuidCurrentRecordSelected: '',
+      Search: false
     }
   },
   computed: {
@@ -256,7 +292,7 @@ export default {
         return table
       } else {
         if (this.isParent) {
-          return displayHeight - 210
+          return displayHeight - 250
         } else {
           if (!this.isExpand) {
             return displayHeight - 550
@@ -265,6 +301,15 @@ export default {
           }
           // return displayHeight - 520
         }
+      }
+    }
+  },
+  watch: {
+    show(value) {
+      if (value) {
+        document.body.addEventListener('click', this.close)
+      } else {
+        document.body.removeEventListener('click', this.close)
       }
     }
   },
@@ -278,6 +323,9 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+    tableSearch() {
+      this.showSearch = !this.showSearch
+    },
     addNewRow() {
       this.$store.dispatch('addNewRow', {
         containerUuid: this.containerUuid
