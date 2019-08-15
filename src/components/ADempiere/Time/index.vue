@@ -1,11 +1,9 @@
 <template>
   <el-time-picker
     v-model="value"
-    :value-format="metadata.VFormat"
     :picker-options="{
-      selectableRange: metadata.Range,
-      minTime: metadata.valueMin,
-      maxTime: metadata.valueMax
+      minTime: minValue,
+      maxTime: maxValue
     }"
     :is-range="isPickerRange"
     range-separator="-"
@@ -18,6 +16,8 @@
 </template>
 
 <script>
+import { isEmptyValue } from '@/utils/ADempiere'
+
 export default {
   name: 'TimeBase',
   props: {
@@ -27,7 +27,7 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: String,
+      type: [String, Number],
       default: undefined
     }
   },
@@ -49,10 +49,25 @@ export default {
         return true
       }
       return false
+    },
+    maxValue() {
+      if (!this.isEmptyValue(this.metadata.valueMax)) {
+        return Number(this.metadata.valueMax)
+      }
+      return Infinity
+    },
+    minValue() {
+      if (!this.isEmptyValue(this.metadata.valueMin)) {
+        return Number(this.metadata.valueMin)
+      }
+      return -Infinity
     }
   },
   watch: {
     valueModel(value) {
+      if (typeof value === 'number') {
+        value = new Date(value)
+      }
       this.value = value
     }
   },
@@ -63,7 +78,12 @@ export default {
     }
   },
   methods: {
+    isEmptyValue,
     handleChange(value) {
+      if (typeof value !== 'object') {
+        value = new Date(value)
+      }
+
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
@@ -88,8 +108,8 @@ export default {
 }
 </script>
 
-<style>
-  .tiem-base {
+<style scoped>
+  .time-base {
     width: 100% !important;
   }
 </style>

@@ -69,7 +69,7 @@ export function zeroPad(number, pad = 2) {
  * @returns {object|string}
  */
 export function clientDateTime(date = null, type = '') {
-  if (date == null || date === undefined || date.trim() === '') {
+  if (date == null || date === undefined || (typeof date === 'string' && date.trim() === '')) {
     // instance the objet Data with current date from client
     date = new Date()
   } else {

@@ -130,13 +130,7 @@
               />
             </template>
             <span v-else>
-              <template v-if="typeof scope.row[item.columnName] === 'boolean'">
-                <!-- replace boolean true-false value for 'Yes' or 'Not' -->
-                {{ scope.row[item.columnName] ? $t('components.switchActiveText') : $t('components.switchInactiveText') }}
-              </template>
-              <template v-else>
-                {{ scope.row['DisplayColumn_' + item.columnName] || scope.row[item.columnName] }}
-              </template>
+              {{ displayedValue(scope.row, item) }}
             </span>
           </template>
         </el-table-column>
@@ -166,6 +160,7 @@ import Sortable from 'sortablejs'
 import FilterColumns from '@/components/ADempiere/DataTable/filterColumns'
 import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
+import { formatDate } from '@/filters/ADempiere'
 
 export default {
   name: 'DataTable',
@@ -298,6 +293,22 @@ export default {
     this.toggleSelection(this.getDataSelection)
   },
   methods: {
+    /**
+     * @param {object} row, row data
+     * @param {object} field, field with attributes
+     */
+    displayedValue(row, field) {
+      if (typeof row[field.columnName] === 'boolean') {
+        // replace boolean true-false value for 'Yes' or 'Not'
+        return row[field.columnName] ? this.$t('components.switchActiveText') : this.$t('components.switchInactiveText')
+      } else if (field.componentPath === 'Date' || field.componentPath === 'Time') {
+        // replace number timestamp value for date
+        return formatDate(row[field.columnName], field.referenceType)
+        // return typeof row[field.columnName] === 'number' ? new Date.UTC(row[field.columnName]) : row[field.columnName]
+      } else {
+        return row['DisplayColumn_' + field.columnName] || row[field.columnName]
+      }
+    },
     searchRecordNavegation() {
       this.showSearch = !this.showSearch
     },
