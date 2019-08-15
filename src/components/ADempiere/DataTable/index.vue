@@ -66,8 +66,8 @@
         </div>
       </div>
       <div v-show="!isParent && panelType === 'window'" class="panel-expand">
-        <i style="cursor: pointer;" class="el-icon-arrow-up" @click="expandPanel()" />
-        <i style="cursor: pointer;" class="el-icon-arrow-down" @click="expandPanel(false)" />
+        <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" />
+        <!-- <i style="cursor: pointer;" class="el-icon-arrow-down" @click="expandPanel(false)" /> -->
       </div>
     </div>
     <el-table
@@ -276,7 +276,7 @@ export default {
           if (!this.isExpand) {
             return displayHeight - 550
           } else {
-            return displayHeight - 340
+            return displayHeight - 350
           }
           // return displayHeight - 520
         }
@@ -338,8 +338,8 @@ export default {
     fixedPanel() {
       this.isFixed = !this.isFixed
     },
-    expandPanel(option = true) {
-      this.isExpand = option
+    expandPanel() {
+      this.isExpand = !this.isExpand
     },
     /**
      * ASOCIATE WITH SEARCH INPUT
@@ -450,6 +450,11 @@ export default {
       // if (this.isAllSelected(rows.length)) {
       //   index.isEdit = true
       // }
+      console.log(this.$store.dispatch('recordSelection', {
+        containerUuid: this.containerUuid,
+        selection: rowsSelection,
+        record: this.getterDataRecords
+      }))
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: rowsSelection,
@@ -609,7 +614,7 @@ export default {
   }
   .panel-expand {
     float: right;
-    padding-top: 4%;
+    padding-top: 2%;
     padding-right: 0%;
   }
   .fiel-optional {

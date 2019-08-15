@@ -39,6 +39,7 @@
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
+                    :in-group="getterIsShowedRecordNavigation"
                   />
                 </template>
               </el-row>
@@ -213,6 +214,7 @@ export default {
     generatePanel(fieldList) {
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
+      console.log(this.fieldGroups)
       var firstGroup
       if (this.fieldGroups[0] && this.fieldGroups[0].groupFinal === '') {
         firstGroup = this.fieldGroups[0]

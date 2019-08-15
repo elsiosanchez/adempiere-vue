@@ -172,12 +172,16 @@ const window = {
               panelType: panelType
             }
 
+            var fieldUuidsequence = 0
             //  Convert from gRPC
             fieldsList = fieldsList.map((item, index) => {
               item = convertField(item, {
                 ...additionalAttributes,
                 fieldListIndex: index
               })
+              if (item.sequence > fieldUuidsequence) {
+                fieldUuidsequence = item.sequence
+              }
               return item
             })
 
@@ -196,7 +200,10 @@ const window = {
               })
 
             if (!fieldsList.find(field => field.columnName === 'UUID')) {
-              var field = getFieldTemplate()
+              var attributesOverwrite = {
+                sequence: (fieldUuidsequence + 10)
+              }
+              var field = getFieldTemplate(attributesOverwrite)
               field.columnName = 'UUID'
               fieldsList.push(field)
             }

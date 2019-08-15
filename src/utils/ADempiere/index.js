@@ -248,7 +248,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
 }
 
 // Default template for injected fields
-export function getFieldTemplate() {
+export function getFieldTemplate(attributesOverwrite) {
   var group = {
     name: '',
     fieldGroupType: ''
@@ -265,7 +265,7 @@ export function getFieldTemplate() {
     validationCode: '',
     zoomWindowList: zoomWindowList
   }
-  return {
+  var newField = {
     id: 0,
     uuid: '',
     name: '',
@@ -316,6 +316,7 @@ export function getFieldTemplate() {
     isShowedFromUser: false,
     isFixedTableColumn: false
   }
+  return Object.assign(newField, attributesOverwrite)
 }
 
 /**

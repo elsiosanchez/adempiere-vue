@@ -9,6 +9,7 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
+        style="height: 65vh;overflow: auto;"
       >
         <panel
           :parent-uuid="windowUuid"
@@ -100,9 +101,10 @@ export default {
   }
 }
 </script>
-<style>
-  .el-tabs__content {
-    overflow: hidden;
+<style scoped>
+.el-tabs__content {
+    height: 67vh;
+    overflow: auto;
     position: relative;
     padding-top: 0px !important;
     padding-right: 15px !important;
