@@ -41,6 +41,13 @@ export default {
     }
   },
   computed: {
+    getterValue() {
+      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
+      if (field) {
+        return field.value
+      }
+      return undefined
+    },
     maxValue() {
       if (!this.isEmptyValue(this.metadata.valueMax)) {
         return Number(this.metadata.valueMax)
