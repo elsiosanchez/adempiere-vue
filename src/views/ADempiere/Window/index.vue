@@ -314,3 +314,14 @@ export default {
   height: 100%;
 }
 </style>
+<style>
+  .el-tabs__content {
+    height: 67vh;
+    overflow: auto;
+    position: relative;
+    padding-top: 0px !important;
+    padding-right: 15px !important;
+    padding-bottom: 0px !important;
+    padding-left: 15px !important;
+  }
+</style>
