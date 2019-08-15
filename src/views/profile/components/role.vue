@@ -50,6 +50,7 @@
 <script>
 import { getLanguage } from '@/lang'
 import { showMessage } from '@/utils/ADempiere'
+import { resetRouter } from '@/router'
 
 export default {
   name: 'ProfileRole',
@@ -76,6 +77,9 @@ export default {
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    permissionRoutes() {
+      return this.$store.getters.permission_routes
     }
   },
   created() {
@@ -84,6 +88,7 @@ export default {
   },
   methods: {
     showMessage,
+    resetRouter,
     handleChange(valueSelected) {
       this.$message({
         message: this.$t('notifications.loading'),
@@ -96,7 +101,13 @@ export default {
             type: 'success'
           })
           this.$store.dispatch('permission/generateRoutes', response.name)
-          location.reload()
+            .then(response => {
+              this.resetRouter()
+              response.forEach((element) => {
+                this.$router.resolve(element)
+              })
+              this.$router.addRoutes(response)
+            })
         })
     },
     changeLanguage(languageValue) {
