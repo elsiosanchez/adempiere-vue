@@ -229,6 +229,11 @@ export default {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
           this.getData(this.tableName, this.uuidRecord)
+        } else {
+          this.$message({
+            message: this.$t('data.createNewRecord'),
+            showClose: true
+          })
         }
       }
     },

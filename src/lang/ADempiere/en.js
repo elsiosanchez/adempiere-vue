@@ -183,6 +183,7 @@ export default {
     emtpyTableName: 'Error: Table Name is not defined',
     errorGetData: 'Error getting data records',
     createRecordSuccessful: 'New record created successfully',
+    createNewRecord: 'Mode New record',
     createRecordError: 'Error creating new record',
     deleteRecordSuccessful: 'Record deleted successfully',
     deleteRecordError: 'Error deleting record'
