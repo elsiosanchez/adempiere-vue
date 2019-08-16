@@ -1,7 +1,7 @@
 <template>
-  <el-container v-if="isLoading" style="height: 86vh; border: 1px solid #eee">
+  <el-container v-if="isLoading" style="height: 90; border: 1px solid #eee">
     <multipane class="vertical-panes" layout="vertical">
-      <div v-show="isShowedRecordNavigation" class="pane" :style="isMobile ? { minWidth: '10%', width: '100%', maxWidth: '100%' } : { minWidth: '10%', width: '80%', maxWidth: '100%' }">
+      <div v-show="isShowedRecordNavigation" class="pane" :style="isMobile ? { minWidth: '10%', width: '100%', maxWidth: '100%' } : { minWidth: '10%', width: '70%', maxWidth: '100%' }">
         <div>
           <el-aside v-show="isShowedRecordNavigation" width="100%">
             <i
@@ -23,8 +23,8 @@
       <multipane-resizer />
       <div v-show="!isMobile || !isShowedRecordNavigation" class="pane" :style="{ width: '100%', maxWidth: '100%' }">
         <div>
-          <el-container style="height: 80vh;">
-            <el-header style="height: 40px;">
+          <el-container style="height: 88vh;">
+            <el-header style="height: 25px;">
               <context-menu
                 :menu-parent-uuid="$route.meta.parentUuid"
                 :parent-uuid="windowUuid"
@@ -47,18 +47,10 @@
                     class="open-detail"
                   />
                   <el-button
-                    v-if="!isMobile"
+                    v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
                     v-show="!isShowedTabChildren"
                     icon="el-icon-caret-top"
-                    class="open-table-detail"
-                    circle
-                    @click="handleChangeShowedTabChildren()"
-                  />
-                  <el-button
-                    v-else
-                    v-show="!isShowedTabChildren"
-                    icon="el-icon-caret-top"
-                    class="open-table-detail-mobile"
+                    :class="isMobile ? 'open-table-detail-mobile' : 'open-table-detail'"
                     circle
                     @click="handleChangeShowedTabChildren()"
                   />
@@ -80,7 +72,7 @@
             </el-main>
             <el-header
               v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-              style="height: auto; padding-right: 35px !important"
+              style="height: auto; padding-right: 35px !important;padding-bottom: 33px;"
             >
               <div class="w-33">
                 <div class="center">
@@ -297,7 +289,7 @@ export default {
   }
 .vertical-panes {
   width: 100%;
-  height: 85vh;
+  height: 90vh;
   border: 1px solid #ccc;
 }
 .vertical-panes > .pane {

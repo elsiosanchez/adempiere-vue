@@ -163,7 +163,10 @@ export default {
   },
   computed: {
     getterIsShowedRecordNavigation() {
-      return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+      if (this.panelType === 'window') {
+        return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+      }
+      return false
     },
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
@@ -214,7 +217,6 @@ export default {
     generatePanel(fieldList) {
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
-      console.log(this.fieldGroups)
       var firstGroup
       if (this.fieldGroups[0] && this.fieldGroups[0].groupFinal === '') {
         firstGroup = this.fieldGroups[0]
