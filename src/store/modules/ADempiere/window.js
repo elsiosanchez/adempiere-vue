@@ -272,7 +272,10 @@ const window = {
     },
     getIsShowedRecordNavigation: (state, getters) => (windowUuid) => {
       var window = getters.getWindow(windowUuid)
-      return window.currentTab.isShowedRecordNavigation
+      if (window) {
+        return window.currentTab.isShowedRecordNavigation
+      }
+      return false
     },
     getTab: (state, getters) => (windowUuid, tabUuid) => {
       var window = getters.getWindow(windowUuid)
