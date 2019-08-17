@@ -6,7 +6,7 @@ const state = {
 const mutations = {
   ADD_VISITED_VIEW: (state, view) => {
     if (view.name === 'Report Viewer') {
-      if (state.visitedViews.some(v => v.path === view.path)) return
+      if (state.visitedViews.some(v => v.params && v.params.processId === view.params.processId)) return
       state.visitedViews.push(
         Object.assign({}, view, {
           title: view.meta.title || 'no-name'

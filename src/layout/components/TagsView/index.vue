@@ -6,7 +6,7 @@
         ref="tag"
         :key="tag.path"
         :class="isActive(tag)?'active':''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+        :to="{ name: tag.name, path: tag.path, query: tag.query, fullPath: tag.fullPath, params: tag.params }"
         tag="span"
         class="tags-view-item"
         @click.middle.native="closeSelectedTag(tag)"
@@ -79,7 +79,11 @@ export default {
     generateTitle, // generateTitle by vue-i18n
     isActive(route) {
       if (route.name === 'Report Viewer') {
-        return route.path === this.$route.path
+        if (route.params.processId === this.$route.params.processId) {
+          return route.params.processId === this.$route.params.processId
+        } else {
+          return route.path === this.$route.path
+        }
       } else {
         return route.name === this.$route.name
       }
@@ -125,6 +129,11 @@ export default {
       const tags = this.$refs.tag
       this.$nextTick(() => {
         for (const tag of tags) {
+          if (this.$route.name === 'Report Viewer') {
+            if (tag.to.params.processId === this.$route.params.processId) {
+              this.$refs.scrollPane.moveToTarget(tag)
+            }
+          }
           if (tag.to.name === this.$route.name) {
             this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
