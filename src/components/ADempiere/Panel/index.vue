@@ -217,7 +217,6 @@ export default {
     generatePanel(fieldList) {
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
-      console.log(this.fieldGroups)
       var firstGroup
       if (this.fieldGroups[0] && this.fieldGroups[0].groupFinal === '') {
         firstGroup = this.fieldGroups[0]
@@ -230,6 +229,11 @@ export default {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
           this.getData(this.tableName, this.uuidRecord)
+        } else {
+          this.$message({
+            message: this.$t('data.createNewRecord'),
+            showClose: true
+          })
         }
       }
     },

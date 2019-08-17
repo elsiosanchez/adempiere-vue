@@ -271,12 +271,12 @@ export default {
         return table
       } else {
         if (this.isParent) {
-          return displayHeight - 250
+          return displayHeight - 205
         } else {
           if (!this.isExpand) {
-            return displayHeight - 550
+            return displayHeight - 750
           } else {
-            return displayHeight - 350
+            return displayHeight - 320
           }
           // return displayHeight - 520
         }
@@ -450,11 +450,13 @@ export default {
       // if (this.isAllSelected(rows.length)) {
       //   index.isEdit = true
       // }
-      console.log(this.$store.dispatch('recordSelection', {
-        containerUuid: this.containerUuid,
-        selection: rowsSelection,
-        record: this.getterDataRecords
-      }))
+      // console.log(rowsSelection, this.getterDataRecords)
+      // console.log(rowSelected)
+      // console.log(this.$store.dispatch('recordSelection', {
+      //   containerUuid: this.containerUuid,
+      //   selection: rowsSelection,
+      //   record: this.getterDataRecords
+      // }))
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: rowsSelection,
