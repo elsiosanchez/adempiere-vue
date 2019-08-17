@@ -163,7 +163,10 @@ export default {
   },
   computed: {
     getterIsShowedRecordNavigation() {
-      return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+      if (this.panelType === 'window') {
+        return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+      }
+      return false
     },
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
