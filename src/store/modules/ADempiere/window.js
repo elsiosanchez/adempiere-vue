@@ -36,9 +36,9 @@ const window = {
               id: response.getId(),
               uuid: windowUuid,
               name: response.getName(),
-              contextInfo: convertContextInfoFromGRPC(response.getContextinfo())
+              contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
+              windowType: response.getWindowtype()
             }
-
             var tabs = response.getTabsList()
             var firstTab = tabs[0].getTablename()
             var childrenTabs = []

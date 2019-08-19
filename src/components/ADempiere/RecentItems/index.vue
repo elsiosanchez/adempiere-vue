@@ -6,7 +6,6 @@
     <el-table
       v-loading="isLoaded"
       :data="recentItems.filter(data => !search || data.displayName.toLowerCase().includes(search.toLowerCase()) || data.description.toLowerCase().includes(search.toLowerCase()) || String(data.updated).toLowerCase().includes(search.toLowerCase()))"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
