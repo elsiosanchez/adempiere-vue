@@ -10,6 +10,7 @@
         :name="String(key)"
         :lazy="true"
         style="height: 80vh;overflow: auto;"
+        :disabled="Boolean(key > 0 && uuidRecord === 'create-new')"
       >
         <panel
           :parent-uuid="windowUuid"
@@ -46,7 +47,7 @@ export default {
     return {
       isLoading: false,
       currentTab: this.$route.params.tabNumber,
-      uuidRecord: this.$route.params.uuidRecord,
+      uuidRecord: this.$route.params.action,
       tabUuid: '',
       panelType: 'window'
     }

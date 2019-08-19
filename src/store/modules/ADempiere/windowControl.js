@@ -73,7 +73,7 @@ const windowControl = {
             return false
           }
           var field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
-          if (!field || !field.isUpdateable) {
+          if (!field || !field.isUpdateable || !field.isDisplayed) {
             return false
           }
           return true
@@ -105,7 +105,7 @@ const windowControl = {
           return false
         }
         var field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
-        if (!field || !field.isUpdateable) {
+        if (!field || !field.isUpdateable || !field.isDisplayed) {
           return false
         }
         return true
