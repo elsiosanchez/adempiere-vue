@@ -171,6 +171,9 @@ export default {
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
     },
+    getValueName() {
+      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)[4].value
+    },
     getterRecordUuid() {
       return this.$store.getters.getUuid(this.containerUuid)
     },
@@ -230,10 +233,17 @@ export default {
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
           this.getData(this.tableName, this.uuidRecord)
         } else {
-          this.$message({
-            message: this.$t('data.createNewRecord'),
-            showClose: true
-          })
+          if (this.getValueName !== '') {
+            this.$message({
+              message: this.$t('data.Draft') + this.getValueName,
+              showClose: true
+            })
+          } else {
+            this.$message({
+              message: this.$t('data.createNewRecord'),
+              showClose: true
+            })
+          }
         }
       }
     },

@@ -157,8 +157,10 @@ export default {
   data: {
     emtpyTableName: 'Error: El nombre de la tabla no esta definida',
     errorGetData: 'Error obteniendo los datos de registro',
-    createRecordSuccessful: 'Nuevo registro creado con exito',
-    createNewRecord: 'Modo nuevo registro',
+    createRecordSuccessful: 'Nuevo registro ',
+    exitRecord: ' creado con exito',
+    createNewRecord: 'Ventana modo nuevo registro',
+    Draft: 'La ventana quedó en modo borrador con el registro ',
     createRecordError: 'Error al crear nuevo registro',
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
     deleteRecordError: 'Error al eliminar el regitro'

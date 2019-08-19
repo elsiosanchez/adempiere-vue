@@ -40,7 +40,7 @@ const windowControl = {
               tableName: response.getTablename()
             }
             showMessage({
-              message: language.t('data.createRecordSuccessful'),
+              message: language.t('data.createRecordSuccessful') + result.data.Name + language.t('data.exitRecord'),
               type: 'success'
             })
 

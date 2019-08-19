@@ -1,5 +1,5 @@
 <template>
-  <el-container v-if="isLoading" style="height: 90; border: 1px solid #eee">
+  <el-container v-if="isLoading" style="height: 90vh;border: 1px solid rgb(238, 238, 238);">
     <multipane class="vertical-panes" layout="vertical">
       <div v-show="isShowedRecordNavigation" class="pane" :style="isMobile ? { minWidth: '10%', width: '100%', maxWidth: '100%' } : { minWidth: '10%', width: '70%', maxWidth: '100%' }">
         <div>
@@ -289,7 +289,7 @@ export default {
   }
 .vertical-panes {
   width: 100%;
-  height: 90vh;
+  border: 1px solid #ccc;
   border: 1px solid #ccc;
 }
 .vertical-panes > .pane {
