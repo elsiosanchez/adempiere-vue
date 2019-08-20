@@ -161,8 +161,6 @@ export default {
       var window = this.getterWindow
       if (window) {
         this.windowMetadata = window
-        console.log(this.windowMetadata.windowType)
-        console.log(this.isShowedRecordNavigation)
         this.windowMetadata.panelType = this.panelType
         this.listRecordNavigation = this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
         if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
