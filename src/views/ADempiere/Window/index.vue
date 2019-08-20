@@ -1,5 +1,5 @@
 <template>
-  <el-container v-if="isLoading" style="height: 90; border: 1px solid #eee">
+  <el-container v-if="isLoading" style="height: 86; border: 1px solid #eee">
     <modal-dialog />
     <multipane class="vertical-panes" layout="vertical">
       <div v-show="isShowedRecordNavigation" class="pane" :style="isMobile ? { minWidth: '10%', width: '100%', maxWidth: '100%' } : { minWidth: '10%', width: '70%', maxWidth: '100%' }">
@@ -245,8 +245,8 @@ export default {
     -webkit-box-flex: 1;
     flex: 1;
     flex-basis: auto;
-    overflow: hidden;
-    height: 90vh;
+    overflow: auto;
+    height: 40vh;
     box-sizing: border-box;
     padding-top: 0px;
     padding-right: 20px;
@@ -307,7 +307,7 @@ export default {
   }
 .vertical-panes {
   width: 100%;
-  height: 90vh;
+  height: 85vh;
   border: 1px solid #ccc;
 }
 .vertical-panes > .pane {
