@@ -171,9 +171,6 @@ export default {
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
     },
-    getValueName() {
-      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)[4].value
-    },
     getterRecordUuid() {
       return this.$store.getters.getUuid(this.containerUuid)
     },
