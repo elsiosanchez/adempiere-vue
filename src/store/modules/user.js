@@ -2,6 +2,7 @@ import { login, logout, getInfo, changeRole } from '@/api/user'
 import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
 
 const state = {
   token: getToken(),
@@ -64,9 +65,12 @@ const actions = {
     })
   },
   // get user info
-  getInfo({ commit, state, dispatch }) {
+  getInfo({ commit, state, dispatch }, sessionUuid = null) {
+    if (!sessionUuid) {
+      sessionUuid = getToken()
+    }
     return new Promise((resolve, reject) => {
-      getInfo(getToken()).then(response => {
+      getInfo(sessionUuid).then(response => {
         if (!response) {
           reject('Verification failed, please Login again.')
         }
@@ -80,12 +84,16 @@ const actions = {
         })
 
         dispatch('setMultipleContext', [
-          // { columnName: '#AD_User_ID', value: response.id },
           { columnName: '#AD_User_Name', value: response.name },
           { columnName: '#AD_Role_ID', value: rol.id },
           { columnName: '#AD_Role_Name', value: rol.name },
           { columnName: '#AD_Client_ID', value: rol.clientId },
-          { columnName: '#AD_Client_Name', value: rol.clientName }
+          { columnName: '#AD_Client_Name', value: rol.clientName },
+          { columnName: '#Date', value: clientDateTime() },
+          // TODO: Support in request
+          // { columnName: '#AD_User_ID', value: response.id },
+          { columnName: '#SysAdmin', value: 'Y' },
+          { columnName: '#User_Level', value: 'S' }
         ], {
           root: true
         })
@@ -127,7 +135,7 @@ const actions = {
     })
   },
   // dynamically modify permissions
-  changeRoles({ commit, state }, roleUuid) {
+  changeRoles({ commit, state, dispatch }, roleUuid) {
     /**
      * @param {string} attributes.sessionUuid
      * @param {string} attributes.roleUuid
@@ -146,6 +154,10 @@ const actions = {
         setCurrentRole(rol.uuid)
         commit('SET_TOKEN', response.getUuid())
         setToken(response.getUuid())
+
+        // Update user info and context associated with session
+        dispatch('getInfo', response.getUuid())
+
         resolve({
           ...rol,
           sessionUuid: response.getUuid()

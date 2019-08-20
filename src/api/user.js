@@ -47,7 +47,7 @@ export function getInfo(token) {
           organizationList: itemRol.getOrganizationsList()
         }
       })
-      // TODO: Add user.id in request
+      // TODO: Add user.id, user.level in request
       var user = session.getUserinfo()
 
       const response = {

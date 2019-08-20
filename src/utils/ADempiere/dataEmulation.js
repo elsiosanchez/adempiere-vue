@@ -1,4 +1,3 @@
-import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
 
 export function contextInitial() {
   var contex = new Map()
@@ -6,7 +5,6 @@ export function contextInitial() {
   contex.set('AutoNew', 'Y')
   contex.set('Login.RememberMe', 'Y')
 
-  contex.set('#Date', clientDateTime())
   contex.set('#YYYY', 'Y')
   contex.set('#AD_Session_ID', 1001424)
   contex.set('#UI', 'WebUI')
@@ -19,10 +17,6 @@ export function contextInitial() {
 
   contex.set('#AD_Org_ID', 0)
   contex.set('#AD_Org_Name', '*')
-  contex.set('#AD_Client_ID', 0)
-  contex.set('#AD_Client_Name', 'System')
-  contex.set('#SysAdmin', 'Y')
-  contex.set('#User_Level', 'S')
 
   contex.set('#AD_PrintColor_ID', 100)
   contex.set('#AD_PrintFont_ID', 163)
