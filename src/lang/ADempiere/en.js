@@ -184,8 +184,9 @@ export default {
     errorGetData: 'Error getting data records',
     createRecordSuccessful: 'new record ',
     exitRecord: ' created successfully',
-    createNewRecord: 'New registration mode window',
-    Draft: 'The window is in draft mode with the registration ',
+    createNewRecord: ' is in new registration mode',
+    Draft: 'The window ',
+    modeDraft: ' is in edit mode',
     createRecordError: 'Error creating new record',
     deleteRecordSuccessful: 'Record deleted successfully',
     deleteRecordError: 'Error deleting record'

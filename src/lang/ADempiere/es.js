@@ -159,8 +159,9 @@ export default {
     errorGetData: 'Error obteniendo los datos de registro',
     createRecordSuccessful: 'Nuevo registro ',
     exitRecord: ' creado con exito',
-    createNewRecord: 'Ventana modo nuevo registro',
-    Draft: 'La ventana quedó en modo borrador con el registro ',
+    createNewRecord: ' se encuentra en modo nuevo registro',
+    Draft: 'La ventana ',
+    modeDraft: ' se encuentra en modo edición',
     createRecordError: 'Error al crear nuevo registro',
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
     deleteRecordError: 'Error al eliminar el regitro'

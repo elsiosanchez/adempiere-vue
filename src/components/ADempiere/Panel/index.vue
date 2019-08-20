@@ -233,17 +233,10 @@ export default {
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
           this.getData(this.tableName, this.uuidRecord)
         } else {
-          if (this.getValueName !== '') {
-            this.$message({
-              message: this.$t('data.Draft') + this.getValueName,
-              showClose: true
-            })
-          } else {
-            this.$message({
-              message: this.$t('data.createNewRecord'),
-              showClose: true
-            })
-          }
+          this.$message({
+            message: this.$t('data.Draft') + this.metadata.name + this.$t('data.modeDraft'),
+            showClose: true
+          })
         }
       }
     },
