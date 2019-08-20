@@ -1,5 +1,6 @@
 <template>
   <el-container v-if="isLoading" style="height: 90; border: 1px solid #eee">
+    <modal-dialog />
     <multipane class="vertical-panes" layout="vertical">
       <div v-show="isShowedRecordNavigation" class="pane" :style="isMobile ? { minWidth: '10%', width: '100%', maxWidth: '100%' } : { minWidth: '10%', width: '70%', maxWidth: '100%' }">
         <div>
@@ -56,7 +57,6 @@
                   />
                 </div>
               </div>
-              <modal-dialog />
               <div class="small-4 columns">
                 <div class="w">
                   <div class="open-left" />
@@ -112,6 +112,7 @@ import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
+// import splitPane from 'vue-splitpane'
 
 export default {
   name: 'Window',
@@ -122,6 +123,7 @@ export default {
     DataTable,
     Multipane,
     MultipaneResizer,
+    // splitPane,
     ModalDialog
   },
   data() {
@@ -243,8 +245,8 @@ export default {
     -webkit-box-flex: 1;
     flex: 1;
     flex-basis: auto;
-    overflow: auto;
-    height: 35vh;
+    overflow: hidden;
+    height: 90vh;
     box-sizing: border-box;
     padding-top: 0px;
     padding-right: 20px;
