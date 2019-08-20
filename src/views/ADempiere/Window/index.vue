@@ -130,8 +130,10 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
+      listRecordNavigation: [],
       uuidRecord: this.$route.params.uuidRecord,
       isShowedTabChildren: true,
+      isWindowType: '',
       isShowedRecordNavigation: false
     }
   },
@@ -139,20 +141,34 @@ export default {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
+    getterIsShowedRecordNavigation() {
+      if (this.panelType === 'window') {
+        return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+      }
+      return false
+    },
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
     }
   },
-  created() {
+  mounted() {
     this.getWindow()
   },
+  // created() {
+  //   this.getWindow()
+  // },
   methods: {
     getWindow() {
       var window = this.getterWindow
       if (window) {
         this.windowMetadata = window
         this.windowMetadata.panelType = this.panelType
-        this.isShowedRecordNavigation = this.windowMetadata.currentTab.isShowedRecordNavigation
+        this.listRecordNavigation = this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
+        if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
+          this.isShowedRecordNavigation = true
+        } else if (this.windowMetadata.windowType === 'T') {
+          this.isShowedRecordNavigation = false
+        }
         this.isShowedTabChildren = this.windowMetadata.isShowedDetail
         this.isLoading = true
       } else {
@@ -160,7 +176,7 @@ export default {
           .then(response => {
             this.windowMetadata = response
             this.windowMetadata.panelType = this.panelType
-            this.isShowedRecordNavigation = this.windowMetadata.currentTab.isShowedRecordNavigation
+            this.isShowedRecordNavigation = this.isShowedRecordNavigation
             this.isShowedTabChildren = this.windowMetadata.isShowedDetail
             this.isLoading = true
           })
