@@ -1,6 +1,6 @@
 <template>
   <div class="recent-items">
-    <div class="header">
+    <!-- <div class="header">
       <el-input v-model="search" :placeholder="$t('table.recentItems.search')" />
     </div>
     <el-table
@@ -19,7 +19,17 @@
       </el-table-column>
       <el-table-column :label="$t('table.recentItems.name')" prop="displayName" sortable />
       <el-table-column :label="$t('table.recentItems.description')" prop="description" sortable />
-    </el-table>
+    </el-table> -->
+    <el-card
+      v-for="(item, index) in recentItems"
+      :key="index"
+      shadow="never"
+      class="card-box"
+      @click.native="handleClick(item)"
+    >
+      <span>{{ item.displayName }}</span><br>
+      <time class="time">{{ item.updated }}</time>
+    </el-card>
   </div>
 </template>
 
@@ -89,4 +99,12 @@ export default {
 		height: 455px;
 		overflow: auto;
 	}
+  .time {
+    float: right;
+    font-size: 11px;
+    color: #999;
+  }
+  .card-box {
+    cursor: pointer;
+  }
 </style>
