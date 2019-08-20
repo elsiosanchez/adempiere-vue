@@ -44,7 +44,7 @@ export default {
     }
   },
   mounted() {
-    this.handleChange() // activate logics
+    this.handleChange('NotSend') // activate logics
   },
   methods: {
     handleChange(value) {
@@ -64,7 +64,8 @@ export default {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
-          newValue: this.value
+          newValue: this.value,
+          isDontSendToEdit: Boolean(value === 'NotSend')
         })
       }
     }
