@@ -145,6 +145,10 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
 
   var componentReference = evalutateTypeField(fieldGRPC.getDisplaytype(), true)
 
+  if (componentReference.type === 'NumberBase' && !parsedDefaultValue) {
+    parsedDefaultValue = 0
+  }
+
   var field = {
     ...moreAttributes,
 
