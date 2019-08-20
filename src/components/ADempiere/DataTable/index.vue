@@ -111,7 +111,8 @@
           :fixed="item.isFixedTableColumn"
         >
           <template slot-scope="scope">
-            <template v-if="scope.row.isEdit && !(item.isReadOnly || item.isReadOnlyFromLogic)">
+            <!-- TODO: Support to binary fields. -->
+            <template v-if="scope.row.isEdit && !(item.isReadOnly || item.isReadOnlyFromLogic) && !(item.componentPath == 'Image' || item.componentPath == 'Binary')">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
