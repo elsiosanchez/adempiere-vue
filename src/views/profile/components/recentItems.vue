@@ -54,6 +54,7 @@ export default {
   },
   mounted() {
     this.getRecentItems()
+    this.subscribeChanges()
   },
   methods: {
     checkOpened(uuid) {
@@ -71,6 +72,14 @@ export default {
       } else {
         this.recentItems = items
       }
+    },
+    subscribeChanges() {
+      this.$store.subscribe((mutation, state) => {
+        // The mutation comes in the format of `{ type, payload }`.
+        if (mutation.type === 'setRecentItems') {
+          this.recentItems = this.getterRecentItems
+        }
+      })
     }
   }
 }

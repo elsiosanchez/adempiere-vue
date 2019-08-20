@@ -45,6 +45,7 @@ export default {
   },
   mounted() {
     this.getRecentItems()
+    this.subscribeChanges()
   },
   methods: {
     parseTime,
@@ -68,6 +69,14 @@ export default {
     },
     handleClick(row) {
       this.$router.push({ name: row.menuUuid, params: { action: (row.uuidRecord) ? row.uuidRecord : 'create-new' }})
+    },
+    subscribeChanges() {
+      this.$store.subscribe((mutation, state) => {
+        // The mutation comes in the format of `{ type, payload }`.
+        if (mutation.type === 'setRecentItems') {
+          this.recentItems = this.getterRecentItems
+        }
+      })
     }
   }
 }
