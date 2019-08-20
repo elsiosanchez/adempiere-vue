@@ -229,6 +229,10 @@ export default {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
           this.getData(this.tableName, this.uuidRecord)
+        } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
+          this.$store.dispatch('resetPanelToNew', {
+            containerUuid: this.containerUuid
+          })
         } else {
           this.$message({
             message: this.$t('data.createNewRecord'),
