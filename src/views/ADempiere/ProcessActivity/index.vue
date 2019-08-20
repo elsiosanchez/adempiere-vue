@@ -19,7 +19,7 @@
                   {{ $t('components.contextMenuActions') }}<i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>{{ $t('views.seeReport') }}</el-dropdown-item>
+                  <el-dropdown-item v-if="activity.isReport">{{ $t('views.seeReport') }}</el-dropdown-item>
                   <!-- TODO: add more actions -->
                   <el-dropdown-item>Other Action</el-dropdown-item>
                   <el-dropdown-item>Other Action</el-dropdown-item>
@@ -32,12 +32,20 @@
               {{ activity.description }}
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
-              <el-tag :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError, activity.isProcessing).text }}</el-tag>
-            </el-form-item>
-            <el-form-item v-if="activity.logs && activity.logs.length > 0" :label="generateTitle('Logs')">
-              <ul v-for="(log, key) in activity.logs" :key="key">
-                <li :key="key">{{ log.log }}</li>
-              </ul>
+              <el-popover
+                ref="popoverLog"
+                placement="right"
+                :title="activity.name + ' ' + generateTitle('Logs')"
+                width="400"
+                trigger="hover"
+              >
+                <el-scrollbar wrap-class="popover-scroll">
+                  <ul>
+                    <li v-for="(log, key) in activity.logs" :key="key">{{ log.log }}</li>
+                  </ul>
+                </el-scrollbar>
+              </el-popover>
+              <el-tag v-popover:popoverLog :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError, activity.isProcessing).text }}</el-tag>
             </el-form-item>
           </el-form>
         </el-card>
@@ -58,7 +66,7 @@ export default {
       recordCount: 0
     }
   },
-  mounted() {
+  beforeMount() {
     this.$store.dispatch('getSessionProcessFromServer')
       .then(response => {
         this.processActivity = this.$store.getters.getRunningProcess
@@ -123,5 +131,11 @@ export default {
   .el-dropdown-link {
     cursor: pointer;
     color: #409EFF;
+  }
+</style>
+
+<style>
+  .popover-scroll {
+    max-height: 200px !important;
   }
 </style>

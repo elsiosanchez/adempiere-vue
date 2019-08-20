@@ -171,7 +171,7 @@ const process = {
             resolve(processDefinition)
           })
           .catch(error => {
-            console.warn('Dictionary Process (State ) - Error ' + error)
+            console.warn('Dictionary Process (State) - Error ' + error)
             reject(error)
           })
       })
