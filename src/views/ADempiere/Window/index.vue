@@ -133,7 +133,6 @@
                     />
                   </div>
                 </div>
-
               </el-main>
               <el-header
                 v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
@@ -290,8 +289,10 @@ export default {
   }
 
   .el-aside {
-    height: 100vh;
+    height: 100%;
     color: #333;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   aside {
     background: #fff;
