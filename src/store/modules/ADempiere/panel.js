@@ -401,7 +401,7 @@ const panel = {
      * @param {string}  containerUuid, unique identifier of the panel to search your list of fields
      * @param {string}  propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
      * @param {boolean} isObjectReturn, define if is an object to return, else arraylist return
-     * @param {boolean} isObjectReturn, define if evaluate emty values
+     * @param {boolean} isEvaluateValues, define if evaluate emty values
      * @returns {array|object}
      */
     getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false, isEvaluateValues = false) => {

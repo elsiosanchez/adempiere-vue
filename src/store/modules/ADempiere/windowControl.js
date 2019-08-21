@@ -89,6 +89,49 @@ const windowControl = {
           })
       })
     },
+    createEntityFromTable({ commit, dispatch, rootGetters }, parameters) {
+      return new Promise((resolve, reject) => {
+        var panel = rootGetters.getPanel(parameters.containerUuid)
+
+        // TODO: Add support to Binary columns (BinaryData)
+        var columnsToDontSend = ['BinaryData']
+
+        // attributes or fields
+        var finalAttributes = convertObjectToArrayPairs(parameters.row)
+        finalAttributes = finalAttributes.filter(itemAttribute => {
+          if (isEmptyValue(itemAttribute.value)) {
+            return false
+          }
+          if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
+            return false
+          }
+          return true
+        })
+        createEntity({
+          tableName: panel.tableName,
+          attributesList: finalAttributes
+        })
+          .then(response => {
+            var newValues = convertValuesMapToObject(response.getValuesMap())
+
+            var result = {
+              data: newValues,
+              recordUuid: response.getUuid(),
+              recordId: response.getId(),
+              tableName: response.getTablename()
+            }
+            showMessage({
+              message: language.t('data.createRecordSuccessful'),
+              type: 'success'
+            })
+            console.log('result to create', result)
+            resolve(result)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    },
     updateCurrentEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(parameters.containerUuid)

@@ -34,6 +34,14 @@ const data = {
         }
       }
     },
+    notifyRowTableChange: (state, payload) => {
+      payload.record = payload.record.map(itemRecord => {
+        if (payload.isNew && isEmptyValue(itemRecord.UUID)) {
+          return payload.newRow
+        }
+        return itemRecord
+      })
+    },
     setRecentItems(state, payload) {
       state.recentItems = payload
     },
@@ -48,6 +56,9 @@ const data = {
       })
       dataDetail.push(payload)
       state.recordDetail = dataDetail
+    },
+    addNewRow(state, payload) {
+      payload.data = payload.data.push(payload.values)
     }
   },
   actions: {
@@ -72,6 +83,15 @@ const data = {
           })
         }
       }
+    },
+    addNewRow({ commit, getters, rootGetters }, parameters) {
+      var data = getters.getDataRecordsList(parameters.containerUuid)
+      var values = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
+      values.isEdit = true
+      commit('addNewRow', {
+        values: values,
+        data: data
+      })
     },
     recordSelection({ commit, state }, parameters) {
       var index = state.recordSelection.findIndex(recordItem => {
@@ -186,6 +206,21 @@ const data = {
           })
       })
     },
+    notifyRowTableChange: ({ commit, state }, objectParams) => {
+      var recordSelection = state.recordSelection.find(recordItem => {
+        return recordItem.containerUuid === objectParams.containerUuid
+      })
+
+      var newRow = {
+        ...objectParams.row,
+        isEdit: true
+      }
+      commit('notifyRowTableChange', {
+        isNew: objectParams.isNew,
+        newRow: newRow,
+        record: recordSelection.record
+      })
+    },
     notifyCellTableChange: ({ commit, state, dispatch, rootGetters }, objectParams) => {
       var recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === objectParams.containerUuid
@@ -214,10 +249,26 @@ const data = {
       var isReady = rootGetters.isReadyForSubmitRowTable(objectParams.containerUuid, row)
       if (objectParams.panelType === 'window') {
         if (isReady) {
-          dispatch('updateCurrentEntityFromTable', {
-            containerUuid: objectParams.containerUuid,
-            row: row
-          })
+          if (!isEmptyValue(row.UUID)) {
+            dispatch('updateCurrentEntityFromTable', {
+              parentUuid: objectParams.parentUuid,
+              containerUuid: objectParams.containerUuid,
+              row: row
+            })
+          } else {
+            dispatch('createEntityFromTable', {
+              parentUuid: objectParams.parentUuid,
+              containerUuid: objectParams.containerUuid,
+              row: row
+            })
+              .then(resolve => {
+                // refresh record list
+                dispatch('getDataListTab', {
+                  parentUuid: objectParams.parentUuid,
+                  containerUuid: objectParams.containerUuid
+                })
+              })
+          }
         }
       }
     }

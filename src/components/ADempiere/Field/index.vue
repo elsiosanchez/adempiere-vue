@@ -50,7 +50,7 @@
 <script>
 import { FIELD_ONLY } from '@/components/ADempiere/Field/references'
 import { FIELD_DISPLAY_SIZES, DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
-import { fieldIsDisplayed } from '@/utils/ADempiere'
+import { fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
 
 /**
  * This is the base component for linking the components according to the
@@ -158,6 +158,7 @@ export default {
     this.field = this.metadataField
   },
   methods: {
+    isEmptyValue,
     isDisplayed() {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
@@ -165,8 +166,9 @@ export default {
       var isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
       var isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
 
-      var crudType = this.optionCRUD !== 'create-new' !== this.inTable || this.inTable && this.field.recordUuid
-      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && crudType) ||
+      // edit mode is diferent to create new
+      var editMode = (!this.inTable && this.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
+      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && editMode) ||
         (isUpdateableAllFields && this.panelType !== 'browser') // logic to window, report and process
 
       return isUpdateableFieldWindow || isUpdatableColumnBrowserResult

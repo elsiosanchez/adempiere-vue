@@ -30,6 +30,13 @@
             >
               {{ $t('table.dataTable.deleteSelection') }}
             </el-menu-item>
+            <el-menu-item
+              :disabled="inEdited.length > 0"
+              index="new"
+              @click="addNewRow()"
+            >
+              {{ $t('window.newRecord') }}
+            </el-menu-item>
           </el-submenu>
         </el-menu>
         <icon-element v-show="isFixed" icon="el-icon-news">
@@ -67,7 +74,6 @@
       </div>
       <div v-show="!isParent && panelType === 'window'" class="panel-expand">
         <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" />
-        <!-- <i style="cursor: pointer;" class="el-icon-arrow-down" @click="expandPanel(false)" /> -->
       </div>
     </div>
     <el-table
@@ -119,6 +125,7 @@
                 :in-table="true"
                 :metadata-field="{
                   ...item,
+                  parentUuid: parentUuid,
                   displayColumn: scope.row['DisplayColumn_' + item.columnName],
                   tableIndex: scope.$index,
                   rowKey: scope.row[keyColumn],
@@ -224,6 +231,7 @@ export default {
       sortable: null,
       isExpand: false,
       currentPage: 1,
+      inEdited: [],
       uuidCurrentRecordSelected: ''
     }
   },
@@ -288,6 +296,11 @@ export default {
   beforeMount() {
     this.currentPage = this.getPageNumber
   },
+  mounted() {
+    if (this.isTableSelection) {
+      this.toggleSelection(this.getDataSelection)
+    }
+  },
   methods: {
     /**
      * @param {object} row, row data
@@ -308,11 +321,6 @@ export default {
     searchRecordNavegation() {
       this.showSearch = !this.showSearch
     },
-    addNewRow() {
-      this.$store.dispatch('addNewRow', {
-        containerUuid: this.containerUuid
-      })
-    },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
         containerUuid: this.containerUuid,
@@ -323,6 +331,13 @@ export default {
         selection: [],
         record: []
       })
+    },
+    addNewRow() {
+      this.$store.dispatch('addNewRow', {
+        containerUuid: this.containerUuid,
+        parentUuid: this.parentUuid
+      })
+      // this.inEdited.push(undefined)
     },
     classTableMenu() {
       if (this.isMobile) {
@@ -404,6 +419,7 @@ export default {
     confirmEdit(row, newValue, value) {
       if (row.isEdit) {
         row.isEdit = false
+        this.inEdited = this.inEdited.filter(item => item !== row.UUID)
       }
     },
     handleRowClick(row, column, event) {
@@ -428,6 +444,7 @@ export default {
       } else {
         if (!row.isEdit) {
           row.isEdit = true
+          this.inEdited.push(row.UUID)
           /*
           var inSelection = this.getDataSelection.some(item => {
             return JSON.stringify(item) === JSON.stringify(row)
@@ -544,13 +561,6 @@ export default {
       }
       return arr
     },
-    dataTable() {
-      var dataTable = this.getterDataRecords
-      if (this.page === this.getNextToken) {
-        return dataTable.slice(99,)
-      }
-      return dataTable
-    },
     handleChangePage(newPage) {
       this.$store.dispatch('setPageNumber', {
         parentUuid: this.parentUuid,
@@ -630,5 +640,4 @@ export default {
       padding: 10px;
     }
   }
-
 </style>
