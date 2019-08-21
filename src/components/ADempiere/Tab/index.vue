@@ -9,7 +9,7 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
-        style="height: 80vh;overflow: auto;"
+        style="height: 71vh;overflow: auto;"
         :disabled="Boolean(key > 0 && uuidRecord === 'create-new')"
       >
         <panel
@@ -102,14 +102,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-.el-tabs__content {
-    height: 80vh;
-    overflow: auto;
-    position: relative;
-    padding-top: 0px !important;
-    padding-right: 15px !important;
-    padding-bottom: 0px !important;
-    padding-left: 15px !important;
-  }
-</style>

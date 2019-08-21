@@ -144,7 +144,6 @@ const processControl = {
             logs: logList,
             output: output
           }
-          dispatch('deleteRecordContainer', params.parentUuid)
           dispatch('finishProcess', processResult)
         })
         .catch(error => {
@@ -170,9 +169,11 @@ const processControl = {
               reportExportType: ''
             }
           }
-          dispatch('deleteRecordContainer', processToRun.uuid)
           dispatch('finishProcess', processResult)
           console.log('Error running the process', error)
+        })
+        .finally(() => {
+          dispatch('deleteRecordContainer', processToRun.uuid)
         })
     },
     getSessionProcessFromServer({ commit, dispatch, rootGetters }) {

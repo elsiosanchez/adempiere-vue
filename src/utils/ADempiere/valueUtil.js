@@ -12,7 +12,7 @@ export function decodeHtml(text) {
  * @returns {boolean}
  */
 export function isEmptyValue(value) {
-  if (typeof value === 'undefined' || value == null) {
+  if (value === undefined || value == null) {
     return true
   } else if (typeof value === 'string') {
     return Boolean(!value.trim().length)

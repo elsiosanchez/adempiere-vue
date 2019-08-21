@@ -236,35 +236,40 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-      // TODO: refactory for it and change for a standard method
-      if (getters.isReadyForSubmit(params.containerUuid) && !params.isDontSendToEdit) {
-        if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
-          dispatch('getBrowserSearch', {
-            containerUuid: params.containerUuid,
-            clearSelection: true
-          })
-        }
-        if (field.panelType === 'window' && fieldIsDisplayed(field)) {
-          var uuid = getters.getUuid(params.containerUuid)
-          if (isEmptyValue(uuid)) {
-            dispatch('createNewEntity', {
-              containerUuid: params.containerUuid
-            })
-              .then(response => {
-                var oldRoute = router.app._route
-                router.push({
-                  name: oldRoute.name,
-                  params: {
-                    action: response.recordUuid
-                  }
-                })
-                dispatch('tagsView/delView', oldRoute, true)
-              })
-          } else {
-            dispatch('updateCurrentEntity', {
+      if (!params.isDontSendToEdit) {
+        // TODO: refactory for it and change for a standard method
+        if (getters.isReadyForSubmit(params.containerUuid)) {
+          if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
+            dispatch('getBrowserSearch', {
               containerUuid: params.containerUuid,
-              recordUuid: uuid
+              clearSelection: true
             })
+          }
+          if (field.panelType === 'window' && fieldIsDisplayed(field)) {
+            var uuid = getters.getUuid(params.containerUuid)
+            if (isEmptyValue(uuid)) {
+              dispatch('createNewEntity', {
+                containerUuid: params.containerUuid
+              })
+                .then(response => {
+                  var oldRoute = router.app._route
+                  router.push({
+                    name: oldRoute.name,
+                    params: {
+                      action: response.recordUuid
+                    }
+                  })
+                  dispatch('tagsView/delView', oldRoute, true)
+                })
+                .catch(error => {
+                  console.warn(error)
+                })
+            } else {
+              dispatch('updateCurrentEntity', {
+                containerUuid: params.containerUuid,
+                recordUuid: uuid
+              })
+            }
           }
         }
       }
@@ -400,19 +405,20 @@ const panel = {
      */
     getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false, isEvaluateValues = false) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var attributesList = []
+      var attributesList = fieldList
       var attributesObject = {}
 
-      attributesList = fieldList
-        .filter(fieldItem => {
-          if (isEvaluateValues) {
+      if (isEvaluateValues) {
+        attributesList = attributesList
+          .filter(fieldItem => {
             if (!isEmptyValue(fieldItem.value)) {
               return true
             }
             return false
-          }
-          return true
-        })
+          })
+      }
+
+      attributesList = attributesList
         .map(fieldItem => {
           const valueToReturn = fieldItem[propertyName]
           attributesObject[fieldItem.columnName] = valueToReturn

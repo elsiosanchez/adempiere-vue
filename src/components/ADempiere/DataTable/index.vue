@@ -290,9 +290,6 @@ export default {
     this.getList()
     this.currentPage = this.getPageCount
   },
-  mounted() {
-    this.toggleSelection(this.getDataSelection)
-  },
   methods: {
     /**
      * @param {object} row, row data
@@ -323,7 +320,11 @@ export default {
         containerUuid: this.containerUuid,
         parentUuid: this.parentUuid
       })
-      console.log(this.getDataSelection)
+      this.$store.dispatch('recordSelection', {
+        containerUuid: this.containerUuid,
+        selection: [],
+        record: []
+      })
     },
     classTableMenu() {
       if (this.isMobile) {
@@ -387,16 +388,15 @@ export default {
       if (field.isReadOnly) {
         return 'cell-no-edit'
       }
-      // return 'cell-edit'
       return undefined
     },
     /**
      * Select or unselect rows
      * USE ONLY MOUNTED
      */
-    toggleSelection(rowsSelection) {
-      if (rowsSelection) {
-        rowsSelection.forEach(row => {
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
           this.$refs.multipleTable.toggleRowSelection(row)
         })
       } else {
@@ -446,18 +446,6 @@ export default {
       }
     },
     handleSelection(rowsSelection, rowSelected) {
-      // index.isEdit = !index.isEdit
-      // rowSelected.isEdit = !rowSelected.isEdit
-      // if (this.isAllSelected(rows.length)) {
-      //   index.isEdit = true
-      // }
-      // console.log(rowsSelection, this.getterDataRecords)
-      // console.log(rowSelected)
-      // console.log(this.$store.dispatch('recordSelection', {
-      //   containerUuid: this.containerUuid,
-      //   selection: rowsSelection,
-      //   record: this.getterDataRecords
-      // }))
       this.$store.dispatch('recordSelection', {
         containerUuid: this.containerUuid,
         selection: rowsSelection,

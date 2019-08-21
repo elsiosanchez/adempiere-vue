@@ -10,10 +10,10 @@ const context = {
     setContext(state, payload) {
       var parent = ''
       var container = ''
-      if (payload.parentUuid !== undefined) {
+      if (payload.parentUuid) {
         parent = payload.parentUuid + '|'
       }
-      if (payload.containerUuid !== undefined) {
+      if (payload.containerUuid) {
         container = payload.containerUuid + '|'
       }
       state.context.set(
@@ -42,10 +42,10 @@ const context = {
     getContext: (state) => (findedContext) => {
       var parent = ''
       var container = ''
-      if (findedContext.parentUuid !== undefined && findedContext.parentUuid !== null) {
+      if (findedContext.parentUuid) {
         parent = findedContext.parentUuid + '|'
       }
-      if (findedContext.containerUuid !== undefined && findedContext.parentUuid !== null) {
+      if (findedContext.containerUuid) {
         container = findedContext.containerUuid + '|'
       }
       var key = parent + container + findedContext.columnName

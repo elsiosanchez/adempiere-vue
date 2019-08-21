@@ -156,9 +156,6 @@ export default {
   mounted() {
     this.getWindow()
   },
-  // created() {
-  //   this.getWindow()
-  // },
   methods: {
     getWindow() {
       var window = this.getterWindow
@@ -309,7 +306,7 @@ export default {
   }
 .vertical-panes {
   width: 100%;
-  height: 90vh;
+  height: 85vh;
   border: 1px solid #ccc;
 }
 .vertical-panes > .pane {
