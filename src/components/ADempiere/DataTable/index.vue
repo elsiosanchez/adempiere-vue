@@ -398,10 +398,15 @@ export default {
      * @param {object} field
      */
     cellClass(field) {
+      var classReturn = ''
       if (field.isReadOnly) {
-        return 'cell-no-edit'
+        classReturn += 'cell-no-edit'
       }
-      return undefined
+      if (field.componentPath === 'NumberBase') {
+        classReturn += 'cell-align-right'
+      }
+      // return 'cell-edit'
+      return classReturn
     },
     /**
      * Select or unselect rows
@@ -616,6 +621,11 @@ export default {
     width: 227px;
     float: right;
     margin-top: 20px;
+  }
+
+  /* used in cell type number */
+  td.cell-align-right {
+    text-align: right !important;
   }
 </style>
 <style lang="scss" scoped>
