@@ -203,15 +203,22 @@ const windowControl = {
       })
     },
     /**
-     *
+     * Delete selection records in table
      * @param {string} parameters.containerUuid
      * @param {string} parameters.parentUuid
      */
     deleteSelectionDataList({ dispatch, rootGetters }, parameters) {
       var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
-      // var panel = rootGetters.getPanel(parameters.containerUuid)
       var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      var selectionLength = allData.selection.length
+
       allData.selection.forEach((record, index) => {
+        // validate if the registry row has no uuid before sending to the server
+        if (isEmptyValue(record.UUID)) {
+          selectionLength = selectionLength - 1
+          console.warn(`This row does not contain a record with UUID`, record)
+          return
+        }
         deleteEntity({
           tableName: tab.tableName,
           recordUuid: record.UUID
@@ -234,7 +241,7 @@ const windowControl = {
               dispatch('tagsView/delView', oldRoute, true)
             }
 
-            if ((index + 1) === allData.selection.length) {
+            if ((index + 1) >= selectionLength) {
               // refresh record list
               dispatch('getDataListTab', {
                 parentUuid: parameters.parentUuid,
@@ -245,7 +252,7 @@ const windowControl = {
       })
     },
     /**
-     *
+     * Get data to table in tab
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
      * @param {boolean} parameters.clearSelection, clear selection after search
