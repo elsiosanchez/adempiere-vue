@@ -24,7 +24,7 @@
           </template>
           <template slot="paneR">
             <el-container style="height: 88vh;">
-              <el-header style="height: 25px;">
+              <el-header style="height: 39px;">
                 <context-menu
                   :menu-parent-uuid="$route.meta.parentUuid"
                   :parent-uuid="windowUuid"
