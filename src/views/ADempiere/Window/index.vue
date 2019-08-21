@@ -2,7 +2,7 @@
   <div v-if="isLoading">
     <el-container style="height: 86vh;">
       <el-main>
-        <split-pane :min-percent="10" :default-percent="isShowedRecordNavigation ? '50' : '0'" split="vertical">
+        <split-pane :min-percent="10" :default-percent="isShowedRecordNavigation ? 50 : 0" split="vertical">
           <template>
             <div slot="paneL" class="left-container">
               <el-aside v-show="isShowedRecordNavigation" width="100%">
