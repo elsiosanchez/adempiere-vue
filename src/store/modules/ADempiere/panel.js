@@ -405,19 +405,20 @@ const panel = {
      */
     getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false, isEvaluateValues = false) => {
       var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var attributesList = []
+      var attributesList = fieldList
       var attributesObject = {}
 
-      attributesList = fieldList
-        .filter(fieldItem => {
-          if (isEvaluateValues) {
+      if (isEvaluateValues) {
+        attributesList = attributesList
+          .filter(fieldItem => {
             if (!isEmptyValue(fieldItem.value)) {
               return true
             }
             return false
-          }
-          return true
-        })
+          })
+      }
+
+      attributesList = attributesList
         .map(fieldItem => {
           const valueToReturn = fieldItem[propertyName]
           attributesObject[fieldItem.columnName] = valueToReturn
