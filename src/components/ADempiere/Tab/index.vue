@@ -9,7 +9,7 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
-        style="height: 71vh;overflow: auto;"
+        style="height: 80vh;overflow: auto;"
         :disabled="Boolean(key > 0 && uuidRecord === 'create-new')"
       >
         <panel
