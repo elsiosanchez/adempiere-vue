@@ -156,9 +156,6 @@ export default {
   mounted() {
     this.getWindow()
   },
-  // created() {
-  //   this.getWindow()
-  // },
   methods: {
     getWindow() {
       var window = this.getterWindow
