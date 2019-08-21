@@ -155,9 +155,13 @@ export default {
         value: parsedValue
       })
         .then(response => {
-          this.value = response.label
-          this.options.push(response)
-          this.options.unshift(this.blanckOption)
+          if (response.label !== null) {
+            this.value = response.label
+            this.options.push(response)
+            this.options.unshift(this.blanckOption)
+          } else {
+            this.getDataLookupList(true)
+          }
         })
         .catch(error => {
           console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
