@@ -1,12 +1,11 @@
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
-import { convertValuesMapToObject } from '@/utils/ADempiere'
+import { convertValuesMapToObject, isEmptyValue } from '@/utils/ADempiere'
 
 const data = {
   state: {
     recordSelection: [], // record data and selection
     recordDetail: [],
-    recentItems: [],
-    recordView: []
+    recentItems: []
   },
   mutations: {
     recordSelection(state, payload) {
@@ -52,7 +51,7 @@ const data = {
     }
   },
   actions: {
-    setPageNumber({ commit, state }, parameters) {
+    setPageNumber({ commit, state, dispatch, rootGetters }, parameters) {
       var data = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === parameters.containerUuid
       })
@@ -60,6 +59,19 @@ const data = {
         data: data,
         pageNumber: parameters.pageNumber
       })
+      if (parameters.panelType === 'window') {
+        dispatch('getDataListTab', {
+          parentUuid: parameters.parentUuid,
+          containerUuid: parameters.containerUuid
+        })
+      } else if (parameters.panelType === 'browser') {
+        if (rootGetters.isReadyForSubmit(parameters.containerUuid)) {
+          dispatch('getBrowserSearch', {
+            containerUuid: parameters.containerUuid,
+            clearSelection: true
+          })
+        }
+      }
     },
     recordSelection({ commit, state }, parameters) {
       var index = state.recordSelection.findIndex(recordItem => {
@@ -103,13 +115,19 @@ const data = {
      */
     getObjectListFromCriteria: ({ dispatch, rootGetters }, objectParams) => {
       var allData = rootGetters.getDataRecordAndSelection(objectParams.containerUuid)
+
+      var nextPageToken
+      if (!isEmptyValue(allData.nextPageToken)) {
+        nextPageToken = allData.nextPageToken + '-' + allData.pageNumber
+      }
+
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria({
           tableName: objectParams.tableName,
           query: objectParams.query,
           whereClause: objectParams.whereClause,
           orderByClause: objectParams.orderByClause,
-          nextPageToken: allData.nextPageToken
+          nextPageToken: nextPageToken
         })
           .then(response => {
             const recordList = response.getRecordsList()
@@ -118,12 +136,20 @@ const data = {
               var values = convertValuesMapToObject(map)
               return values
             })
+
+            var token = response.getNextPageToken()
+            if (token !== undefined) {
+              token = token.slice(0, -2)
+            }
+
+            var pageNumber = rootGetters.getPageNumber(objectParams.containerUuid)
             dispatch('recordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,
               selection: allData.selection,
               recordCount: response.getRecordcount(),
-              nextPageToken: response.getNextPageToken()
+              nextPageToken: token,
+              pageNumber: pageNumber
             })
             resolve(record)
           })
@@ -228,7 +254,7 @@ const data = {
       var selection = getters.getDataRecordAndSelection(containerUuid)
       return selection.selection
     },
-    getPageCount: (state, getters) => (containerUuid) => {
+    getPageNumber: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
       return data.pageNumber
     },

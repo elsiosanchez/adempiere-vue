@@ -223,8 +223,7 @@ export default {
       rowStyle: { height: '52px' },
       sortable: null,
       isExpand: false,
-      currentPage: 0,
-      page: '',
+      currentPage: 1,
       uuidCurrentRecordSelected: ''
     }
   },
@@ -241,11 +240,8 @@ export default {
     getterTotalDataRecordCount() {
       return this.$store.getters.getDataRecordCount(this.containerUuid)
     },
-    getNextToken() {
-      return this.$store.getters.getPageNextToken(this.containerUuid)
-    },
-    getPageCount() {
-      return this.$store.getters.getPageCount(this.containerUuid)
+    getPageNumber() {
+      return this.$store.getters.getPageNumber(this.containerUuid)
     },
     getDataSelection() {
       return this.$store.getters.getDataRecordSelection(this.containerUuid)
@@ -288,7 +284,9 @@ export default {
     // get tab with uuid
     this.getPanel()
     this.getList()
-    this.currentPage = this.getPageCount
+  },
+  beforeMount() {
+    this.currentPage = this.getPageNumber
   },
   methods: {
     /**
@@ -554,16 +552,11 @@ export default {
       return dataTable
     },
     handleChangePage(newPage) {
-      if (newPage > 1) {
-        this.currentPage = newPage
-        this.page = this.getNextToken
-      } else {
-        this.currentPage = newPage
-        this.page = newPage
-      }
       this.$store.dispatch('setPageNumber', {
+        parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        pageNumber: this.page
+        pageNumber: newPage,
+        panelType: this.panelType
       })
     }
   }

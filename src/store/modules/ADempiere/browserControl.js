@@ -33,8 +33,9 @@ const browserControl = {
 
         var nextPageToken
         if (!isEmptyValue(allData.nextPageToken)) {
-          nextPageToken = allData.nextPageToken
+          nextPageToken = allData.nextPageToken + '-' + allData.pageNumber
         }
+
         var browserSearchQueryParameters = {
           uuid: parameters.containerUuid,
           query: parsedQuery,
@@ -60,7 +61,13 @@ const browserControl = {
             if (!parameters.clearSelection) {
               selection = allData.selection
             }
-            var pageNumber = rootGetters.getPageCount(parameters.containerUuid)
+
+            var token = response.getNextPageToken()
+            if (token !== undefined) {
+              token = token.slice(0, -2)
+            }
+
+            var pageNumber = rootGetters.getPageNumber(parameters.containerUuid)
 
             dispatch('recordSelection', {
               containerUuid: parameters.containerUuid,
@@ -68,7 +75,7 @@ const browserControl = {
               pageNumber: pageNumber,
               selection: selection,
               recordCount: response.getRecordcount(),
-              nextPageToken: response.getNextPageToken()
+              nextPageToken: token
             })
             showMessage({
               title: language.t('notifications.succesful'),

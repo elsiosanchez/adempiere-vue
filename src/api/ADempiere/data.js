@@ -85,7 +85,7 @@ export function getCriteria(tableName) {
 }
 
 /**
- *
+ * Object List from window
  * @param {string} object.tableName
  * @param {string} object.query
  * @param {string} object.whereClause
