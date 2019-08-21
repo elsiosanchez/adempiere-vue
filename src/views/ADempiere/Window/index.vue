@@ -151,12 +151,25 @@ export default {
       return this.$store.getters.getWindow(this.windowUuid)
     }
   },
+  watch: {
+    activeName(val) {
+      this.$router.push(`${this.$route.path}?tab=${val}`)
+    }
+  },
   mounted() {
     this.getWindow()
   },
   // created() {
   //   this.getWindow()
   // },
+  created() {
+    // init the default  selected tab
+    const tab = this.$route.query.Window
+    console.log(tab)
+    if (tab) {
+      this.activeName = tab
+    }
+  },
   methods: {
     getWindow() {
       var window = this.getterWindow

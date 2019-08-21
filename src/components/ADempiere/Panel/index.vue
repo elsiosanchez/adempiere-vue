@@ -180,12 +180,17 @@ export default {
   },
   watch: {
     containerUuid() {
-      this.generatePanel(this.metadata.fieldList)
+      if (this.$route.name === this.getterRecordUuid) {
+        this.generatePanel(this.metadata.fieldList)
+      }
     }
   },
   created() {
     // get tab with uuid
     this.getPanel()
+    // const tab = this.$router.push(`${this.$route.path}`)
+    console.log(this.$route.name)
+    console.log(this.getterRecordUuid)
   },
   methods: {
     isEmptyValue,

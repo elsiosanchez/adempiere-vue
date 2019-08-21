@@ -412,19 +412,21 @@ export default {
       if (this.isShowedPanelRecord && this.isParent) {
         if (this.uuidCurrentRecordSelected !== row.UUID) {
           this.uuidCurrentRecordSelected = row.UUID
-          // this.$store.dispatch('notifyPanelChange', {
-          //   parentUuid: this.parentUuid,
-          //   containerUuid: this.containerUuid,
-          //   newValues: row,
-          //   isDontSendToEdit: true,
-          //   fieldList: this.fieldList
-          // })
-          this.$router.push({
-            name: this.$route.name,
-            params: {
-              action: this.uuidCurrentRecordSelected
-            }
+          this.$store.dispatch('notifyPanelChange', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid,
+            newValues: row,
+            isDontSendToEdit: true,
+            fieldList: this.fieldList
           })
+          this.$router.push(`${this.$route.path}?Uuid${this.uuidCurrentRecordSelected}`)
+          console.log(this.$route.name)
+          // this.$router.push({
+          //   name: this.$route.name,
+          //   params: {
+          //     action: this.uuidCurrentRecordSelected
+          //   }
+          // })
         }
       } else {
         if (!row.isEdit) {
