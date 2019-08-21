@@ -1,76 +1,11 @@
 <template>
   <div v-if="isLoading">
-    <el-container v-show="!isShowedRecordNavigation" style="height: 86vh;">
-      <modal-dialog />
-      <el-header style="height: 25px;">
-        <context-menu
-          :menu-parent-uuid="$route.meta.parentUuid"
-          :parent-uuid="windowUuid"
-          :container-uuid="windowMetadata.currentTabUuid"
-          :parent-panel="panelType"
-          :modal-metadata="windowMetadata"
-        />
-      </el-header>
+    <el-container style="height: 86vh;">
       <el-main>
-        <tab-parent
-          :window-uuid="windowUuid"
-          :tabs-list="windowMetadata.tabsListParent"
-          class="tab-window"
-        />
-        <div class="small-4 columns">
-          <div class="wrapper">
-            <div
-              v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-              class="open-detail"
-            />
-            <el-button
-              v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-              v-show="!isShowedTabChildren"
-              icon="el-icon-caret-top"
-              :class="isMobile ? 'open-table-detail-mobile' : 'open-table-detail'"
-              circle
-              @click="handleChangeShowedTabChildren()"
-            />
-          </div>
-        </div>
-        <div class="small-4 columns">
-          <div class="w">
-            <div class="open-left" />
-            <el-button
-              :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
-              class="open-navegation"
-              circle
-              @click="handleChangeShowedRecordNavigation()"
-            />
-          </div>
-        </div>
-
-      </el-main>
-      <el-header
-        v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-        style="height: auto; padding-right: 35px !important;padding-bottom: 33px;"
-      >
-        <div class="w-33">
-          <div class="center">
-            <el-button
-              icon="el-icon-caret-bottom"
-              circle
-              @click="handleChangeShowedTabChildren()"
-            />
-          </div>
-        </div>
-        <tab-children
-          :window-uuid="windowUuid"
-          :tabs-list="windowMetadata.tabsListChildren"
-        />
-      </el-header>
-    </el-container>
-    <el-container v-show="isShowedRecordNavigation" style="height: 86vh;">
-      <el-main>
-        <split-pane split="vertical">
+        <split-pane :min-percent="10" :default-percent="isShowedRecordNavigation ? '50' : '0'" split="vertical">
           <template>
             <div slot="paneL" class="left-container">
-              <el-aside width="100%">
+              <el-aside v-show="isShowedRecordNavigation" width="100%">
                 <i
                   v-if="isMobile"
                   class="el-icon-close"
@@ -392,7 +327,7 @@ export default {
 }
 </style>
 
-<style  scoped>
+<style>
   .components-container {
     position: relative;
     height: 100vh;
@@ -419,4 +354,12 @@ export default {
     background-color: #95E1D3;
     height: 100%;
   }
+  .splitter-pane-resizer.vertical {
+    width: 9px !important;
+    height: 100%;
+    margin-left: -5px;
+    border-left: 5px solid hsla(0,0%,100%,0);
+    border-right: 5px solid hsla(0,0%,100%,0);
+    cursor: col-resize;
+}
 </style>
