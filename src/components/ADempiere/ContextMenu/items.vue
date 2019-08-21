@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     handleClick(item) {
-      this.$router.push({ name: item.name, params: { action: 'create-new' }})
+      this.$router.push({ name: item.name, query: { action: 'create-new' }})
     }
   }
 }

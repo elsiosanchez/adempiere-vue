@@ -85,7 +85,7 @@ export default {
       })*/
       this.$router.push({
         name: this.$route.name,
-        params: {
+        query: {
           tabNumber: tabHTML.name
         }
       })

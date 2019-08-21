@@ -156,7 +156,7 @@ export default {
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
-      uuidRecord: this.$route.params.action
+      uuidRecord: this.$route.query.action
     }
   },
   computed: {
@@ -193,6 +193,11 @@ export default {
       return this.$store.getters.getContextMenu(this.containerUuid)
     }
   },
+  watch: {
+    '$route.query.action'(actionValue) {
+      this.generateContextMenu(this.containerUuid)
+    }
+  },
   created() {
     this.generateContextMenu(this.containerUuid)
   },
@@ -219,11 +224,13 @@ export default {
           }
 
           if (this.$route.meta.type === 'window') {
-            if (this.$route.params.action === 'create-new') {
+            if (this.$route.query.action === 'create-new') {
               itemAction.disabled = true
+            } else {
+              itemAction.disabled = false
             }
             // if (itemAction.type === 'dataAction') {
-            //   if (this.$route.params.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
+            //   if (this.$route.query.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
             //     itemAction.disabled = true
             //   }
             // }
@@ -329,8 +336,9 @@ export default {
         if (action.action === 'resetPanelToNew') {
           this.$router.push({
             name: this.$route.name,
-            params: {
-              action: 'create-new'
+            query: {
+              action: 'create-new',
+              tabNumber: this.$route.query.tabNumber
             }
           })
         }

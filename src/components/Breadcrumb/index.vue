@@ -55,7 +55,7 @@ export default {
       return toPath(params)
     },
     handleLink(item) {
-      this.$router.push({ name: item.name, params: { childs: item.meta.childs, action: 'create-new' }})
+      this.$router.push({ name: item.name, query: { action: 'create-new' }, params: { childs: item.meta.childs }})
     }
   }
 }

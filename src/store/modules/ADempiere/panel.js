@@ -255,8 +255,9 @@ const panel = {
                   var oldRoute = router.app._route
                   router.push({
                     name: oldRoute.name,
-                    params: {
-                      action: response.recordUuid
+                    query: {
+                      action: response.recordUuid,
+                      tabNumber: oldRoute.query.tabNumber
                     }
                   })
                   dispatch('tagsView/delView', oldRoute, true)

@@ -128,7 +128,9 @@ export default {
     refresh: 'Actualizar',
     close: 'Cerrar',
     closeOthers: 'Cerrar otros',
-    closeAll: 'Cerrar todos'
+    closeAll: 'Cerrar todos',
+    newRecord: 'Nuevo Registro',
+    seeRecord: 'Ver Registro'
   },
   settings: {
     title: 'Configuración de estilo de página',

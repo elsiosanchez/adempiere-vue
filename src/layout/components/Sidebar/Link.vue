@@ -30,8 +30,9 @@ export default {
           is: 'router-link',
           to: {
             name: route.name,
-            params: {
-              action: 'create-new'
+            query: {
+              action: 'create-new',
+              tabNumber: 0
             }
           }
         }

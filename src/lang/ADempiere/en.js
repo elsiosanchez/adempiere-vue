@@ -153,7 +153,9 @@ export default {
     refresh: 'Refresh',
     close: 'Close',
     closeOthers: 'Close Others',
-    closeAll: 'Close All'
+    closeAll: 'Close All',
+    newRecord: 'New Record',
+    seeRecord: 'See Record'
   },
   settings: {
     title: 'Page style setting',

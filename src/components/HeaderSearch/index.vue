@@ -77,7 +77,7 @@ export default {
       this.show = false
     },
     change(val) {
-      this.$router.push({ name: val.name, params: { action: 'create-new', childs: val.meta.childs }})
+      this.$router.push({ name: val.name, query: { action: 'create-new' }, params: { childs: val.meta.childs }})
       this.search = ''
       this.options = []
       this.$nextTick(() => {

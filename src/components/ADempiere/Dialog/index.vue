@@ -104,7 +104,7 @@ export default {
     },
     runAction(action) {
       if (action === undefined && this.windowRecordSelected !== undefined) {
-        this.$router.push({ name: this.$route.name, params: { uuidRecord: this.windowRecordSelected.UUID }})
+        this.$router.push({ name: this.$route.name, query: { action: this.windowRecordSelected.UUID }})
         this.closeDialog()
       } else if (action !== undefined) {
         var isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)

@@ -84,7 +84,7 @@ function getChildFromAction(menu, index) {
   let selectedComponent
   if (action === 'W') {
     selectedComponent = () => import('@/views/ADempiere/Window')
-    routeIdentifier = actionAttributes.name + '/' + menu.getId() + '/:action?'
+    routeIdentifier = actionAttributes.name + '/' + menu.getId()
   } else if (action === 'S') {
     selectedComponent = () => import('@/views/ADempiere/Browser')
   } else if (action === 'P' || action === 'R') {

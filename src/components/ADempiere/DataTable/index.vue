@@ -421,8 +421,9 @@ export default {
           // })
           this.$router.push({
             name: this.$route.name,
-            params: {
-              action: this.uuidCurrentRecordSelected
+            query: {
+              action: this.uuidCurrentRecordSelected,
+              tabNumber: this.$route.query.tabNumber
             }
           })
         }

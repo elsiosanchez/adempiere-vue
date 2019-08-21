@@ -153,7 +153,7 @@ export default {
       gutterRow: 0,
       isLoadPanel: false,
       isLoadRecord: false,
-      uuidRecord: this.$route.params.action,
+      uuidRecord: this.$route.query.action,
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
@@ -181,11 +181,18 @@ export default {
   watch: {
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
+    },
+    '$route.query.action'(actionValue) {
+      if (actionValue !== 'create-new') {
+        this.getData(this.tableName, actionValue)
+      }
+      this.setTagsViewTitle(actionValue)
     }
   },
   created() {
     // get tab with uuid
     this.getPanel()
+    this.setTagsViewTitle(this.$route.query.action)
   },
   methods: {
     isEmptyValue,
@@ -366,6 +373,21 @@ export default {
       })
 
       return res
+    },
+    setTagsViewTitle(actionValue) {
+      var title
+      var tempRoute = this.$route
+      var action = ''
+      if (actionValue === 'create-new') {
+        action = this.$t('tagsView.newRecord')
+      } else {
+        action = this.$t('tagsView.seeRecord')
+      }
+      if (this.$route.meta && this.$route.meta.title) {
+        title = this.$route.meta.title
+      }
+      const route = Object.assign({}, tempRoute, { title: `${title} - ${action}` })
+      this.$store.dispatch('tagsView/updateVisitedView', route)
     }
   }
 }

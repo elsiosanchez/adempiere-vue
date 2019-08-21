@@ -46,10 +46,21 @@ export default {
   data() {
     return {
       isLoading: false,
-      currentTab: this.$route.params.tabNumber,
-      uuidRecord: this.$route.params.action,
+      currentTab: this.$route.query.tabNumber,
+      uuidRecord: this.$route.query.action,
       tabUuid: '',
       panelType: 'window'
+    }
+  },
+  watch: {
+    currentTab(tabNumber) {
+      this.$router.push({
+        name: this.$route.name,
+        query: {
+          action: this.$route.query.action,
+          tabNumber: tabNumber
+        }
+      })
     }
   },
   created() {
@@ -72,23 +83,8 @@ export default {
         this.setCurrentTab()
       }
       // this.setPemantLink(tabHTML)
+      this.currentTab = tabHTML.name
       this.getData()
-    },
-    /**
-     * TODO: Verify use
-     */
-    setPemantLink(tabHTML) {
-      this.$route.params.tabNumber = tabHTML.name
-      this.currentTab = this.$route.params.tabNumber
-      /* this.$router.replace({
-        params: { tabNumber: tabHTML.name }
-      })*/
-      this.$router.push({
-        name: this.$route.name,
-        params: {
-          tabNumber: tabHTML.name
-        }
-      })
     },
     getData() {
       this.$store.dispatch('getDataListTab', {

@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       field: {},
-      optionCRUD: this.$route.params.action
+      optionCRUD: this.$route.query.action
     }
   },
   computed: {

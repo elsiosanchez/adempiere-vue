@@ -173,8 +173,9 @@ const windowControl = {
             var oldRoute = router.app._route
             router.push({
               name: oldRoute.name,
-              params: {
-                action: 'create-new'
+              query: {
+                action: 'create-new',
+                tabNumber: oldRoute.query.tabNumber
               }
             })
             // delete view with uuid record delete
@@ -226,11 +227,12 @@ const windowControl = {
           .then(() => {
             // redirect to create new record
             var oldRoute = router.app._route
-            if (record.UUID === oldRoute.params.action) {
+            if (record.UUID === oldRoute.query.action) {
               router.push({
                 name: oldRoute.name,
-                params: {
-                  action: 'create-new'
+                query: {
+                  action: 'create-new',
+                  tabNumber: oldRoute.query.tabNumber
                 }
               })
               // clear fields with default values

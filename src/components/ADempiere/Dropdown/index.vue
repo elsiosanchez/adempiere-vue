@@ -73,9 +73,11 @@ export default {
     redirect(item) {
       this.$router.push({
         name: item.name,
-        params: {
-          childs: item.children,
+        query: {
           action: 'create-new'
+        },
+        params: {
+          childs: item.children
         }
       })
     },
