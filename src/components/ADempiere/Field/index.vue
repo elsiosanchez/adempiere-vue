@@ -151,6 +151,10 @@ export default {
   watch: {
     metadataField(value) {
       this.field = value
+    },
+    // TODO: Check if you have better performance with a property, or an watcher
+    '$route.query.action'(actionValue) {
+      this.optionCRUD = actionValue
     }
   },
   created() {
