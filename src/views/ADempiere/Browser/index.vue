@@ -3,7 +3,7 @@
     <context-menu
       :menu-parent-uuid="$route.meta.parentUuid"
       :container-uuid="containerUuid"
-      :parent-panel="panelType"
+      :panel-type="panelType"
     />
     <modal
       :visible="isVisisbleDialog"

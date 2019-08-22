@@ -2,7 +2,7 @@
   <div v-if="isLoading">
     <context-menu
       :container-uuid="reportResult.processUuid"
-      :parent-panel="panelType"
+      :panel-type="panelType"
       :is-report="true"
       :last-parameter="reportResult.processUuid"
       :report-format="reportFormatValue"

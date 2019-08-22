@@ -3,7 +3,7 @@
     <context-menu
       :menu-parent-uuid="$route.meta.parentUuid"
       :container-uuid="containerUuid"
-      :parent-panel="panelType"
+      :panel-type="panelType"
       :is-report="processMetadata.isReport"
     />
     <el-row :gutter="20">

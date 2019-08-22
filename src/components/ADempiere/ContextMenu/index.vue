@@ -52,7 +52,7 @@
             </a>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item :index="indexMenu() + '3'">
+        <el-menu-item :index="indexMenu() + '3'" :disabled="!(isReferecesContent && references.length > 0)">
           {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </el-submenu>
@@ -94,7 +94,7 @@
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
-        <el-menu-item index="3" @click="showModal('window', undefined)">
+        <el-menu-item index="3" :disabled="!(isReferecesContent && references.length > 0)">
           {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </template>
@@ -128,7 +128,7 @@ export default {
       type: String,
       required: true
     },
-    parentPanel: {
+    panelType: {
       type: String,
       default: undefined
     },
@@ -156,7 +156,7 @@ export default {
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
-      uuidRecord: this.$route.query.action
+      recordUuid: this.$route.query.action
     }
   },
   computed: {
@@ -191,19 +191,54 @@ export default {
     },
     getterContextMenu() {
       return this.$store.getters.getContextMenu(this.containerUuid)
+    },
+    isReferecesContent() {
+      if (this.panelType === 'window' && !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
+        return true
+      }
+      return false
+    },
+    getterReferences() {
+      if (this.isReferecesContent) {
+        return this.$store.getters.getReferencesList(this.parentUuid, this.recordUuid)
+      }
+      return []
     }
   },
   watch: {
     '$route.query.action'(actionValue) {
-      this.generateContextMenu(this.containerUuid)
+      this.recordUuid = actionValue
+      this.getReferences()
     }
   },
   created() {
     this.generateContextMenu(this.containerUuid)
   },
+  mounted() {
+    this.getReferences()
+  },
   methods: {
     isEmptyValue,
     showNotification,
+    getReferences() {
+      if (this.isReferecesContent) {
+        var references = this.getterReferences
+        if (references && references.length > 0) {
+          this.references = references
+        } else {
+          this.$store.dispatch('getReferencesListFromServer', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid,
+            recordUuid: this.recordUuid
+          })
+            .then(response => {
+              this.references = response
+            })
+        }
+      } else {
+        this.references = []
+      }
+    },
     generateContextMenu(containerUuid) {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
@@ -280,7 +315,7 @@ export default {
             action: action,
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.containerUuid,
-            parentPanel: this.parentPanel,
+            parentPanel: this.panelType, // TODO: evaluate used
             processName: action.processName,
             reportFormat: this.reportFormat
           })

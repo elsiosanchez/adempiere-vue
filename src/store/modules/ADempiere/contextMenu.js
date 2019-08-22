@@ -43,13 +43,6 @@ const contextMenu = {
         }
       })
       return menuRelations
-      /* var menuRelations = rootState.permission.addRoutes.find(
-        item => item.name === containerUuid
-      )
-      if (menuRelations === undefined) {
-        return []
-      }
-      return menuRelations.children */
     },
     getActions: (state) => (containerUuid) => {
       var menu = state.contextMenu.find(

@@ -1,11 +1,12 @@
-import { createEntity, updateEntity, deleteEntity } from '@/api/ADempiere'
+import { createEntity, updateEntity, deleteEntity, getReferencesList } from '@/api/ADempiere'
 import { convertObjectToArrayPairs, convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
 
 const windowControl = {
   state: {
-    inCreate: []
+    inCreate: [],
+    references: []
   },
   mutations: {
     addInCreate(state, payload) {
@@ -13,6 +14,18 @@ const windowControl = {
     },
     deleteInCreate(state, payload) {
       state.inCreate = state.inCreate.filter(item => item.containerUuid !== payload.containerUuid)
+    },
+    addReference(state, payload) {
+      state.references.push(payload)
+    },
+    deleteReference(state, payload) {
+      state.references = state.references.filter(itemReference => {
+        if (itemReference.parentUuid === payload.windowUuid &&
+          itemReference.recordUuid === payload.recordUuid) {
+          return false
+        }
+        return true
+      })
     }
   },
   actions: {
@@ -334,11 +347,45 @@ const windowControl = {
             reject(error)
           })
       })
+    },
+    /**
+     * Get references asociate to record
+     * @param {string} parameters.parentUuid
+     * @param {string} parameters.containerUuid
+     * @param {string} parameters.recordUuid
+     */
+    getReferencesListFromServer({ commit, rootGetters }, parameters) {
+      // TODO: check if you get better performance search only the window and get the current tab
+      var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      return new Promise((resolve, reject) => {
+        getReferencesList({
+          windowUuid: parameters.parentUuid,
+          tableName: tab.tableName,
+          recordUuid: parameters.recordUuid
+        })
+          .then(response => {
+            // commit('deleteReference')
+            console.log(response)
+            resolve(response)
+          })
+          .catch(error => {
+            console.warn(error)
+            // reject(error)
+          })
+      })
     }
   },
   getters: {
     getInCreate: (state) => (containerUuid) => {
       return state.inCreate.find(item => item.containerUuid === containerUuid)
+    },
+    getReferencesList: (state) => (windowUuid, recordUuid) => {
+      return state.references.filter(itemReference => {
+        if (itemReference.parentUuid === windowUuid &&
+          itemReference.recordUuid === recordUuid) {
+          return true
+        }
+      })
     }
   }
 }

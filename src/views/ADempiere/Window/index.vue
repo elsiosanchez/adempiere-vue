@@ -29,7 +29,7 @@
                   :menu-parent-uuid="$route.meta.parentUuid"
                   :parent-uuid="windowUuid"
                   :container-uuid="windowMetadata.currentTabUuid"
-                  :parent-panel="panelType"
+                  :panel-type="panelType"
                   :modal-metadata="windowMetadata"
                 />
               </el-header>

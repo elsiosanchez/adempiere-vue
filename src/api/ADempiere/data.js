@@ -232,3 +232,22 @@ export function requestProcessActivity() {
 export function getRecentItems() {
   return Instance.call(this).requestRecentItems()
 }
+
+/**
+ * Reference List from Window
+ * @param {string}  parameters.tableName
+ * @param {string}  parameters.windowUuid
+ * @param {string}  parameters.recordUuid
+ * @param {integer} parameters.recordId
+ */
+export function getReferencesList(parameters) {
+  var requestReference = Instance.call(this).getReferencesRequest()
+  requestReference.setWindowuuid(parameters.windowUuid)
+  requestReference.setTablename(parameters.tableName)
+  requestReference.setUuid(parameters.recordUuid)
+  if (parameters.recordId) {
+    requestReference.setRecordid(parameters.recordId)
+  }
+
+  return Instance.call(this).listReferencesRequest(requestReference)
+}
