@@ -208,7 +208,11 @@ export default {
   watch: {
     '$route.query.action'(actionValue) {
       this.recordUuid = actionValue
-      this.getReferences()
+      // only requires updating the context menu if it is Window
+      if (this.panelType === 'window') {
+        this.generateContextMenu(this.containerUuid)
+        this.getReferences()
+      }
     }
   },
   created() {
@@ -259,7 +263,8 @@ export default {
           }
 
           if (this.$route.meta.type === 'window') {
-            if (this.$route.query.action === 'create-new') {
+            // if (this.$route.query.action === 'create-new') {
+            if (this.recordUuid === 'create-new') {
               itemAction.disabled = true
             } else {
               itemAction.disabled = false

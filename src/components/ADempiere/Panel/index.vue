@@ -52,7 +52,7 @@
           <el-row :key="key">
             <el-col :key="key" :span="24">
               <div
-                v-if="item.groupFinal.trim() !== ''
+                v-if="item.groupFinal !== ''
                   && (group.groupType == 'T' && group.groupName == item.groupFinal)
                   || (group.groupType !== 'T' && item.typeGroup !== 'T')"
                 :key="key"
