@@ -24,69 +24,75 @@
           </template>
           <template slot="paneR">
             <el-container style="height: 88vh;">
-              <el-header style="height: 39px;">
-                <context-menu
-                  :menu-parent-uuid="$route.meta.parentUuid"
-                  :parent-uuid="windowUuid"
-                  :container-uuid="windowMetadata.currentTabUuid"
-                  :panel-type="panelType"
-                  :modal-metadata="windowMetadata"
-                />
-              </el-header>
+              <Split direction="vertical" @onDrag="onDrag">
+                <SplitArea :size="isShowedTabChildren ? 50 : 100">
+                  <el-header style="height: 39px;">
+                    <context-menu
+                      :menu-parent-uuid="$route.meta.parentUuid"
+                      :parent-uuid="windowUuid"
+                      :container-uuid="windowMetadata.currentTabUuid"
+                      :panel-type="panelType"
+                      :modal-metadata="windowMetadata"
+                    />
+                  </el-header>
 
-              <el-main>
-                <tab-parent
-                  :window-uuid="windowUuid"
-                  :tabs-list="windowMetadata.tabsListParent"
-                  class="tab-window"
-                />
-                <div class="small-4 columns">
-                  <div class="wrapper">
-                    <div
-                      v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-                      class="open-detail"
+                  <el-main>
+                    <tab-parent
+                      :window-uuid="windowUuid"
+                      :tabs-list="windowMetadata.tabsListParent"
+                      class="tab-window"
                     />
-                    <el-button
-                      v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-                      v-show="!isShowedTabChildren"
-                      icon="el-icon-caret-top"
-                      :class="isMobile ? 'open-table-detail-mobile' : 'open-table-detail'"
-                      circle
-                      @click="handleChangeShowedTabChildren()"
+                    <div class="small-4 columns">
+                      <div class="wrapper">
+                        <div
+                          v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                          class="open-detail"
+                        />
+                        <el-button
+                          v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                          v-show="!isShowedTabChildren"
+                          icon="el-icon-caret-top"
+                          :class="isMobile ? 'open-table-detail-mobile' : 'open-table-detail'"
+                          circle
+                          @click="handleChangeShowedTabChildren()"
+                        />
+                      </div>
+                    </div>
+                    <modal-dialog />
+                    <div class="small-4 columns">
+                      <div class="w">
+                        <div class="open-left" />
+                        <el-button
+                          :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                          class="open-navegation"
+                          circle
+                          @click="handleChangeShowedRecordNavigation()"
+                        />
+                      </div>
+                    </div>
+                  </el-main>
+                </SplitArea>
+                <SplitArea v-show="isShowedTabChildren" :size="50">
+                  <el-header
+                    v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                    style="height: auto; padding-right: 35px !important;padding-bottom: 33px;"
+                  >
+                    <div class="w-33">
+                      <div class="center">
+                        <el-button
+                          icon="el-icon-caret-bottom"
+                          circle
+                          @click="handleChangeShowedTabChildren()"
+                        />
+                      </div>
+                    </div>
+                    <tab-children
+                      :window-uuid="windowUuid"
+                      :tabs-list="windowMetadata.tabsListChildren"
                     />
-                  </div>
-                </div>
-                <modal-dialog />
-                <div class="small-4 columns">
-                  <div class="w">
-                    <div class="open-left" />
-                    <el-button
-                      :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
-                      class="open-navegation"
-                      circle
-                      @click="handleChangeShowedRecordNavigation()"
-                    />
-                  </div>
-                </div>
-              </el-main>
-              <el-header
-                v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
-                style="height: auto; padding-right: 35px !important;padding-bottom: 33px;"
-              >
-                <div class="w-33">
-                  <div class="center">
-                    <el-button
-                      icon="el-icon-caret-bottom"
-                      circle
-                      @click="handleChangeShowedTabChildren()"
-                    />
-                  </div>
-                </div>
-                <tab-children
-                  :window-uuid="windowUuid"
-                  :tabs-list="windowMetadata.tabsListChildren"
-                />
-              </el-header>
+                  </el-header>
+                </SplitArea>
+              </Split>
             </el-container>
           </template>
         </split-pane>
@@ -157,6 +163,14 @@ export default {
     this.getWindow()
   },
   methods: {
+    // callback new size
+    onDrag(size) {
+      var bottomPanel = size[1] - 30 + 'vh'
+      this.$store.dispatch('setSplitHeight', {
+        splitHeight: bottomPanel
+      })
+    },
+    //
     getWindow() {
       var window = this.getterWindow
       if (window) {
@@ -325,6 +339,15 @@ export default {
 </style>
 
 <style>
+  .split {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: 102%;
+    width: 100%;
+  }
   .components-container {
     position: relative;
     height: 100vh;

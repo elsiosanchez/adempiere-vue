@@ -72,7 +72,7 @@
           </transition>
         </div>
       </div>
-      <div v-show="!isParent && panelType === 'window'" class="panel-expand">
+      <div v-if="!isParent && panelType === 'window' && isMobile" class="panel-expand">
         <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" />
       </div>
     </div>
@@ -260,6 +260,9 @@ export default {
     getshowCriteria() {
       return this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
     },
+    getHeigthPanelBottom() {
+      return this.$store.getters.setSplitHeight()
+    },
     getHeigthTable() {
       var displayHeight = this.$store.getters.getHeigth()
       if (this.panelType !== 'window') {
@@ -283,7 +286,7 @@ export default {
           return displayHeight - 205
         } else {
           if (!this.isExpand) {
-            return displayHeight - 750
+            return this.getHeigthPanelBottom
           } else {
             return displayHeight - 320
           }
