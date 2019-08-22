@@ -247,10 +247,10 @@ export default {
     overflow: hidden;
     height: 90vh;
     box-sizing: border-box;
-    padding-top: 0px;
-    padding-right: 20px;
-    padding-bottom: 0px;
-    padding-left: 20px;
+    padding-top: 0px !important;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 0px !important;
   }
   .center{
     text-align: center;

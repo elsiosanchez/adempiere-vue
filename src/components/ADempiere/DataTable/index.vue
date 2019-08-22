@@ -107,8 +107,8 @@
           v-if="isDisplayed(item)"
           :key="key"
           :label="item.name"
-          :prop="item.columnName"
           :column-key="item.columnName"
+          :prop="item.columnName"
           sortable
           :formatter="changeOrder"
           min-width="200"
@@ -265,13 +265,17 @@ export default {
       if (this.panelType !== 'window') {
         var table = ''
         if (this.getterDataRecords.length === 0 && this.getshowCriteria && this.getParamsBrowser) {
-          table = displayHeight - 520
+          table = displayHeight - 550
+        } else if (this.getterDataRecords.length === 0 && !this.getshowCriteria && !this.getParamsBrowser) {
+          table = displayHeight - 320
+        } else if (this.getterDataRecords.length === 0 && this.getshowCriteria && !this.getParamsBrowser) {
+          table = displayHeight - 430
         } else if (this.getterDataRecords.length === 0 && !this.getshowCriteria && this.getParamsBrowser) {
           table = displayHeight - 290
-        } else if (!this.getshowCriteria && !this.getParamsBrowser) {
+        } else if (this.getterDataRecords.length >= 0 && !this.getshowCriteria && this.getParamsBrowser) {
           table = displayHeight - 290
-        } else if (!this.getParamsBrowser && this.getshowCriteria) {
-          table = displayHeight - 400
+        } else if (this.getterDataRecords.length >= 0 && this.getshowCriteria && this.getParamsBrowser) {
+          table = displayHeight - 550
         }
         return table
       } else {
