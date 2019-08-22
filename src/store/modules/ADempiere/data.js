@@ -295,6 +295,9 @@ const data = {
     },
     getDataRecordCount: (state, getters) => (containerUuid) => {
       var data = getters.getDataRecordAndSelection(containerUuid)
+      if (data.recordCount === undefined) {
+        return data.record.length
+      }
       return data.recordCount
     },
     getPageNextToken: (state, getters) => (containerUuid) => {
