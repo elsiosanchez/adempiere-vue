@@ -274,6 +274,11 @@ const windowControl = {
         if (isEmptyValue(record.UUID)) {
           selectionLength = selectionLength - 1
           console.warn(`This row does not contain a record with UUID`, record)
+          // refresh record list
+          dispatch('getDataListTab', {
+            parentUuid: parameters.parentUuid,
+            containerUuid: parameters.containerUuid
+          })
           return
         }
         deleteEntity({
