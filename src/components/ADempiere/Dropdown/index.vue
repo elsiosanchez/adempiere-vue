@@ -71,15 +71,25 @@ export default {
   },
   methods: {
     redirect(item) {
-      this.$router.push({
-        name: item.name,
-        query: {
-          action: 'create-new'
-        },
-        params: {
-          childs: item.children
-        }
-      })
+      if (item.meta && item.meta.type === 'window') {
+        this.$router.push({
+          name: item.name,
+          query: {
+            action: 'create-new',
+            tabNumber: 0
+          },
+          params: {
+            childs: item.children
+          }
+        })
+      } else {
+        this.$router.push({
+          name: item.name,
+          params: {
+            childs: item.children
+          }
+        })
+      }
     },
     isMobile() {
       if (this.device === 'mobile') {

@@ -77,7 +77,11 @@ export default {
       this.show = false
     },
     change(val) {
-      this.$router.push({ name: val.name, query: { action: 'create-new' }, params: { childs: val.meta.childs }})
+      if (val.meta && val.meta.type === 'window') {
+        this.$router.push({ name: val.name, query: { action: 'create-new', tabNumber: 0 }, params: { childs: val.meta.childs }})
+      } else {
+        this.$router.push({ name: val.name, params: { childs: val.meta.childs }})
+      }
       this.search = ''
       this.options = []
       this.$nextTick(() => {

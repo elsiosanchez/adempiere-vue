@@ -386,8 +386,10 @@ export default {
       if (this.$route.meta && this.$route.meta.title) {
         title = this.$route.meta.title
       }
-      const route = Object.assign({}, tempRoute, { title: `${title} - ${action}` })
-      this.$store.dispatch('tagsView/updateVisitedView', route)
+      if (this.$route.meta && this.$route.meta.type === 'window') {
+        const route = Object.assign({}, tempRoute, { title: `${title} - ${action}` })
+        this.$store.dispatch('tagsView/updateVisitedView', route)
+      }
     }
   }
 }
