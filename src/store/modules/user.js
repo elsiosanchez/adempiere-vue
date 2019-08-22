@@ -1,7 +1,7 @@
 import { login, logout, getInfo, changeRole } from '@/api/user'
 import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import router, { resetRouter } from '@/router'
 import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
 
 const state = {
@@ -157,6 +157,21 @@ const actions = {
 
         // Update user info and context associated with session
         dispatch('getInfo', response.getUuid())
+          .then(() => {
+            var route = router.app._route
+            var selectedTag = {
+              fullPath: route.fullPath,
+              hash: route.hash,
+              matched: route.matched,
+              meta: route.meta,
+              name: route.name,
+              params: route.params,
+              path: route.path,
+              query: route.query,
+              title: route.meta.title
+            }
+            dispatch('tagsView/delOthersViews', selectedTag, { root: true })
+          })
 
         resolve({
           ...rol,
