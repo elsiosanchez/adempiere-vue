@@ -14,6 +14,8 @@ export function decodeHtml(text) {
 export function isEmptyValue(value) {
   if (value === undefined || value == null) {
     return true
+  } else if (value === -1 || value === '-1') {
+    return true
   } else if (typeof value === 'string') {
     return Boolean(!value.trim().length)
   } else if (typeof value === 'function' || typeof value === 'number' || typeof value === 'boolean' || Object.prototype.toString.call(value) === '[object Date]') {
