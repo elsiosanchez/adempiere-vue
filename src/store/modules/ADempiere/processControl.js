@@ -315,6 +315,9 @@ const processControl = {
       })
       return processList
     },
+    getResult: (state) => {
+      return state.process
+    },
     getProcessResult: (state) => {
       return state.reportObject
     },
