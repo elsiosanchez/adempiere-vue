@@ -109,6 +109,7 @@ export default {
       actions: 'Action',
       status: 'Status',
       Logs: 'Logs',
+      summary: 'Summary',
       Help: 'Help'
     },
     dataTable: {

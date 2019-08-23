@@ -209,7 +209,6 @@ const processControl = {
               }
               var process = {
                 processUuid: responseItem.getUuid(),
-                processId: responseItem.getId(),
                 instanceUuid: responseItem.getInstanceuuid(),
                 isError: responseItem.getIserror(),
                 isProcessing: responseItem.getIsprocessing(),
@@ -286,17 +285,17 @@ const processControl = {
       var process = state.process.find(
         item => item.instanceUuid === instanceUuid
       )
-      return process.output
+      if (process === undefined) {
+        return undefined
+      } else {
+        return process.output
+      }
     },
     getRunningProcess: (state, getters, rootState, rootGetters) => {
       var processOutput
       var processMetadata
       var processList = state.sessionProcess.map(item => {
-        if (item.isReport) {
-          processOutput = getters.getProcessOutput(item.instanceUuid)
-        } else {
-          processOutput = undefined
-        }
+        processOutput = getters.getProcessOutput(item.instanceUuid)
         processMetadata = rootState.process.process.find(
           processItem => processItem.uuid === item.processUuid
         )
@@ -304,7 +303,7 @@ const processControl = {
           name: processMetadata.name,
           description: processMetadata.description,
           id: processMetadata.id,
-          isError: item.isError,
+          isError: item.instanceUuid === undefined,
           isProcessing: item.isProcessing,
           isReport: processMetadata.isReport,
           instanceUuid: item.instanceUuid,

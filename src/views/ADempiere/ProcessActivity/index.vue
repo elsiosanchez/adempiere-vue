@@ -14,15 +14,13 @@
           <div slot="header" class="clearfix">
             <span><b>{{ activity.name }}</b></span>
             <div class="actions">
-              <el-dropdown @command="handleCommand(activity)">
+              <el-dropdown v-if="activity.isReport" @command="handleCommand(activity)">
                 <span class="el-dropdown-link">
                   {{ $t('components.contextMenuActions') }}<i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item v-if="activity.isReport">{{ $t('views.seeReport') }}</el-dropdown-item>
                   <!-- TODO: add more actions -->
-                  <el-dropdown-item>Other Action</el-dropdown-item>
-                  <el-dropdown-item>Other Action</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -33,6 +31,7 @@
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
               <el-popover
+                v-if="activity.logs && activity.logs.length > 0"
                 ref="popoverLog"
                 placement="right"
                 :title="activity.name + ' ' + generateTitle('Logs')"
@@ -43,6 +42,18 @@
                   <ul>
                     <li v-for="(log, key) in activity.logs" :key="key">{{ log.log }}</li>
                   </ul>
+                </el-scrollbar>
+              </el-popover>
+              <el-popover
+                v-else-if="activity.summary && !isEmptyValue(activity.summary)"
+                ref="popoverLog"
+                placement="right"
+                :title="activity.name + ' ' + generateTitle('Summary')"
+                width="400"
+                trigger="hover"
+              >
+                <el-scrollbar wrap-class="popover-scroll">
+                  <p>{{ activity.summary }}</p>
                 </el-scrollbar>
               </el-popover>
               <el-tag v-popover:popoverLog :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError, activity.isProcessing).text }}</el-tag>
@@ -57,6 +68,7 @@
   </div>
 </template>
 <script>
+import { isEmptyValue } from '@/utils/ADempiere'
 
 export default {
   name: 'ProcessActivity',
@@ -69,11 +81,14 @@ export default {
   beforeMount() {
     this.$store.dispatch('getSessionProcessFromServer')
       .then(response => {
-        this.processActivity = this.$store.getters.getRunningProcess
-        this.recordCount = response.processList.length
+        if (response.processList.length > 0) {
+          this.processActivity = this.$store.getters.getRunningProcess
+          this.recordCount = response.processList.length
+        }
       })
   },
   methods: {
+    isEmptyValue,
     handleCommand(activity) {
       if (activity.isReport) {
         this.$router.push({

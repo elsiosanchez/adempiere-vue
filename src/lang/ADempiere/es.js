@@ -109,6 +109,7 @@ export default {
       Action: 'Acción',
       Status: 'Estado',
       Logs: 'Bitacora',
+      Summary: 'Resumen',
       Help: 'Ayuda'
     },
     dataTable: {
