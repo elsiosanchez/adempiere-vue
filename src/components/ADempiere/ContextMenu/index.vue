@@ -156,7 +156,8 @@ export default {
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
-      recordUuid: this.$route.query.action
+      recordUuid: this.$route.query.action,
+      tempRoute: {}
     }
   },
   computed: {
@@ -220,6 +221,7 @@ export default {
   },
   mounted() {
     this.getReferences()
+    this.tempRoute = this.$route
   },
   methods: {
     isEmptyValue,
@@ -350,7 +352,9 @@ export default {
                           fileName: action.payload.output.fileName
                         }
                       })
-                      this.$store.dispatch('tagsView/delView', this.$route)
+                      this.$nextTick(() => {
+                        this.$store.dispatch('tagsView/delView', this.tempRoute)
+                      })
                     }
                   }
                 }
