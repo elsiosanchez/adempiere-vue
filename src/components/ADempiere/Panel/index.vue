@@ -158,7 +158,8 @@ export default {
       firstGroup: {},
       groupsView: 0,
       isShowRecordNavigation: false,
-      mutipleGroups: Boolean(this.panelType === 'window')
+      mutipleGroups: Boolean(this.panelType === 'window'),
+      tagTitle: { base: this.$route.meta.title, action: '' }
     }
   },
   computed: {
@@ -286,6 +287,7 @@ export default {
             isDontSendToEdit: true,
             fieldList: this.fieldList
           })
+          this.setTagsViewTitle(this.$route.query.action)
         })
         .catch(error => {
           this.$message({
@@ -379,19 +381,19 @@ export default {
       return res
     },
     setTagsViewTitle(actionValue) {
-      var title
       var tempRoute = this.$route
-      var action = ''
       if (actionValue === 'create-new') {
-        action = this.$t('tagsView.newRecord')
+        this.tagTitle.action = this.$t('tagsView.newRecord')
       } else {
-        action = this.$t('tagsView.seeRecord')
-      }
-      if (this.$route.meta && this.$route.meta.title) {
-        title = this.$route.meta.title
+        var field = this.fieldList.find(
+          fieldItem => fieldItem.isIdentifier === true
+        )
+        if (this.dataRecords[field.name] !== undefined) {
+          this.tagTitle.action = this.dataRecords[field.name]
+        }
       }
       if (this.$route.meta && this.$route.meta.type === 'window') {
-        const route = Object.assign({}, tempRoute, { title: `${title} - ${action}` })
+        var route = Object.assign({}, tempRoute, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
         this.$store.dispatch('tagsView/updateVisitedView', route)
       }
     }
