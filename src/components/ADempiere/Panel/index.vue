@@ -184,20 +184,24 @@ export default {
       this.generatePanel(this.metadata.fieldList)
     },
     '$route.query.action'(actionValue) {
-      if (actionValue !== 'create-new') {
-        this.getData(this.tableName, actionValue)
-      } else {
-        this.$store.dispatch('resetPanelToNew', {
-          containerUuid: this.containerUuid
-        })
+      if (this.panelType === 'window') {
+        if (actionValue !== 'create-new') {
+          this.getData(this.tableName, actionValue)
+        } else {
+          this.$store.dispatch('resetPanelToNew', {
+            containerUuid: this.containerUuid
+          })
+        }
+        this.setTagsViewTitle(actionValue)
       }
-      this.setTagsViewTitle(actionValue)
     }
   },
   created() {
     // get tab with uuid
     this.getPanel()
-    this.setTagsViewTitle(this.$route.query.action)
+    if (this.panelType === 'window') {
+      this.setTagsViewTitle(this.$route.query.action)
+    }
   },
   methods: {
     isEmptyValue,
@@ -382,14 +386,17 @@ export default {
     },
     setTagsViewTitle(actionValue) {
       var tempRoute = this.$route
-      if (actionValue === 'create-new') {
+      if (actionValue === 'create-new' || actionValue === '') {
         this.tagTitle.action = this.$t('tagsView.newRecord')
       } else {
         var field = this.fieldList.find(
           fieldItem => fieldItem.isIdentifier === true
         )
-        if (this.dataRecords[field.name] !== undefined) {
+
+        if (this.dataRecords[field.name]) {
           this.tagTitle.action = this.dataRecords[field.name]
+        } else {
+          this.tagTitle.action = field.value
         }
       }
       if (this.$route.meta && this.$route.meta.type === 'window') {
