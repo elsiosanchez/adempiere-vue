@@ -32,6 +32,11 @@ export default {
       } else {
         document.body.removeEventListener('click', this.close)
       }
+    },
+    '$route.query.action'(actionValue) {
+      if (actionValue === 'create-new') {
+        this.value = this.metadata.defaultValue
+      }
     }
   },
   methods: {

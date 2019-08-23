@@ -185,6 +185,10 @@ export default {
     '$route.query.action'(actionValue) {
       if (actionValue !== 'create-new') {
         this.getData(this.tableName, actionValue)
+      } else {
+        this.$store.dispatch('resetPanelToNew', {
+          containerUuid: this.containerUuid
+        })
       }
       this.setTagsViewTitle(actionValue)
     }

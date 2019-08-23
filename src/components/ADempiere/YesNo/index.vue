@@ -41,6 +41,11 @@ export default {
   watch: {
     valueModel(value) {
       this.value = Boolean(value)
+    },
+    '$route.query.action'(actionValue) {
+      if (actionValue === 'create-new') {
+        this.value = this.metadata.defaultValue
+      }
     }
   },
   mounted() {

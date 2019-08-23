@@ -88,6 +88,12 @@ export default {
       if (!this.isEmptyValue(this.value)) {
         this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, this.value)
       }
+    },
+    '$route.query.action'(actionValue) {
+      if (actionValue === 'create-new') {
+        this.value = this.metadata.parsedDefaultValue
+        this.checkDefaultValue()
+      }
     }
   },
   created() {
