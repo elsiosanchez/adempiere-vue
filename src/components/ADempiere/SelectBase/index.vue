@@ -45,7 +45,7 @@ export default {
       showControls: true,
       blanckOption: {
         label: ' ',
-        value: -1
+        key: -1
       }
     }
   },
@@ -102,7 +102,7 @@ export default {
   beforeMount() {
     if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
       this.options.push(this.blanckOption)
-      this.value = this.blanckOption
+      this.value = this.blanckOption.key
     } else {
       this.checkDefaultValue()
     }
@@ -180,7 +180,8 @@ export default {
       if (showList) {
         if (this.getterOptions.length > 0) {
           this.options = this.getterOptions
-        } else {
+        }
+        if (this.getterOptions.length === 0 || (this.getterOptions.length <= 1 && this.getterOptions.some(item => this.isEmptyValue(item.value)))) {
           this.remoteMethod()
         }
       }
@@ -209,7 +210,9 @@ export default {
         parsedDirectQuery: this.parsedDirectQuery,
         value: this.value
       })
+      this.options = []
       this.options.push(this.blanckOption)
+      this.value = this.blanckOption.key
     },
     checkDefaultValue() {
       if (!this.isEmptyValue(this.metadata.defaultValue) && !this.isEmptyValue(this.metadata.value)) {
