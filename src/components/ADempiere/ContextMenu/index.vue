@@ -353,7 +353,9 @@ export default {
                         }
                       })
                       this.$nextTick(() => {
-                        this.$store.dispatch('tagsView/delView', this.tempRoute)
+                        if (this.tempRoute.path === this.$route.path) {
+                          this.$store.dispatch('tagsView/delView', this.tempRoute)
+                        }
                       })
                     }
                   }
