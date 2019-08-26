@@ -184,7 +184,10 @@ export default {
       this.generatePanel(this.metadata.fieldList)
     },
     '$route.query.action'(actionValue) {
+      this.uuidRecord = actionValue
+
       if (this.panelType === 'window') {
+        // TODO: Validate UUID value
         if (actionValue !== 'create-new') {
           this.getData(this.tableName, actionValue)
         } else {
@@ -194,14 +197,18 @@ export default {
         }
         this.setTagsViewTitle(actionValue)
       }
+    },
+    // used if the first load contains a uuid
+    isLoadRecord(value) {
+      // TODO: Validate UUID value
+      if (value && this.panelType === 'window' && this.uuidRecord !== 'create-new' && !this.isEmptyValue(this.uuidRecord)) {
+        this.setTagsViewTitle(this.uuidRecord)
+      }
     }
   },
   created() {
     // get tab with uuid
     this.getPanel()
-    if (this.panelType === 'window') {
-      this.setTagsViewTitle(this.$route.query.action)
-    }
   },
   methods: {
     isEmptyValue,
@@ -292,6 +299,7 @@ export default {
             fieldList: this.fieldList
           })
           this.setTagsViewTitle(this.$route.query.action)
+          this.isLoadRecord = true
         })
         .catch(error => {
           this.$message({
