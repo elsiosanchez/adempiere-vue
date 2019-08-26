@@ -215,7 +215,7 @@ const windowControl = {
           console.log('Successful edition', response)
         })
         .catch(error => {
-          console.log(error)
+          console.warn(error)
         })
     },
     deleteEntity({ commit, dispatch, rootGetters }, parameters) {

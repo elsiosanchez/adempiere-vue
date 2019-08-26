@@ -87,7 +87,7 @@ class evaluator {
     if (logic === undefined) {
       return _defaultUndefined
     }
-    var expr = /^(['"@a-zA-Z0-9\-_]){0,}((!*={1})|(!{1})|(<{1})|(>{1}))(["'@a-zA-Z0-9\-_]){0,}$/i
+    var expr = /^(['"@a-zA-Z0-9\-_\s]){0,}((!*= {1})|(!{1})|(<{1})|(>{1}))([\s"'@a-zA-Z0-9\-_]){0,}$/i
     var st = expr.test(logic)
 
     if (!st) {
@@ -107,8 +107,8 @@ class evaluator {
       expr = /(>)/
       st = logic.split(expr)
     }
-    // First Part
-    var first = st[0]
+    // First Part (or column name)
+    var first = st[0].trim()
     var firstEval = first
     expr = /@/
     if (expr.test(first)) {
@@ -138,9 +138,9 @@ class evaluator {
     //	Operator
     var operand = st[1]
     //	Second Part
-    var second = st[2]
-    var secondEval = second
-    if (second.indexOf('@') !== -1) {
+    var second = st[2].trim()
+    var secondEval = second.trim()
+    if (second.includes('@')) {
       second = second.replace('@', ' ').trim() // strip tag
       secondEval = objectToEvaluate.context.getContext({
         parentUuid: objectToEvaluate.parentUuid,
@@ -151,10 +151,10 @@ class evaluator {
     secondEval = secondEval.replace(/['"]/g, '').trim()	//	strip ' and "
 
     //	Handling of ID compare (null => 0)
-    if (first.indexOf('_ID') !== -1 && firstEval.length === 0) {
+    if (first.includes('_ID') && firstEval.length === 0) {
       firstEval = '0'
     }
-    if (second.indexOf('_ID') !== -1 && secondEval.length === 0) {
+    if (second.includes('_ID') && secondEval.length === 0) {
       secondEval = '0'
     }
 
@@ -216,7 +216,7 @@ class evaluator {
     let string = parseString.replace('@SQL=', '')
     //  while we have variables
 
-    while (string.indexOf('@') !== -1) {
+    while (string.includes('@')) {
       let pos = string.indexOf('@')
       // remove first @: @ExampleColumn@ = ExampleColumn@
       string = string.substring(pos + 1)
