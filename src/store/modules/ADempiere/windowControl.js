@@ -137,7 +137,15 @@ const windowControl = {
               message: language.t('data.createRecordSuccessful'),
               type: 'success'
             })
-            console.log('result to create', result)
+            // redirect to create new record
+            var oldRoute = router.app._route
+            router.push({
+              name: oldRoute.name,
+              query: {
+                action: result.recordUuid,
+                tabNumber: oldRoute.query.tabNumber
+              }
+            })
             resolve(result)
           })
           .catch(error => {
