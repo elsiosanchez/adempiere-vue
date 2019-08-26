@@ -144,6 +144,14 @@ export default {
     panelType: {
       type: String,
       default: 'window'
+    },
+    windowType: {
+      type: String,
+      default: ''
+    },
+    totalRecords: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -250,13 +258,17 @@ export default {
       this.isLoadPanel = true
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
-        if (this.uuidRecord && this.uuidRecord !== 'create-new') {
-          this.getData(this.tableName, this.uuidRecord)
+        if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && this.totalRecords > 0) {
+          this.getData(this.tableName, undefined)
         } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
           })
         } else {
+          this.$router.push({
+            name: this.$route.name,
+            query: { action: 'create-new', tabNumber: 0 }
+          })
           this.$message({
             message: this.$t('data.createNewRecord'),
             showClose: true
@@ -291,6 +303,10 @@ export default {
       })
         .then(response => {
           this.dataRecords = response
+          this.$router.push({
+            name: this.$route.name,
+            query: { action: this.dataRecords.UUID, tabNumber: 0 }
+          })
           this.$store.dispatch('notifyPanelChange', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
@@ -400,11 +416,14 @@ export default {
         var field = this.fieldList.find(
           fieldItem => fieldItem.isIdentifier === true
         )
-
-        if (this.dataRecords[field.name]) {
-          this.tagTitle.action = this.dataRecords[field.name]
+        if (field !== undefined) {
+          if (this.dataRecords[field.name]) {
+            this.tagTitle.action = this.dataRecords[field.name]
+          } else {
+            this.tagTitle.action = field.value
+          }
         } else {
-          this.tagTitle.action = field.value
+          this.tagTitle.action = this.$t('tagsView.seeRecord')
         }
       }
       if (this.$route.meta && this.$route.meta.type === 'window') {

@@ -19,6 +19,8 @@
           :table-name="item.tableName"
           :group="item.tabGroup"
           :panel-type="panelType"
+          :window-type="windowType"
+          :total-records="totalRecords"
         />
       </el-tab-pane>
     </template>
@@ -41,6 +43,14 @@ export default {
     tabsList: {
       type: [Array, Object],
       default: () => []
+    },
+    windowType: {
+      type: String,
+      default: ''
+    },
+    totalRecords: {
+      type: Number,
+      default: 0
     }
   },
   data() {

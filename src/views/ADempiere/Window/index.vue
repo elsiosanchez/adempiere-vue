@@ -40,6 +40,8 @@
                     <tab-parent
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
+                      :window-type="windowMetadata.windowType"
+                      :total-records="listRecordNavigation"
                       class="tab-window"
                     />
                     <div class="small-4 columns">
@@ -138,7 +140,7 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
-      listRecordNavigation: [],
+      listRecordNavigation: 0,
       uuidRecord: this.$route.params.uuidRecord,
       isShowedTabChildren: true,
       isWindowType: '',

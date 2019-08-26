@@ -25,17 +25,6 @@ export default {
           target: '_blank',
           rel: 'noopener'
         }
-      } else if (route.meta.type === 'window') {
-        return {
-          is: 'router-link',
-          to: {
-            name: route.name,
-            query: {
-              action: 'create-new',
-              tabNumber: 0
-            }
-          }
-        }
       }
       return {
         is: 'router-link',
