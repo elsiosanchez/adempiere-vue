@@ -31,7 +31,7 @@
               {{ $t('table.dataTable.deleteSelection') }}
             </el-menu-item>
             <el-menu-item
-              :disabled="inEdited.length > 0"
+              :disabled="inEdited.length > 0 || (!isParent && $route.query.action === 'create-new')"
               index="new"
               @click="addNewRow()"
             >

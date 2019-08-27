@@ -28,7 +28,7 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: [String, Number],
+      type: [String, Number, Date],
       default: undefined
     }
   },

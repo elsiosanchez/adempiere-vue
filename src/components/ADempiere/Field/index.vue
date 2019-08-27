@@ -81,7 +81,7 @@ export default {
       default: () => ({})
     },
     recordDataFields: {
-      type: [Number, String, Boolean, Array, Object],
+      type: [Number, String, Boolean, Array, Object, Date],
       default: undefined
     },
     inGroup: {
