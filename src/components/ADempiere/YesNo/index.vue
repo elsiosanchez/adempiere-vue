@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { fieldIsDisplayed } from '@/utils/ADempiere'
+
 export default {
   name: 'YesNo',
   props: {
@@ -86,7 +88,7 @@ export default {
     },
     isReadOnlyForm(value) {
       var valueReadOnly = this.valuesReadOnly.find(field => field.columnName === this.metadata.columnName)
-      if (valueReadOnly) {
+      if (valueReadOnly && fieldIsDisplayed(this.metadata)) {
         this.$store.dispatch('changeFieldAttributesBoolean', {
           containerUuid: this.metadata.containerUuid,
           fieldsIncludes: [],
