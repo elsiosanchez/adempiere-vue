@@ -180,7 +180,16 @@ const windowControl = {
           attributesList: finalAttributes
         })
           .then(response => {
-            resolve(response)
+            const newValues = convertValuesMapToObject(response.getValuesMap())
+            const responseConvert = {
+              data: newValues,
+              id: response.getId(),
+              uuid: recordUuid,
+              tableName: panel.tableName
+            }
+            console.log('udate entity', responseConvert)
+            commit('setRecordDetail', responseConvert)
+            resolve(newValues)
           })
           .catch(error => {
             reject(error)

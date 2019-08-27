@@ -35,7 +35,10 @@
                     :key="subKey"
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
-                    :metadata-field="subItem"
+                    :metadata-field="{
+                      ...subItem,
+                      value: dataRecords[subItem.columnName]
+                    }"
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
@@ -84,7 +87,7 @@
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
-                        :in-group="mutipleGroups"
+                        :in-group="mutipleGroups && fieldGroups > 1"
                       />
                     </template>
                   </el-row>
@@ -130,10 +133,6 @@ export default {
       type: Object,
       default: () => {}
     },
-    tableName: {
-      type: String,
-      default: undefined
-    },
     group: {
       type: Object,
       default: () => ({
@@ -152,6 +151,10 @@ export default {
     totalRecords: {
       type: Number,
       default: 0
+    },
+    isReSearch: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -186,6 +189,12 @@ export default {
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getterData() {
+      return this.$store.getters.getRecordDetail({
+        tableName: this.metadata.tableName,
+        recordUuid: this.$route.query.action
+      })
     }
   },
   watch: {
@@ -202,8 +211,8 @@ export default {
 
       if (this.panelType === 'window') {
         // TODO: Validate UUID value
-        if (actionValue !== 'create-new') {
-          this.getData(this.tableName, actionValue)
+        if (actionValue !== 'create-new' && this.isReSearch) {
+          this.getData(this.metadata.tableName, actionValue)
         } else {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
@@ -227,7 +236,7 @@ export default {
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -265,17 +274,30 @@ export default {
       this.isLoadPanel = true
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
-        if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && this.totalRecords > 0) {
-          this.getData(this.tableName, undefined)
+        // if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && this.totalRecords > 0) {
+        if (this.uuidRecord && this.uuidRecord !== 'create-new') {
+          // this.getData(this.metadata.tableName, undefined)
+          if (this.isReSearch || Object.entries(this.getterData).length === 0) {
+            this.getData(this.metadata.tableName, this.uuidRecord)
+          } else {
+            this.dataRecords = this.getterData
+            this.$store.dispatch('notifyPanelChange', {
+              parentUuid: this.parentUuid,
+              containerUuid: this.containerUuid,
+              newValues: this.dataRecords,
+              isDontSendToEdit: true,
+              fieldList: this.fieldList
+            })
+          }
         } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
           })
         } else {
-          this.$router.push({
-            name: this.$route.name,
-            query: { action: 'create-new', tabNumber: 0 }
-          })
+          // this.$router.push({
+          //   name: this.$route.name,
+          //   query: { action: 'create-new', tabNumber: 0 }
+          // })
           this.$message({
             message: this.$t('data.createNewRecord'),
             showClose: true
@@ -305,7 +327,7 @@ export default {
       this.$store.dispatch('getEntity', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        table: table,
+        tableName: table,
         recordUuid: uuidRecord
       })
         .then(response => {

@@ -141,7 +141,6 @@ export default {
       panelType: 'window',
       isLoading: false,
       listRecordNavigation: 0,
-      uuidRecord: this.$route.params.uuidRecord,
       isShowedTabChildren: true,
       isWindowType: '',
       isShowedRecordNavigation: false
