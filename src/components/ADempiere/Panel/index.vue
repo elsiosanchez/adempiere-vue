@@ -160,6 +160,7 @@ export default {
       dataRecords: {},
       gutterRow: 0,
       isLoadPanel: false,
+      isLoadFromServer: false,
       isLoadRecord: false,
       uuidRecord: this.$route.query.action,
       fieldGroups: [],
@@ -188,6 +189,11 @@ export default {
     }
   },
   watch: {
+    isLoadFromServer(value) {
+      if (value) {
+        this.generatePanel(this.getterFieldList)
+      }
+    },
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     },
@@ -239,7 +245,8 @@ export default {
           containerUuid: this.containerUuid,
           type: this.panelType
         }).then(response => {
-          this.generatePanel(response.fieldList)
+          this.isLoadFromServer = true
+          // this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })

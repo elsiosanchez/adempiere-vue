@@ -113,14 +113,30 @@ const panel = {
         })
       }
     },
+    /**
+     * Change some attribute boolean from fields in panel
+     * @param {string}  params.containerUuid
+     * @param {string}  params.attribute
+     * @param {boolean} params.valueAttribute
+     * @param {array}   params.fieldsIncludes
+     * @param {array}   params.fieldsExcludes
+     */
     changeFieldAttributesBoolean({ commit, getters }, params) {
       var panel = getters.getPanel(params.containerUuid)
       var newFields = panel.fieldList.map(itemField => {
-        if (params.fieldsUser.length > 0 && params.fieldsUser.indexOf(itemField.columnName) !== -1) {
-          itemField[params.attribute] = params.valueAttrbute
+        // var oldValue = itemField[params.attribute]
+
+        // not change exlude field
+        if (params.fieldsExcludes && params.fieldsExcludes.length > 0 && params.fieldsExcludes.includes(itemField.columnName)) {
           return itemField
         }
-        itemField[params.attribute] = !params.valueAttrbute
+        // if it field is included to change value
+        if (params.fieldsIncludes.length > 0 && params.fieldsIncludes.includes(itemField.columnName)) {
+          itemField[params.attribute] = params.valueAttribute
+          return itemField
+        }
+        // changed current value by opposite set value
+        itemField[params.attribute] = !params.valueAttribute
         return itemField
       })
       panel.fieldList = newFields

@@ -121,6 +121,7 @@ const data = {
               uuid: response.getUuid(),
               tableName: response.getTablename()
             })
+
             resolve(newValues)
           })
           .catch(error => {

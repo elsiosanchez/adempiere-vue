@@ -7,7 +7,7 @@
     value-key="key"
     class="select-base"
     clearable
-    :disabled="metadata.readonly || metadata.disabled"
+    :disabled="Boolean(metadata.readonly || metadata.disabled)"
     @change="handleChange"
     @visible-change="getDataLookupList"
     @clear="clearLookup"
@@ -161,7 +161,7 @@ export default {
         value: parsedValue
       })
         .then(response => {
-          if (response.label !== null) {
+          if (response.label) {
             this.value = response.label
             this.options.push(response)
             this.options.unshift(this.blanckOption)

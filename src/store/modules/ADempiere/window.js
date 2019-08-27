@@ -169,7 +169,9 @@ const window = {
               parentUuid: objectParams.parentUuid,
               containerUuid: objectParams.containerUuid,
               isShowedFromUser: true,
-              panelType: panelType
+              panelType: panelType,
+              //
+              isReadOnlyFromForm: false
             }
 
             var fieldUuidsequence = 0

@@ -9,8 +9,8 @@
     range-separator="-"
     :placeholder="$t('components.timePlaceholder')"
     class="time-base"
-    :readonly="metadata.readonly"
-    :disabled="metadata.disabled"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="Boolean(metadata.disabled || metadata.readonly)"
     @change="handleChange"
   />
 </template>

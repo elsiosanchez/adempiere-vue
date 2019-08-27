@@ -5,7 +5,7 @@
     :active-text="$t('components.switchActiveText')"
     true-value="true"
     false-value="false"
-    :disabled="metadata.readonly || metadata.disabled"
+    :disabled="Boolean(metadata.readonly || metadata.disabled)"
     @change="handleChange"
   />
 </template>
@@ -26,7 +26,13 @@ export default {
   },
   data() {
     return {
-      value: Boolean(this.metadata.value)
+      value: Boolean(this.metadata.value),
+      valuesReadOnly: [
+        {
+          columnName: 'IsActive',
+          isReadOnlyValue: false
+        }
+      ]
     }
   },
   computed: {
@@ -46,6 +52,9 @@ export default {
       if (actionValue === 'create-new') {
         this.value = this.metadata.defaultValue
       }
+    },
+    value(value) {
+      this.isReadOnlyForm(value)
     }
   },
   mounted() {
@@ -71,6 +80,19 @@ export default {
           columnName: this.metadata.columnName,
           newValue: this.value,
           isDontSendToEdit: Boolean(value === 'NotSend')
+        })
+        this.isReadOnlyForm(this.value)
+      }
+    },
+    isReadOnlyForm(value) {
+      var valueReadOnly = this.valuesReadOnly.find(field => field.columnName === this.metadata.columnName)
+      if (valueReadOnly) {
+        this.$store.dispatch('changeFieldAttributesBoolean', {
+          containerUuid: this.metadata.containerUuid,
+          fieldsIncludes: [],
+          attribute: 'isReadOnlyFromForm',
+          valueAttribute: value,
+          fieldsExcludes: [valueReadOnly.columnName]
         })
       }
     }

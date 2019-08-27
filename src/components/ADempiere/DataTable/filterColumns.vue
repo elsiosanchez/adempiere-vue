@@ -35,12 +35,23 @@ export default {
   data() {
     return {
       columnsShowed: [], // columns showed
-      columnListAvailable: [] // available fields
+      columnListAvailable: [], // available fields
+      isLoadFromServer: false
     }
   },
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getterFieldList() {
+      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    }
+  },
+  watch: {
+    isLoadFromServer(value) {
+      if (value) {
+        this.generatePanel(this.getterFieldList)
+      }
     }
   },
   created() {
@@ -48,7 +59,7 @@ export default {
   },
   methods: {
     getPanel() {
-      var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+      var fieldList = this.getterFieldList
       if (fieldList && fieldList.length > 0) {
         this.generatePanel(fieldList)
       } else {
@@ -56,7 +67,8 @@ export default {
           containerUuid: this.containerUuid,
           type: this.panelType
         }).then(response => {
-          this.generatePanel(response.fieldList)
+          this.isLoadFromServer = true
+          // this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
@@ -80,9 +92,9 @@ export default {
     addField(selectedValues) {
       this.$store.dispatch('changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
-        fieldsUser: selectedValues,
+        fieldsIncludes: selectedValues,
         attribute: 'isShowedTableFromUser',
-        valueAttrbute: true
+        valueAttribute: true
       })
     }
   }
