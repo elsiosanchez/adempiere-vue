@@ -167,6 +167,9 @@ const data = {
             var token = response.getNextPageToken()
             if (token !== undefined) {
               token = token.slice(0, -2)
+              if (token.substr(-1, 1) === '-') {
+                token = token.slice(0, -1)
+              }
             }
 
             var pageNumber = rootGetters.getPageNumber(objectParams.containerUuid)
