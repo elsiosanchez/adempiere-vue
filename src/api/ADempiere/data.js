@@ -130,28 +130,24 @@ export function getLookup(reference, value) {
   return Instance.call(this).requestLookupFromReference(reference, value)
 }
 
-// Request a process
-// This function allows follow structure:
-// process.uuid
-// process.tableId
-// process.recordId
-// process.tableSelectedId
-// process.parameters [
-//   {
-//     columnName,
-//     value
-//   }
-// ]
-// process.selection [
-//   {
-//     selectionId,
-//     selectionValues [
-//       {
-//         columnName,
-//         value
-//       }
-//   }]
-// ]
+/**
+ * Request a process
+ * This function allows follow structure:
+ * @param {object}  process
+ * @param {string}  process.uuid, uuid from process to run
+ * @param {integer} process.tableId
+ * @param {integer} process.recordId
+ * @param {integer} process.tableSelectedId
+ * @param {array}   process.parameters, parameters from process
+      [ { columnName, value } ]
+ * @param {array}   process.selection, selection records
+      [ {
+          selectionId,
+          selectionValues [
+            { columnName, value }
+          ]
+      } ]
+ */
 export function runProcess(process) {
   var processRequest = Instance.call(this).getProcessRequest()
   //  Fill Request process
@@ -160,14 +156,14 @@ export function runProcess(process) {
   processRequest.setRecordid(process.recordId)
   processRequest.setTableselectedid(process.tableSelectedId)
   processRequest.setReportexporttype(process.reportExportType)
-  if (process.parameters !== undefined && process.parameters.length > 0) {
+  if (process.parameters && process.parameters.length > 0) {
     process.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
       processRequest.addParameters(convertedParameter)
     })
   }
 
-  if (process.selection !== undefined && process.selection.length > 0) {
+  if (process.selection && process.selection.length > 0) {
     process.selection.forEach(record => {
       const convertedRecord = Instance.call(this).convertSelection(record)
       processRequest.addSelections(convertedRecord)

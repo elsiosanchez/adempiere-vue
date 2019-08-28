@@ -9,16 +9,17 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
-        style="height: 80vh;overflow: auto;"
-        :disabled="Boolean(key > 0 && uuidRecord === 'create-new')"
+        style="height: 80vh; overflow: auto;"
+        :disabled="Boolean(key > 0 && $route.query.action === 'create-new')"
       >
         <panel
           :parent-uuid="windowUuid"
           :container-uuid="item.uuid"
           :metadata="item"
-          :table-name="item.tableName"
           :group="item.tabGroup"
           :panel-type="panelType"
+          :window-type="windowType"
+          :is-re-search="Boolean(key == 0 || (key > 0 && firstTableName != item.tableName))"
         />
       </el-tab-pane>
     </template>
@@ -41,15 +42,19 @@ export default {
     tabsList: {
       type: [Array, Object],
       default: () => []
+    },
+    windowType: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
       isLoading: false,
       currentTab: this.$route.query.tabNumber,
-      uuidRecord: this.$route.query.action,
       tabUuid: '',
-      panelType: 'window'
+      panelType: 'window',
+      firstTableName: this.tabsList[0].tableName
     }
   },
   watch: {

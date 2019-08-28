@@ -2,7 +2,7 @@
   <el-color-picker
     v-model="value"
     :show-alpha="showAlphaColor"
-    :disabled="metadata.readonly || metadata.disabled"
+    :disabled="Boolean(metadata.readonly || metadata.disabled)"
     @change="handleChange"
   />
 </template>

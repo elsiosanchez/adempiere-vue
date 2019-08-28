@@ -31,7 +31,7 @@
               {{ $t('table.dataTable.deleteSelection') }}
             </el-menu-item>
             <el-menu-item
-              :disabled="inEdited.length > 0"
+              :disabled="inEdited.length > 0 || (!isParent && $route.query.action === 'create-new')"
               index="new"
               @click="addNewRow()"
             >
@@ -41,12 +41,14 @@
         </el-menu>
         <icon-element v-show="isFixed" icon="el-icon-news">
           <fixed-columns
+            v-if="isLoadPanel"
             :container-uuid="containerUuid"
             :panel-type="panelType"
             class="header-search-input"
           />
         </icon-element>
         <filter-columns
+          v-if="isLoadPanel"
           v-show="isOptional"
           :container-uuid="containerUuid"
           :panel-type="panelType"
@@ -216,14 +218,13 @@ export default {
     return {
       searchTable: '', // text from search
       showSearch: false, // show input from search,
-      panel: {},
       show: false,
       defaultMaxPagination: 100,
-      fieldList: [],
       menuTable: '1',
       isOptional: false,
       isFixed: false,
-      isLoaded: false,
+      isLoadPanel: false,
+      isLoadPanelFromServer: false,
       keyColumn: '', // column as isKey in fieldList
       tableData: [],
       isEdit: false, // get data
@@ -292,6 +293,24 @@ export default {
           }
           // return displayHeight - 520
         }
+      }
+    },
+    panel() {
+      return this.getterPanel
+    },
+    fieldList() {
+      if (this.getterPanel && this.getterPanel.fieldList) {
+        return this.sortFields(this.getterPanel.fieldList, 'SortNo')
+        // return this.getterPanel.fieldList
+      }
+      return []
+    }
+  },
+  watch: {
+    isLoadPanelFromServer(value) {
+      if (value) {
+        // this.panel = this.getterPanel
+        this.generatePanel()
       }
     }
   },
@@ -536,26 +555,23 @@ export default {
     getPanel() {
       var panel = this.getterPanel
       if (panel && panel.fieldList.length > 0) {
-        this.panel = panel
         this.generatePanel()
-      } else {
+      } else if (this.panelType === 'window' && !this.isParent) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
+          parentUuid: this.parentUuid,
           type: this.panelType
         }).then(response => {
-          this.panel = response
-          this.generatePanel()
+          this.isLoadPanelFromServer = true
         }).catch(error => {
           console.warn('FieldList Load Error ' + error.code + ': ' + error.message)
-          this.isLoaded = false
         })
       }
     },
     generatePanel() {
       var panel = this.panel
       this.keyColumn = panel.keyColumn
-      this.fieldList = this.sortFields(panel.fieldList, 'SortNo')
-      this.isLoaded = true
+      this.isLoadPanel = true
     },
     /**
      * Sorts the column components according to the value that is obtained from

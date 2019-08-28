@@ -13,7 +13,7 @@
     <el-header>
       <div class="w-33">
         <div class="center">
-          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
         </div>
       </div>
       <el-popover
@@ -26,7 +26,7 @@
         <div v-html="browserMetadata.help" />
         <div class="w-33">
           <div class="center">
-            <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle()" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+            <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
           </div>
         </div>
       </el-popover>
@@ -110,6 +110,18 @@ export default {
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    cssClassTitle() {
+      if (this.isMobile) {
+        return 'title-mobile'
+      }
+      return 'title'
+    },
+    cssClassHelp() {
+      if (this.isMobile) {
+        return 'content-help-mobile'
+      }
+      return 'content-help'
     }
   },
   watch: {
@@ -129,18 +141,6 @@ export default {
   },
   methods: {
     isEmptyValue,
-    cssClassTitle() {
-      if (this.isMobile) {
-        return 'title-mobile'
-      }
-      return 'title'
-    },
-    cssClassHelp() {
-      if (this.isMobile) {
-        return 'content-help-mobile'
-      }
-      return 'content-help'
-    },
     handleChange(value) {
       var showCriteria = false
       if (this.activeSearch.length > 0) {

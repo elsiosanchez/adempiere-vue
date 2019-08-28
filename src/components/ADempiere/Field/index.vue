@@ -7,11 +7,11 @@
   <el-col
     v-if="!inTable"
     v-show="isDisplayed()"
-    :xs="sizeFieldResponsive.xs"
-    :sm="sizeFieldResponsive.sm"
-    :md="sizeFieldResponsive.md"
-    :lg="sizeFieldResponsive.lg"
-    :xl="sizeFieldResponsive.xl"
+    :xs="sizeFieldResponsive(getWidth).xs"
+    :sm="sizeFieldResponsive(getWidth).sm"
+    :md="sizeFieldResponsive(getWidth).md"
+    :lg="sizeFieldResponsive(getWidth).lg"
+    :xl="sizeFieldResponsive(getWidth).xl"
     :class="classField"
   >
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
@@ -81,7 +81,7 @@ export default {
       default: () => ({})
     },
     recordDataFields: {
-      type: [Number, String, Boolean, Array, Object],
+      type: [Number, String, Boolean, Array, Object, Date],
       default: undefined
     },
     inGroup: {
@@ -104,7 +104,35 @@ export default {
     afterLoader() {
       return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
-    sizeFieldResponsive() {
+    getWidth() {
+      return this.$store.getters.getWidth()
+    },
+    classField() {
+      if (this.inTable) {
+        return 'in-table'
+      }
+      return ''
+    }
+  },
+  watch: {
+    metadataField(value) {
+      this.field = value
+    },
+    // TODO: Check if you have better performance with a property, or an watcher
+    '$route.query.action'(actionValue) {
+      this.optionCRUD = actionValue
+    },
+    getWidth(newValue, oldValue) {
+      this.sizeFieldResponsive(newValue)
+    }
+  },
+  created() {
+    // assined field with prop
+    this.field = this.metadataField
+  },
+  methods: {
+    isEmptyValue,
+    sizeFieldResponsive(witdth) {
       var sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
         return item.type === this.field.componentPath
       })
@@ -124,45 +152,28 @@ export default {
         newSizes.lg = 24
         newSizes.xl = 24
         return newSizes
-      } else if (this.inGroup && this.getWidth >= 992) {
-        newSizes.xs = sizeField.xs * 2
+      } else if (this.inGroup && witdth >= 992) {
+        newSizes.xs = sizeField.xs
         newSizes.sm = sizeField.sm * 2
-        if (this.getWidth <= 1199) {
-          newSizes.md = sizeField.md * 2 - 4
+        if (witdth <= 1199) {
+          newSizes.md = sizeField.md
         } else {
           newSizes.md = sizeField.md * 2
         }
-        newSizes.lg = sizeField.lg * 2
-        newSizes.xl = sizeField.xl * 2
+        newSizes.lg = sizeField.lg
+        newSizes.xl = sizeField.xl
         return newSizes
+      } else if (witdth <= 768) {
+        newSizes.xs = 24
+        newSizes.sm = 24
+        newSizes.md = 24
+        newSizes.lg = 24
+        newSizes.xl = 24
+        return newSizes
+      } else {
+        return sizeField
       }
-      return sizeField
     },
-    getWidth() {
-      return this.$store.getters.getWidth()
-    },
-    classField() {
-      if (this.inTable) {
-        return 'in-table'
-      }
-      return ''
-    }
-  },
-  watch: {
-    metadataField(value) {
-      this.field = value
-    },
-    // TODO: Check if you have better performance with a property, or an watcher
-    '$route.query.action'(actionValue) {
-      this.optionCRUD = actionValue
-    }
-  },
-  created() {
-    // assined field with prop
-    this.field = this.metadataField
-  },
-  methods: {
-    isEmptyValue,
     isDisplayed() {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
@@ -173,7 +184,7 @@ export default {
       // edit mode is diferent to create new
       var editMode = (!this.inTable && this.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
       var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && editMode) ||
-        (isUpdateableAllFields && this.panelType !== 'browser') // logic to window, report and process
+        ((isUpdateableAllFields || this.field.isReadOnlyFromForm) && this.panelType !== 'browser') // logic to window, report and process
 
       return isUpdateableFieldWindow || isUpdatableColumnBrowserResult
     },

@@ -49,13 +49,19 @@ const data = {
       payload.data.pageNumber = payload.pageNumber
     },
     setRecordDetail(state, payload) {
-      var dataDetail = state.recordDetail.filter(itemData => {
-        if (itemData.uuid !== payload.uuid) {
-          return true
+      var isFinded = false
+      state.recordDetail = state.recordDetail.map(itemData => {
+        if (itemData.uuid === payload.uuid) {
+          isFinded = true
+          var newValues = Object.assign(itemData.data, payload.data)
+          payload.data = newValues
+          return payload
         }
+        return itemData
       })
-      dataDetail.push(payload)
-      state.recordDetail = dataDetail
+      if (!isFinded) {
+        state.recordDetail.push(payload)
+      }
     },
     addNewRow(state, payload) {
       payload.data = payload.data.push(payload.values)
@@ -110,17 +116,18 @@ const data = {
     },
     getEntity: ({ commit, dispatch }, parameters) => {
       return new Promise((resolve, reject) => {
-        getObject(parameters.table, parameters.recordUuid)
+        getObject(parameters.tableName, parameters.recordUuid)
           .then(response => {
             var map = response.getValuesMap()
             var newValues = convertValuesMapToObject(map)
-
-            commit('setRecordDetail', {
+            const responseConvert = {
               data: newValues,
               id: response.getId(),
               uuid: response.getUuid(),
-              tableName: response.getTablename()
-            })
+              tableName: parameters.tableName
+            }
+
+            commit('setRecordDetail', responseConvert)
             resolve(newValues)
           })
           .catch(error => {
@@ -160,6 +167,9 @@ const data = {
             var token = response.getNextPageToken()
             if (token !== undefined) {
               token = token.slice(0, -2)
+              if (token.substr(-1, 1) === '-') {
+                token = token.slice(0, -1)
+              }
             }
 
             var pageNumber = rootGetters.getPageNumber(objectParams.containerUuid)
@@ -323,6 +333,17 @@ const data = {
         return row
       }
       return undefined
+    },
+    getRecordDetail: (state) => (parameters) => {
+      var data = state.recordDetail.find(itemData => {
+        if (itemData.uuid === parameters.recordUuid) {
+          return true
+        }
+      })
+      if (data) {
+        return data.data
+      }
+      return {}
     },
     /**
      * Getter converter selection data record in format

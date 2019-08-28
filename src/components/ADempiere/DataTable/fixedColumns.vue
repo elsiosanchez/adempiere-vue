@@ -25,21 +25,28 @@ export default {
     containerUuid: {
       type: String,
       required: true
-    },
-    panelType: {
-      type: String,
-      default: 'window'
     }
   },
   data() {
     return {
       columnsFixed: [], // columns showed
-      columnListAvailable: [] // available fields
+      columnListAvailable: [], // available fields
+      isLoadFromServer: false
     }
   },
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getterFieldList() {
+      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+    }
+  },
+  watch: {
+    isLoadFromServer(value) {
+      if (value) {
+        this.generatePanel(this.getterFieldList)
+      }
     }
   },
   created() {
@@ -47,17 +54,8 @@ export default {
   },
   methods: {
     getPanel() {
-      var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-      if (fieldList === undefined || fieldList.length === 0) {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType
-        }).then(response => {
-          this.generatePanel(response.fieldList)
-        }).catch(error => {
-          console.warn('Field Load Error ' + error.code + ': ' + error.message)
-        })
-      } else {
+      var fieldList = this.getterFieldList
+      if (fieldList && fieldList.length > 0) {
         this.generatePanel(fieldList)
       }
     },
@@ -79,9 +77,9 @@ export default {
     addField(selectedValues) {
       this.$store.dispatch('changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
-        fieldsUser: selectedValues,
+        fieldsIncludes: selectedValues,
         attribute: 'isFixedTableColumn',
-        valueAttrbute: true
+        valueAttribute: true
       })
     }
   }

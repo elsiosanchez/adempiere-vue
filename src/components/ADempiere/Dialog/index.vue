@@ -134,10 +134,12 @@ export default {
               }
             })
           }
-          this.$store.dispatch('tagsView/delView', this.$route)
-            .then(({ visitedViews }) => {
-              this.$router.push('/')
-            })
+          if (!this.$route.meta.type === 'window') {
+            this.$store.dispatch('tagsView/delView', this.$route)
+              .then(({ visitedViews }) => {
+                this.$router.push('/')
+              })
+          }
         } else {
           var emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({

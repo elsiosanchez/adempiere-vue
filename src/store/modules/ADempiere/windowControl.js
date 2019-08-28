@@ -137,7 +137,15 @@ const windowControl = {
               message: language.t('data.createRecordSuccessful'),
               type: 'success'
             })
-            console.log('result to create', result)
+            // redirect to create new record
+            var oldRoute = router.app._route
+            router.push({
+              name: oldRoute.name,
+              query: {
+                action: result.recordUuid,
+                tabNumber: oldRoute.query.tabNumber
+              }
+            })
             resolve(result)
           })
           .catch(error => {
@@ -172,7 +180,16 @@ const windowControl = {
           attributesList: finalAttributes
         })
           .then(response => {
-            resolve(response)
+            const newValues = convertValuesMapToObject(response.getValuesMap())
+            const responseConvert = {
+              data: newValues,
+              id: response.getId(),
+              uuid: recordUuid,
+              tableName: panel.tableName
+            }
+            console.log('udate entity', responseConvert)
+            commit('setRecordDetail', responseConvert)
+            resolve(newValues)
           })
           .catch(error => {
             reject(error)
@@ -207,7 +224,7 @@ const windowControl = {
           console.log('Successful edition', response)
         })
         .catch(error => {
-          console.log(error)
+          console.warn(error)
         })
     },
     deleteEntity({ commit, dispatch, rootGetters }, parameters) {
@@ -374,8 +391,7 @@ const windowControl = {
             resolve(response)
           })
           .catch(error => {
-            console.warn(error)
-            // reject(error)
+            reject(error)
           })
       })
     }

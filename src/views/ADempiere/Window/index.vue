@@ -40,6 +40,7 @@
                     <tab-parent
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
+                      :window-type="windowMetadata.windowType"
                       class="tab-window"
                     />
                     <div class="small-4 columns">
@@ -138,8 +139,7 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
-      listRecordNavigation: [],
-      uuidRecord: this.$route.params.uuidRecord,
+      listRecordNavigation: 0,
       isShowedTabChildren: true,
       isWindowType: '',
       isShowedRecordNavigation: false
@@ -200,12 +200,20 @@ export default {
       }
     },
     handleChangeShowedRecordNavigation() {
+      var appMainWidth
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
       this.$store.dispatch('changeShowedRecordWindow', {
         parentUuid: this.windowUuid,
         containerUuid: this.windowMetadata.currentTab.uuid, // act as parentUuid
         isShowedRecordNavigation: this.isShowedRecordNavigation
       })
+      if (this.isShowedRecordNavigation) {
+        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
+        this.$store.dispatch('setWidth', appMainWidth)
+      } else {
+        appMainWidth = document.getElementById('appMain').clientWidth
+        this.$store.dispatch('setWidth', appMainWidth)
+      }
     },
     handleChangeShowedTabChildren() {
       this.isShowedTabChildren = !this.isShowedTabChildren

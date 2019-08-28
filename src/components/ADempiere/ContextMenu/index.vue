@@ -240,6 +240,9 @@ export default {
             .then(response => {
               this.references = response
             })
+            .catch(error => {
+              console.warn('References Load Error ' + error.code + ': ' + error.message)
+            })
         }
       } else {
         this.references = []
@@ -353,7 +356,9 @@ export default {
                         }
                       })
                       this.$nextTick(() => {
-                        this.$store.dispatch('tagsView/delView', this.tempRoute)
+                        if (this.tempRoute.path === this.$route.path) {
+                          this.$store.dispatch('tagsView/delView', this.tempRoute)
+                        }
                       })
                     }
                   }

@@ -35,7 +35,10 @@
                     :key="subKey"
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
-                    :metadata-field="subItem"
+                    :metadata-field="{
+                      ...subItem,
+                      value: dataRecords[subItem.columnName]
+                    }"
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
@@ -84,7 +87,7 @@
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
-                        :in-group="mutipleGroups"
+                        :in-group="mutipleGroups && fieldGroups > 1"
                       />
                     </template>
                   </el-row>
@@ -130,10 +133,6 @@ export default {
       type: Object,
       default: () => {}
     },
-    tableName: {
-      type: String,
-      default: undefined
-    },
     group: {
       type: Object,
       default: () => ({
@@ -144,6 +143,14 @@ export default {
     panelType: {
       type: String,
       default: 'window'
+    },
+    windowType: {
+      type: String,
+      default: ''
+    },
+    isReSearch: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -152,6 +159,7 @@ export default {
       dataRecords: {},
       gutterRow: 0,
       isLoadPanel: false,
+      isLoadFromServer: false,
       isLoadRecord: false,
       uuidRecord: this.$route.query.action,
       fieldGroups: [],
@@ -177,16 +185,30 @@ export default {
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getterData() {
+      return this.$store.getters.getRecordDetail({
+        tableName: this.metadata.tableName,
+        recordUuid: this.$route.query.action
+      })
     }
   },
   watch: {
+    isLoadFromServer(value) {
+      if (value) {
+        this.generatePanel(this.getterFieldList)
+      }
+    },
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     },
     '$route.query.action'(actionValue) {
+      this.uuidRecord = actionValue
+
       if (this.panelType === 'window') {
-        if (actionValue !== 'create-new') {
-          this.getData(this.tableName, actionValue)
+        // TODO: Validate UUID value
+        if (actionValue !== 'create-new' && this.isReSearch) {
+          this.getData(this.metadata.tableName, actionValue)
         } else {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
@@ -194,19 +216,23 @@ export default {
         }
         this.setTagsViewTitle(actionValue)
       }
+    },
+    // used if the first load contains a uuid
+    isLoadRecord(value) {
+      // TODO: Validate UUID value
+      if (value && this.panelType === 'window' && this.uuidRecord !== 'create-new' && !this.isEmptyValue(this.uuidRecord)) {
+        this.setTagsViewTitle(this.uuidRecord)
+      }
     }
   },
   created() {
     // get tab with uuid
     this.getPanel()
-    if (this.panelType === 'window') {
-      this.setTagsViewTitle(this.$route.query.action)
-    }
   },
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -224,13 +250,15 @@ export default {
           containerUuid: this.containerUuid,
           type: this.panelType
         }).then(response => {
-          this.generatePanel(response.fieldList)
+          this.isLoadFromServer = true
+          // this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
       }
     },
     generatePanel(fieldList) {
+      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid).length
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
       var firstGroup
@@ -243,17 +271,35 @@ export default {
       this.isLoadPanel = true
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
-        if (this.uuidRecord && this.uuidRecord !== 'create-new') {
-          this.getData(this.tableName, this.uuidRecord)
+        if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && totalRecords > 0) {
+          this.getData(this.metadata.tableName, undefined)
         } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
           })
         } else {
+          this.$router.push({
+            name: this.$route.name,
+            query: { action: 'create-new', tabNumber: 0 }
+          })
           this.$message({
             message: this.$t('data.createNewRecord'),
             showClose: true
           })
+        }
+        if (this.uuidRecord && this.uuidRecord !== 'create-new') {
+          if (this.isReSearch || Object.entries(this.getterData).length === 0) {
+            this.getData(this.metadata.tableName, this.uuidRecord)
+          } else {
+            this.dataRecords = this.getterData
+            this.$store.dispatch('notifyPanelChange', {
+              parentUuid: this.parentUuid,
+              containerUuid: this.containerUuid,
+              newValues: this.dataRecords,
+              isDontSendToEdit: true,
+              fieldList: this.fieldList
+            })
+          }
         }
       }
     },
@@ -279,11 +325,15 @@ export default {
       this.$store.dispatch('getEntity', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        table: table,
+        tableName: table,
         recordUuid: uuidRecord
       })
         .then(response => {
           this.dataRecords = response
+          this.$router.push({
+            name: this.$route.name,
+            query: { action: this.dataRecords.UUID, tabNumber: 0 }
+          })
           this.$store.dispatch('notifyPanelChange', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
@@ -292,6 +342,7 @@ export default {
             fieldList: this.fieldList
           })
           this.setTagsViewTitle(this.$route.query.action)
+          this.isLoadRecord = true
         })
         .catch(error => {
           this.$message({
@@ -392,11 +443,14 @@ export default {
         var field = this.fieldList.find(
           fieldItem => fieldItem.isIdentifier === true
         )
-
-        if (this.dataRecords[field.name]) {
-          this.tagTitle.action = this.dataRecords[field.name]
+        if (field !== undefined) {
+          if (this.dataRecords[field.name]) {
+            this.tagTitle.action = this.dataRecords[field.name]
+          } else {
+            this.tagTitle.action = field.value
+          }
         } else {
-          this.tagTitle.action = field.value
+          this.tagTitle.action = this.$t('tagsView.seeRecord')
         }
       }
       if (this.$route.meta && this.$route.meta.type === 'window') {

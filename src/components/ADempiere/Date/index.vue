@@ -10,8 +10,8 @@
     :end-placeholder="$t('components.dateEndPlaceholder')"
     unlink-panels
     class="date-base"
-    :readonly="metadata.readonly"
-    :disabled="metadata.readonly || metadata.disabled"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="Boolean(metadata.readonly || metadata.disabled)"
     @change="handleChange"
   />
 </template>
@@ -28,7 +28,7 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: [String, Number],
+      type: [String, Number, Date],
       default: undefined
     }
   },

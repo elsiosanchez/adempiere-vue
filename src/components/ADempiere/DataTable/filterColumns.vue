@@ -26,10 +26,6 @@ export default {
     containerUuid: {
       type: String,
       required: true
-    },
-    panelType: {
-      type: String,
-      default: 'window'
     }
   },
   data() {
@@ -41,6 +37,9 @@ export default {
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    getterFieldList() {
+      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
     }
   },
   created() {
@@ -48,18 +47,9 @@ export default {
   },
   methods: {
     getPanel() {
-      var fieldList = this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+      var fieldList = this.getterFieldList
       if (fieldList && fieldList.length > 0) {
         this.generatePanel(fieldList)
-      } else {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType
-        }).then(response => {
-          this.generatePanel(response.fieldList)
-        }).catch(error => {
-          console.warn('Field Load Error ' + error.code + ': ' + error.message)
-        })
       }
     },
     generatePanel(fieldList) {
@@ -80,9 +70,9 @@ export default {
     addField(selectedValues) {
       this.$store.dispatch('changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
-        fieldsUser: selectedValues,
+        fieldsIncludes: selectedValues,
         attribute: 'isShowedTableFromUser',
-        valueAttrbute: true
+        valueAttribute: true
       })
     }
   }
