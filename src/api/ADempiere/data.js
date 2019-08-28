@@ -152,9 +152,15 @@ export function runProcess(process) {
   var processRequest = Instance.call(this).getProcessRequest()
   //  Fill Request process
   processRequest.setUuid(process.uuid)
-  processRequest.setTableid(process.tableId)
-  processRequest.setRecordid(process.recordId)
-  processRequest.setTableselectedid(process.tableSelectedId)
+
+  // record in window
+  if (process.tableName) {
+    processRequest.setTablename(process.tableName)
+  }
+  if (process.recordId) {
+    processRequest.setRecordid(process.recordId)
+  }
+
   processRequest.setReportexporttype(process.reportExportType)
   if (process.parameters && process.parameters.length > 0) {
     process.parameters.forEach(parameter => {

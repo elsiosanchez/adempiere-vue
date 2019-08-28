@@ -178,7 +178,11 @@ export default {
       return false
     },
     getterFieldList() {
-      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+      var panel = this.$store.getters.getPanel(this.containerUuid)
+      if (panel) {
+        return panel.fieldList
+      }
+      return panel
     },
     getterRecordUuid() {
       return this.$store.getters.getUuid(this.containerUuid)
@@ -242,7 +246,7 @@ export default {
      */
     getPanel() {
       var fieldList = this.getterFieldList
-      if (fieldList && fieldList.length > 0) {
+      if (fieldList && Array.isArray(fieldList)) {
         this.generatePanel(fieldList)
       } else {
         this.$store.dispatch('getPanelAndFields', {

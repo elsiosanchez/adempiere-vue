@@ -59,7 +59,10 @@
                         />
                       </div>
                     </div>
-                    <modal-dialog />
+                    <modal-dialog
+                      :parent-uuid="windowUuid"
+                      :container-uuid="windowMetadata.currentTabUuid"
+                    />
                     <div class="small-4 columns">
                       <div class="w">
                         <div class="open-left" />
