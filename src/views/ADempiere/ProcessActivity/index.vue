@@ -28,7 +28,8 @@
           </div>
           <el-form label-position="top">
             <el-form-item :label="generateTitle('Description')">
-              {{ activity.output.description }}
+              <span v-if="activity.isReport">{{ activity.output.description }}</span>
+              <span v-else> {{ activity.summary }} </span>
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
               <!-- <el-popover
@@ -45,7 +46,16 @@
                 width="auto"
                 trigger="hover"
               >
-                <span><b>{{ activity.summary }}</b></span>
+                <div>
+                  <span v-if="activity.isReport === false"><b>{{ $t('table.ProcessActivity.Logs') }}</b><br>{{ activity.logs }}</span>
+                  <div v-else>
+                    <span> <b>output</b></span><br>
+                    <!-- <span> <b>{{ $t('table.ProcessActivity.Name') }}:</b>{{ activity.output }}</span><br> -->
+                    <!-- <span><b>{{ $t('table.ProcessActivity.Description') }}:</b>{{ activity.output.description }}</span><br>
+                    <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br> -->
+                    <!-- <span>{{ activity.url }}</span><br> -->
+                  </div>
+                </div>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag>
               </el-popover>
               <!-- <el-popover
@@ -78,6 +88,10 @@ export default {
     }
   },
   beforeMount() {
+    const target = this.$store.getters.getInitializedProcess
+    const source = this.$store.getters.getResult
+    const returnedTarget = Object.assign(target, source)
+    console.log(returnedTarget)
     this.$store.dispatch('getSessionProcessFromServer')
       .then(response => {
         if (response.processList.length > 0) {
