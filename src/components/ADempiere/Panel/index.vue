@@ -42,7 +42,7 @@
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
-                    :in-group="getterIsShowedRecordNavigation"
+                    :in-group="!getterIsShowedRecordNavigation"
                   />
                 </template>
               </el-row>
@@ -87,7 +87,7 @@
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
-                        :in-group="mutipleGroups && fieldGroups > 1"
+                        :in-group="mutipleGroups && fieldGroups.length > 1"
                       />
                     </template>
                   </el-row>
@@ -233,10 +233,13 @@ export default {
     // get tab with uuid
     this.getPanel()
   },
+  mounted() {
+    this.cards()
+  },
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
