@@ -200,12 +200,20 @@ export default {
       }
     },
     handleChangeShowedRecordNavigation() {
+      var appMainWidth
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
       this.$store.dispatch('changeShowedRecordWindow', {
         parentUuid: this.windowUuid,
         containerUuid: this.windowMetadata.currentTab.uuid, // act as parentUuid
         isShowedRecordNavigation: this.isShowedRecordNavigation
       })
+      if (this.isShowedRecordNavigation) {
+        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
+        this.$store.dispatch('setWidth', appMainWidth)
+      } else {
+        appMainWidth = document.getElementById('appMain').clientWidth
+        this.$store.dispatch('setWidth', appMainWidth)
+      }
     },
     handleChangeShowedTabChildren() {
       this.isShowedTabChildren = !this.isShowedTabChildren
