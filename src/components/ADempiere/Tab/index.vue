@@ -19,7 +19,6 @@
           :group="item.tabGroup"
           :panel-type="panelType"
           :window-type="windowType"
-          :total-records="totalRecords"
           :is-re-search="Boolean(key == 0 || (key > 0 && firstTableName != item.tableName))"
         />
       </el-tab-pane>
@@ -47,10 +46,6 @@ export default {
     windowType: {
       type: String,
       default: ''
-    },
-    totalRecords: {
-      type: Number,
-      default: 0
     }
   },
   data() {

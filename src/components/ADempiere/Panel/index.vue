@@ -148,10 +148,6 @@ export default {
       type: String,
       default: ''
     },
-    totalRecords: {
-      type: Number,
-      default: 0
-    },
     isReSearch: {
       type: Boolean,
       default: true
@@ -262,6 +258,7 @@ export default {
       }
     },
     generatePanel(fieldList) {
+      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid).length
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
       var firstGroup
@@ -274,9 +271,23 @@ export default {
       this.isLoadPanel = true
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
-        // if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && this.totalRecords > 0) {
+        if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && totalRecords > 0) {
+          this.getData(this.metadata.tableName, undefined)
+        } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
+          this.$store.dispatch('resetPanelToNew', {
+            containerUuid: this.containerUuid
+          })
+        } else {
+          this.$router.push({
+            name: this.$route.name,
+            query: { action: 'create-new', tabNumber: 0 }
+          })
+          this.$message({
+            message: this.$t('data.createNewRecord'),
+            showClose: true
+          })
+        }
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
-          // this.getData(this.metadata.tableName, undefined)
           if (this.isReSearch || Object.entries(this.getterData).length === 0) {
             this.getData(this.metadata.tableName, this.uuidRecord)
           } else {
@@ -289,19 +300,6 @@ export default {
               fieldList: this.fieldList
             })
           }
-        } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
-          this.$store.dispatch('resetPanelToNew', {
-            containerUuid: this.containerUuid
-          })
-        } else {
-          // this.$router.push({
-          //   name: this.$route.name,
-          //   query: { action: 'create-new', tabNumber: 0 }
-          // })
-          this.$message({
-            message: this.$t('data.createNewRecord'),
-            showClose: true
-          })
         }
       }
     },

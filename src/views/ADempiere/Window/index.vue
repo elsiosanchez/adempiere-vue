@@ -41,7 +41,6 @@
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
                       :window-type="windowMetadata.windowType"
-                      :total-records="listRecordNavigation"
                       class="tab-window"
                     />
                     <div class="small-4 columns">
