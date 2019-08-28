@@ -1,5 +1,6 @@
 <template>
   <div v-if="processActivity.length > 0" class="app-container">
+    {{ processActivity.name }}
     <el-timeline :reverse="true">
       <el-timeline-item
         v-for="(activity, index) in processActivity"
@@ -12,7 +13,7 @@
       >
         <el-card>
           <div slot="header" class="clearfix">
-            <span><b>{{ activity.name }}</b></span>
+            <span><b>{{ activity.action }}</b></span>
             <div class="actions">
               <el-dropdown v-if="activity.isReport" @command="handleCommand(activity)">
                 <span class="el-dropdown-link">
@@ -27,36 +28,44 @@
           </div>
           <el-form label-position="top">
             <el-form-item :label="generateTitle('Description')">
-              {{ activity.description }}
+              <span v-if="activity.isReport">{{ activity.output.description }}</span>
+              <span v-else> {{ activity.summary }} </span>
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
+              <!-- <el-popover
+              ref="popover"
+              placement="right"
+              title="Title"
+              width="200"
+              trigger="focus"
+              content="this is content, this is content, this is content">
+            </el-popover>
+            <el-tag v-popover:popover :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag> -->
               <el-popover
-                v-if="activity.logs && activity.logs.length > 0"
-                ref="popoverLog"
                 placement="right"
-                :title="activity.name + ' ' + generateTitle('Logs')"
-                width="400"
+                width="auto"
                 trigger="hover"
               >
-                <el-scrollbar wrap-class="popover-scroll">
-                  <ul>
-                    <li v-for="(log, key) in activity.logs" :key="key">{{ log.log }}</li>
-                  </ul>
-                </el-scrollbar>
+                <div>
+                  <span v-if="activity.isReport === false"><b>{{ $t('table.ProcessActivity.Logs') }}</b><br>{{ activity.logs }}</span>
+                  <div v-else>
+                    <span> <b>output</b></span><br>
+                    <!-- <span> <b>{{ $t('table.ProcessActivity.Name') }}:</b>{{ activity.output }}</span><br> -->
+                    <!-- <span><b>{{ $t('table.ProcessActivity.Description') }}:</b>{{ activity.output.description }}</span><br>
+                    <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br> -->
+                    <!-- <span>{{ activity.url }}</span><br> -->
+                  </div>
+                </div>
+                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag>
               </el-popover>
-              <el-popover
-                v-else-if="activity.summary && !isEmptyValue(activity.summary)"
-                ref="popoverLog"
-                placement="right"
-                :title="activity.name + ' ' + generateTitle('Summary')"
-                width="400"
+              <!-- <el-popover
+                placement="top-start"
+                title="Summary"
+                width="200"
                 trigger="hover"
-              >
-                <el-scrollbar wrap-class="popover-scroll">
-                  <p>{{ activity.summary }}</p>
-                </el-scrollbar>
-              </el-popover>
-              <el-tag v-popover:popoverLog :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError, activity.isProcessing).text }}</el-tag>
+                :content="activity.summary">
+               <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag>
+              </el-popover> -->
             </el-form-item>
           </el-form>
         </el-card>
@@ -74,15 +83,19 @@ export default {
   name: 'ProcessActivity',
   data() {
     return {
-      processActivity: this.$store.getters.getInitializedProcess,
+      processActivity: this.$store.getters.getResult,
       recordCount: 0
     }
   },
   beforeMount() {
+    const target = this.$store.getters.getInitializedProcess
+    const source = this.$store.getters.getResult
+    const returnedTarget = Object.assign(target, source)
+    console.log(returnedTarget)
     this.$store.dispatch('getSessionProcessFromServer')
       .then(response => {
         if (response.processList.length > 0) {
-          this.processActivity = this.$store.getters.getRunningProcess
+          this.processActivity = this.$store.getters.getInitializedProcess
           this.recordCount = response.processList.length
         }
       })

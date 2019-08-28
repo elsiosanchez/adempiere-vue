@@ -110,7 +110,9 @@ export default {
       status: 'Status',
       Logs: 'Logs',
       summary: 'Summary',
-      Help: 'Help'
+      Help: 'Help',
+      FileName: 'FileName',
+      Output: 'Output'
     },
     dataTable: {
       search: 'Search',

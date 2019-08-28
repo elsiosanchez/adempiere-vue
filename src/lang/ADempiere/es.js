@@ -106,6 +106,8 @@ export default {
     ProcessActivity: {
       Name: 'Nombre',
       Description: 'Descripción',
+      FileName: 'Nombre de Archivo',
+      Output: 'Salida',
       Action: 'Acción',
       Status: 'Estado',
       Logs: 'Bitacora',
