@@ -391,8 +391,7 @@ const windowControl = {
             resolve(response)
           })
           .catch(error => {
-            console.warn(error)
-            // reject(error)
+            reject(error)
           })
       })
     }

@@ -26,17 +26,12 @@ export default {
     containerUuid: {
       type: String,
       required: true
-    },
-    panelType: {
-      type: String,
-      default: 'window'
     }
   },
   data() {
     return {
       columnsShowed: [], // columns showed
-      columnListAvailable: [], // available fields
-      isLoadFromServer: false
+      columnListAvailable: [] // available fields
     }
   },
   computed: {
@@ -47,13 +42,6 @@ export default {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
     }
   },
-  watch: {
-    isLoadFromServer(value) {
-      if (value) {
-        this.generatePanel(this.getterFieldList)
-      }
-    }
-  },
   created() {
     this.getPanel()
   },
@@ -62,16 +50,6 @@ export default {
       var fieldList = this.getterFieldList
       if (fieldList && fieldList.length > 0) {
         this.generatePanel(fieldList)
-      } else {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType
-        }).then(response => {
-          this.isLoadFromServer = true
-          // this.generatePanel(response.fieldList)
-        }).catch(error => {
-          console.warn('Field Load Error ' + error.code + ': ' + error.message)
-        })
       }
     },
     generatePanel(fieldList) {

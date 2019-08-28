@@ -279,13 +279,16 @@ const panel = {
                   dispatch('tagsView/delView', oldRoute, true)
                 })
                 .catch(error => {
-                  console.warn(error)
+                  console.warn('Create Entity Error ' + error.code + ': ' + error.message)
                 })
             } else {
               dispatch('updateCurrentEntity', {
                 containerUuid: params.containerUuid,
                 recordUuid: uuid
               })
+                .catch(error => {
+                  console.warn('Update Entity Error ' + error.code + ': ' + error.message)
+                })
             }
           }
         }

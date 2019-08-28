@@ -56,12 +56,12 @@ export default {
   created() {
     this.selectedFields = this.getFieldSelected
   },
-  updated() {
-    // setTimeout(() => {
-    //   //your code to be executed after 1 second
-    //   this.selectedFields = this.getFieldSelected
-    // }, 2000);
-  },
+  // updated() {
+  //   setTimeout(() => {
+  //     //your code to be executed after 1 second
+  //     this.selectedFields = this.getFieldSelected
+  //   }, 2000);
+  // },
   methods: {
     /**
      * @param {array} selectedValues

@@ -25,10 +25,6 @@ export default {
     containerUuid: {
       type: String,
       required: true
-    },
-    panelType: {
-      type: String,
-      default: 'window'
     }
   },
   data() {
@@ -59,17 +55,7 @@ export default {
   methods: {
     getPanel() {
       var fieldList = this.getterFieldList
-      if (fieldList === undefined || fieldList.length === 0) {
-        this.$store.dispatch('getPanelAndFields', {
-          containerUuid: this.containerUuid,
-          type: this.panelType
-        }).then(response => {
-          this.isLoadFromServer = true
-          // this.generatePanel(response.fieldList)
-        }).catch(error => {
-          console.warn('Field Load Error ' + error.code + ': ' + error.message)
-        })
-      } else {
+      if (fieldList && fieldList.length > 0) {
         this.generatePanel(fieldList)
       }
     },
