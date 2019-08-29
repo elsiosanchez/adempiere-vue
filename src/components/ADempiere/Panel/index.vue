@@ -42,7 +42,7 @@
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
-                    :in-group="getterIsShowedRecordNavigation"
+                    :in-group="!getterIsShowedRecordNavigation"
                   />
                 </template>
               </el-row>
@@ -87,7 +87,7 @@
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
-                        :in-group="mutipleGroups && fieldGroups > 1"
+                        :in-group="mutipleGroups && fieldGroups.length > 1"
                       />
                     </template>
                   </el-row>
@@ -178,7 +178,11 @@ export default {
       return false
     },
     getterFieldList() {
-      return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
+      var panel = this.$store.getters.getPanel(this.containerUuid)
+      if (panel) {
+        return panel.fieldList
+      }
+      return panel
     },
     getterRecordUuid() {
       return this.$store.getters.getUuid(this.containerUuid)
@@ -229,10 +233,13 @@ export default {
     // get tab with uuid
     this.getPanel()
   },
+  mounted() {
+    this.cards()
+  },
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -242,7 +249,7 @@ export default {
      */
     getPanel() {
       var fieldList = this.getterFieldList
-      if (fieldList && fieldList.length > 0) {
+      if (fieldList && Array.isArray(fieldList)) {
         this.generatePanel(fieldList)
       } else {
         this.$store.dispatch('getPanelAndFields', {

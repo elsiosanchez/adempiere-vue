@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     isEmptyValue,
-    sizeFieldResponsive(witdth) {
+    sizeFieldResponsive(width) {
       var sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
         return item.type === this.field.componentPath
       })
@@ -152,18 +152,23 @@ export default {
         newSizes.lg = 24
         newSizes.xl = 24
         return newSizes
-      } else if (this.inGroup && witdth >= 992) {
+      } else if (this.inGroup && width >= 992) {
         newSizes.xs = sizeField.xs
         newSizes.sm = sizeField.sm * 2
-        if (witdth <= 1199) {
+        if (width <= 1199) {
           newSizes.md = sizeField.md
         } else {
           newSizes.md = sizeField.md * 2
         }
-        newSizes.lg = sizeField.lg
-        newSizes.xl = sizeField.xl
+        if (this.field.groupAssigned !== '') {
+          newSizes.lg = sizeField.lg * 2
+          newSizes.xl = sizeField.xl * 2
+        } else {
+          newSizes.lg = sizeField.lg
+          newSizes.xl = sizeField.xl
+        }
         return newSizes
-      } else if (witdth <= 768) {
+      } else if (width <= 768) {
         newSizes.xs = 24
         newSizes.sm = 24
         newSizes.md = 24

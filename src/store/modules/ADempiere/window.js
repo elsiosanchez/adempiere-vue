@@ -83,7 +83,7 @@ const window = {
                 whereClause: tabItem.getWhereclause(),
                 orderByClause: tabItem.getOrderbyclause(),
                 // app properties
-                isShowedRecordNavigation: tabItem.getIssinglerow()
+                isShowedRecordNavigation: !(tabItem.getIssinglerow())
               }
 
               //  Convert from gRPC process list

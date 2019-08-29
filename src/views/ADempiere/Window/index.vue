@@ -59,7 +59,10 @@
                         />
                       </div>
                     </div>
-                    <modal-dialog />
+                    <modal-dialog
+                      :parent-uuid="windowUuid"
+                      :container-uuid="windowMetadata.currentTabUuid"
+                    />
                     <div class="small-4 columns">
                       <div class="w">
                         <div class="open-left" />
@@ -142,7 +145,7 @@ export default {
       listRecordNavigation: 0,
       isShowedTabChildren: true,
       isWindowType: '',
-      isShowedRecordNavigation: false
+      isShowedRecordNavigation: this.$store.getters.getIsShowedRecordNavigation(this.$route.meta.uuid)
     }
   },
   computed: {
@@ -151,7 +154,7 @@ export default {
     },
     getterIsShowedRecordNavigation() {
       if (this.panelType === 'window') {
-        return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+        return this.$store.getters.getIsShowedRecordNavigation(this.windowUuid)
       }
       return false
     },
@@ -161,6 +164,7 @@ export default {
   },
   mounted() {
     this.getWindow()
+    this.checkShowedRecordNavigation()
   },
   methods: {
     // callback new size
@@ -222,6 +226,16 @@ export default {
         containerUuid: this.windowUuid, // act as parentUuid
         isShowedDetail: this.isShowedTabChildren
       })
+    },
+    checkShowedRecordNavigation() {
+      var appMainWidth
+      if (this.isShowedRecordNavigation) {
+        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
+        this.$store.dispatch('setWidth', appMainWidth)
+      } else {
+        appMainWidth = document.getElementById('appMain').clientWidth
+        this.$store.dispatch('setWidth', appMainWidth)
+      }
     }
   }
 }

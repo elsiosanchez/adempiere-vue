@@ -2,12 +2,13 @@
   <div v-if="isLoading" class="view-base">
     <context-menu
       :menu-parent-uuid="$route.meta.parentUuid"
-      :container-uuid="containerUuid"
+      :container-uuid="browserUuid"
       :panel-type="panelType"
     />
     <modal
       :visible="isVisisbleDialog"
-      :parent-uuid="containerUuid"
+      :container-uuid="browserUuid"
+      :panel-type="panelType"
       @closeDialog="isVisisbleDialog=true"
     />
     <el-header>
@@ -35,7 +36,7 @@
       <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
         <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
           <panel
-            :container-uuid="containerUuid"
+            :container-uuid="browserUuid"
             :metadata="browserMetadata"
             :panel-type="panelType"
           />
@@ -43,7 +44,7 @@
       </el-collapse>
       <data-table
         v-if="isLoading"
-        :container-uuid="containerUuid"
+        :container-uuid="browserUuid"
         :panel-type="panelType"
         :metadata="browserMetadata"
       />
@@ -86,21 +87,18 @@ export default {
     return {
       browserMetadata: {},
       browserUuid: this.$route.meta.uuid,
-      containerUuid: this.$route.meta.uuid,
       activeSearch: [],
       isLoading: false,
-      uuidRecord: this.$route.params.uuidRecord,
       isVisisbleDialog: this.$store.state.processControl.visibleDialog,
-      processMetadata: {},
       panelType: 'browser'
     }
   },
   computed: {
     getDataRecords() {
-      return this.$store.getters.getDataRecordsList(this.containerUuid)
+      return this.$store.getters.getDataRecordsList(this.browserUuid)
     },
     getContainerIsReadyForSubmit() {
-      return this.$store.getters.isReadyForSubmit(this.containerUuid)
+      return this.$store.getters.isReadyForSubmit(this.browserUuid)
     },
     cssClass() {
       if (this.$store.state.app.sidebar.opened) {
@@ -148,7 +146,7 @@ export default {
       }
       this.$store.dispatch('changeShowedCriteriaBrowser', {
         panelType: this.panelType,
-        containerUuid: this.containerUuid,
+        containerUuid: this.browserUuid,
         isShowedCriteria: showCriteria
       })
     },
@@ -157,7 +155,10 @@ export default {
         uuid = this.$route.meta.uuid
       }
       var browser = this.$store.getters.getBrowser(uuid)
-      if (browser === undefined) {
+      if (browser) {
+        this.isLoading = true
+        this.browserMetadata = browser
+      } else {
         this.$store.dispatch('getBrowserFromServer', uuid)
           .then(response => {
             this.browserMetadata = response
@@ -167,9 +168,6 @@ export default {
             this.isLoading = true
             console.log('Dictionary browse - Error ' + error.code + ': ' + error.message)
           })
-      } else {
-        this.isLoading = true
-        this.browserMetadata = browser
       }
     },
     defaultSearch() {

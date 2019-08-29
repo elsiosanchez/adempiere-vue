@@ -51,13 +51,24 @@ const processControl = {
       } else {
         reportExportType = params.action.reportExportType
       }
-      var finalParameters = rootGetters.getParametersProcessToServer(params.containerUuid)
+      var finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
 
       var selection = []
-      if (params.parentUuid !== undefined) {
-        selection = rootGetters.getSelectionToServer(params.parentUuid)
+      var tableName, recordId
+      if (params.panelType) {
+        if (params.panelType === 'browser') {
+          selection = rootGetters.getSelectionToServer(params.containerUuid)
+        }
+        if (params.panelType === 'window') {
+          var tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
+          tableName = tab.tableName
+          var field = rootGetters.getFieldFromColumnName(params.containerUuid, tableName + '_ID')
+          recordId = field.value
+        }
       }
+
       var processDefinition = rootGetters.getProcess(params.action.uuid)
+
       var processToRun = {
         uuid: processDefinition.uuid,
         id: processDefinition.id,
@@ -66,6 +77,8 @@ const processControl = {
         reportExportType: reportExportType,
         parameters: finalParameters.params,
         selection: selection,
+        tableName: tableName,
+        recordId: recordId,
         isProcessing: true
       }
       commit('setInitializedProcess', processToRun)

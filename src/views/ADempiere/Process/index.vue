@@ -2,7 +2,7 @@
   <div v-if="isLoading" class="view-base">
     <context-menu
       :menu-parent-uuid="$route.meta.parentUuid"
-      :container-uuid="containerUuid"
+      :container-uuid="processUuid"
       :panel-type="panelType"
       :is-report="processMetadata.isReport"
     />
@@ -67,37 +67,39 @@ export default {
     return {
       processMetadata: {},
       processUuid: this.$route.meta.uuid,
-      containerUuid: this.$route.meta.uuid,
       isLoading: false,
-      recordUuid: this.$route.params.uuidRecord,
-      activeNames: [],
       panelType: 'process'
     }
   },
+  computed: {
+    getterProcess() {
+      return this.$store.getters.getPanel(this.processUuid)
+    }
+  },
+  watch: {
+    isLoading(value) {
+      if (value) {
+        this.processMetadata = this.getterProcess
+      }
+    }
+  },
   created() {
-    this.getProcess(this.$route.meta.uuid)
+    this.getProcess()
   },
   methods: {
     isEmptyValue,
-    getProcess(uuid = null) {
-      if (!uuid) {
-        uuid = this.$route.meta.uuid
-      }
-      var process = this.$store.getters.getProcess(uuid)
-      if (process === undefined) {
+    getProcess() {
+      if (this.getterProcess) {
+        this.isLoading = true
+      } else {
         this.$store.dispatch('getPanelAndFields', {
-          containerUuid: uuid,
+          containerUuid: this.processUuid,
           type: this.panelType
         }).then(response => {
-          this.processMetadata = response
           this.isLoading = true
         }).catch(error => {
-          this.isLoading = true
           console.log('Dictionary Process - Error ' + error.code + ': ' + error.message)
         })
-      } else {
-        this.isLoading = true
-        this.processMetadata = process
       }
     }
   }

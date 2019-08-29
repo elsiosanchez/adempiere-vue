@@ -325,7 +325,7 @@ export default {
             action: action,
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.containerUuid,
-            parentPanel: this.panelType, // TODO: evaluate used
+            panelType: this.panelType,
             processName: action.processName,
             reportFormat: this.reportFormat
           })

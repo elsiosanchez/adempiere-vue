@@ -52,15 +52,15 @@ export default {
     },
     parentUuid: {
       type: String,
+      default: undefined
+    },
+    containerUuid: {
+      type: String,
       default: ''
     },
-    metadata: {
-      type: Object,
-      default: () => {}
-    },
-    parentPanel: {
+    panelType: {
       type: String,
-      default: undefined
+      default: 'window'
     },
     reportExportType: {
       type: String,
@@ -111,11 +111,11 @@ export default {
         if (isReadyForSubmit) {
           this.closeDialog()
           this.$store.dispatch('startProcess', {
-            action: action,
+            action: action, // process metadata
             reportFormat: this.reportExportType,
-            containerUuid: action.uuid,
+            containerUuid: this.containerUuid,
             parentUuid: this.parentUuid,
-            parentPanel: this.parentPanel
+            panelType: this.panelType // TODO: evaluate used
           })
           if (action.isReport) {
             this.$store.subscribeAction({
@@ -134,6 +134,7 @@ export default {
               }
             })
           }
+          // evaluate if need close view
           if (!this.$route.meta.type === 'window') {
             this.$store.dispatch('tagsView/delView', this.$route)
               .then(({ visitedViews }) => {
