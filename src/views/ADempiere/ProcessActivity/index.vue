@@ -14,6 +14,7 @@
         <el-card>
           <div slot="header" class="clearfix">
             <span><b>{{ activity.action }}</b></span>
+            <span><b>{{ activity.name }}</b></span>
             <div class="actions">
               <el-dropdown v-if="activity.isReport" @command="handleCommand(activity)">
                 <span class="el-dropdown-link">
@@ -28,6 +29,7 @@
           </div>
           <el-form label-position="top">
             <el-form-item :label="generateTitle('Description')">
+              <span><b>{{ activity.description }}</b></span>
               <span v-if="activity.isReport">{{ activity.output.description }}</span>
               <span v-else> {{ activity.summary }} </span>
             </el-form-item>
@@ -83,15 +85,15 @@ export default {
   name: 'ProcessActivity',
   data() {
     return {
-      processActivity: this.$store.getters.getResult,
+      processActivity: [],
       recordCount: 0
     }
   },
   beforeMount() {
-    const target = this.$store.getters.getInitializedProcess
-    const source = this.$store.getters.getResult
-    const returnedTarget = Object.assign(target, source)
-    console.log(returnedTarget)
+    const initializedProcess = this.$store.getters.getInitializedProcess
+    const resultProcess = this.$store.getters.getResult
+    const finalProcessList = Object.assign(initializedProcess, resultProcess)
+    this.processActivity = finalProcessList
     this.$store.dispatch('getSessionProcessFromServer')
       .then(response => {
         if (response.processList.length > 0) {
@@ -116,6 +118,8 @@ export default {
     },
     checkStatus(isError, isProcessing) {
       var status = { text: '', type: '', color: '' }
+      console.log('erro:', isError)
+      console.log('isProcessing:', isProcessing)
       if (isProcessing) {
         status.text = this.$t('notifications.processing')
         status.type = 'info'
