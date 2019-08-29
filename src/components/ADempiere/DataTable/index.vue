@@ -31,6 +31,7 @@
               {{ $t('table.dataTable.deleteSelection') }}
             </el-menu-item>
             <el-menu-item
+              v-if="!isParent && panelType === 'window'"
               :disabled="inEdited.length > 0 || (!isParent && $route.query.action === 'create-new')"
               index="new"
               @click="addNewRow()"
@@ -54,7 +55,7 @@
           :panel-type="panelType"
           class="fiel-optional"
         />
-        <div style="display: flex;height: 20px;padding-top: 10px;float: right;">
+        <div style="display: flex;height: 20px;padding-top: 19px;float: right;">
           <el-button
             v-show="isParent && panelType === 'window'"
             type="text"
@@ -321,6 +322,13 @@ export default {
   },
   beforeMount() {
     this.currentPage = this.getPageNumber
+    if (this.isParent && this.panelType === 'window') {
+      this.$store.dispatch('recordSelection', {
+        containerUuid: this.containerUuid,
+        selection: [],
+        record: []
+      })
+    }
   },
   mounted() {
     if (this.isTableSelection) {
