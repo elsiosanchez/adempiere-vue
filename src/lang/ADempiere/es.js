@@ -118,7 +118,7 @@ export default {
       search: 'Buscar',
       records: 'Registros',
       selected: 'Seleccionados',
-      deleteSelection: 'Elimiar registros seleccionados'
+      deleteSelection: 'Eliminar registros seleccionados'
     },
     recentItems: {
       search: 'Filtrar por nombre, descripción o fecha',
