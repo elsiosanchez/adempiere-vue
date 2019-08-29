@@ -12,6 +12,7 @@
 
 <script>
 import { fieldIsDisplayed } from '@/utils/ADempiere'
+import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
 
 export default {
   name: 'YesNo',
@@ -56,7 +57,10 @@ export default {
       }
     },
     value(value) {
-      this.isReadOnlyForm(value)
+      if (typeof value !== 'boolean') {
+        this.value = Boolean(value)
+      }
+      this.handleChange('NotSend')
     }
   },
   mounted() {
@@ -87,14 +91,16 @@ export default {
       }
     },
     isReadOnlyForm(value) {
-      var valueReadOnly = this.valuesReadOnly.find(field => field.columnName === this.metadata.columnName)
-      if (valueReadOnly && fieldIsDisplayed(this.metadata)) {
+      var fieldReadOnlyForm = FIELD_READ_ONLY_FORM.find(item => item.columnName === this.metadata.columnName)
+      // columnName: IsActive, Processed, Processing
+      if (fieldReadOnlyForm && fieldIsDisplayed(this.metadata)) {
         this.$store.dispatch('changeFieldAttributesBoolean', {
           containerUuid: this.metadata.containerUuid,
           fieldsIncludes: [],
           attribute: 'isReadOnlyFromForm',
-          valueAttribute: value,
-          fieldsExcludes: [valueReadOnly.columnName]
+          valueAttribute: Boolean(fieldReadOnlyForm.valueIsReadOnlyForm !== value),
+          fieldsExcludes: !fieldReadOnlyForm.isChangedAllForm ? [this.metadata.columnName] : [],
+          currenValue: value
         })
       }
     }

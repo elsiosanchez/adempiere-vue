@@ -37,7 +37,7 @@
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
-                      value: dataRecords[subItem.columnName]
+                      value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
@@ -83,7 +83,10 @@
                         :key="subKey"
                         :parent-uuid="parentUuid"
                         :container-uuid="containerUuid"
-                        :metadata-field="subItem"
+                        :metadata-field="{
+                          ...subItem,
+                          value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                        }"
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
@@ -325,6 +328,9 @@ export default {
           type: 'error',
           showClose: true
         })
+          .catch(error => {
+            console.log(error)
+          })
         console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }
