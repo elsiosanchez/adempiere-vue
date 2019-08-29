@@ -105,11 +105,12 @@ export default {
   methods: {
     isEmptyValue,
     handleCommand(activity) {
+      console.log(activity)
       if (activity.isReport) {
         this.$router.push({
           name: 'Report Viewer',
           params: {
-            processId: activity.id,
+            processId: activity.processId,
             instanceUuid: activity.instanceUuid,
             fileName: activity.output.fileName
           }
