@@ -52,9 +52,9 @@
                   <span v-if="activity.isReport === false"><b>{{ $t('table.ProcessActivity.Logs') }}</b><br>{{ activity.logs }}</span>
                   <div v-else>
                     <span> <b>output</b></span><br>
-                    <!-- <span> <b>{{ $t('table.ProcessActivity.Name') }}:</b>{{ activity.output }}</span><br> -->
-                    <!-- <span><b>{{ $t('table.ProcessActivity.Description') }}:</b>{{ activity.output.description }}</span><br>
-                    <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br> -->
+                    <span> <b>{{ $t('table.ProcessActivity.name') }}:</b>{{ activity.output }}</span><br>
+                    <span><b>{{ $t('table.ProcessActivity.description') }}:</b>{{ activity.output.description }}</span><br>
+                    <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br>
                     <!-- <span>{{ activity.url }}</span><br> -->
                   </div>
                 </div>
