@@ -268,7 +268,7 @@ export default {
       }
     },
     generatePanel(fieldList) {
-      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid).length
+      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid)
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
       var firstGroup
@@ -281,8 +281,15 @@ export default {
       this.isLoadPanel = true
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
-        if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && totalRecords > 0) {
-          this.getData(this.metadata.tableName, undefined)
+        if (totalRecords.length > 0) {
+          this.dataRecords = totalRecords[0]
+          this.$router.push({
+            name: this.$route.name,
+            query: {
+              action: this.dataRecords.UUID,
+              tabNumber: this.$route.query.tabNumber
+            }
+          })
         } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
