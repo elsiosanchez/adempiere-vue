@@ -119,8 +119,6 @@ export default {
     },
     checkStatus(isError, isProcessing) {
       var status = { text: '', type: '', color: '' }
-      console.log('erro:', isError)
-      console.log('isProcessing:', isProcessing)
       if (isProcessing) {
         status.text = this.$t('notifications.processing')
         status.type = 'info'
