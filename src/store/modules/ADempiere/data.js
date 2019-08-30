@@ -87,6 +87,9 @@ const data = {
             containerUuid: parameters.containerUuid,
             clearSelection: true
           })
+            .catch(error => {
+              console.warn(error)
+            })
         }
       }
     },

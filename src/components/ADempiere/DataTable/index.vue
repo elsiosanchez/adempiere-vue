@@ -256,53 +256,48 @@ export default {
     getDataSelection() {
       return this.$store.getters.getDataRecordSelection(this.containerUuid)
     },
-    getParamsBrowser() {
-      return this.$store.getters.getBrowser(this.containerUuid).isMandatoryParams
+    getterFieldIsDisplayed() {
+      return this.$store.getters.getFieldsIsDisplayed(this.containerUuid)
     },
-    getshowCriteria() {
-      return this.$store.getters.getBrowser(this.containerUuid).isShowedCriteria
+    getterIsShowedCriteria() {
+      var browser = this.$store.getters.getBrowser(this.containerUuid)
+      if (browser) {
+        return browser.isShowedCriteria
+      }
+      return false
     },
-    getHeigthPanelBottom() {
+    getHeightPanelBottom() {
       return this.$store.getters.setSplitHeight()
     },
-    getHeigthTable() {
-      var displayHeight = this.$store.getters.getHeigth()
-      if (this.panelType !== 'window') {
-        var table = ''
-        if (this.getterDataRecords.length === 0 && this.getshowCriteria && this.getParamsBrowser) {
-          table = displayHeight - 550
-        } else if (this.getterDataRecords.length === 0 && !this.getshowCriteria && !this.getParamsBrowser) {
-          table = displayHeight - 320
-        } else if (this.getterDataRecords.length === 0 && this.getshowCriteria && !this.getParamsBrowser) {
-          table = displayHeight - 430
-        } else if (this.getterDataRecords.length === 0 && !this.getshowCriteria && this.getParamsBrowser) {
-          table = displayHeight - 290
-        } else if (this.getterDataRecords.length >= 0 && !this.getshowCriteria && this.getParamsBrowser) {
-          table = displayHeight - 290
-        } else if (this.getterDataRecords.length >= 0 && this.getshowCriteria && this.getParamsBrowser) {
-          table = displayHeight - 550
-        }
-        return table
-      } else {
-        if (this.isParent) {
-          return displayHeight - 205
-        } else {
-          if (!this.isExpand) {
-            return this.getHeigthPanelBottom
-          } else {
-            return displayHeight - 320
-          }
-          // return displayHeight - 520
-        }
-      }
+    getterHeight() {
+      return this.$store.getters.getHeigth()
     },
-    panel() {
-      return this.getterPanel
+    getHeigthTable() {
+      if (this.panelType === 'window') {
+        // table record navigation
+        if (this.isParent) {
+          return this.getterHeight - 205
+        }
+        if (!this.isExpand) {
+          return this.getHeightPanelBottom
+        }
+        return this.getterHeight - 220
+      } else if (this.panelType === 'browser') {
+        // open browser criteria
+        if (this.getterIsShowedCriteria) {
+          // showed some field query criteria
+          if (this.getterFieldIsDisplayed.isDisplayed) {
+            return this.getterHeight - 530
+          }
+          return this.getterHeight - 415
+        }
+        return this.getterHeight - 290
+      }
+      return this.getterHeight - 300
     },
     fieldList() {
       if (this.getterPanel && this.getterPanel.fieldList) {
         return this.sortFields(this.getterPanel.fieldList, 'SortNo')
-        // return this.getterPanel.fieldList
       }
       return []
     }
@@ -310,7 +305,6 @@ export default {
   watch: {
     isLoadPanelFromServer(value) {
       if (value) {
-        // this.panel = this.getterPanel
         this.generatePanel()
       }
     }
@@ -535,8 +529,8 @@ export default {
           let find = false
           Object.keys(rowItem).forEach(key => {
             // if exists some selection columns
-            if (this.panel.selectionColumn.length > 0) {
-              if (this.panel.selectionColumn.indexOf(key) > -1 &&
+            if (this.getterPanel.selectionColumn.length > 0) {
+              if (this.getterPanel.selectionColumn.indexOf(key) > -1 &&
                 String(rowItem[key]).includes(String(this.searchTable))) {
                 find = true
                 return find
@@ -577,7 +571,7 @@ export default {
       }
     },
     generatePanel() {
-      var panel = this.panel
+      var panel = this.getterPanel
       this.keyColumn = panel.keyColumn
       this.isLoadPanel = true
     },
