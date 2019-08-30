@@ -54,7 +54,7 @@
           :panel-type="panelType"
           class="fiel-optional"
         />
-        <div style="display: flex;height: 20px;padding-top: 10px;float: right;">
+        <div style="display: flex;height: 20px;padding-top: 19px;float: right;">
           <el-button
             v-show="isParent && panelType === 'window'"
             type="text"
