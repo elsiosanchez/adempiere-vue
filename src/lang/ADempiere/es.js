@@ -40,6 +40,9 @@ export default {
   login: {
     noValidUser: 'Por favor ingrese el nombre de usuario correcto',
     noValidPassword: 'La contraseña no puede estar vacía',
+    invalidLogin: 'ID de usuario o contraseña no válida',
+    unexpectedError: 'Se ha producido un error inesperado, intente nuevamente',
+    capsLock: 'Bloqueo de mayúsculas activado',
     title: 'Formulario de acceso',
     logIn: 'Acceso',
     username: 'Usuario',

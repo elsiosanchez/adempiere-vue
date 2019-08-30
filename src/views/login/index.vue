@@ -1,13 +1,19 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">
-          {{ $t('login.title') }}
-        </h3>
-        <lang-select class="set-language" />
-      </div>
+      <el-row>
+        <el-col :span="3" :push="3">
+          <img src="https://avatars1.githubusercontent.com/u/1263359?s=200&v=4" class="image">
+        </el-col>
+        <el-col :span="20">
+          <div class="title-container">
+            <h3 class="title">
+              {{ $t('login.title') }}
+            </h3>
+            <lang-select class="set-language" />
+          </div>
+        </el-col>
+      </el-row>
 
       <el-form-item prop="username">
         <span class="svg-container">
@@ -24,7 +30,7 @@
         />
       </el-form-item>
 
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+      <el-tooltip v-model="capsTooltip" :content="$t('login.capsLock')" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container">
             <svg-icon icon-class="password" />
@@ -72,11 +78,10 @@
           </span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
-        -->
 
         <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
-        </el-button>
+        </el-button>-->
       </div>
     </el-form>
 
@@ -179,9 +184,14 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
+              // this.loading = false
             })
-            .catch(() => {
+            .catch(error => {
+              if (error.code === 13) {
+                this.$message.error(this.$t('login.invalidLogin'))
+              } else {
+                this.$message.error(this.$t('login.unexpectedError'))
+              }
               this.loading = false
             })
         } else {
@@ -305,7 +315,7 @@ $light_gray:#eee;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 10px auto 40px auto;
       text-align: center;
       font-weight: bold;
     }

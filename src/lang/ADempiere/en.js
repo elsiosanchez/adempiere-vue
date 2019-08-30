@@ -40,6 +40,9 @@ export default {
   login: {
     noValidUser: 'Please enter the correct user name',
     noValidPassword: 'The password can not be empty',
+    invalidLogin: 'User Id or Password invalid',
+    unexpectedError: 'An unexpected error has occurred, try again',
+    capsLock: 'Caps lock is On',
     title: 'Login Form',
     logIn: 'Login',
     username: 'Username',
