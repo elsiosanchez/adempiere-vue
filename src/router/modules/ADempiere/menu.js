@@ -22,20 +22,7 @@ export function loadMainMenu() {
             path: 'index',
             component: () => import('@/views/ADempiere/ProcessActivity'),
             name: 'ProcessActivity',
-            meta: { title: 'ProcessActivity', icon: 'skill', noCache: true }
-          }
-        ]
-      },
-      {
-        path: '/SearchWindow',
-        component: Layout,
-        hidden: true,
-        children: [
-          {
-            path: 'index',
-            component: () => import('@/views/ADempiere/SearchWindow'),
-            name: 'SearchWindow',
-            meta: { title: 'SearchWindow', icon: 'search', noCache: true }
+            meta: { title: 'ProcessActivity', icon: 'skill', noCache: true, isIndex: true }
           }
         ]
       },
