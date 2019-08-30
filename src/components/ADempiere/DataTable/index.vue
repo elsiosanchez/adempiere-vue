@@ -40,7 +40,7 @@
             </el-menu-item>
           </el-submenu>
         </el-menu>
-        <icon-element v-show="isFixed" icon="el-icon-news">
+        <icon-element v-show="isFixed && !isMobile" icon="el-icon-news">
           <fixed-columns
             :container-uuid="containerUuid"
             :panel-type="panelType"
@@ -53,28 +53,66 @@
           :panel-type="panelType"
           class="fiel-optional"
         />
-        <div style="display: flex;height: 20px;padding-top: 19px;float: right;">
-          <el-button
-            v-show="isParent && panelType === 'window'"
-            type="text"
-            icon="el-icon-search"
-            style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
-            @click="searchRecordNavegation()"
-          />
-          <transition name="el-fade-in-linear">
-            <div v-show="showSearch">
-              <el-input
-                v-model="searchTable"
-                size="mini"
-                :placeholder="$t('table.dataTable.search')"
-                clearable
-              />
-            </div>
-          </transition>
-        </div>
+        <el-button
+          v-show="isParent && panelType === 'window' && !isMobile"
+          type="text"
+          icon="el-icon-search"
+          style="color: black;font-size: 17px;font-weight: 605!important;float: right;padding-top: 20px;"
+          @click="searchRecordNavegation()"
+        />
+        <transition name="el-fade-in-linear">
+          <div v-show="showSearch && !isMobile">
+            <el-input
+              v-model="searchTable"
+              size="mini"
+              :placeholder="$t('table.dataTable.search')"
+              clearable
+            />
+          </div>
+        </transition>
+        <!-- <div class="icon-mobile" :style="isMobile ? { height:'20px', display: 'flex', float: 'right' } : { height:'20px', display: 'flex', padding_top: '19px', float: 'right' }">
+          <icon-element v-show="isParent && panelType === 'window' && isMobile" icon="el-icon-news" style="cursor: pointer;font-size: 18px;margin-top: 0px;color: #000;vertical-align: middle;" @click="searchRecordNavegation()">
+            <fixed-columns
+              :container-uuid="containerUuid"
+              :panel-type="panelType"
+              class="header-search-input"
+            />
+          </icon-element>
+        </div> -->
       </div>
-      <div v-if="!isParent && panelType === 'window' && isMobile" class="panel-expand">
-        <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" />
+      <div v-if="isMobile" class="panel-expand">
+        <el-button
+          v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length > 0"
+          type="text"
+          icon="el-icon-delete"
+          style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
+          @click="deleteSelection()"
+        />
+        <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
+          <fixed-columns
+            :container-uuid="containerUuid"
+            :panel-type="panelType"
+            class="header-search-input"
+          />
+        </icon-element>
+        <el-button
+          v-show="isParent && panelType === 'window'"
+          type="text"
+          icon="el-icon-search"
+          style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
+          @click="searchRecordNavegation()"
+        />
+        <transition name="el-fade-in-linear">
+          <div v-show="showSearch">
+            <el-input
+              v-model="searchTable"
+              size="mini"
+              :placeholder="$t('table.dataTable.search')"
+              clearable
+            />
+          </div>
+        </transition>
+        <!-- <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" /> -->
       </div>
     </div>
     <el-table
@@ -272,7 +310,7 @@ export default {
       if (this.panelType === 'window') {
         // table record navigation
         if (this.isParent) {
-          return this.getterHeight - 205
+          return this.getterHeight - 180
         }
         if (!this.isExpand) {
           return this.getHeightPanelBottom
@@ -592,6 +630,9 @@ export default {
 </script>
 
 <style>
+  .icon-mobile {
+    padding-right: 5%;
+  }
   .el-table th, .el-table td {
     padding: 12px 0;
     min-width: 0;
@@ -628,7 +669,8 @@ export default {
   .panel-expand {
     float: right;
     padding-top: 2%;
-    padding-right: 0%;
+    padding-right: 5%;
+    display: flex;
   }
   .fiel-optional {
     width: 227px;
