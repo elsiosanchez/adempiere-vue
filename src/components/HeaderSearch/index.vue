@@ -22,6 +22,7 @@
 // make search results more in line with expectations
 import Fuse from 'fuse.js'
 import path from 'path'
+import { generateTitle } from '@/utils/i18n'
 // import i18n from '@/lang'
 
 export default {
@@ -65,6 +66,7 @@ export default {
     this.searchPool = this.generateRoutes(this.routes)
   },
   methods: {
+    generateTitle,
     click() {
       this.show = !this.show
       if (this.show) {
@@ -77,10 +79,14 @@ export default {
       this.show = false
     },
     change(val) {
-      if (val.meta && val.meta.type === 'window') {
-        this.$router.push({ name: val.name, query: { action: 'create-new', tabNumber: 0 }, params: { childs: val.meta.childs }})
+      if (val.name) {
+        if (val.meta && val.meta.type === 'window') {
+          this.$router.push({ name: val.name, query: { tabNumber: 0 }, params: { childs: val.meta.childs }})
+        } else {
+          this.$router.push({ name: val.name, params: { childs: val.meta.childs }})
+        }
       } else {
-        this.$router.push({ name: val.name, params: { childs: val.meta.childs }})
+        this.$router.push({ path: val.path })
       }
       this.search = ''
       this.options = []
@@ -122,10 +128,9 @@ export default {
 
         if (router.meta && router.meta.title) {
           // generate internationalized title
-          // const i18ntitle = i18n.t(router.meta.title)
-          // data.title = [...data.title, i18ntitle]
-          data.title = [...data.title, router.meta.title]
-          if (router.redirect !== 'noRedirect') {
+          const i18ntitle = this.generateTitle(router.meta.title)
+          data.title = [...data.title, i18ntitle]
+          if (router.redirect !== 'noRedirect' && router.name !== 'Report Viewer' && !router.meta.isIndex) {
             // only push the routes with title
             // special case: need to exclude parent router without redirect
             res.push(data)

@@ -1,4 +1,4 @@
-import { getBrowserSearch as getBrowserSearchFromData } from '@/api/ADempiere'
+import { getBrowserSearch } from '@/api/ADempiere'
 import { convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -45,7 +45,7 @@ const browserControl = {
           nextPageToken: nextPageToken
         }
         // Add validation compare browserSearchQueryParameters
-        getBrowserSearchFromData(browserSearchQueryParameters)
+        getBrowserSearch(browserSearchQueryParameters)
           .then(response => {
             const recordList = response.getRecordsList()
             var record = recordList.map(itemRecord => {

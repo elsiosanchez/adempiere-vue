@@ -303,3 +303,27 @@ export const FIELD_NOT_SHOWED = [
     alias: ['Button']
   }
 ]
+
+/**
+ * Fields with this column name, changed all fields is read only
+ */
+export const FIELD_READ_ONLY_FORM = [
+  {
+    columnName: 'IsActive', // column name of field
+    defaultValue: true, // default value when loading
+    valueIsReadOnlyForm: false, // value that activates read-only form
+    isChangedAllForm: false // change the entire form to read only including this field
+  },
+  {
+    columnName: 'Processed',
+    defaultValue: false,
+    valueIsReadOnlyForm: true,
+    isChangedAllForm: true
+  },
+  {
+    columnName: 'Processing',
+    defaultValue: true,
+    valueIsReadOnlyForm: false,
+    isChangedAllForm: true
+  }
+]

@@ -37,7 +37,7 @@
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
-                      value: dataRecords[subItem.columnName]
+                      value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
@@ -83,7 +83,10 @@
                         :key="subKey"
                         :parent-uuid="parentUuid"
                         :container-uuid="containerUuid"
-                        :metadata-field="subItem"
+                        :metadata-field="{
+                          ...subItem,
+                          value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                        }"
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
@@ -265,7 +268,7 @@ export default {
       }
     },
     generatePanel(fieldList) {
-      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid).length
+      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid)
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
       var firstGroup
@@ -278,8 +281,15 @@ export default {
       this.isLoadPanel = true
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
-        if ((this.windowType === 'Q' || this.windowType === 'T' || this.windowType === 'M') && totalRecords > 0) {
-          this.getData(this.metadata.tableName, undefined)
+        if (totalRecords.length > 0) {
+          this.dataRecords = totalRecords[0]
+          this.$router.push({
+            name: this.$route.name,
+            query: {
+              action: this.dataRecords.UUID,
+              tabNumber: this.$route.query.tabNumber
+            }
+          })
         } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
@@ -325,6 +335,9 @@ export default {
           type: 'error',
           showClose: true
         })
+          .catch(error => {
+            console.log(error)
+          })
         console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }

@@ -111,6 +111,9 @@ const panel = {
           containerUuid: panel.uuid,
           clearSelection: true
         })
+          .catch(error => {
+            console.warn(error)
+          })
       }
     },
     /**
@@ -260,6 +263,9 @@ const panel = {
               containerUuid: params.containerUuid,
               clearSelection: true
             })
+              .catch(error => {
+                console.warn(error)
+              })
           }
           if (field.panelType === 'window' && fieldIsDisplayed(field)) {
             var uuid = getters.getUuid(params.containerUuid)
@@ -522,6 +528,26 @@ const panel = {
         fields: fields,
         params: params,
         fieldsMandatory: fieldsMandatory
+      }
+    },
+    getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var fieldsIsDisplayed = []
+      var fieldsNotDisplayed = []
+      if (fieldList.length > 0) {
+        fieldsIsDisplayed = fieldList.filter(itemField => {
+          const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
+          if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {
+            return true
+          }
+          fieldsNotDisplayed.push(itemField)
+        })
+      }
+      return {
+        fieldIsDisplayed: fieldsIsDisplayed,
+        fieldsNotDisplayed: fieldsNotDisplayed,
+        totalField: fieldList.length,
+        isDisplayed: Boolean(fieldsIsDisplayed.length)
       }
     },
     /**

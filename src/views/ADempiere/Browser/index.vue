@@ -14,20 +14,34 @@
     <el-header>
       <div class="w-33">
         <div class="center">
-          <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+          <el-button
+            v-if="isEmptyValue(browserMetadata.help)"
+            slot="reference"
+            type="text"
+            :class="cssClassTitle + ' warn-content text-center'"
+          >
+            {{ browserMetadata.name }}
+          </el-button>
         </div>
       </div>
       <el-popover
         v-if="!isEmptyValue(browserMetadata.name)"
         placement="top-start"
         :title="browserMetadata.name"
-        class="cssClassHelp"
+        :class="cssClassHelp"
         trigger="hover"
       >
         <div v-html="browserMetadata.help" />
         <div class="w-33">
           <div class="center">
-            <el-button v-if="isEmptyValue(browserMetadata.help)" slot="reference" type="text" :class="cssClassTitle" class="warn-content text-center">{{ browserMetadata.name }}</el-button>
+            <el-button
+              v-if="isEmptyValue(browserMetadata.help)"
+              slot="reference"
+              type="text"
+              :class="cssClassTitle + 'warn-content text-center'"
+            >
+              {{ browserMetadata.name }}
+            </el-button>
           </div>
         </div>
       </el-popover>
@@ -94,6 +108,9 @@ export default {
     }
   },
   computed: {
+    getterBrowser() {
+      return this.$store.getters.getBrowser(this.browserUuid)
+    },
     getDataRecords() {
       return this.$store.getters.getDataRecordsList(this.browserUuid)
     },
@@ -125,6 +142,7 @@ export default {
   watch: {
     isLoading(value) {
       if (value) {
+        this.browserMetadata = this.getterBrowser
         this.defaultSearch()
       }
     },
@@ -135,7 +153,7 @@ export default {
     }
   },
   created() {
-    this.getBrowser(this.$route.meta.uuid)
+    this.getBrowser()
   },
   methods: {
     isEmptyValue,
@@ -150,22 +168,18 @@ export default {
         isShowedCriteria: showCriteria
       })
     },
-    getBrowser(uuid = null) {
-      if (!uuid) {
-        uuid = this.$route.meta.uuid
-      }
-      var browser = this.$store.getters.getBrowser(uuid)
-      if (browser) {
+    getBrowser() {
+      if (this.getterBrowser) {
         this.isLoading = true
-        this.browserMetadata = browser
       } else {
-        this.$store.dispatch('getBrowserFromServer', uuid)
+        this.$store.dispatch('getPanelAndFields', {
+          containerUuid: this.browserUuid,
+          type: this.panelType
+        })
           .then(response => {
-            this.browserMetadata = response
             this.isLoading = true
           })
           .catch(error => {
-            this.isLoading = true
             console.log('Dictionary browse - Error ' + error.code + ': ' + error.message)
           })
       }
@@ -175,6 +189,9 @@ export default {
         this.$store.dispatch('getBrowserSearch', {
           containerUuid: this.browserUuid
         })
+          .catch(error => {
+            console.war(error)
+          })
       }
     }
   }

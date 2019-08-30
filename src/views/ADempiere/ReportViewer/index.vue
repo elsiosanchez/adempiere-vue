@@ -5,7 +5,7 @@
       :panel-type="panelType"
       :is-report="true"
       :last-parameter="reportResult.processUuid"
-      :report-format="reportFormatValue"
+      :report-format="reportFormat"
     />
     <br>
     <el-row :gutter="20">
@@ -23,15 +23,15 @@
               <el-button slot="reference" type="text" class="title">{{ processMetadataValue.name }}</el-button>
             </el-popover>
           </h3>
-          <iframe v-if="reportFormatValue === 'pdf'" class="content-api" :src="url" />
-          <div v-else-if="reportFormatValue === 'ps'|| reportFormatValue === 'xml'||reportFormatValue === 'pdf' ||reportFormatValue === 'txt' || reportFormatValue === 'ssv' || reportFormatValue === 'csv' || reportFormatValue === 'xls' || reportFormatValue === 'xlsx' || reportFormatValue === 'arxml'" class="content-api" :src="url" />
-          <div v-else-if="reportFormatValue === 'html'" class="content-txt">
+          <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" />
+          <div v-else-if="collectionReportFormat.includes(reportFormat)" class="content-api" :src="url" />
+          <div v-else-if="reportFormat === 'html'" class="content-txt">
             <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 140px;">
               <!-- <el-scrollbar wrap-class="scroll" style="bottom: -7%;"> -->
               <el-main style="padding: 0;">
                 <div
                   class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
-                  v-html="reportContentValue"
+                  v-html="reportContent"
                 />
               </el-main>
             </el-container>
@@ -76,7 +76,18 @@ export default {
       url: this.$store.getters.getProcessResult.url,
       name: [],
       reportFormat: '',
-      reportContent: ``,
+      collectionReportFormat: [
+        'ps',
+        'xml',
+        'pdf',
+        'txt',
+        'ssv',
+        'csv',
+        'xls',
+        'xlsx',
+        'arxml'
+      ],
+      reportContent: '',
       reportHeader: '',
       tableData: [],
       tableHeader: [],
@@ -86,12 +97,6 @@ export default {
     }
   },
   computed: {
-    reportFormatValue() {
-      return this.reportFormat
-    },
-    reportContentValue() {
-      return this.reportContent
-    },
     processMetadataValue() {
       return this.$store.getters.getProcessById(this.$route.params.processId)
     },

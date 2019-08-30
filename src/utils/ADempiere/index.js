@@ -87,6 +87,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     }
   }
 
+  // verify if it no overwrite value with ...moreAttributes
   if (moreAttributes.isShowedFromUser) {
     isShowedFromUser = moreAttributes.isShowedFromUser
   }
@@ -175,6 +176,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
     value: parsedDefaultValue,
+    oldValue: parsedDefaultValue,
     valueTo: parsedDefaultValue,
     defaultValue: fieldGRPC.getDefaultvalue(),
     parsedDefaultValue: parsedDefaultValue,

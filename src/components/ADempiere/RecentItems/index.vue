@@ -26,7 +26,7 @@
       class="card-box"
       @click.native="handleClick(item)"
     >
-      <span>{{ item.displayName }}</span><br>
+      <span class="card-content">{{ item.displayName }}</span><br>
       <time class="time">{{ item.updated }}</time>
     </el-card>
   </div>
@@ -105,5 +105,8 @@ export default {
   }
   .card-box {
     cursor: pointer;
+  }
+  .card-content {
+    font-size: 15px;
   }
 </style>
