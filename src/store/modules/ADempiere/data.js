@@ -168,21 +168,22 @@ const data = {
             })
 
             var token = response.getNextPageToken()
-            if (token !== undefined) {
+            if (!isEmptyValue(token)) {
               token = token.slice(0, -2)
               if (token.substr(-1, 1) === '-') {
                 token = token.slice(0, -1)
               }
+            } else {
+              token = allData.nextPageToken
             }
 
-            var pageNumber = rootGetters.getPageNumber(objectParams.containerUuid)
             dispatch('recordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,
               selection: allData.selection,
               recordCount: response.getRecordcount(),
               nextPageToken: token,
-              pageNumber: pageNumber
+              pageNumber: allData.pageNumber
             })
             resolve(record)
           })
@@ -299,7 +300,8 @@ const data = {
         record: [],
         recordCount: 0,
         selection: [],
-        pageNumber: 1
+        pageNumber: 1,
+        nextPageToken: undefined
       }
     },
     getDataRecordsList: (state, getters) => (containerUuid) => {
