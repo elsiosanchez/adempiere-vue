@@ -17,7 +17,7 @@
                 </div>
                 <div class="text-wrapper">
                   <b>{{ item.meta.title }}</b>
-                  <p>{{ item.meta.description }}</p>
+                  <p class="three-dots">{{ item.meta.description }}</p>
                 </div>
               </el-card>
             </el-col>
@@ -75,7 +75,6 @@ export default {
         this.$router.push({
           name: item.name,
           query: {
-            action: 'create-new',
             tabNumber: 0
           },
           params: {
@@ -137,5 +136,11 @@ export default {
     font-weight: bold;
     font-size: 16px;
     text-align: center;
+  }
+  .three-dots{
+    margin-top: 0 !important;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
   }
 </style>
