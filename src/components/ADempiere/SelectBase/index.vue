@@ -33,8 +33,8 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: [Array, String, Number],
-      default: () => ([])
+      type: [String, Number],
+      default: undefined
     }
   },
   data() {
