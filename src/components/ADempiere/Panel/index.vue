@@ -282,11 +282,10 @@ export default {
       if (this.panelType === 'window') {
         this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (totalRecords.length > 0) {
-          this.dataRecords = totalRecords[0]
           this.$router.push({
             name: this.$route.name,
             query: {
-              action: this.dataRecords.UUID,
+              action: totalRecords[0].UUID,
               tabNumber: this.$route.query.tabNumber
             }
           })
@@ -294,7 +293,6 @@ export default {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: this.containerUuid
           })
-        } else {
           this.$router.push({
             name: this.$route.name,
             query: { action: 'create-new', tabNumber: 0 }

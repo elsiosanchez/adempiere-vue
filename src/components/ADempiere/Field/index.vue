@@ -145,36 +145,40 @@ export default {
 
       var sizeField = sizeFieldFromType.size
       var newSizes = {}
-      if (this.inTable) {
-        newSizes.xs = 24
-        newSizes.sm = 24
-        newSizes.md = 24
-        newSizes.lg = 24
-        newSizes.xl = 24
-        return newSizes
-      } else if (this.inGroup && width >= 992) {
-        newSizes.xs = sizeField.xs
-        newSizes.sm = sizeField.sm * 2
-        if (width <= 1199) {
-          newSizes.md = sizeField.md
+      if (this.panelType === 'window') {
+        if (this.inTable) {
+          newSizes.xs = 24
+          newSizes.sm = 24
+          newSizes.md = 24
+          newSizes.lg = 24
+          newSizes.xl = 24
+          return newSizes
+        } else if (this.inGroup && width >= 992) {
+          newSizes.xs = sizeField.xs
+          newSizes.sm = sizeField.sm * 2
+          if (width <= 1199) {
+            newSizes.md = sizeField.md
+          } else {
+            newSizes.md = sizeField.md * 2
+          }
+          if (this.field.groupAssigned !== '') {
+            newSizes.lg = sizeField.lg * 2
+            newSizes.xl = sizeField.xl * 2
+          } else {
+            newSizes.lg = sizeField.lg
+            newSizes.xl = sizeField.xl
+          }
+          return newSizes
+        } else if (width <= 768) {
+          newSizes.xs = 24
+          newSizes.sm = 24
+          newSizes.md = 24
+          newSizes.lg = 24
+          newSizes.xl = 24
+          return newSizes
         } else {
-          newSizes.md = sizeField.md * 2
+          return sizeField
         }
-        if (this.field.groupAssigned !== '') {
-          newSizes.lg = sizeField.lg * 2
-          newSizes.xl = sizeField.xl * 2
-        } else {
-          newSizes.lg = sizeField.lg
-          newSizes.xl = sizeField.xl
-        }
-        return newSizes
-      } else if (width <= 768) {
-        newSizes.xs = 24
-        newSizes.sm = 24
-        newSizes.md = 24
-        newSizes.lg = 24
-        newSizes.xl = 24
-        return newSizes
       } else {
         return sizeField
       }
