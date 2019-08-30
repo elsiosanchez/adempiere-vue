@@ -87,7 +87,11 @@ const windowControl = {
               newValues: newValues,
               isDontSendToEdit: true
             })
-
+            dispatch('addNewRow', {
+              containerUuid: parameters.containerUuid,
+              isPanelValues: true,
+              isEdit: false
+            })
             resolve(result)
           })
           .catch(error => {
@@ -187,7 +191,7 @@ const windowControl = {
               uuid: recordUuid,
               tableName: panel.tableName
             }
-            console.log('udate entity', responseConvert)
+
             commit('setRecordDetail', responseConvert)
             resolve(newValues)
           })

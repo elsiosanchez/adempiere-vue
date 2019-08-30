@@ -35,12 +35,7 @@ const data = {
       }
     },
     notifyRowTableChange: (state, payload) => {
-      payload.record = payload.record.map(itemRecord => {
-        if (payload.isNew && isEmptyValue(itemRecord.UUID)) {
-          return payload.newRow
-        }
-        return itemRecord
-      })
+      Object.assign(payload.row, payload.newRow)
     },
     setRecentItems(state, payload) {
       state.recentItems = payload
@@ -95,8 +90,18 @@ const data = {
     },
     addNewRow({ commit, getters, rootGetters }, parameters) {
       var data = getters.getDataRecordsList(parameters.containerUuid)
-      var values = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
+      var values = {}
+      if (parameters.isPanelValues) {
+        values = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'value', true)
+      } else {
+        values = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
+      }
+
       values.isEdit = true
+      if (parameters.hasOwnProperty('isEdit')) {
+        values.isEdit = parameters.isEdit
+      }
+
       commit('addNewRow', {
         values: values,
         data: data
@@ -220,19 +225,24 @@ const data = {
           })
       })
     },
-    notifyRowTableChange: ({ commit, state }, objectParams) => {
-      var recordSelection = state.recordSelection.find(recordItem => {
-        return recordItem.containerUuid === objectParams.containerUuid
-      })
+    notifyRowTableChange: ({ commit, state, getters, rootGetters }, objectParams) => {
+      var currentValues = rootGetters.getColumnNamesAndValues(objectParams.containerUuid, 'value', true)
+      var row = getters.getRowData(objectParams.containerUuid, currentValues.UUID)
+
+      var isEdit = true
+      if (objectParams.hasOwnProperty('isEdit')) {
+        isEdit = objectParams.isEdit
+      }
 
       var newRow = {
-        ...objectParams.row,
-        isEdit: true
+        ...currentValues,
+        // ...objectParams.row,
+        isEdit: isEdit
       }
       commit('notifyRowTableChange', {
         isNew: objectParams.isNew,
         newRow: newRow,
-        record: recordSelection.record
+        row: row
       })
     },
     notifyCellTableChange: ({ commit, state, dispatch, rootGetters }, objectParams) => {

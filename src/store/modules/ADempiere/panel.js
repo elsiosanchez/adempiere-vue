@@ -292,6 +292,13 @@ const panel = {
                 containerUuid: params.containerUuid,
                 recordUuid: uuid
               })
+                .then(response => {
+                  dispatch('notifyRowTableChange', {
+                    containerUuid: params.containerUuid,
+                    row: response,
+                    isEdit: false
+                  })
+                })
                 .catch(error => {
                   console.warn('Update Entity Error ' + error.code + ': ' + error.message)
                 })
