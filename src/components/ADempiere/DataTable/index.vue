@@ -1,5 +1,5 @@
 <template>
-  <el-form label-position="top">
+  <el-form v-if="isLoadPanel" label-position="top">
     <div class="table-root">
       <div>
         <!-- <icon-element icon="el-icon-search">
@@ -42,14 +42,12 @@
         </el-menu>
         <icon-element v-show="isFixed" icon="el-icon-news">
           <fixed-columns
-            v-if="isLoadPanel"
             :container-uuid="containerUuid"
             :panel-type="panelType"
             class="header-search-input"
           />
         </icon-element>
         <filter-columns
-          v-if="isLoadPanel"
           v-show="isOptional"
           :container-uuid="containerUuid"
           :panel-type="panelType"
@@ -86,7 +84,7 @@
       style="width: 100%"
       stripe
       border
-      :row-key="keyColumn"
+      :row-key="getterPanel.keyColumn"
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
@@ -100,7 +98,7 @@
       <el-table-column
         v-if="isTableSelection"
         type="selection"
-        :prop="keyColumn"
+        :prop="getterPanel.keyColumn"
         fixed
         min-width="50"
         :class-name="'is-cell-selection'"
@@ -131,8 +129,8 @@
                   parentUuid: parentUuid,
                   displayColumn: scope.row['DisplayColumn_' + item.columnName],
                   tableIndex: scope.$index,
-                  rowKey: scope.row[keyColumn],
-                  keyColumn: keyColumn,
+                  rowKey: scope.row[getterPanel.keyColumn],
+                  keyColumn: getterPanel.keyColumn,
                   recordUuid: scope.row.UUID
                 }"
                 :record-data-fields="scope.row[item.columnName]"
@@ -224,9 +222,7 @@ export default {
       menuTable: '1',
       isOptional: false,
       isFixed: false,
-      isLoadPanel: false,
       isLoadPanelFromServer: false,
-      keyColumn: '', // column as isKey in fieldList
       tableData: [],
       isEdit: false, // get data
       rowStyle: { height: '52px' },
@@ -300,19 +296,18 @@ export default {
         return this.sortFields(this.getterPanel.fieldList, 'SortNo')
       }
       return []
-    }
-  },
-  watch: {
-    isLoadPanelFromServer(value) {
-      if (value) {
-        this.generatePanel()
+    },
+    isLoadPanel() {
+      if (this.getterPanel && this.getterPanel.fieldList) {
+        return true
       }
+      return false
     }
   },
   created() {
     // get tab with uuid
     this.getPanel()
-    this.getList()
+    // this.getList()
   },
   beforeMount() {
     this.currentPage = this.getPageNumber
@@ -555,10 +550,8 @@ export default {
      * Get the tab object with all its attributes as well as the fields it contains
      */
     getPanel() {
-      var panel = this.getterPanel
-      if (panel && panel.fieldList.length > 0) {
-        this.generatePanel()
-      } else if (this.panelType === 'window' && !this.isParent) {
+      // get panel from server only window and tab children
+      if (this.panelType === 'window' && !this.isParent && !this.getterPanel && !this.getterPanel.fieldList) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
@@ -569,11 +562,6 @@ export default {
           console.warn('FieldList Load Error ' + error.code + ': ' + error.message)
         })
       }
-    },
-    generatePanel() {
-      var panel = this.getterPanel
-      this.keyColumn = panel.keyColumn
-      this.isLoadPanel = true
     },
     /**
      * Sorts the column components according to the value that is obtained from
