@@ -88,7 +88,7 @@
           style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
           @click="deleteSelection()"
         />
-        <icon-element icon="el-icon-news" style="padding-top: 0px;">
+        <icon-element icon="el-icon-news" style="padding-top: 0px;margin-top: -5px !important;">
           <fixed-columns
             v-show="!showSearch"
             :container-uuid="containerUuid"

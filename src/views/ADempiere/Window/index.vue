@@ -9,7 +9,7 @@
                 <i
                   v-if="isMobile"
                   class="el-icon-close"
-                  style="position: fixed;top: 22%;"
+                  style="position: fixed;top: 20%;"
                   @click="handleChangeShowedRecordNavigation()"
                 />
                 <data-table
