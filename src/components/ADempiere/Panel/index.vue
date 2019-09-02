@@ -198,6 +198,9 @@ export default {
         tableName: this.metadata.tableName,
         recordUuid: this.$route.query.action
       })
+    },
+    getterRowData() {
+      return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
     }
   },
   watch: {
@@ -325,6 +328,20 @@ export default {
     getData(table = null, uuidRecord = null) {
       // break get data, this record is the same
       if (!isEmptyValue(uuidRecord) && uuidRecord === this.getterRecordUuid) {
+        return
+      }
+      // this data row exists in vuex store
+      if (this.getterRowData) {
+        this.dataRecords = this.getterRowData
+        this.$store.dispatch('notifyPanelChange', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          newValues: this.getterRowData,
+          isDontSendToEdit: true,
+          fieldList: this.fieldList
+        })
+        this.setTagsViewTitle(this.$route.query.action)
+        this.isLoadRecord = true
         return
       }
       if (!table) {
