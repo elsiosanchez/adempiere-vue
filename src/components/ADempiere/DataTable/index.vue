@@ -57,11 +57,11 @@
           v-show="isParent && panelType === 'window' && !isMobile"
           type="text"
           icon="el-icon-search"
-          style="color: black;font-size: 17px;font-weight: 605!important;float: right;padding-top: 20px;"
+          style="color: black;font-size: 17px;font-weight: 605!important;float: right;padding-top: 25px;"
           @click="searchRecordNavegation()"
         />
         <transition name="el-fade-in-linear">
-          <div v-show="showSearch && !isMobile">
+          <div v-show="showSearch && !isMobile" style="display: flex;width: 25%;float: right;padding-top: 20px;">
             <el-input
               v-model="searchTable"
               size="mini"
@@ -88,8 +88,9 @@
           style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
           @click="deleteSelection()"
         />
-        <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
+        <icon-element icon="el-icon-news" style="padding-top: 0px;">
           <fixed-columns
+            v-show="!showSearch"
             :container-uuid="containerUuid"
             :panel-type="panelType"
             class="header-search-input"
@@ -381,6 +382,7 @@ export default {
     },
     searchRecordNavegation() {
       this.showSearch = !this.showSearch
+      console.log(this.showSearch)
     },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
