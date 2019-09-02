@@ -170,11 +170,11 @@ export default {
           }
           return newSizes
         } else if (width <= 768) {
-          newSizes.xs = 24
-          newSizes.sm = 24
-          newSizes.md = 24
-          newSizes.lg = 24
-          newSizes.xl = 24
+          newSizes.xs = 12
+          newSizes.sm = 12
+          newSizes.md = 12
+          newSizes.lg = 12
+          newSizes.xl = 12
           return newSizes
         } else {
           return sizeField
