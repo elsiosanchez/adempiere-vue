@@ -12,7 +12,7 @@
         @click.middle.native="closeSelectedTag(tag)"
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
-        <p style="margin-top: 0%;width: 90%;overflow: hidden;text-overflow: ellipsis;display: inline-grid;"> {{ generateTitle(tag.title) }} </p>
+        <p clas="tag-title" style="max-width: 98%; overflow: hidden; margin: 0px;">{{ generateTitle(tag.title) }}</p>
         <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </scroll-pane>
@@ -226,12 +226,14 @@ export default {
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   .tags-view-wrapper {
-    width: 90%;
+    width: 100%;
     .tags-view-item {
-      max-width: 40%;
+      flex: 1;
+      min-width: 0;
+      max-width: 32%;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: inline-block;
+      display: -webkit-inline-box;
       position: relative;
       cursor: pointer;
       height: 26px;
@@ -239,7 +241,7 @@ export default {
       border: 1px solid #d8dce5;
       color: #495060;
       background: #fff;
-      padding: 0 8px;
+      padding: 0 7px;
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
@@ -264,6 +266,11 @@ export default {
           position: relative;
           margin-right: 2px;
         }
+      }
+      .tag-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }

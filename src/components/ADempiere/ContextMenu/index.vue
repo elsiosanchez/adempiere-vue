@@ -261,7 +261,6 @@ export default {
           }
           if (this.$route.meta.type === 'report' && itemAction.action === 'startProcess') {
             itemAction.reportExportType = 'html'
-            itemAction.disabled = true
           }
           if (this.$route.meta.type === 'process' && itemAction.type === 'summary') {
             itemAction.disabled = true

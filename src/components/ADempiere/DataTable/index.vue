@@ -589,7 +589,7 @@ export default {
      */
     getPanel() {
       // get panel from server only window and tab children
-      if (this.panelType === 'window' && !this.isParent && !this.getterPanel && !this.getterPanel.fieldList) {
+      if (this.panelType === 'window' && !this.isParent && !this.getterPanel) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
