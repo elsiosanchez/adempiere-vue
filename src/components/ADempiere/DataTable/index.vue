@@ -630,6 +630,18 @@ export default {
 </script>
 
 <style>
+  .el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    max-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    line-height: 23px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
   .icon-mobile {
     padding-right: 5%;
   }
