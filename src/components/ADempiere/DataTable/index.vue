@@ -382,7 +382,6 @@ export default {
     },
     searchRecordNavegation() {
       this.showSearch = !this.showSearch
-      console.log(this.showSearch)
     },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
