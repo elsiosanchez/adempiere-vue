@@ -7,11 +7,11 @@
   <el-col
     v-if="!inTable"
     v-show="isDisplayed()"
-    :xs="sizeFieldResponsive(getWidth).xs"
-    :sm="sizeFieldResponsive(getWidth).sm"
-    :md="sizeFieldResponsive(getWidth).md"
-    :lg="sizeFieldResponsive(getWidth).lg"
-    :xl="sizeFieldResponsive(getWidth).xl"
+    :xs="sizeFieldResponsive.xs"
+    :sm="sizeFieldResponsive.sm"
+    :md="sizeFieldResponsive.md"
+    :lg="sizeFieldResponsive.lg"
+    :xl="sizeFieldResponsive.xl"
     :class="classField"
   >
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
@@ -49,7 +49,7 @@
 
 <script>
 import { FIELD_ONLY } from '@/components/ADempiere/Field/references'
-import { FIELD_DISPLAY_SIZES, DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
+import { DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
 import { fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
 
 /**
@@ -111,40 +111,17 @@ export default {
         return 'in-table'
       }
       return ''
-    }
-  },
-  watch: {
-    metadataField(value) {
-      this.field = value
     },
-    // TODO: Check if you have better performance with a property, or an watcher
-    '$route.query.action'(actionValue) {
-      this.optionCRUD = actionValue
-    },
-    getWidth(newValue, oldValue) {
-      this.sizeFieldResponsive(newValue)
-    }
-  },
-  created() {
-    // assined field with prop
-    this.field = this.metadataField
-  },
-  methods: {
-    isEmptyValue,
-    sizeFieldResponsive(width) {
-      var sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
-        return item.type === this.field.componentPath
-      })
-
-      if (sizeFieldFromType === undefined) {
-        console.warn('Field size no found:', this.field.name)
-        sizeFieldFromType = {}
-        sizeFieldFromType.size = DEFAULT_SIZE
+    sizeFieldResponsive() {
+      if (!this.isDisplayed()) {
+        return DEFAULT_SIZE
       }
 
-      var sizeField = sizeFieldFromType.size
+      const sizeField = this.field.sizeFieldFromType.size
+
       var newSizes = {}
       if (this.panelType === 'window') {
+        // in table used max width
         if (this.inTable) {
           newSizes.xs = 24
           newSizes.sm = 24
@@ -152,10 +129,10 @@ export default {
           newSizes.lg = 24
           newSizes.xl = 24
           return newSizes
-        } else if (this.inGroup && width >= 992) {
+        } else if (this.inGroup && this.getWidth >= 992) {
           newSizes.xs = sizeField.xs
           newSizes.sm = sizeField.sm * 2
-          if (width <= 1199) {
+          if (this.getWidth <= 1199) {
             newSizes.md = sizeField.md
           } else {
             newSizes.md = sizeField.md * 2
@@ -168,30 +145,40 @@ export default {
             newSizes.xl = sizeField.xl
           }
           return newSizes
-        } else if (width <= 768) {
+        } else if (this.getWidth <= 768) {
           newSizes.xs = 12
           newSizes.sm = 12
           newSizes.md = 12
           newSizes.lg = 12
           newSizes.xl = 12
           return newSizes
-        } else {
-          return sizeField
         }
-      } else {
         return sizeField
       }
-    },
+      return sizeField
+    }
+  },
+  watch: {
+    metadataField(value) {
+      this.field = value
+    }
+  },
+  created() {
+    // assined field with prop
+    this.field = this.metadataField
+  },
+  methods: {
+    isEmptyValue,
     isDisplayed() {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
-      var isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
-      var isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
+      const isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
+      const isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
 
       // edit mode is diferent to create new
-      var editMode = (!this.inTable && this.field.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
-      var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && editMode) ||
+      const editMode = (!this.inTable && this.field.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
+      const isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && editMode) ||
         ((isUpdateableAllFields || this.field.isReadOnlyFromForm) && this.panelType !== 'browser') // logic to window, report and process
 
       return isUpdateableFieldWindow || isUpdatableColumnBrowserResult
@@ -212,7 +199,7 @@ export default {
      * @return {boolean}
      */
     verifyIsFieldOnly(type) {
-      var field = FIELD_ONLY.find(itemField => {
+      const field = FIELD_ONLY.find(itemField => {
         if (type === itemField.id) {
           return true
         }

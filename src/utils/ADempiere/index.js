@@ -1,4 +1,5 @@
 import REFERENCES, { FIELD_NOT_SHOWED } from '@/components/ADempiere/Field/references'
+import { FIELD_DISPLAY_SIZES, DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
 import evaluator from '@/utils/ADempiere/evaluator.js'
 import * as valueUtil from '@/utils/ADempiere/valueUtil.js'
 
@@ -229,6 +230,18 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     })
   }
 
+  // Sizes from panel and groups
+  field.sizeFieldFromType = FIELD_DISPLAY_SIZES.find(item => {
+    return item.type === field.componentPath
+  })
+  if (field.sizeFieldFromType === undefined) {
+    console.warn('Field size no found:', field.name, 'type: ', field.componentPath)
+    field.sizeFieldFromType = {
+      type: field.componentPath,
+      size: DEFAULT_SIZE
+    }
+  }
+
   // Overwrite some values
   if (typeRange) {
     field.uuid = field.uuid + '_To'
@@ -320,7 +333,11 @@ export function getFieldTemplate(attributesOverwrite) {
     reference: referenceValue,
     contextInfo: undefined,
     isShowedFromUser: false,
-    isFixedTableColumn: false
+    isFixedTableColumn: false,
+    sizeFieldFromType: {
+      type: 'Button',
+      size: DEFAULT_SIZE
+    }
   }
   return Object.assign(newField, attributesOverwrite)
 }
