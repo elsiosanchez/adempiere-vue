@@ -7,7 +7,7 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
-
+        <badge />
         <error-log class="errLog-container right-menu-item hover-effect" />
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -62,10 +62,12 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
+import Badge from '@/components/ADempiere/badge'
 
 export default {
   components: {
     Breadcrumb,
+    Badge,
     Hamburger,
     ErrorLog,
     Screenfull,
