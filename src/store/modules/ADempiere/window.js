@@ -36,7 +36,8 @@ const window = {
               uuid: windowUuid,
               name: response.getName(),
               contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
-              windowType: response.getWindowtype()
+              windowType: response.getWindowtype(),
+              isShowedRecordNavigation: undefined
             }
             var tabs = response.getTabsList()
             var firstTab = tabs[0].getTablename()
@@ -267,11 +268,7 @@ const window = {
       )
     },
     getIsShowedRecordNavigation: (state, getters) => (windowUuid) => {
-      var window = getters.getWindow(windowUuid)
-      if (window.hasOwnProperty('isShowedRecordNavigation')) {
-        return window.isShowedRecordNavigation
-      }
-      return undefined
+      return getters.getWindow(windowUuid).isShowedRecordNavigation
     },
     getTab: (state, getters) => (windowUuid, tabUuid) => {
       const window = getters.getWindow(windowUuid)

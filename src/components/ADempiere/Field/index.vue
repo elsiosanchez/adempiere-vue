@@ -104,7 +104,7 @@ export default {
       return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
     getWidth() {
-      return this.$store.getters.getWidth()
+      return this.$store.getters.getWidth
     },
     classField() {
       if (this.inTable) {
@@ -112,22 +112,38 @@ export default {
       }
       return ''
     },
+    getterIsShowedRecordNavigation() {
+      if (this.panelType === 'window') {
+        return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
+      }
+      return false
+    },
     sizeFieldResponsive() {
       if (!this.isDisplayed()) {
         return DEFAULT_SIZE
       }
 
       const sizeField = this.field.sizeFieldFromType.size
-
       var newSizes = {}
+
+      // in table set max width, used by browser result and tab children of window
+      if (this.inTable) {
+        newSizes.xs = 24
+        newSizes.sm = 24
+        newSizes.md = 24
+        newSizes.lg = 24
+        newSizes.xl = 24
+        return newSizes
+      }
+
       if (this.panelType === 'window') {
-        // in table used max width
-        if (this.inTable) {
-          newSizes.xs = 24
-          newSizes.sm = 24
-          newSizes.md = 24
-          newSizes.lg = 24
-          newSizes.xl = 24
+        // two columns if is mobile or desktop and show record navigation
+        if (this.getWidth <= 768 || (this.getWidth >= 768 && this.getterIsShowedRecordNavigation)) {
+          newSizes.xs = 12
+          newSizes.sm = 12
+          newSizes.md = 12
+          newSizes.lg = 12
+          newSizes.xl = 12
           return newSizes
         } else if (this.inGroup && this.getWidth >= 992) {
           newSizes.xs = sizeField.xs
@@ -144,13 +160,6 @@ export default {
             newSizes.lg = sizeField.lg
             newSizes.xl = sizeField.xl
           }
-          return newSizes
-        } else if (this.getWidth <= 768) {
-          newSizes.xs = 12
-          newSizes.sm = 12
-          newSizes.md = 12
-          newSizes.lg = 12
-          newSizes.xl = 12
           return newSizes
         }
         return sizeField

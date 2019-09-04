@@ -92,7 +92,7 @@
                         :is-load-record="isLoadRecord"
                         :record-data-fields="dataRecords[subItem.columnName]"
                         :panel-type="panelType"
-                        :in-group="mutipleGroups && fieldGroups.length > 1"
+                        :in-group="isMutipleGroups && fieldGroups.length > 1"
                       />
                     </template>
                   </el-row>
@@ -170,8 +170,7 @@ export default {
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
-      isShowRecordNavigation: false,
-      mutipleGroups: Boolean(this.panelType === 'window'),
+      isMutipleGroups: Boolean(this.panelType === 'window'),
       tagTitle: { base: this.$route.meta.title, action: '' }
     }
   },
@@ -248,7 +247,7 @@ export default {
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.isMutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -267,7 +266,6 @@ export default {
           type: this.panelType
         }).then(response => {
           this.isLoadFromServer = true
-          // this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
@@ -286,7 +284,6 @@ export default {
 
       this.isLoadPanel = true
       if (this.panelType === 'window') {
-        this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (totalRecords.length > 0) {
           this.$router.push({
             name: this.$route.name,

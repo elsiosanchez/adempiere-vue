@@ -7,14 +7,8 @@
 <script>
 export default {
   name: 'App',
-  data() {
-    return {
-      windowWidth: 0,
-      windowHeight: 0
-    }
-  },
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(() => {
       window.addEventListener('resize', this.getWindowWidth)
       window.addEventListener('resize', this.getWindowHeight)
 
@@ -28,12 +22,10 @@ export default {
   },
   methods: {
     getWindowWidth(event) {
-      this.windowWidth = document.documentElement.clientWidth
-      this.$store.dispatch('setWidth', this.windowWidth)
+      this.$store.dispatch('setWidth', document.documentElement.clientWidth)
     },
     getWindowHeight(event) {
-      this.windowHeight = document.documentElement.clientHeight
-      this.$store.dispatch('setHeight', this.windowHeight)
+      this.$store.dispatch('setHeight', document.documentElement.clientHeight)
     }
   }
 }

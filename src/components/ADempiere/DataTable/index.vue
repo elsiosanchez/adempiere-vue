@@ -305,7 +305,7 @@ export default {
       return this.$store.getters.setSplitHeight()
     },
     getterHeight() {
-      return this.$store.getters.getHeigth()
+      return this.$store.getters.getHeigth
     },
     getHeigthTable() {
       if (this.panelType === 'window') {

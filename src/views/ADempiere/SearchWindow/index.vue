@@ -86,9 +86,9 @@ export default {
     },
     getHeigthTable() {
       if (this.getDataDetail !== undefined) {
-        return this.$store.getters.getHeigth() - 170
+        return this.$store.getters.getHeigth - 170
       } else {
-        return this.$store.getters.getHeigth() - 185
+        return this.$store.getters.getHeigth - 185
       }
     }
   },

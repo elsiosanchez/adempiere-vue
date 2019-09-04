@@ -1,5 +1,8 @@
 <template>
   <div v-if="isLoading">
+    <!-- getter {{ getterIsShowedRecordNavigation }} <br> -->
+    getter {{ getterWindow.isShowedRecordNavigation }} <br>
+    metadata {{ windowMetadata.isShowedRecordNavigation }}
     <el-container style="height: 86vh;">
       <el-main>
         <split-pane :min-percent="10" :default-percent="isMobile ? (isShowedRecordNavigation ? 100 : 0) : (isShowedRecordNavigation ? 50 : 0)" split="vertical">
@@ -143,7 +146,7 @@ export default {
       listRecordNavigation: 0,
       isShowedTabChildren: true,
       isWindowType: '',
-      isShowedRecordNavigation: this.$store.getters.getIsShowedRecordNavigation(this.$route.meta.uuid)
+      isShowedRecordNavigation: false // this.$store.getters.getIsShowedRecordNavigation(this.$route.meta.uuid)
     }
   },
   computed: {
@@ -181,7 +184,6 @@ export default {
   },
   mounted() {
     this.getWindow()
-    this.checkShowedRecordNavigation()
   },
   methods: {
     // callback new size
@@ -191,7 +193,7 @@ export default {
         splitHeight: bottomPanel
       })
     },
-    //
+    // get window from vuex store or server
     getWindow() {
       if (this.getterWindow) {
         this.isLoadingFromServer = true
@@ -206,21 +208,15 @@ export default {
           })
       }
     },
-    handleChangeShowedRecordNavigation() {
-      var appMainWidth
+    handleChangeShowedRecordNavigation(value) {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
+    },
+    changeShowedRecordNavigation() {
       this.$store.dispatch('changeShowedRecordWindow', {
         parentUuid: this.windowUuid,
         containerUuid: this.windowMetadata.currentTab.uuid, // act as parentUuid
         isShowedRecordNavigation: this.isShowedRecordNavigation
       })
-      if (this.isShowedRecordNavigation) {
-        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
-        this.$store.dispatch('setWidth', appMainWidth)
-      } else {
-        appMainWidth = document.getElementById('appMain').clientWidth
-        this.$store.dispatch('setWidth', appMainWidth)
-      }
     },
     handleChangeShowedTabChildren() {
       this.isShowedTabChildren = !this.isShowedTabChildren
@@ -229,16 +225,6 @@ export default {
         containerUuid: this.windowUuid, // act as parentUuid
         isShowedDetail: this.isShowedTabChildren
       })
-    },
-    checkShowedRecordNavigation() {
-      var appMainWidth
-      if (this.isShowedRecordNavigation) {
-        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
-        this.$store.dispatch('setWidth', appMainWidth)
-      } else {
-        appMainWidth = document.getElementById('appMain').clientWidth
-        this.$store.dispatch('setWidth', appMainWidth)
-      }
     }
   }
 }
