@@ -2,15 +2,6 @@
   <el-form v-if="isLoadPanel" label-position="top">
     <div class="table-root">
       <div>
-        <!-- <icon-element icon="el-icon-search">
-          <el-input
-            v-model="searchTable"
-            size="mini"
-            :placeholder="$t('table.dataTable.search')"
-            class="header-search-input"
-            clearable
-          />
-        </icon-element> -->
         <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
           <el-submenu index="2">
             <template slot="title">
@@ -70,15 +61,6 @@
             />
           </div>
         </transition>
-        <!-- <div class="icon-mobile" :style="isMobile ? { height:'20px', display: 'flex', float: 'right' } : { height:'20px', display: 'flex', padding_top: '19px', float: 'right' }">
-          <icon-element v-show="isParent && panelType === 'window' && isMobile" icon="el-icon-news" style="cursor: pointer;font-size: 18px;margin-top: 0px;color: #000;vertical-align: middle;" @click="searchRecordNavegation()">
-            <fixed-columns
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-              class="header-search-input"
-            />
-          </icon-element>
-        </div> -->
       </div>
       <div v-if="isMobile" class="panel-expand">
         <el-button
@@ -103,7 +85,7 @@
           style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
           @click="searchRecordNavegation()"
         />
-        <transition name="el-fade-in-linear">
+        <transition>
           <div v-show="showSearch">
             <el-input
               v-model="searchTable"
@@ -113,22 +95,17 @@
             />
           </div>
         </transition>
-        <!-- <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" /> -->
       </div>
     </div>
     <el-table
       ref="multipleTable"
-      fit
       :height="getHeigthTable"
       style="width: 100%"
-      stripe
       border
       :row-key="getterPanel.keyColumn"
       highlight-current-row
       :reserve-selection="true"
-      :row-style="rowStyle"
-      :data="showSearch ? filterResult() : getterDataRecords"
-      cell-class-name="datatable-max-cell-height"
+      :data="getterDataRecords"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
       @select="handleSelection"
@@ -140,7 +117,6 @@
         :prop="getterPanel.keyColumn"
         fixed
         min-width="50"
-        :class-name="'is-cell-selection'"
       />
       <template v-for="(item, key) in fieldList">
         <el-table-column
@@ -152,7 +128,6 @@
           sortable
           :formatter="changeOrder"
           min-width="200"
-          height="300"
           :class-name="cellClass(item)"
           :fixed="item.isFixedTableColumn"
         >
