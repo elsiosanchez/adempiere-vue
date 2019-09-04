@@ -21,7 +21,7 @@ const data = {
     notifyCellTableChange: (state, payload) => {
       payload.row[payload.columnName] = payload.value
       if (payload.displayColumn !== undefined) {
-        var key = 'DisplayColumn_' + payload.columnName
+        const key = 'DisplayColumn_' + payload.columnName
         payload.row[key] = payload.displayColumn
       }
     },
@@ -29,7 +29,7 @@ const data = {
       if (payload.row !== undefined) {
         payload.row[payload.columnName] = payload.value
         if (payload.displayColumn !== undefined) {
-          var key = 'DisplayColumn_' + payload.columnName
+          const key = 'DisplayColumn_' + payload.columnName
           payload.row[key] = payload.displayColumn
         }
       }
@@ -298,14 +298,16 @@ const data = {
     }
   },
   getters: {
-    getDataRecordAndSelection: (state, rootGetters) => (containerUuid) => {
+    /**
+     * Used by datatables in tab children, record navigation in window, result in browser
+     * @param {string} containerUuid
+     */
+    getDataRecordAndSelection: (state) => (containerUuid) => {
       var data = state.recordSelection.find(itemRecord => {
         return itemRecord.containerUuid === containerUuid
       })
-      if (data) {
-        return data
-      }
-      return {
+
+      return data || {
         containerUuid: containerUuid,
         record: [],
         recordCount: 0,
@@ -315,53 +317,40 @@ const data = {
       }
     },
     getDataRecordsList: (state, getters) => (containerUuid) => {
-      var data = getters.getDataRecordAndSelection(containerUuid)
-      return data.record
+      return getters.getDataRecordAndSelection(containerUuid).record
     },
     getDataRecordCount: (state, getters) => (containerUuid) => {
-      var data = getters.getDataRecordAndSelection(containerUuid)
-      if (data.recordCount === undefined) {
-        return data.record.length
-      }
-      return data.recordCount
+      return getters.getDataRecordAndSelection(containerUuid).recordCount
     },
     getPageNextToken: (state, getters) => (containerUuid) => {
-      var data = getters.getDataRecordAndSelection(containerUuid)
-      return data.nextPageToken
+      return getters.getDataRecordAndSelection(containerUuid).nextPageToken
     },
     getDataRecordSelection: (state, getters) => (containerUuid) => {
-      var selection = getters.getDataRecordAndSelection(containerUuid)
-      return selection.selection
+      return getters.getDataRecordAndSelection(containerUuid).selection
     },
     getPageNumber: (state, getters) => (containerUuid) => {
-      var data = getters.getDataRecordAndSelection(containerUuid)
-      return data.pageNumber
+      return getters.getDataRecordAndSelection(containerUuid).pageNumber
     },
     getRowData: (state, getters) => (containerUuid, recordUuid) => {
-      var data = getters.getDataRecordsList(containerUuid)
-      if (data) {
-        var row = data.find(itemData => {
-          if (itemData.UUID === recordUuid) {
-            return true
-          }
-        })
-        return row
-      }
-      return undefined
-    },
-    getRecordDetail: (state) => (parameters) => {
-      var data = state.recordDetail.find(itemData => {
-        if (itemData.uuid === parameters.recordUuid) {
+      return getters.getDataRecordsList(containerUuid).find(itemData => {
+        if (itemData.UUID === recordUuid) {
           return true
         }
       })
-      if (data) {
-        return data.data
-      }
-      return {}
+    },
+    /**
+     * @returns {object}
+     */
+    getRecordDetail: (state) => (parameters) => {
+      return state.recordDetail.find(itemData => {
+        if (itemData.uuid === parameters.recordUuid) {
+          return true
+        }
+      }) || {}
     },
     /**
      * Getter converter selection data record in format
+     * @param {string} containerUuid
      * [
      *  {
      *    selectionId: keyColumn Value,
@@ -409,10 +398,9 @@ const data = {
       return state.recentItems
     },
     getLanguageList: (state) => (roleUuid) => {
-      var languageList = state.recordSelection.find(
+      return state.recordSelection.find(
         record => record.containerUuid === roleUuid
-      )
-      return languageList || []
+      ) || []
     }
   }
 }

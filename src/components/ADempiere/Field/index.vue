@@ -95,8 +95,7 @@ export default {
   },
   data() {
     return {
-      field: {},
-      optionCRUD: this.$route.query.action
+      field: {}
     }
   },
   computed: {
@@ -191,7 +190,7 @@ export default {
       var isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
 
       // edit mode is diferent to create new
-      var editMode = (!this.inTable && this.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
+      var editMode = (!this.inTable && this.field.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
       var isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && editMode) ||
         ((isUpdateableAllFields || this.field.isReadOnlyFromForm) && this.panelType !== 'browser') // logic to window, report and process
 

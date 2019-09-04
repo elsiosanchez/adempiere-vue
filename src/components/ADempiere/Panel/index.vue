@@ -37,6 +37,7 @@
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
+                      optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                       value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :is-load-record="isLoadRecord"
@@ -85,6 +86,7 @@
                         :container-uuid="containerUuid"
                         :metadata-field="{
                           ...subItem,
+                          optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                           value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                         }"
                         :is-load-record="isLoadRecord"
@@ -209,6 +211,7 @@ export default {
         this.generatePanel(this.getterFieldList)
       }
     },
+    // used only panel modal (process associated in browser or window)
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     },

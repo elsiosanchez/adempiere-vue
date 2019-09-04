@@ -80,9 +80,6 @@ export default {
     setPemantLink(tabHTML) {
       this.$route.params.tabNumber = tabHTML.name
       this.currentTab = this.$route.params.tabNumber
-      /* this.$router.replace({
-        params: { tabNumber: tabHTML.name }
-      })*/
       this.$router.push({
         name: this.$route.name,
         query: {

@@ -24,7 +24,7 @@ const lookup = {
         getLookup(objectParams, objectParams.value)
           .then(response => {
             const map = response.getValuesMap()
-            var option = {
+            const option = {
               label: convertValue(map.get('DisplayColumn')),
               key: convertValue(map.get('KeyColumn'))
             }
@@ -81,13 +81,13 @@ const lookup = {
       })
     },
     deleteLookupList({ commit, state }, params) {
-      var lookupItem = state.lookupItem.filter(itemLookup => {
+      const lookupItem = state.lookupItem.filter(itemLookup => {
         return itemLookup.parsedDirectQuery !== params.parsedDirectQuery &&
         itemLookup.tableName !== params.tableName &&
         itemLookup.roleUuid !== getCurrentRole() &&
         itemLookup.value !== params.value
       })
-      var lookupList = state.lookupList.filter(itemLookup => {
+      const lookupList = state.lookupList.filter(itemLookup => {
         return itemLookup.parsedQuery !== params.parsedQuery &&
         itemLookup.tableName !== params.tableName &&
         itemLookup.roleUuid !== getCurrentRole()
@@ -115,7 +115,7 @@ const lookup = {
       const clientId = rootGetters.getContext({
         columnName: '#AD_Client_ID'
       })
-      var lookup = state.lookupList.find(itemLookup => {
+      const lookup = state.lookupList.find(itemLookup => {
         return itemLookup.parsedQuery === params.parsedQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&

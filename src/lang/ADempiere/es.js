@@ -89,7 +89,7 @@ export default {
     dialogConfirmButton: 'Confirmar',
     filterableItems: 'Columna opcionales',
     fixedleItems: 'Columna Fijas',
-    resetAllFilters: 'Reiniciar todos los filtors',
+    resetAllFilters: 'Reiniciar todos los filtros',
     switchActiveText: 'Si',
     switchInactiveText: 'No'
   },

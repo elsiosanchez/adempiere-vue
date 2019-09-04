@@ -17,15 +17,15 @@ const browser = {
     }
   },
   actions: {
-    getBrowserFromServer: ({ commit, dispatch, rootGetters }, browserUuid) => {
+    getBrowserFromServer: ({ commit, dispatch }, browserUuid) => {
       return new Promise((resolve, reject) => {
         getBrowserFromDictionary(browserUuid)
           .then(response => {
-            var panelType = 'browser'
+            const panelType = 'browser'
             var fieldsList = response.getFieldsList()
-            var query = response.getQuery()
-            var whereClause = response.getWhereclause()
-            var additionalAttributes = {
+            const query = response.getQuery()
+            const whereClause = response.getWhereclause()
+            const additionalAttributes = {
               browserUuid: response.getUuid(),
               browserId: response.getId(),
               parentUuid: response.getUuid(),
@@ -60,6 +60,7 @@ const browser = {
                 field.isShowedFromUser = true
               }
 
+              // TODO: Evaluate if not change when iterate
               isMandatoryParams = field.isMandatory
               return field
             })
@@ -89,9 +90,7 @@ const browser = {
               description: response.getDescription(),
               help: response.getHelp(),
               query: query,
-              parsedQuery: query,
               whereClause: whereClause,
-              parsedWhereClause: whereClause,
               orderByClause: response.getOrderbyclause(),
               isUpdateable: response.getIsupdateable(),
               isDeleteable: response.getIsdeleteable(),
@@ -150,22 +149,18 @@ const browser = {
           })
       })
     },
-    changeShowedCriteriaBrowser: ({ commit, state }, params) => {
-      var browser = state.browser.find(item => {
-        return item.uuid === params.containerUuid
-      })
+    changeShowedCriteriaBrowser: ({ commit, state, getters }, parameters) => {
       commit('changeShowedCriteriaBrowser', {
-        browser: browser,
-        changeShowedCriteria: params.isShowedCriteria
+        browser: getters.getBrowser(parameters.containerUuid),
+        changeShowedCriteria: parameters.isShowedCriteria
       })
     }
   },
   getters: {
     getBrowser: (state) => (browserUuid) => {
-      var browser = state.browser.find(
+      return state.browser.find(
         item => item.uuid === browserUuid
       )
-      return browser
     }
   }
 }

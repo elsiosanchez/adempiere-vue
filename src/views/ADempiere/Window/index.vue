@@ -121,7 +121,6 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
-// import { Multipane, MultipaneResizer } from 'vue-multipane'
 import splitPane from 'vue-splitpane'
 
 export default {
@@ -131,8 +130,6 @@ export default {
     TabChildren,
     ContextMenu,
     DataTable,
-    // Multipane,
-    // MultipaneResizer,
     splitPane,
     ModalDialog
   },
@@ -142,6 +139,7 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
+      isLoadingFromServer: false,
       listRecordNavigation: 0,
       isShowedTabChildren: true,
       isWindowType: '',
@@ -153,13 +151,32 @@ export default {
       return this.$store.state.app.device === 'mobile'
     },
     getterIsShowedRecordNavigation() {
-      if (this.panelType === 'window') {
-        return this.$store.getters.getIsShowedRecordNavigation(this.windowUuid)
-      }
-      return false
+      return this.$store.getters.getIsShowedRecordNavigation(this.windowUuid)
     },
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
+    },
+    getterRecordList() {
+      return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
+    }
+  },
+  watch: {
+    isShowedRecordNavigation(value) {
+      this.changeShowedRecordNavigation()
+    },
+    isLoadingFromServer(value) {
+      if (value) {
+        this.windowMetadata = this.getterWindow
+        this.listRecordNavigation = this.getterRecordList
+        if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
+          this.isShowedRecordNavigation = true
+        } else if (this.windowMetadata.windowType === 'T') {
+          this.isShowedRecordNavigation = false
+        }
+
+        this.isShowedTabChildren = this.windowMetadata.isShowedDetail
+        this.isLoading = true
+      }
     }
   },
   mounted() {
@@ -176,26 +193,12 @@ export default {
     },
     //
     getWindow() {
-      var window = this.getterWindow
-      if (window) {
-        this.windowMetadata = window
-        this.windowMetadata.panelType = this.panelType
-        this.listRecordNavigation = this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
-        if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
-          this.isShowedRecordNavigation = true
-        } else if (this.windowMetadata.windowType === 'T') {
-          this.isShowedRecordNavigation = false
-        }
-        this.isShowedTabChildren = this.windowMetadata.isShowedDetail
-        this.isLoading = true
+      if (this.getterWindow) {
+        this.isLoadingFromServer = true
       } else {
         this.$store.dispatch('getWindowFromServer', this.windowUuid)
           .then(response => {
-            this.windowMetadata = response
-            this.windowMetadata.panelType = this.panelType
-            this.isShowedRecordNavigation = this.isShowedRecordNavigation
-            this.isShowedTabChildren = this.windowMetadata.isShowedDetail
-            this.isLoading = true
+            this.isLoadingFromServer = true
           })
           .catch(error => {
             this.isLoading = true

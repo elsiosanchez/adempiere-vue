@@ -20,8 +20,7 @@ const window = {
       payload.window.isShowedDetail = payload.changeShowedDetail
     },
     changeShowedRecordWindow(state, payload) {
-      payload.tab.isShowedRecordNavigation = payload.isShowedRecordNavigation
-      payload.window.currentTab.isShowedRecordNavigation = payload.isShowedRecordNavigation
+      payload.window.isShowedRecordNavigation = payload.isShowedRecordNavigation
     },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
@@ -163,7 +162,7 @@ const window = {
       return new Promise((resolve, reject) => {
         getTabfromDictionary(objectParams.containerUuid)
           .then(response => {
-            var panelType = 'window'
+            const panelType = 'window'
             var fieldsList = response.getFieldsList()
             var additionalAttributes = {
               parentUuid: objectParams.parentUuid,
@@ -244,48 +243,42 @@ const window = {
       var window = state.window.find(itemWindow => {
         return itemWindow.uuid === params.parentUuid
       })
-      if (window) {
-        var tab = window.tabsList.find(item => item.uuid === params.containerUuid)
-        commit('changeShowedRecordWindow', {
-          window: window,
-          tab: tab,
-          isShowedRecordNavigation: params.isShowedRecordNavigation
-        })
-      }
+      commit('changeShowedRecordWindow', {
+        window: window,
+        isShowedRecordNavigation: params.isShowedRecordNavigation
+      })
     },
     /**
      * @param {string} params.parentUuid
      * @param {string} params.containerUuid
      */
-    setCurrentTab: ({ commit, state }, params) => {
-      var window = state.window.find(item => item.uuid === params.parentUuid)
+    setCurrentTab: ({ commit, getters }, params) => {
+      // var window = state.window.find(item => item.uuid === params.parentUuid)
       commit('setCurrentTab', {
-        window: window,
+        window: getters.getWindow(params.parentUuid),
         tabUuid: params.containerUuid
       })
     }
   },
   getters: {
     getWindow: (state) => (windowUuid) => {
-      var window = state.window.find(
+      return state.window.find(
         item => item.uuid === windowUuid
       )
-      return window
     },
     getIsShowedRecordNavigation: (state, getters) => (windowUuid) => {
       var window = getters.getWindow(windowUuid)
-      if (window) {
-        return window.currentTab.isShowedRecordNavigation
+      if (window.hasOwnProperty('isShowedRecordNavigation')) {
+        return window.isShowedRecordNavigation
       }
-      return false
+      return undefined
     },
     getTab: (state, getters) => (windowUuid, tabUuid) => {
-      var window = getters.getWindow(windowUuid)
+      const window = getters.getWindow(windowUuid)
       if (window) {
-        var tab = window.tabsList.find(tabItem => {
+        return window.tabsList.find(tabItem => {
           return tabItem.uuid === tabUuid
         })
-        return tab
       }
       return window
     }

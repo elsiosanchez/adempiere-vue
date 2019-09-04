@@ -42,7 +42,7 @@ const utils = {
       return state.height
     },
     setSplitHeight: (state) => () => {
-      var split = state.splitHeight
+      const split = state.splitHeight
       var panelHeight = 0
       if (split !== 160) {
         panelHeight = split.splitHeight

@@ -14,9 +14,9 @@ const browserControl = {
 
       return new Promise((resolve, reject) => {
         // parameters isQueryCriteria
-        var finalParameters = rootGetters.getParametersProcessToServer(parameters.containerUuid)
-        var browser = rootGetters.getBrowser(parameters.containerUuid)
-        var parsedQuery = parseContext({
+        const finalParameters = rootGetters.getParametersProcessToServer(parameters.containerUuid)
+        const browser = rootGetters.getBrowser(parameters.containerUuid)
+        const parsedQuery = parseContext({
           parentUuid: parameters.containerUuid,
           containerUuid: parameters.containerUuid,
           value: browser.query
@@ -36,19 +36,18 @@ const browserControl = {
           nextPageToken = allData.nextPageToken + '-' + allData.pageNumber
         }
 
-        var browserSearchQueryParameters = {
+        // Add validation compare browserSearchQueryParameters
+        getBrowserSearch({
           uuid: parameters.containerUuid,
           query: parsedQuery,
           whereClause: parsedWhereClause,
           orderByClause: browser.orderByClause,
           parameters: finalParameters.params,
           nextPageToken: nextPageToken
-        }
-        // Add validation compare browserSearchQueryParameters
-        getBrowserSearch(browserSearchQueryParameters)
+        })
           .then(response => {
             const recordList = response.getRecordsList()
-            var record = recordList.map(itemRecord => {
+            const record = recordList.map(itemRecord => {
               var values = convertValuesMapToObject(itemRecord.getValuesMap())
 
               // datatables attribute
@@ -67,12 +66,10 @@ const browserControl = {
               token = token.slice(0, -2)
             }
 
-            var pageNumber = rootGetters.getPageNumber(parameters.containerUuid)
-
             dispatch('recordSelection', {
               containerUuid: parameters.containerUuid,
               record: record,
-              pageNumber: pageNumber,
+              pageNumber: rootGetters.getPageNumber(parameters.containerUuid),
               selection: selection,
               recordCount: response.getRecordcount(),
               nextPageToken: token

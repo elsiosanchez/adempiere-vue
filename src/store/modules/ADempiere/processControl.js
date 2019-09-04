@@ -51,7 +51,7 @@ const processControl = {
       } else {
         reportExportType = params.action.reportExportType
       }
-      var finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
+      const finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
 
       var selection = []
       var tableName, recordId
