@@ -104,7 +104,7 @@ export default {
       return () => import(`@/components/ADempiere/${this.field.componentPath}/`)
     },
     getWidth() {
-      return this.$store.getters.getWidth
+      return this.$store.getters.getWidthLayout
     },
     classField() {
       if (this.inTable) {
