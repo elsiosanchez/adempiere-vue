@@ -302,7 +302,7 @@ export default {
       return false
     },
     getHeightPanelBottom() {
-      return this.$store.getters.setSplitHeight()
+      return this.$store.getters.getSplitHeight
     },
     getterHeight() {
       return this.$store.getters.getHeigth

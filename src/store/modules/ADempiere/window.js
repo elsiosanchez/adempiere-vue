@@ -104,7 +104,7 @@ const window = {
                   uuidParent: newWindow.uuid
                 }
               )
-              var processList = tabItem.getProcessesList().map(processItem => {
+              const processList = tabItem.getProcessesList().map(processItem => {
                 return {
                   name: processItem.getName(),
                   type: 'process',
@@ -120,13 +120,12 @@ const window = {
               actions = actions.concat(processList)
 
               //  Add process menu
-              var contextMenu = {
+              dispatch('setContextMenu', {
                 containerUuid: tab.uuid,
                 relations: [],
                 actions: actions,
                 references: []
-              }
-              dispatch('setContextMenu', contextMenu)
+              })
 
               if (tab.parentTab) {
                 parentTabs.push(tab)
@@ -250,14 +249,13 @@ const window = {
       })
     },
     /**
-     * @param {string} params.parentUuid
-     * @param {string} params.containerUuid
+     * @param {string} parameters.parentUuid
+     * @param {string} parameters.containerUuid
      */
-    setCurrentTab: ({ commit, getters }, params) => {
-      // var window = state.window.find(item => item.uuid === params.parentUuid)
+    setCurrentTab: ({ commit, getters }, parameters) => {
       commit('setCurrentTab', {
-        window: getters.getWindow(params.parentUuid),
-        tabUuid: params.containerUuid
+        window: getters.getWindow(parameters.parentUuid),
+        tabUuid: parameters.containerUuid
       })
     }
   },

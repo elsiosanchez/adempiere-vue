@@ -146,7 +146,7 @@ export default {
       listRecordNavigation: 0,
       isShowedTabChildren: true,
       isWindowType: '',
-      isShowedRecordNavigation: false // this.$store.getters.getIsShowedRecordNavigation(this.$route.meta.uuid)
+      isShowedRecordNavigation: false
     }
   },
   computed: {
@@ -170,11 +170,15 @@ export default {
     isLoadingFromServer(value) {
       if (value) {
         this.windowMetadata = this.getterWindow
-        this.listRecordNavigation = this.getterRecordList
-        if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
-          this.isShowedRecordNavigation = true
-        } else if (this.windowMetadata.windowType === 'T') {
-          this.isShowedRecordNavigation = false
+        if (this.getterIsShowedRecordNavigation === undefined) {
+          this.listRecordNavigation = this.getterRecordList
+          if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
+            this.isShowedRecordNavigation = true
+          } else if (this.windowMetadata.windowType === 'T') {
+            this.isShowedRecordNavigation = false
+          }
+        } else {
+          this.isShowedRecordNavigation = this.getterIsShowedRecordNavigation
         }
 
         this.isShowedTabChildren = this.windowMetadata.isShowedDetail
