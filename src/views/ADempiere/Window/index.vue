@@ -1,8 +1,5 @@
 <template>
   <div v-if="isLoading">
-    <!-- getter {{ getterIsShowedRecordNavigation }} <br> -->
-    getter {{ getterWindow.isShowedRecordNavigation }} <br>
-    metadata {{ windowMetadata.isShowedRecordNavigation }}
     <el-container style="height: 86vh;">
       <el-main>
         <split-pane :min-percent="10" :default-percent="isMobile ? (isShowedRecordNavigation ? 100 : 0) : (isShowedRecordNavigation ? 50 : 0)" split="vertical">
@@ -145,7 +142,6 @@ export default {
       isLoadingFromServer: false,
       listRecordNavigation: 0,
       isShowedTabChildren: true,
-      isWindowType: '',
       isShowedRecordNavigation: false
     }
   },
