@@ -20,8 +20,7 @@ const window = {
       payload.window.isShowedDetail = payload.changeShowedDetail
     },
     changeShowedRecordWindow(state, payload) {
-      payload.tab.isShowedRecordNavigation = payload.isShowedRecordNavigation
-      payload.window.currentTab.isShowedRecordNavigation = payload.isShowedRecordNavigation
+      payload.window.isShowedRecordNavigation = payload.isShowedRecordNavigation
     },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
@@ -37,7 +36,8 @@ const window = {
               uuid: windowUuid,
               name: response.getName(),
               contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
-              windowType: response.getWindowtype()
+              windowType: response.getWindowtype(),
+              isShowedRecordNavigation: undefined
             }
             var tabs = response.getTabsList()
             var firstTab = tabs[0].getTablename()
@@ -104,7 +104,7 @@ const window = {
                   uuidParent: newWindow.uuid
                 }
               )
-              var processList = tabItem.getProcessesList().map(processItem => {
+              const processList = tabItem.getProcessesList().map(processItem => {
                 return {
                   name: processItem.getName(),
                   type: 'process',
@@ -120,13 +120,12 @@ const window = {
               actions = actions.concat(processList)
 
               //  Add process menu
-              var contextMenu = {
+              dispatch('setContextMenu', {
                 containerUuid: tab.uuid,
                 relations: [],
                 actions: actions,
                 references: []
-              }
-              dispatch('setContextMenu', contextMenu)
+              })
 
               if (tab.parentTab) {
                 parentTabs.push(tab)
@@ -163,7 +162,7 @@ const window = {
       return new Promise((resolve, reject) => {
         getTabfromDictionary(objectParams.containerUuid)
           .then(response => {
-            var panelType = 'window'
+            const panelType = 'window'
             var fieldsList = response.getFieldsList()
             var additionalAttributes = {
               parentUuid: objectParams.parentUuid,
@@ -244,48 +243,37 @@ const window = {
       var window = state.window.find(itemWindow => {
         return itemWindow.uuid === params.parentUuid
       })
-      if (window) {
-        var tab = window.tabsList.find(item => item.uuid === params.containerUuid)
-        commit('changeShowedRecordWindow', {
-          window: window,
-          tab: tab,
-          isShowedRecordNavigation: params.isShowedRecordNavigation
-        })
-      }
+      commit('changeShowedRecordWindow', {
+        window: window,
+        isShowedRecordNavigation: params.isShowedRecordNavigation
+      })
     },
     /**
-     * @param {string} params.parentUuid
-     * @param {string} params.containerUuid
+     * @param {string} parameters.parentUuid
+     * @param {string} parameters.containerUuid
      */
-    setCurrentTab: ({ commit, state }, params) => {
-      var window = state.window.find(item => item.uuid === params.parentUuid)
+    setCurrentTab: ({ commit, getters }, parameters) => {
       commit('setCurrentTab', {
-        window: window,
-        tabUuid: params.containerUuid
+        window: getters.getWindow(parameters.parentUuid),
+        tabUuid: parameters.containerUuid
       })
     }
   },
   getters: {
     getWindow: (state) => (windowUuid) => {
-      var window = state.window.find(
+      return state.window.find(
         item => item.uuid === windowUuid
       )
-      return window
     },
     getIsShowedRecordNavigation: (state, getters) => (windowUuid) => {
-      var window = getters.getWindow(windowUuid)
-      if (window) {
-        return window.currentTab.isShowedRecordNavigation
-      }
-      return false
+      return getters.getWindow(windowUuid).isShowedRecordNavigation
     },
     getTab: (state, getters) => (windowUuid, tabUuid) => {
-      var window = getters.getWindow(windowUuid)
+      const window = getters.getWindow(windowUuid)
       if (window) {
-        var tab = window.tabsList.find(tabItem => {
+        return window.tabsList.find(tabItem => {
           return tabItem.uuid === tabUuid
         })
-        return tab
       }
       return window
     }

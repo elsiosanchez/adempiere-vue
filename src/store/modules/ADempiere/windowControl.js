@@ -30,7 +30,7 @@ const windowControl = {
   },
   actions: {
     resetPanelToNew({ dispatch, rootGetters }, parameters) {
-      var defaultAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
+      const defaultAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
 
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
@@ -39,7 +39,7 @@ const windowControl = {
       })
     },
     undoPanelToNew({ dispatch, rootGetters }, parameters) {
-      var oldAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'oldValue', true)
+      const oldAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'oldValue', true)
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
         newValues: oldAttributes
@@ -111,7 +111,7 @@ const windowControl = {
         var panel = rootGetters.getPanel(parameters.containerUuid)
 
         // TODO: Add support to Binary columns (BinaryData)
-        var columnsToDontSend = ['BinaryData']
+        const columnsToDontSend = ['BinaryData']
 
         // attributes or fields
         var finalAttributes = convertObjectToArrayPairs(parameters.row)
@@ -159,11 +159,11 @@ const windowControl = {
     },
     updateCurrentEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
-        var panel = rootGetters.getPanel(parameters.containerUuid)
-        var recordUuid = rootGetters.getUuid(parameters.containerUuid)
+        const panel = rootGetters.getPanel(parameters.containerUuid)
+        const recordUuid = rootGetters.getUuid(parameters.containerUuid)
 
         // TODO: Add support to Binary columns (BinaryData)
-        var columnsToDontSend = ['BinaryData']
+        const columnsToDontSend = ['BinaryData']
 
         // attributes or fields
         var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid) //, 'oldValue')
@@ -201,10 +201,10 @@ const windowControl = {
       })
     },
     updateCurrentEntityFromTable({ commit, dispatch, rootGetters }, parameters) {
-      var panel = rootGetters.getPanel(parameters.containerUuid)
+      const panel = rootGetters.getPanel(parameters.containerUuid)
 
       // TODO: Add support to Binary columns (BinaryData)
-      var columnsToDontSend = ['BinaryData']
+      const columnsToDontSend = ['BinaryData']
 
       // attributes or fields
       var finalAttributes = convertObjectToArrayPairs(parameters.row)
@@ -382,7 +382,7 @@ const windowControl = {
      */
     getReferencesListFromServer({ commit, rootGetters }, parameters) {
       // TODO: check if you get better performance search only the window and get the current tab
-      var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
       return new Promise((resolve, reject) => {
         getReferencesList({
           windowUuid: parameters.parentUuid,

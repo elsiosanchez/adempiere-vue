@@ -121,7 +121,6 @@ import TabChildren from '@/components/ADempiere/Tab/tabChildren'
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
-// import { Multipane, MultipaneResizer } from 'vue-multipane'
 import splitPane from 'vue-splitpane'
 
 export default {
@@ -131,8 +130,6 @@ export default {
     TabChildren,
     ContextMenu,
     DataTable,
-    // Multipane,
-    // MultipaneResizer,
     splitPane,
     ModalDialog
   },
@@ -142,10 +139,10 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
+      isLoadingFromServer: false,
       listRecordNavigation: 0,
       isShowedTabChildren: true,
-      isWindowType: '',
-      isShowedRecordNavigation: this.$store.getters.getIsShowedRecordNavigation(this.$route.meta.uuid)
+      isShowedRecordNavigation: false
     }
   },
   computed: {
@@ -153,18 +150,40 @@ export default {
       return this.$store.state.app.device === 'mobile'
     },
     getterIsShowedRecordNavigation() {
-      if (this.panelType === 'window') {
-        return this.$store.getters.getIsShowedRecordNavigation(this.windowUuid)
-      }
-      return false
+      return this.$store.getters.getIsShowedRecordNavigation(this.windowUuid)
     },
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
+    },
+    getterRecordList() {
+      return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
+    }
+  },
+  watch: {
+    isShowedRecordNavigation(value) {
+      this.changeShowedRecordNavigation()
+    },
+    isLoadingFromServer(value) {
+      if (value) {
+        this.windowMetadata = this.getterWindow
+        if (this.getterIsShowedRecordNavigation === undefined) {
+          this.listRecordNavigation = this.getterRecordList
+          if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
+            this.isShowedRecordNavigation = true
+          } else if (this.windowMetadata.windowType === 'T') {
+            this.isShowedRecordNavigation = false
+          }
+        } else {
+          this.isShowedRecordNavigation = this.getterIsShowedRecordNavigation
+        }
+
+        this.isShowedTabChildren = this.windowMetadata.isShowedDetail
+        this.isLoading = true
+      }
     }
   },
   mounted() {
     this.getWindow()
-    this.checkShowedRecordNavigation()
   },
   methods: {
     // callback new size
@@ -174,28 +193,14 @@ export default {
         splitHeight: bottomPanel
       })
     },
-    //
+    // get window from vuex store or server
     getWindow() {
-      var window = this.getterWindow
-      if (window) {
-        this.windowMetadata = window
-        this.windowMetadata.panelType = this.panelType
-        this.listRecordNavigation = this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
-        if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
-          this.isShowedRecordNavigation = true
-        } else if (this.windowMetadata.windowType === 'T') {
-          this.isShowedRecordNavigation = false
-        }
-        this.isShowedTabChildren = this.windowMetadata.isShowedDetail
-        this.isLoading = true
+      if (this.getterWindow) {
+        this.isLoadingFromServer = true
       } else {
         this.$store.dispatch('getWindowFromServer', this.windowUuid)
           .then(response => {
-            this.windowMetadata = response
-            this.windowMetadata.panelType = this.panelType
-            this.isShowedRecordNavigation = this.isShowedRecordNavigation
-            this.isShowedTabChildren = this.windowMetadata.isShowedDetail
-            this.isLoading = true
+            this.isLoadingFromServer = true
           })
           .catch(error => {
             this.isLoading = true
@@ -203,21 +208,15 @@ export default {
           })
       }
     },
-    handleChangeShowedRecordNavigation() {
-      var appMainWidth
+    handleChangeShowedRecordNavigation(value) {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
+    },
+    changeShowedRecordNavigation() {
       this.$store.dispatch('changeShowedRecordWindow', {
         parentUuid: this.windowUuid,
         containerUuid: this.windowMetadata.currentTab.uuid, // act as parentUuid
         isShowedRecordNavigation: this.isShowedRecordNavigation
       })
-      if (this.isShowedRecordNavigation) {
-        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
-        this.$store.dispatch('setWidth', appMainWidth)
-      } else {
-        appMainWidth = document.getElementById('appMain').clientWidth
-        this.$store.dispatch('setWidth', appMainWidth)
-      }
     },
     handleChangeShowedTabChildren() {
       this.isShowedTabChildren = !this.isShowedTabChildren
@@ -226,16 +225,6 @@ export default {
         containerUuid: this.windowUuid, // act as parentUuid
         isShowedDetail: this.isShowedTabChildren
       })
-    },
-    checkShowedRecordNavigation() {
-      var appMainWidth
-      if (this.isShowedRecordNavigation) {
-        appMainWidth = (document.getElementById('appMain').clientWidth / 2)
-        this.$store.dispatch('setWidth', appMainWidth)
-      } else {
-        appMainWidth = document.getElementById('appMain').clientWidth
-        this.$store.dispatch('setWidth', appMainWidth)
-      }
     }
   }
 }

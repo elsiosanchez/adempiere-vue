@@ -301,10 +301,10 @@ export default {
       return false
     },
     getHeightPanelBottom() {
-      return this.$store.getters.setSplitHeight()
+      return this.$store.getters.getSplitHeight
     },
     getterHeight() {
-      return this.$store.getters.getHeigth()
+      return this.$store.getters.getHeigth
     },
     getHeigthTable() {
       if (this.panelType === 'window') {

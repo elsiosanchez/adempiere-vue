@@ -23,8 +23,8 @@ const process = {
             if (response.getIsreport()) {
               panelType = 'report'
             }
-            var parameterList = response.getParametersList()
-            var additionalAttributes = {
+
+            const additionalAttributes = {
               processUuid: response.getUuid(),
               processId: response.getId(),
               parentUuid: response.getUuid(),
@@ -34,7 +34,7 @@ const process = {
 
             //  Convert from gRPC
             var fieldsRangeList = []
-            var fieldDefinitionList = parameterList.map((fieldItem, index) => {
+            var fieldDefinitionList = response.getParametersList().map((fieldItem, index) => {
               var someAttributes = {
                 ...additionalAttributes,
                 fieldListIndex: index
@@ -121,7 +121,8 @@ const process = {
               isDirectPrint: response.getIsdirectprint()
             }
             reportExportTypeList.forEach(actionValue => {
-              var action = {
+              //  Push values
+              summaryAction.childs.push({
                 name: language.t('components.ExportTo') + ' (' + actionValue.name + ')',
                 processName: response.getName(),
                 type: 'action',
@@ -135,9 +136,7 @@ const process = {
                 showHelp: response.getShowhelp(),
                 isDirectPrint: response.getIsdirectprint(),
                 reportExportType: actionValue.reportExportType
-              }
-              //  Push values
-              summaryAction.childs.push(action)
+              })
             })
             //  Add summary Actions
             actions.push(summaryAction)
@@ -158,16 +157,17 @@ const process = {
               panelType: panelType,
               fieldList: fieldDefinitionList
             }
+
+            dispatch('addPanel', processDefinition)
+            commit('addProcess', processDefinition)
+
             //  Add process menu
-            var contextMenu = {
+            dispatch('setContextMenu', {
               containerUuid: response.getUuid(),
               relations: [],
               actions: actions,
               references: []
-            }
-            dispatch('addPanel', processDefinition)
-            commit('addProcess', processDefinition)
-            dispatch('setContextMenu', contextMenu)
+            })
             resolve(processDefinition)
           })
           .catch(error => {
@@ -179,16 +179,14 @@ const process = {
   },
   getters: {
     getProcess: (state) => (processUuid) => {
-      var process = state.process.find(
+      return state.process.find(
         item => item.uuid === processUuid
       )
-      return process
     },
     getProcessById: (state) => (processId) => {
-      var process = state.process.find(
+      return state.process.find(
         item => item.id === parseInt(processId)
       )
-      return process
     }
   }
 }

@@ -87,7 +87,7 @@ class evaluator {
     if (logic === undefined) {
       return _defaultUndefined
     }
-    var expr = /^(['"@a-zA-Z0-9\-_\s]){0,}((!*= {1})|(!{1})|(<{1})|(>{1}))([\s"'@a-zA-Z0-9\-_]){0,}$/i
+    var expr = /^(['"@a-zA-Z0-9\-_\s]){0,}((!*={1})|(!{1})|(<{1})|(>{1}))([\s"'@a-zA-Z0-9\-_]){0,}$/i
     var st = expr.test(logic)
 
     if (!st) {
