@@ -146,6 +146,15 @@ export default {
           rowKey: this.metadata.rowKey,
           panelType: this.metadata.panelType
         })
+      } else if (this.metadata.panelType === 'table') {
+        this.$store.dispatch('notifyFieldChange', {
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          columnName: this.metadata.columnName,
+          newValue: this.value,
+          isDontSendToEdit: false,
+          panelType: this.metadata.panelType
+        })
       } else {
         this.$store.dispatch('notifyFieldChange', {
           parentUuid: this.metadata.parentUuid,

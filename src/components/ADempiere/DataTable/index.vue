@@ -1,121 +1,116 @@
 <template>
   <el-form v-if="isLoadPanel" label-position="top">
-    <div class="table-root">
-      <div>
-        <!-- <icon-element icon="el-icon-search">
-          <el-input
-            v-model="searchTable"
-            size="mini"
-            :placeholder="$t('table.dataTable.search')"
-            class="header-search-input"
-            clearable
-          />
-        </icon-element> -->
-        <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-more" />
-            </template>
-            <el-menu-item index="optional" @click="optionalPanel()">
-              {{ $t('components.filterableItems') }}
-            </el-menu-item>
-            <el-menu-item index="fixed" @click="fixedPanel()">
-              {{ $t('components.fixedleItems') }}
-            </el-menu-item>
-            <el-menu-item
-              v-if="panelType === 'window'"
-              :disabled="getDataSelection.length < 1"
-              index="delete"
-              @click="deleteSelection()"
-            >
-              {{ $t('table.dataTable.deleteSelection') }}
-            </el-menu-item>
-            <el-menu-item
-              v-if="!isParent && panelType === 'window'"
-              :disabled="inEdited.length > 0 || (!isParent && $route.query.action === 'create-new')"
-              index="new"
-              @click="addNewRow()"
-            >
-              {{ $t('window.newRecord') }}
-            </el-menu-item>
-          </el-submenu>
-        </el-menu>
-        <icon-element v-show="isFixed && !isMobile" icon="el-icon-news">
-          <fixed-columns
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-            class="header-search-input"
-          />
-        </icon-element>
-        <filter-columns
-          v-show="isOptional"
-          :container-uuid="containerUuid"
-          :panel-type="panelType"
-          class="fiel-optional"
-        />
-        <el-button
-          v-show="isParent && panelType === 'window' && !isMobile"
-          type="text"
-          icon="el-icon-search"
-          style="color: black;font-size: 17px;font-weight: 605!important;float: right;padding-top: 25px;"
-          @click="searchRecordNavegation()"
-        />
-        <transition name="el-fade-in-linear">
-          <div v-show="showSearch && !isMobile" style="display: flex;width: 25%;float: right;padding-top: 20px;">
-            <el-input
-              v-model="searchTable"
-              size="mini"
-              :placeholder="$t('table.dataTable.search')"
-              clearable
-            />
-          </div>
-        </transition>
-        <!-- <div class="icon-mobile" :style="isMobile ? { height:'20px', display: 'flex', float: 'right' } : { height:'20px', display: 'flex', padding_top: '19px', float: 'right' }">
-          <icon-element v-show="isParent && panelType === 'window' && isMobile" icon="el-icon-news" style="cursor: pointer;font-size: 18px;margin-top: 0px;color: #000;vertical-align: middle;" @click="searchRecordNavegation()">
+    <el-header height="60px" class="header-table-records">
+      <div class="table-root">
+        <div v-if="!isMobile">
+          <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="el-icon-more" />
+              </template>
+              <el-menu-item index="optional" @click="optionalPanel()">
+                {{ $t('components.filterableItems') }}
+              </el-menu-item>
+              <el-menu-item index="fixed" @click="fixedPanel()">
+                {{ $t('components.fixedleItems') }}
+              </el-menu-item>
+              <el-menu-item
+                v-if="panelType === 'window'"
+                :disabled="getDataSelection.length < 1"
+                index="delete"
+                @click="deleteSelection()"
+              >
+                {{ $t('table.dataTable.deleteSelection') }}
+              </el-menu-item>
+              <el-menu-item
+                v-if="!isParent && panelType === 'window'"
+                :disabled="inEdited.length > 0 || (!isParent && $route.query.action === 'create-new')"
+                index="new"
+                @click="addNewRow()"
+              >
+                {{ $t('window.newRecord') }}
+              </el-menu-item>
+              <el-menu-item
+                v-if="panelType === 'window'"
+                :disabled="getterTotalDataRecordCount <= 0"
+                index="avancedQuery"
+                @click="isAvancedQuery = !isAvancedQuery"
+              >
+                {{ $t('table.dataTable.avancedQuery') }}
+              </el-menu-item>
+            </el-submenu>
+          </el-menu>
+          <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
             <fixed-columns
               :container-uuid="containerUuid"
               :panel-type="panelType"
               class="header-search-input"
             />
           </icon-element>
-        </div> -->
-      </div>
-      <div v-if="isMobile" class="panel-expand">
-        <el-button
-          v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length > 0"
-          type="text"
-          icon="el-icon-delete"
-          style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
-          @click="deleteSelection()"
-        />
-        <icon-element icon="el-icon-news" style="padding-top: 0px;margin-top: -5px !important;">
-          <fixed-columns
-            v-show="!showSearch"
+          <filter-columns
+            v-if="isOptional"
             :container-uuid="containerUuid"
             :panel-type="panelType"
-            class="header-search-input"
+            class="field-optional"
           />
-        </icon-element>
-        <el-button
-          v-show="isParent && panelType === 'window'"
-          type="text"
-          icon="el-icon-search"
-          style="color: black;font-size: 17px;font-weight: 605!important;float: right;"
-          @click="searchRecordNavegation()"
-        />
-        <transition name="el-fade-in-linear">
-          <div v-show="showSearch">
+          <div :class="{'show':showTableSearch}" class="table-search">
+            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
             <el-input
+              ref="headerSearchSelect"
               v-model="searchTable"
               size="mini"
               :placeholder="$t('table.dataTable.search')"
+              class="header-search-select"
               clearable
             />
           </div>
-        </transition>
-        <!-- <i style="cursor: pointer;" :class="isExpand ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="expandPanel()" /> -->
+        </div>
+        <div v-else class="panel-expand">
+          <div :class="{'show':showTableSearch}" class="table-search">
+            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+            <el-input
+              ref="headerSearchSelect"
+              v-model="searchTable"
+              size="mini"
+              :placeholder="$t('table.dataTable.search')"
+              class="header-search-select-mobile"
+              clearable
+            />
+          </div>
+          <el-button
+            v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length > 0"
+            type="text"
+            icon="el-icon-delete"
+            style="color: black;font-size: 17px;font-weight: 605!important;"
+            @click="deleteSelection()"
+          />
+          <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
+            <fixed-columns
+              :container-uuid="containerUuid"
+              :panel-type="panelType"
+              class="header-search-input-mobile"
+            />
+          </icon-element>
+          <el-button
+            v-if="getterTotalDataRecordCount > 0"
+            type="text"
+            icon="el-icon-edit"
+            style="color: black;font-size: 17px;font-weight: 605!important;"
+            @click="isAvancedQuery = !isAvancedQuery"
+          />
+        </div>
       </div>
-    </div>
+    </el-header>
+    <el-collapse-transition>
+      <panel
+        v-if="isParent"
+        v-show="isAvancedQuery"
+        :container-uuid="containerUuid"
+        :metadata="getterPanel"
+        :panel-type="'table'"
+        :is-selection-column="true"
+      />
+    </el-collapse-transition>
     <el-table
       ref="multipleTable"
       fit
@@ -127,7 +122,7 @@
       highlight-current-row
       :reserve-selection="true"
       :row-style="rowStyle"
-      :data="showSearch ? filterResult() : getterDataRecords"
+      :data="showTableSearch ? filterResult() : getterDataRecords"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -209,6 +204,7 @@ import FilterColumns from '@/components/ADempiere/DataTable/filterColumns'
 import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
+import Panel from '@/components/ADempiere/Panel'
 
 export default {
   name: 'DataTable',
@@ -216,7 +212,8 @@ export default {
     Field,
     FilterColumns,
     FixedColumns,
-    IconElement
+    IconElement,
+    Panel
   },
   props: {
     parentUuid: {
@@ -269,7 +266,9 @@ export default {
       isExpand: false,
       currentPage: 1,
       inEdited: [],
-      uuidCurrentRecordSelected: ''
+      uuidCurrentRecordSelected: '',
+      showTableSearch: false,
+      isAvancedQuery: false
     }
   },
   computed: {
@@ -380,9 +379,6 @@ export default {
         return row['DisplayColumn_' + field.columnName] || row[field.columnName]
       }
     },
-    searchRecordNavegation() {
-      this.showSearch = !this.showSearch
-    },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
         containerUuid: this.containerUuid,
@@ -410,9 +406,11 @@ export default {
       return 'menu-table'
     },
     optionalPanel() {
+      this.showTableSearch = false
       this.isOptional = !this.isOptional
     },
     fixedPanel() {
+      this.showTableSearch = false
       this.isFixed = !this.isFixed
     },
     expandPanel() {
@@ -625,17 +623,27 @@ export default {
         pageNumber: newPage,
         panelType: this.panelType
       })
+    },
+    click() {
+      this.isOptional = false
+      this.showTableSearch = !this.showTableSearch
+      if (this.showTableSearch) {
+        this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
+      }
     }
   }
 }
 </script>
 
 <style>
+  .header-table-records {
+    padding: 0 !important;
+  }
   .el-table .cell {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     overflow: hidden;
-    max-height: 20px;
+    max-height: 25px;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-break: break-all;
@@ -658,22 +666,28 @@ export default {
     position: relative;
     text-align: left;
   }
-   /* .el-submenu {
-    float: right !important;
-  } */
+  .el-menu.el-menu--horizontal {
+    border-bottom: solid 0px transparent !important;
+  }
   .menu-table {
     width: 75px;
     float: right;
-    /* position: absolute;
-    bottom: 388px;
-    right: 9px; */
+    height: 39px !important;
   }
   .menu-table-mobile {
+    height: 39px !important;
     width: 35px;
     float: right;
-    /* position: absolute;
-    bottom: 388px;
-    right: 9px; */
+  }
+  ul.menu-table > .el-submenu {
+    height: 39px !important;
+    line-height: 39px !important;
+    padding: 0 10px;
+  }
+  ul.menu-table > .el-submenu > .el-submenu__title {
+    line-height: 39px !important;
+    height: 39px !important;
+    padding: 0;
   }
   .el-submenu__title {
     border-bottom: 0px !important;
@@ -681,14 +695,12 @@ export default {
   }
   .panel-expand {
     float: right;
-    padding-top: 2%;
     padding-right: 5%;
     display: flex;
   }
-  .fiel-optional {
-    width: 227px;
+  .field-optional {
+    margin: 3px 10px;
     float: right;
-    margin-top: 20px;
   }
 
   /* used in cell type number */
@@ -705,10 +717,6 @@ export default {
     cursor: pointer !important;
   }
 
-  // .menu-table-container {
-  //   max-height: 40px;
-  // }
-
   .table-root {
     padding-right: 0px;
     .table-footer {
@@ -716,6 +724,68 @@ export default {
       float: right;
       text-align: right;
       padding: 10px;
+    }
+  }
+  .table-search {
+    font-size: 0 !important;
+    float: right;
+    color: #5a5e66;
+    height: 39px !important;
+    line-height: 39px !important;
+      .search-icon {
+        cursor: pointer;
+        font-size: 18px;
+        vertical-align: middle;
+      }
+    .header-search-select {
+      transition: width 0.2s;
+      width: 0 !important;
+      overflow: hidden;
+      background: transparent;
+      border-radius: 0;
+      display: inline-block;
+      vertical-align: middle;
+
+      /deep/ .el-input__inner {
+        border-radius: 0;
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+        box-shadow: none !important;
+        border-bottom: 1px solid #d9d9d9;
+        vertical-align: middle;
+      }
+    }
+    &.show {
+      .header-search-select {
+        width: 190px !important;
+        margin-left: 10px;
+      }
+    }
+    .header-search-select-mobile {
+      transition: width 0.2s;
+      width: 0 !important;
+      overflow: hidden;
+      background: transparent;
+      border-radius: 0;
+      display: inline-block;
+      vertical-align: middle;
+
+      /deep/ .el-input__inner {
+        border-radius: 0;
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+        box-shadow: none !important;
+        border-bottom: 1px solid #d9d9d9;
+        vertical-align: middle;
+      }
+    }
+    &.show{
+      .header-search-select-mobile {
+        width: 120px !important;
+        margin-left: 5px;
+      }
     }
   }
 </style>

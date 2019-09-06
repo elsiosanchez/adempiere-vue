@@ -16,7 +16,7 @@
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
-            <div class="select-filter">
+            <div v-if="!isSelectionColumn" class="select-filter">
               <span>
                 {{ firstGroup.groupFinal }}
               </span>
@@ -68,7 +68,7 @@
                     <span>
                       {{ item.groupFinal }}
                     </span>
-                    <div class="select-filter-header">
+                    <div v-if="!isSelectionColumn" class="select-filter-header">
                       <filter-fields
                         :container-uuid="containerUuid"
                         :panel-type="panelType"
@@ -154,6 +154,10 @@ export default {
     isReSearch: {
       type: Boolean,
       default: true
+    },
+    isSelectionColumn: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -183,6 +187,9 @@ export default {
     getterFieldList() {
       var panel = this.$store.getters.getPanel(this.containerUuid)
       if (panel) {
+        if (this.isSelectionColumn) {
+          return panel.fieldList.filter(field => panel.selectionColumn.includes(field.columnName))
+        }
         return panel.fieldList
       }
       return panel
@@ -217,7 +224,7 @@ export default {
 
       if (this.panelType === 'window') {
         // TODO: Validate UUID value
-        if (actionValue !== 'create-new' && this.isReSearch) {
+        if (actionValue !== 'create-new' && this.isReSearch && this.panelType === 'window') {
           this.getData(this.metadata.tableName, actionValue)
         } else {
           this.$store.dispatch('resetPanelToNew', {
@@ -306,7 +313,7 @@ export default {
           })
         }
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
-          if (this.isReSearch || Object.entries(this.getterData).length === 0) {
+          if (this.isReSearch || Object.entries(this.getterData).length === 0 && this.panelType === 'window') {
             this.getData(this.metadata.tableName, this.uuidRecord)
           } else {
             this.dataRecords = this.getterData

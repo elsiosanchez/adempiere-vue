@@ -145,7 +145,7 @@ export default {
 
       var sizeField = sizeFieldFromType.size
       var newSizes = {}
-      if (this.panelType === 'window') {
+      if (this.panelType === 'window' || this.panelType === 'table') {
         if (this.inTable) {
           newSizes.xs = 24
           newSizes.sm = 24
