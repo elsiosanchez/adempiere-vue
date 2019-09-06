@@ -106,10 +106,11 @@ export function clientDateTime(date = null, type = '') {
 }
 
 /**
- *
+ * Convert a object to array pairs
  * @param {object} objectToConvert, object to convert
  * @param {string} nameKey, name from key in pairs
  * @param {string} nameValue, name from value in pairs
+ * @returns {array} [ { nameKe: key, nameValue: value } ]
  */
 export function convertObjectToArrayPairs(objectToConvert, nameKey = 'columnName', nameValue = 'value') {
   var result = Object.keys(objectToConvert).map(key => {
@@ -117,6 +118,21 @@ export function convertObjectToArrayPairs(objectToConvert, nameKey = 'columnName
     returnPairs[nameKey] = key
     returnPairs[nameValue] = objectToConvert[key]
     return returnPairs
+  })
+
+  return result
+}
+
+/**
+ * Convert array pairs of object to simple object { key:value }
+ * @param {object} objectToConvert, object to convert
+ * @param {string} nameKey, name from key in pairs
+ * @param {string} nameValue, name from value in pairs
+ */
+export function convertArrayPairsToObject(arrayToConver, nameKey = 'columnName', nameValue = 'value') {
+  var result = {}
+  arrayToConver.forEach(element => {
+    result[element[nameKey]] = element[nameValue]
   })
 
   return result

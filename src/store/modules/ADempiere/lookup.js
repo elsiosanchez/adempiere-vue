@@ -1,5 +1,5 @@
 import { getLookup, getLookupList } from '@/api/ADempiere'
-import { convertValue, getCurrentRole } from '@/utils/ADempiere'
+import { convertValue, isEmptyValue, getCurrentRole } from '@/utils/ADempiere'
 
 const lookup = {
   state: {
@@ -24,8 +24,9 @@ const lookup = {
         getLookup(objectParams, objectParams.value)
           .then(response => {
             const map = response.getValuesMap()
-            const option = {
-              label: convertValue(map.get('DisplayColumn')),
+            const label = convertValue(map.get('DisplayColumn'))
+            var option = {
+              label: isEmptyValue(label) ? ' ' : label,
               // key: convertValue(map.get('KeyColumn'))
               key: objectParams.value
             }
@@ -64,8 +65,8 @@ const lookup = {
               const name = convertValue(map.get('DisplayColumn'))
               const key = convertValue(map.get('KeyColumn'))
               options.push({
-                label: name,
-                key: String(key).trim() === '' ? -1 : isNaN(key) ? key : parseInt(key)
+                label: isEmptyValue(name) ? ' ' : name,
+                key: isEmptyValue(key) ? -1 : isNaN(key) ? key : parseInt(key)
               })
             })
 

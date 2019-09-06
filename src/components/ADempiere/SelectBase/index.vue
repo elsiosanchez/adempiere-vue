@@ -39,10 +39,13 @@ export default {
   },
   data() {
     return {
-      value: String(this.metadata.value).trim() === '' ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value),
+      value: isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value, 10),
       isLoading: false,
       baseNumber: 10,
-      options: [],
+      options: [{
+        label: ' ',
+        key: -1
+      }],
       othersOptions: [],
       blanckOption: {
         label: ' ',
@@ -54,7 +57,7 @@ export default {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
-        return String(field.value).trim() === '' ? -1 : isNaN(field.value) ? field.value : parseInt(field.value)
+        return isEmptyValue(field.value) ? -1 : isNaN(field.value) ? field.value : parseInt(field.value)
       }
       return undefined
     },
@@ -103,12 +106,13 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = String(value).trim() === '' ? -1 : isNaN(value) ? value : parseInt(value)
+      this.value = isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
     },
+    // TODO: Verify peformance in props with watcher in panel.
     '$route.query.action'(actionValue) {
       if (actionValue === 'create-new') {
         // this.value = String(this.metadata.parsedDefaultValue).trim() === '' ? -1 : isNaN(this.metadata.parsedDefaultValue) ? this.metadata.parsedDefaultValue : parseInt(this.metadata.parsedDefaultValue)
-        if (String(this.metadata.parsedDefaultValue).trim() === '') {
+        if (this.isEmptyValue(this.metadata.parsedDefaultValue)) {
           this.value = -1
         } else if (isNaN(this.metadata.parsedDefaultValue)) {
           this.value = this.metadata.parsedDefaultValue
@@ -126,7 +130,7 @@ export default {
 
     // enable to dataTable records
     if (this.metadata.displayColumn !== undefined) {
-      var key = String(this.metadata.value).trim() === '' ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value)
+      var key = isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value)
       if (this.valueModel !== undefined) {
         key = this.valueModel
       }
@@ -193,6 +197,9 @@ export default {
       })
         .then(response => {
           this.options = this.getterLookupAll.concat(this.othersOptions)
+          if (this.options.length > 0 && this.options[0].key !== -1) {
+            this.options.unshift(this.blanckOption)
+          }
           this.isLoading = false
         })
         .catch(error => {
