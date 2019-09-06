@@ -3,11 +3,15 @@ const utils = {
   state: {
     width: 0,
     height: 0,
-    splitHeight: 160
+    splitHeight: 160,
+    widthLayout: 0
   },
   mutations: {
     setWidth(state, width) {
       state.width = width
+    },
+    setWidthLayout(state, width) {
+      state.widthLayout = width
     },
     setHeigth(state, height) {
       state.height = height
@@ -19,6 +23,9 @@ const utils = {
   actions: {
     setWidth({ commit }, width) {
       commit('setWidth', width)
+    },
+    setWidthLayout({ commit }, width) {
+      commit('setWidthLayout', width)
     },
     setHeight({ commit }, height) {
       commit('setHeigth', height)

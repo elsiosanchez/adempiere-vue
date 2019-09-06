@@ -30,6 +30,7 @@ export default {
     errorChangeRole: 'El rol no se ha cambiado'
   },
   navbar: {
+    Notifications: 'Notificaciones',
     logOut: 'Salir',
     dashboard: 'Panel de control',
     github: 'Github',
@@ -121,7 +122,8 @@ export default {
       search: 'Buscar',
       records: 'Registros',
       selected: 'Seleccionados',
-      deleteSelection: 'Eliminar registros seleccionados'
+      deleteSelection: 'Eliminar registros seleccionados',
+      avancedQuery: 'Consulta avanzada'
     },
     recentItems: {
       search: 'Filtrar por nombre, descripción o fecha',

@@ -71,7 +71,7 @@ export default {
     },
     '$route.query.action'(actionValue) {
       if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
+        this.value = Number(this.metadata.defaultValue)
       }
     }
   },
@@ -93,6 +93,15 @@ export default {
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
           rowKey: this.metadata.rowKey,
+          panelType: this.metadata.panelType
+        })
+      } else if (this.metadata.panelType === 'table') {
+        this.$store.dispatch('notifyFieldChange', {
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          columnName: this.metadata.columnName,
+          newValue: this.value,
+          isDontSendToEdit: false,
           panelType: this.metadata.panelType
         })
       } else {

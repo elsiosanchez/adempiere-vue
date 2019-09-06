@@ -19,21 +19,28 @@ const lookup = {
     }
   },
   actions: {
-    getLookup: ({ commit }, objectParams) => {
+    getLookup: ({ commit, rootGetters }, objectParams) => {
       return new Promise((resolve, reject) => {
         getLookup(objectParams, objectParams.value)
           .then(response => {
             const map = response.getValuesMap()
             const option = {
               label: convertValue(map.get('DisplayColumn')),
-              key: convertValue(map.get('KeyColumn'))
+              // key: convertValue(map.get('KeyColumn'))
+              key: objectParams.value
             }
+
+            const clientId = rootGetters.getContext({
+              columnName: '#AD_Client_ID'
+            })
+
             commit('addLoockupItem', {
               option: option,
-              value: objectParams.value,
+              value: objectParams.value, // isNaN(objectParams.value) ? objectParams.value : parseInt(objectParams.value, 10),
               parsedDirectQuery: objectParams.directQuery,
               tableName: objectParams.tableName,
-              roleUuid: getCurrentRole()
+              roleUuid: getCurrentRole(),
+              clientId: clientId
             })
             resolve(option)
           })
@@ -58,7 +65,7 @@ const lookup = {
               const key = convertValue(map.get('KeyColumn'))
               options.push({
                 label: name,
-                key: key
+                key: String(key).trim() === '' ? -1 : isNaN(key) ? key : parseInt(key)
               })
             })
 
@@ -103,28 +110,43 @@ const lookup = {
       const clientId = rootGetters.getContext({
         columnName: '#AD_Client_ID'
       })
-      return state.lookupItem.find(itemLookup => {
+      const lookupItem = state.lookupItem.find(itemLookup => {
         return itemLookup.parsedDirectQuery === params.parsedDirectQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
           itemLookup.clientId === clientId &&
           itemLookup.value === params.value
       })
+      if (lookupItem) {
+        return lookupItem.option
+      }
+      return undefined
     },
     getLookupList: (state, getters, rootState, rootGetters) => (params) => {
       const clientId = rootGetters.getContext({
         columnName: '#AD_Client_ID'
       })
-      const lookup = state.lookupList.find(itemLookup => {
+      const lookupList = state.lookupList.find(itemLookup => {
         return itemLookup.parsedQuery === params.parsedQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
           itemLookup.clientId === clientId
       })
-      if (lookup === undefined) {
-        return []
+      if (lookupList) {
+        return lookupList.list
       }
-      return lookup.list
+      return []
+    },
+    /**
+     *
+     */
+    getLookupAll: (state, getters, rootState, rootGetters) => (parameters) => {
+      var list = getters.getLookupList(parameters)
+      const item = getters.getLookupItem(parameters)
+      if (item && !list.find(itemLookup => itemLookup.key === item.key)) {
+        list.push(item)
+      }
+      return list
     }
   }
 }

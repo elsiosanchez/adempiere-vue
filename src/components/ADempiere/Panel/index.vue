@@ -16,7 +16,7 @@
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
-            <div class="select-filter">
+            <div v-if="!isSelectionColumn" class="select-filter">
               <span>
                 {{ firstGroup.groupFinal }}
               </span>
@@ -52,55 +52,61 @@
         </div>
       </template>
       <div :class="cards()">
-        <template v-for="(item, key) in fieldGroups">
-          <el-row :key="key">
-            <el-col :key="key" :span="24">
-              <div
-                v-if="item.groupFinal !== ''
-                  && (group.groupType == 'T' && group.groupName == item.groupFinal)
-                  || (group.groupType !== 'T' && item.typeGroup !== 'T')"
-                :key="key"
-                class="card"
-              >
-                <el-card
-                  shadow="hover"
+        <draggable
+          :list="fieldGroups"
+          v-bind="$attrs"
+          :set-data="setData"
+        >
+          <template v-for="(item, key) in fieldGroups">
+            <el-row :key="key">
+              <el-col :key="key" :span="24">
+                <div
+                  v-if="item.groupFinal !== ''
+                    && (group.groupType == 'T' && group.groupName == item.groupFinal)
+                    || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                  :key="key"
+                  class="card"
                 >
-                  <div slot="header" class="clearfix">
-                    <span>
-                      {{ item.groupFinal }}
-                    </span>
-                    <div class="select-filter-header">
-                      <filter-fields
-                        :container-uuid="containerUuid"
-                        :panel-type="panelType"
-                        :group-field="item.groupFinal"
-                        :is-first-group="false"
-                      />
+                  <el-card
+                    shadow="hover"
+                  >
+                    <div slot="header" class="clearfix">
+                      <span>
+                        {{ item.groupFinal }}
+                      </span>
+                      <div v-if="!isSelectionColumn" class="select-filter-header">
+                        <filter-fields
+                          :container-uuid="containerUuid"
+                          :panel-type="panelType"
+                          :group-field="item.groupFinal"
+                          :is-first-group="false"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <el-row :gutter="gutterRow">
-                    <template v-for="(subItem, subKey) in item.metadataFields">
-                      <field
-                        :key="subKey"
-                        :parent-uuid="parentUuid"
-                        :container-uuid="containerUuid"
-                        :metadata-field="{
-                          ...subItem,
-                          optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                          value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
-                        }"
-                        :is-load-record="isLoadRecord"
-                        :record-data-fields="dataRecords[subItem.columnName]"
-                        :panel-type="panelType"
-                        :in-group="isMutipleGroups && fieldGroups.length > 1"
-                      />
-                    </template>
-                  </el-row>
-                </el-card>
-              </div>
-            </el-col>
-          </el-row>
-        </template>
+                    <el-row :gutter="gutterRow">
+                      <template v-for="(subItem, subKey) in item.metadataFields">
+                        <field
+                          :key="subKey"
+                          :parent-uuid="parentUuid"
+                          :container-uuid="containerUuid"
+                          :metadata-field="{
+                            ...subItem,
+                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
+                            value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                          }"
+                          :is-load-record="isLoadRecord"
+                          :record-data-fields="dataRecords[subItem.columnName]"
+                          :panel-type="panelType"
+                          :in-group="isMutipleGroups && fieldGroups.length > 1"
+                        />
+                      </template>
+                    </el-row>
+                  </el-card>
+                </div>
+              </el-col>
+            </el-row>
+          </template>
+        </draggable>
       </div>
     </el-form>
     <div
@@ -118,12 +124,14 @@
 import { isEmptyValue } from '@/utils/ADempiere'
 import Field from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'Panel',
   components: {
     Field,
-    FilterFields
+    FilterFields,
+    draggable
   },
   props: {
     parentUuid: {
@@ -156,6 +164,10 @@ export default {
     isReSearch: {
       type: Boolean,
       default: true
+    },
+    isSelectionColumn: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -184,6 +196,9 @@ export default {
     getterFieldList() {
       var panel = this.$store.getters.getPanel(this.containerUuid)
       if (panel) {
+        if (this.isSelectionColumn) {
+          return panel.fieldList.filter(field => panel.selectionColumn.includes(field.columnName))
+        }
         return panel.fieldList
       }
       return panel
@@ -219,7 +234,7 @@ export default {
 
       if (this.panelType === 'window') {
         // TODO: Validate UUID value
-        if (actionValue !== 'create-new' && this.isReSearch) {
+        if (actionValue !== 'create-new' && this.isReSearch && this.panelType === 'window') {
           this.getData(this.metadata.tableName, actionValue)
         } else {
           this.$store.dispatch('resetPanelToNew', {
@@ -306,7 +321,7 @@ export default {
           })
         }
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
-          if (this.isReSearch || Object.entries(this.getterData).length === 0) {
+          if (this.isReSearch || Object.entries(this.getterData).length === 0 && this.panelType === 'window') {
             this.getData(this.metadata.tableName, this.uuidRecord)
           } else {
             this.dataRecords = this.getterData
@@ -492,6 +507,11 @@ export default {
         var route = Object.assign({}, tempRoute, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
         this.$store.dispatch('tagsView/updateVisitedView', route)
       }
+    },
+    setData(dataTransfer) {
+      // to avoid Firefox bug
+      // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+      dataTransfer.setData('Text', '')
     }
   }
 }

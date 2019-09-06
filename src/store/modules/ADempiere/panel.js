@@ -258,6 +258,9 @@ const panel = {
       if (!params.isDontSendToEdit) {
         // TODO: refactory for it and change for a standard method
         if (getters.isReadyForSubmit(params.containerUuid)) {
+          if (params.panelType === 'table' && fieldIsDisplayed(field)) {
+            // TODO: Add action to get filtered data
+          }
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
               containerUuid: params.containerUuid,
