@@ -1,6 +1,5 @@
 <template>
   <section id="appMain" class="app-main">
-    <!-- <div style="padding: 10px 300px">ww: {{ componentWidth }}</div> -->
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
@@ -12,34 +11,12 @@
 <script>
 export default {
   name: 'AppMain',
-  data() {
-    return {
-      componentWidth: document.getElementById('appMain').clientWidth
-    }
-  },
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
     },
     key() {
       return this.$route.path
-    }
-  },
-  mounted() {
-    // TODO: Add support to css media query
-    this.$nextTick(() => {
-      document.getElementById('appMain').addEventListener('resize', this.getLayoutWidth)
-
-      this.getLayoutWidth()
-    })
-  },
-  beforeDestroy() {
-    document.getElementById('appMain').removeEventListener('resize', this.getLayoutWidth)
-  },
-  methods: {
-    getLayoutWidth(event) {
-      this.componentWidth = document.getElementById('appMain').clientWidth
-      this.$store.dispatch('setWidthLayout', document.getElementById('appMain').clientWidth)
     }
   }
 }

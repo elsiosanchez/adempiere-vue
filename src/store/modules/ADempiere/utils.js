@@ -45,8 +45,11 @@ const utils = {
     getWidth: (state) => {
       return state.width
     },
-    getWidthLayout: (state) => {
-      return state.widthLayout
+    getWidthLayout: (state, rootGetters) => {
+      if (rootGetters.toggleSideBar) {
+        return state.width - 250
+      }
+      return state.width - 54
     },
     getHeigth: (state) => {
       return state.height
