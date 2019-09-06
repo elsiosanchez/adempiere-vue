@@ -71,7 +71,7 @@ export default {
     },
     '$route.query.action'(actionValue) {
       if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
+        this.value = Number(this.metadata.defaultValue)
       }
     }
   },
