@@ -117,6 +117,9 @@ export default {
             parentUuid: this.parentUuid,
             panelType: this.panelType // TODO: evaluate used
           })
+            .catch(error => {
+              console.warn(error)
+            })
           if (action.isReport) {
             this.$store.subscribeAction({
               after: (action, state) => {

@@ -328,6 +328,9 @@ export default {
             processName: action.processName,
             reportFormat: this.reportFormat
           })
+            .catch(error => {
+              console.warn(error)
+            })
           if (action.isReport) {
             this.$store.subscribeAction({
               after: (action, state) => {
