@@ -104,7 +104,11 @@ export default {
     seeReport: 'Ver Reporte',
     summary: 'Resumen',
     viewsHelp: 'Ayuda',
-    searchCriteria: 'Criterio de Búsqueda'
+    searchCriteria: 'Criterio de Búsqueda',
+    unsupportedSorry: 'Lo sentimos',
+    unsupportedHeadline: 'Esta vista no está disponible actualmente',
+    unsupportedInfo: 'Verifique que la vista sea compatible con esta versión, o haga clic en el botón a continuación para volver a la página de inicio.',
+    unsupportedButton: 'Volver al Panel de control'
   },
   table: {
     ProcessActivity: {

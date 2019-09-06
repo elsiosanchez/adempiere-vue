@@ -104,7 +104,11 @@ export default {
     seeReport: 'See Report',
     summary: 'Summary',
     viewsHelp: 'Help',
-    searchCriteria: 'Search Criteria'
+    searchCriteria: 'Search Criteria',
+    unsupportedSorry: 'Sorry',
+    unsupportedHeadline: 'This view is currently unavailable',
+    unsupportedInfo: 'Please check that the view is supported in this version, or click the button below to return to the homepage.',
+    unsupportedButton: 'Back to dashboard'
   },
   table: {
     ProcessActivity: {

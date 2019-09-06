@@ -76,6 +76,8 @@ function getChildFromAction(menu, index) {
     selectedComponent = () => import('@/views/ADempiere/Browser')
   } else if (action === 'P' || action === 'R') {
     selectedComponent = () => import('@/views/ADempiere/Process')
+  } else if (action === 'B' || action === 'F' || action === 'T' || action === 'X') {
+    selectedComponent = () => import('@/views/ADempiere/Unsupported')
   } else {
     selectedComponent = () => import('@/views/ADempiere/Summary')
     routeIdentifier = '/' + menu.getId()
