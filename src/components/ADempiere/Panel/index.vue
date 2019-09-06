@@ -51,54 +51,60 @@
         </div>
       </template>
       <div :class="cards()">
-        <template v-for="(item, key) in fieldGroups">
-          <el-row :key="key">
-            <el-col :key="key" :span="24">
-              <div
-                v-if="item.groupFinal !== ''
-                  && (group.groupType == 'T' && group.groupName == item.groupFinal)
-                  || (group.groupType !== 'T' && item.typeGroup !== 'T')"
-                :key="key"
-                class="card"
-              >
-                <el-card
-                  shadow="hover"
+        <draggable
+          :list="fieldGroups"
+          v-bind="$attrs"
+          :set-data="setData"
+        >
+          <template v-for="(item, key) in fieldGroups">
+            <el-row :key="key">
+              <el-col :key="key" :span="24">
+                <div
+                  v-if="item.groupFinal !== ''
+                    && (group.groupType == 'T' && group.groupName == item.groupFinal)
+                    || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                  :key="key"
+                  class="card"
                 >
-                  <div slot="header" class="clearfix">
-                    <span>
-                      {{ item.groupFinal }}
-                    </span>
-                    <div v-if="!isSelectionColumn" class="select-filter-header">
-                      <filter-fields
-                        :container-uuid="containerUuid"
-                        :panel-type="panelType"
-                        :group-field="item.groupFinal"
-                        :is-first-group="false"
-                      />
+                  <el-card
+                    shadow="hover"
+                  >
+                    <div slot="header" class="clearfix">
+                      <span>
+                        {{ item.groupFinal }}
+                      </span>
+                      <div v-if="!isSelectionColumn" class="select-filter-header">
+                        <filter-fields
+                          :container-uuid="containerUuid"
+                          :panel-type="panelType"
+                          :group-field="item.groupFinal"
+                          :is-first-group="false"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <el-row :gutter="gutterRow">
-                    <template v-for="(subItem, subKey) in item.metadataFields">
-                      <field
-                        :key="subKey"
-                        :parent-uuid="parentUuid"
-                        :container-uuid="containerUuid"
-                        :metadata-field="{
-                          ...subItem,
-                          value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
-                        }"
-                        :is-load-record="isLoadRecord"
-                        :record-data-fields="dataRecords[subItem.columnName]"
-                        :panel-type="panelType"
-                        :in-group="mutipleGroups && fieldGroups.length > 1"
-                      />
-                    </template>
-                  </el-row>
-                </el-card>
-              </div>
-            </el-col>
-          </el-row>
-        </template>
+                    <el-row :gutter="gutterRow">
+                      <template v-for="(subItem, subKey) in item.metadataFields">
+                        <field
+                          :key="subKey"
+                          :parent-uuid="parentUuid"
+                          :container-uuid="containerUuid"
+                          :metadata-field="{
+                            ...subItem,
+                            value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                          }"
+                          :is-load-record="isLoadRecord"
+                          :record-data-fields="dataRecords[subItem.columnName]"
+                          :panel-type="panelType"
+                          :in-group="mutipleGroups && fieldGroups.length > 1"
+                        />
+                      </template>
+                    </el-row>
+                  </el-card>
+                </div>
+              </el-col>
+            </el-row>
+          </template>
+        </draggable>
       </div>
     </el-form>
     <div
@@ -116,12 +122,14 @@
 import { isEmptyValue } from '@/utils/ADempiere'
 import Field from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'Panel',
   components: {
     Field,
-    FilterFields
+    FilterFields,
+    draggable
   },
   props: {
     parentUuid: {
@@ -499,6 +507,11 @@ export default {
         var route = Object.assign({}, tempRoute, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
         this.$store.dispatch('tagsView/updateVisitedView', route)
       }
+    },
+    setData(dataTransfer) {
+      // to avoid Firefox bug
+      // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+      dataTransfer.setData('Text', '')
     }
   }
 }

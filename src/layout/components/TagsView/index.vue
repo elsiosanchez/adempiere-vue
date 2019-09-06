@@ -1,20 +1,26 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
-      <router-link
-        v-for="tag in visitedViews"
-        ref="tag"
-        :key="tag.path"
-        :class="isActive(tag)?'active':''"
-        :to="{ name: tag.name, path: tag.path, query: tag.query, fullPath: tag.fullPath, params: tag.params }"
-        tag="span"
-        class="tags-view-item"
-        @click.middle.native="closeSelectedTag(tag)"
-        @contextmenu.prevent.native="openMenu(tag,$event)"
+      <draggable
+        :list="visitedViews"
+        v-bind="$attrs"
+        :set-data="setData"
       >
-        <p clas="tag-title" style="max-width: 98%; overflow: hidden; margin: 0px;">{{ generateTitle(tag.title) }}</p>
-        <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
-      </router-link>
+        <router-link
+          v-for="tag in visitedViews"
+          ref="tag"
+          :key="tag.path"
+          :class="isActive(tag)?'active':''"
+          :to="{ name: tag.name, path: tag.path, query: tag.query, fullPath: tag.fullPath, params: tag.params }"
+          tag="span"
+          class="tags-view-item"
+          @click.middle.native="closeSelectedTag(tag)"
+          @contextmenu.prevent.native="openMenu(tag,$event)"
+        >
+          <p clas="tag-title" style="max-width: 98%; overflow: hidden; margin: 0px;">{{ generateTitle(tag.title) }}</p>
+          <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        </router-link>
+      </draggable>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">
@@ -38,9 +44,10 @@
 import ScrollPane from './ScrollPane'
 import { generateTitle } from '@/utils/i18n'
 import path from 'path'
+import draggable from 'vuedraggable'
 
 export default {
-  components: { ScrollPane },
+  components: { ScrollPane, draggable },
   data() {
     return {
       visible: false,
@@ -213,6 +220,11 @@ export default {
     },
     closeMenu() {
       this.visible = false
+    },
+    setData(dataTransfer) {
+      // to avoid Firefox bug
+      // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+      dataTransfer.setData('Text', '')
     }
   }
 }
