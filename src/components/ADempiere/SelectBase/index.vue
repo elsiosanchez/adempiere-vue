@@ -39,10 +39,11 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.value,
+      value: String(this.metadata.value).trim() === '' ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value),
       isLoading: false,
+      baseNumber: 10,
       options: [],
-      showControls: true,
+      othersOptions: [],
       blanckOption: {
         label: ' ',
         key: -1
@@ -53,19 +54,37 @@ export default {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
-        return field.value
+        return String(field.value).trim() === '' ? -1 : isNaN(field.value) ? field.value : parseInt(field.value)
       }
       return undefined
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
-    getterOptions() {
-      var lookupList = this.$store.getters.getLookupList({
+    getterLookupItem() {
+      return this.$store.getters.getLookupItem({
+        parsedDirectQuery: this.parsedDirectQuery,
+        tableName: this.metadata.reference.tableName,
+        value: this.value
+      })
+    },
+    getterLookupList() {
+      return this.$store.getters.getLookupList({
         parsedQuery: this.parsedQuery,
         tableName: this.metadata.reference.tableName
       })
-      return lookupList
+    },
+    getterLookupAll() {
+      var allOptions = this.$store.getters.getLookupAll({
+        parsedQuery: this.parsedQuery,
+        parsedDirectQuery: this.parsedDirectQuery,
+        tableName: this.metadata.reference.tableName,
+        value: this.value
+      })
+      if (allOptions.length > 0 && allOptions[0].key !== -1) {
+        allOptions.unshift(this.blanckOption)
+      }
+      return allOptions
     },
     parsedQuery() {
       return this.parseContext({
@@ -84,50 +103,57 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = value
-      if (!this.isEmptyValue(this.value)) {
-        this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, this.value)
-      }
+      this.value = String(value).trim() === '' ? -1 : isNaN(value) ? value : parseInt(value)
     },
     '$route.query.action'(actionValue) {
       if (actionValue === 'create-new') {
-        this.value = this.metadata.parsedDefaultValue
-        this.checkDefaultValue()
+        // this.value = String(this.metadata.parsedDefaultValue).trim() === '' ? -1 : isNaN(this.metadata.parsedDefaultValue) ? this.metadata.parsedDefaultValue : parseInt(this.metadata.parsedDefaultValue)
+        if (String(this.metadata.parsedDefaultValue).trim() === '') {
+          this.value = -1
+        } else if (isNaN(this.metadata.parsedDefaultValue)) {
+          this.value = this.metadata.parsedDefaultValue
+        } else {
+          this.value = parseInt(this.metadata.parsedDefaultValue)
+        }
+      }
+      if (!this.isEmptyValue(this.value) && this.options.length > 0 && this.options.find(item => item.key === this.value) === undefined) {
+        this.getDataTrigger()
       }
     }
   },
-  created() {
-    this.options = this.getterOptions
-  },
   beforeMount() {
-    if (this.metadata.defaultValue === -1 || this.metadata.defaultValue === '-1') {
-      this.options.push(this.blanckOption)
-      this.value = this.blanckOption.key
-    } else {
-      this.checkDefaultValue()
-    }
+    this.options = this.getterLookupAll
 
     // enable to dataTable records
     if (this.metadata.displayColumn !== undefined) {
-      var key = this.metadata.value
+      var key = String(this.metadata.value).trim() === '' ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value)
       if (this.valueModel !== undefined) {
         key = this.valueModel
       }
-      if (this.options.find(option => option.key === key) === undefined) {
-        this.options.push({
+      // verify if exists to add
+      if (!this.options.find(option => option.key === key)) {
+        this.othersOptions.push({
           key: key,
           label: this.metadata.displayColumn
         })
       }
+      // join options in store with pased from props
+      this.options = this.getterLookupAll.concat(this.othersOptions)
       this.value = key
+    } else if (!this.options.find(item => item.key === this.value)) {
+      this.getDataTrigger()
     }
   },
   methods: {
     parseContext,
     isEmptyValue,
     handleChange(value) {
+      var label
+      const selected = this.options.find(option => option.key === this.value)
+      if (selected) {
+        label = selected.label
+      }
       if (this.metadata.inTable) {
-        var selected = this.options.find(option => option.key === this.value)
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
@@ -136,7 +162,16 @@ export default {
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
           rowKey: this.metadata.rowKey,
-          displayColumn: selected.label,
+          displayColumn: label,
+          panelType: this.metadata.panelType
+        })
+      } else if (this.metadata.panelType === 'table') {
+        this.$store.dispatch('notifyFieldChange', {
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          columnName: this.metadata.columnName,
+          newValue: this.value,
+          isDontSendToEdit: false,
           panelType: this.metadata.panelType
         })
       } else {
@@ -144,30 +179,21 @@ export default {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
+          displayColumn: label,
           newValue: this.value
         })
       }
     },
-    getDataTrigger(tableName, directQuery, value) {
-      var parsedValue
-      if (isNaN(value)) {
-        parsedValue = value
-      } else {
-        parsedValue = parseInt(value)
-      }
+    getDataTrigger() {
+      this.isLoading = true
       this.$store.dispatch('getLookup', {
-        tableName: tableName,
-        directQuery: directQuery,
-        value: parsedValue
+        tableName: this.metadata.reference.tableName,
+        directQuery: this.parsedDirectQuery,
+        value: this.value
       })
         .then(response => {
-          if (response.label) {
-            this.value = response.label
-            this.options.push(response)
-            this.options.unshift(this.blanckOption)
-          } else {
-            this.getDataLookupList(true)
-          }
+          this.options = this.getterLookupAll.concat(this.othersOptions)
+          this.isLoading = false
         })
         .catch(error => {
           console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
@@ -178,10 +204,7 @@ export default {
      */
     getDataLookupList(showList) {
       if (showList) {
-        if (this.getterOptions.length > 0) {
-          this.options = this.getterOptions
-        }
-        if (this.getterOptions.length === 0 || (this.getterOptions.length <= 1 && this.getterOptions.some(item => this.isEmptyValue(item.value)))) {
+        if (this.getterLookupList.length === 0) {
           this.remoteMethod()
         }
       }
@@ -193,10 +216,8 @@ export default {
         query: this.parsedQuery
       })
         .then(response => {
+          this.options = this.getterLookupAll.concat(this.othersOptions)
           this.isLoading = false
-          this.options = response
-          this.options.unshift(this.blanckOption)
-          this.loading = false
         })
         .catch(error => {
           this.isLoading = false
@@ -210,14 +231,7 @@ export default {
         parsedDirectQuery: this.parsedDirectQuery,
         value: this.value
       })
-      this.options = []
-      this.options.push(this.blanckOption)
       this.value = this.blanckOption.key
-    },
-    checkDefaultValue() {
-      if (!this.isEmptyValue(this.metadata.defaultValue) && !this.isEmptyValue(this.metadata.value)) {
-        this.getDataTrigger(this.metadata.reference.tableName, this.parsedDirectQuery, this.metadata.value)
-      }
     }
   }
 }

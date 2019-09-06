@@ -1,9 +1,8 @@
 <template>
-  <div v-if="processActivity.length > 0" class="app-container">
-    {{ processActivity.name }}
+  <div v-if="getRunProcessAll.length > 0" class="app-container">
     <el-timeline :reverse="true">
       <el-timeline-item
-        v-for="(activity, index) in processActivity"
+        v-for="(activity, index) in getRunProcessAll"
         :key="index"
         :timestamp="String(new Date())"
         placement="top"
@@ -34,40 +33,28 @@
               <span v-else> {{ activity.summary }} </span>
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
-              <!-- <el-popover
-              ref="popover"
-              placement="right"
-              title="Title"
-              width="200"
-              trigger="focus"
-              content="this is content, this is content, this is content">
-            </el-popover>
-            <el-tag v-popover:popover :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag> -->
               <el-popover
                 placement="right"
                 width="auto"
                 trigger="hover"
               >
                 <div>
-                  <span v-if="activity.isReport === false"><b>{{ $t('table.ProcessActivity.Logs') }}</b><br>{{ activity.logs }}</span>
-                  <div v-else>
-                    <span> <b>output</b></span><br>
-                    <span> <b>{{ $t('table.ProcessActivity.name') }}:</b>{{ activity.output }}</span><br>
+                  <span v-if="activity.isReport === false">
+                    <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
+                    {{ activity.logs }}
+                  </span>
+                  <div v-else-if="activity.output">
+                    <span><b>output</b></span><br>
+                    <span><b>{{ $t('table.ProcessActivity.name') }}:</b>{{ activity.output }}</span><br>
                     <span><b>{{ $t('table.ProcessActivity.description') }}:</b>{{ activity.output.description }}</span><br>
                     <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br>
                     <!-- <span>{{ activity.url }}</span><br> -->
                   </div>
                 </div>
-                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag>
+                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">
+                  {{ checkStatus(activity.isError, activity.isProcessing).text }}
+                </el-tag>
               </el-popover>
-              <!-- <el-popover
-                placement="top-start"
-                title="Summary"
-                width="200"
-                trigger="hover"
-                :content="activity.summary">
-               <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">{{ checkStatus(activity.isError).text }}</el-tag>
-              </el-popover> -->
             </el-form-item>
           </el-form>
         </el-card>
@@ -78,6 +65,7 @@
     <h1 class="text-center">{{ $t('views.noProcess') }}</h1>
   </div>
 </template>
+
 <script>
 import { isEmptyValue } from '@/utils/ADempiere'
 
@@ -89,23 +77,57 @@ export default {
       recordCount: 0
     }
   },
-  beforeMount() {
-    const initializedProcess = this.$store.getters.getInitializedProcess
-    const resultProcess = this.$store.getters.getResult
-    const finalProcessList = Object.assign(initializedProcess, resultProcess)
-    this.processActivity = finalProcessList
-    this.$store.dispatch('getSessionProcessFromServer')
-      .then(response => {
-        if (response.processList.length > 0) {
-          this.processActivity = this.$store.getters.getInitializedProcess
-          this.recordCount = response.processList.length
+  computed: {
+    // process local not sent
+    getterAllInExecution() {
+      return this.$store.getters.getAllInExecution
+    },
+    // process local and send with response
+    getterAllFinishProcess() {
+      return this.$store.getters.getAllFinishProcess
+    },
+    // session process from server
+    getterAllSessionProcess() {
+      return this.$store.getters.getAllSessionProcess
+    },
+    // all process
+    getRunProcessAll() {
+      var processAll = this.getterAllInExecution.concat(this.getterAllFinishProcess, this.getterAllSessionProcess)
+      var processAllReturned = []
+
+      processAll.forEach(element => {
+        var processMetadataReturned = {}
+        var infoMetadata = this.getProcessMetadata(element.processUuid)
+        if (!infoMetadata) {
+          infoMetadata = {}
         }
+        Object.assign(processMetadataReturned, element, infoMetadata)
+
+        var indexRepeat = processAllReturned.findIndex(item => item.instanceUuid === element.instanceUuid && !isEmptyValue(element.instanceUuid))
+        if (indexRepeat > -1) {
+          // update attributes in exists process to return
+          // Object.assign(processAllReturned[indexRepeat], processMetadataReturned)
+          var other = Object.assign(processMetadataReturned, processAllReturned[indexRepeat])
+          processAllReturned[indexRepeat] = other
+          return
+        }
+
+        // add new process to show
+        processAllReturned.push(processMetadataReturned)
       })
+
+      return processAllReturned
+    }
+  },
+  beforeMount() {
+    this.$store.dispatch('getSessionProcessFromServer')
   },
   methods: {
     isEmptyValue,
+    getProcessMetadata(uuid) {
+      return this.$store.getters.getProcess(uuid)
+    },
     handleCommand(activity) {
-      console.log(activity)
       if (activity.isReport) {
         this.$router.push({
           name: 'Report Viewer',
@@ -119,16 +141,11 @@ export default {
     },
     checkStatus(isError, isProcessing) {
       var status = { text: '', type: '', color: '' }
+      // is executing
       if (isProcessing) {
         status.text = this.$t('notifications.processing')
         status.type = 'info'
         status.color = '#909399'
-        return status
-      }
-      if (!isError) {
-        status.text = this.$t('notifications.completed')
-        status.type = 'success'
-        status.color = '#67C23A'
         return status
       }
       if (isError) {
@@ -137,6 +154,11 @@ export default {
         status.color = '#F56C6C'
         return status
       }
+      // is completed
+      status.text = this.$t('notifications.completed')
+      status.type = 'success'
+      status.color = '#67C23A'
+      return status
     },
     generateTitle(title) {
       const hasKey = this.$te('table.ProcessActivity.' + title)

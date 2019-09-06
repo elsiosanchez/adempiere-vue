@@ -122,7 +122,8 @@ export default {
       search: 'Search',
       records: 'Records',
       selected: 'Selected',
-      deleteSelection: 'Delete selected records'
+      deleteSelection: 'Delete selected records',
+      avancedQuery: 'Avanced Query'
     },
     recentItems: {
       search: 'Filter by name, description or date',

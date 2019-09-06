@@ -328,6 +328,9 @@ export default {
             processName: action.processName,
             reportFormat: this.reportFormat
           })
+            .catch(error => {
+              console.warn(error)
+            })
           if (action.isReport) {
             this.$store.subscribeAction({
               after: (action, state) => {
@@ -423,7 +426,7 @@ export default {
     position: absolute;
     height: 39px !important;
     width: 39px !important;
-    right: 10px;
+    right: 0;
     top: 0;
   }
 
