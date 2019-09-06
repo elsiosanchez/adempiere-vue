@@ -2,7 +2,7 @@
   <div v-if="isLoading">
     <el-container style="height: 86vh;">
       <el-main>
-        <split-pane :min-percent="10" :default-percent="isMobile ? (isShowedRecordNavigation ? 100 : 0) : (isShowedRecordNavigation ? 50 : 0)" split="vertical">
+        <split-pane :min-percent="10" :default-percent="isMobile ? (isShowedRecordNavigation ? 100 : 0) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
           <template>
             <div slot="paneL" class="left-container">
               <el-aside v-show="isShowedRecordNavigation" width="100%">
@@ -350,6 +350,13 @@ export default {
 </style>
 
 <style>
+  .el-card__header {
+    background: rgba(245, 247, 250, 0.75);
+    padding: 18px 20px;
+    border-bottom: 1px solid #f5f7fa;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
   .split {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -388,9 +395,15 @@ export default {
   .splitter-pane-resizer.vertical {
     width: 9px !important;
     height: 100%;
-    margin-left: -5px;
+    margin-left: -10px;
     border-left: 5px solid hsla(0,0%,100%,0);
     border-right: 5px solid hsla(0,0%,100%,0);
     cursor: col-resize;
+}
+.splitter-pane.vertical.splitter-paneR {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    padding-left: 10px;
 }
 </style>

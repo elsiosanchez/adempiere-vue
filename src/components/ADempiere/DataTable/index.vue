@@ -113,10 +113,8 @@
     </el-collapse-transition>
     <el-table
       ref="multipleTable"
-      fit
       :height="getHeigthTable"
       style="width: 100%"
-      stripe
       border
       :row-key="getterPanel.keyColumn"
       highlight-current-row
@@ -135,7 +133,6 @@
         :prop="getterPanel.keyColumn"
         fixed
         min-width="50"
-        :class-name="'is-cell-selection'"
       />
       <template v-for="(item, key) in fieldList">
         <el-table-column
@@ -147,7 +144,6 @@
           sortable
           :formatter="changeOrder"
           min-width="200"
-          height="300"
           :class-name="cellClass(item)"
           :fixed="item.isFixedTableColumn"
         >
