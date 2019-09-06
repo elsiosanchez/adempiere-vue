@@ -370,6 +370,9 @@ const processControl = {
     getAllFinishProcess: (state) => {
       return state.process
     },
+    getNotificationProcess: (state) => {
+      return state.process
+    },
     /**
      * Process receibed from server associated whith this session
      */
