@@ -65,7 +65,6 @@ export default {
 
 <style lang="scss" scoped>
 .app-breadcrumb.el-breadcrumb {
-  display: inline-block;
   font-size: 14px;
   line-height: 50px;
   margin-left: 8px;
@@ -75,10 +74,16 @@ export default {
     cursor: text;
   }
   .el-breadcrumb__item {
+    display: flex !important;
     max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    .el-breadcrumb__inner {
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .el-breadcrumb__separator {
+      white-space: nowrap !important;
+    }
   }
 }
 </style>
