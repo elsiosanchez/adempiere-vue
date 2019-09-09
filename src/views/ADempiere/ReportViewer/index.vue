@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading">
+  <div v-if="isLoading" style="min-height: inherit;">
     <context-menu
       :container-uuid="reportResult.processUuid"
       :panel-type="panelType"
@@ -7,8 +7,7 @@
       :last-parameter="reportResult.processUuid"
       :report-format="reportFormat"
     />
-    <br>
-    <el-row :gutter="20">
+    <el-row type="flex" style="min-height: inherit;">
       <el-col :span="24">
         <div class="content">
           <h3 class="text-center">
@@ -23,11 +22,10 @@
               <el-button slot="reference" type="text" class="title">{{ processMetadataValue.name }}</el-button>
             </el-popover>
           </h3>
-          <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" />
+          <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" width="100%" height="100%" />
           <div v-else-if="collectionReportFormat.includes(reportFormat)" class="content-api" :src="url" />
           <div v-else-if="reportFormat === 'html'" class="content-txt">
-            <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 140px;">
-              <!-- <el-scrollbar wrap-class="scroll" style="bottom: -7%;"> -->
+            <el-container style="width: 100%;padding-bottom: 140px;">
               <el-main style="padding: 0;">
                 <div
                   class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
@@ -35,7 +33,6 @@
                 />
               </el-main>
             </el-container>
-            <!-- </el-scrollbar> -->
           </div>
         </div>
       </el-col>
@@ -45,6 +42,7 @@
       :metadata="processMetadataValue"
       :parent-uuid="reportResult.processUuid"
       :report-export-type="reportFormat"
+      :panel-type="panelType"
       @closeDialog="visibleDialog=false"
     />
   </div>
@@ -178,15 +176,12 @@ export default {
   .content-api {
 		width: 100%;
     height: 84%;
-    /* padding-left: 10px; */
     padding-right: 10px;
-    /* padding-top: 10px; */
     padding-bottom: 1%;
 	}
   .content-txt {
 		width: 100%;
 		height: 100%;
-    /* padding: 10px; */
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 0px;

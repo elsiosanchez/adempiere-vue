@@ -37,6 +37,7 @@
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
+                      optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                       value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :is-load-record="isLoadRecord"
@@ -52,10 +53,62 @@
       </template>
       <div :class="cards()">
         <draggable
+          v-if="!isMobile"
           :list="fieldGroups"
           v-bind="$attrs"
           :set-data="setData"
         >
+          <template v-for="(item, key) in fieldGroups">
+            <el-row :key="key">
+              <el-col :key="key" :span="24">
+                <div
+                  v-if="item.groupFinal !== ''
+                    && (group.groupType == 'T' && group.groupName == item.groupFinal)
+                    || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                  :key="key"
+                  class="card"
+                >
+                  <el-card
+                    shadow="hover"
+                  >
+                    <div slot="header" class="clearfix">
+                      <span>
+                        {{ item.groupFinal }}
+                      </span>
+                      <div v-if="!isSelectionColumn" class="select-filter-header">
+                        <filter-fields
+                          :container-uuid="containerUuid"
+                          :panel-type="panelType"
+                          :group-field="item.groupFinal"
+                          :is-first-group="false"
+                        />
+                      </div>
+                    </div>
+                    <el-row :gutter="gutterRow">
+                      <template v-for="(subItem, subKey) in item.metadataFields">
+                        <field
+                          :key="subKey"
+                          :parent-uuid="parentUuid"
+                          :container-uuid="containerUuid"
+                          :metadata-field="{
+                            ...subItem,
+                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
+                            value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                          }"
+                          :is-load-record="isLoadRecord"
+                          :record-data-fields="dataRecords[subItem.columnName]"
+                          :panel-type="panelType"
+                          :in-group="isMutipleGroups && fieldGroups.length > 1"
+                        />
+                      </template>
+                    </el-row>
+                  </el-card>
+                </div>
+              </el-col>
+            </el-row>
+          </template>
+        </draggable>
+        <template v-else>
           <template v-for="(item, key) in fieldGroups">
             <el-row :key="key">
               <el-col :key="key" :span="24">
@@ -104,7 +157,7 @@
               </el-col>
             </el-row>
           </template>
-        </draggable>
+        </template>
       </div>
     </el-form>
     <div
@@ -180,8 +233,7 @@ export default {
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
-      isShowRecordNavigation: false,
-      mutipleGroups: Boolean(this.panelType === 'window'),
+      isMutipleGroups: Boolean(this.panelType === 'window'),
       tagTitle: { base: this.$route.meta.title, action: '' }
     }
   },
@@ -224,6 +276,7 @@ export default {
         this.generatePanel(this.getterFieldList)
       }
     },
+    // used only panel modal (process associated in browser or window)
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     },
@@ -254,13 +307,10 @@ export default {
     // get tab with uuid
     this.getPanel()
   },
-  mounted() {
-    this.cards()
-  },
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.isMutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -279,7 +329,6 @@ export default {
           type: this.panelType
         }).then(response => {
           this.isLoadFromServer = true
-          // this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
@@ -298,7 +347,6 @@ export default {
 
       this.isLoadPanel = true
       if (this.panelType === 'window') {
-        this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (totalRecords.length > 0) {
           this.$router.push({
             name: this.$route.name,
@@ -404,42 +452,12 @@ export default {
         })
     },
     /**
-     * Order the fields, then assign the groups to each field, and finally group
-     * in an array according to each field group
-     * @param  {array} arrFields
-     * @return {array} arrFields
-     */
-    sortAndGroup(arrFields) {
-      return this.groupFields(
-        this.sortFields(arrFields)
-      )
-    },
-    /**
-     * Sorts the column components according to the value that is obtained from
-     * the array that contains the JSON objects in the data.SortNo property
-     * @param  {array} arr
-     * @return {array} order by arr.data.SortNo
-     */
-    sortFields(arr, orderBy = 'sequence', type = 'asc') {
-      if (this.panelType === 'browser') {
-        orderBy = 'seqNoGrid'
-      }
-      arr.sort((itemA, itemB) => {
-        return itemA[orderBy] - itemB[orderBy]
-        // return itemA[orderBy] > itemB[orderBy]
-      })
-      if (type.toLowerCase() === 'desc') {
-        return arr.reverse()
-      }
-      return arr
-    },
-    /**
      * Group the arrangement into groups of columns that they contain, it must
      * be grouped after having the order
      * @param {array} array
      * @return {array} res
      */
-    groupFields(arr) {
+    sortAndGroup(arr) {
       if (arr === undefined) {
         return
       }

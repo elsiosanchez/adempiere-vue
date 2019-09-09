@@ -378,8 +378,7 @@ const panel = {
      * @param {boolean} evaluateShowed, indicate if evaluate showed fields
      */
     isReadyForSubmit: (state, getters) => (containerUuid, evaluateShowed = true) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var field = fieldList.find(fieldItem => {
+      const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(fieldItem.value)) {
           return true
@@ -393,8 +392,7 @@ const panel = {
      * @param {object} dataRow, values
      */
     isReadyForSubmitRowTable: (state, getters) => (containerUuid, dataRow) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var field = fieldList.find(fieldItem => {
+      const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         const value = dataRow[fieldItem.columnName]
         if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(value)) {
@@ -413,7 +411,8 @@ const panel = {
     },
     // all available fields not mandatory to show, used in components panel/filterFields.vue
     getFieldsListNotMandatory: (state, getters) => (containerUuid, evaluateShowed = true) => {
-      var fieldListOptional = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
+      // all optionals (not mandatory) fields
+      return getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (!isMandatory) {
           const isDisplayed = fieldIsDisplayed(fieldItem)
@@ -423,7 +422,6 @@ const panel = {
           return !isMandatory
         }
       })
-      return fieldListOptional // all optionals (not mandatory) fields
     },
     getUuid: (state, getters) => (containerUuid) => {
       var uuid = getters.getColumnNamesAndValues(containerUuid).find(field => field.columnName === 'UUID')
@@ -440,8 +438,7 @@ const panel = {
      * @returns {array|object}
      */
     getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false, isEvaluateValues = false) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var attributesList = fieldList
+      var attributesList = getters.getFieldsListFromPanel(containerUuid)
       var attributesObject = {}
 
       if (isEvaluateValues) {
@@ -470,7 +467,7 @@ const panel = {
       return attributesList
     },
     getColumnNamesAndValuesChanged: (state, getters) => (containerUuid) => {
-      var fieldListChanged = getters.getFieldsListFromPanel(containerUuid)
+      return getters.getFieldsListFromPanel(containerUuid)
         .filter(fieldItem => {
           if (fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) {
             return true
@@ -486,7 +483,6 @@ const panel = {
             value: fieldItem.value
           }
         })
-      return fieldListChanged
     },
     /**
      * get field list visible and with values
@@ -541,7 +537,7 @@ const panel = {
       }
     },
     getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      const fieldList = getters.getFieldsListFromPanel(containerUuid)
       var fieldsIsDisplayed = []
       var fieldsNotDisplayed = []
       if (fieldList.length > 0) {
@@ -570,7 +566,7 @@ const panel = {
      * ]
      */
     getParametersProcessToServer: (state, getters) => (containerUuid, withOut = []) => {
-      var fieldList = getters.getPanelParameters(containerUuid, true, withOut)
+      const fieldList = getters.getPanelParameters(containerUuid, true, withOut)
       var parameters = []
       if (fieldList.fields > 0) {
         var fieldListRange = []
