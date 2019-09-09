@@ -17,7 +17,7 @@
           @click.middle.native="closeSelectedTag(tag)"
           @contextmenu.prevent.native="openMenu(tag,$event)"
         >
-          <p clas="tag-title" style="max-width: 98%; overflow: hidden; margin: 0px;">{{ generateTitle(tag.title) }}</p>
+          <p clas="tag-title" style="max-width: 94%; overflow: hidden; margin: 0px;text-overflow: ellipsis;">{{ generateTitle(tag.title) }}</p>
           <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
         </router-link>
       </draggable>
@@ -241,7 +241,7 @@ export default {
     width: 100%;
     .tags-view-item {
       flex: 1;
-      min-width: 0;
+      min-width: 10%;
       max-width: 32%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -260,13 +260,9 @@ export default {
       &:first-of-type {
         margin-left: 15px;
       }
-      &:last-of-type {
-        padding-right: 16px;
-      }
       &.active {
         background-color: #42b983;
         color: #fff;
-        padding-right: 21px;
         border-color: #42b983;
         &::before {
           content: '';

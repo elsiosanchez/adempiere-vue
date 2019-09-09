@@ -331,6 +331,10 @@ export default {
             .catch(error => {
               console.warn(error)
             })
+          this.$store.dispatch('tagsView/delView', this.$route)
+            .then(({ visitedViews }) => {
+              this.$router.push('/dashboard')
+            })
           if (action.isReport) {
             this.$store.subscribeAction({
               after: (action, state) => {
