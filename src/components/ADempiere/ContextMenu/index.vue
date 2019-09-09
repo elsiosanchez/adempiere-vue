@@ -1,62 +1,49 @@
 <template>
   <div :class="isMobileClassmenu() + ' container-context-menu'">
-    <el-button v-show="device==='mobile' && isReport " icon="el-icon-view" class="Run-Report" circle @click.native="runAction(actions[0])" />
-    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
-      <el-submenu v-show="device==='mobile' && isReport" class="icon-menu" index="1">
+    <el-menu v-if="device==='mobile'" :default-active="activeMenu" :router="false" class="el-menu-demo" mode="vertical" menu-trigger="hover" unique-opened style="width: 258px; float: right;">
+      <el-submenu index="1">
         <template slot="title">
-          <el-button v-show="device==='mobile' && isReport " icon="el-icon-document" class="List-Report" circle />
+          <svg-icon icon-class="tree-table" /> {{ $t('components.contextMenuRelations') }}
         </template>
-        <template v-for="(action) in actions">
-          <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
-            {{ child.name }}
-          </el-menu-item>
-        </template>
-      </el-submenu>
-    </el-menu>
-    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
-      <el-submenu v-if="device==='mobile'" class="el-menu-item" index="1">
-        <template slot="title">
-          <i class="el-icon-more" />
-        </template>
-        <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" :index="indexMenu() + '1'">
-          <template slot="title">
-            {{ $t('components.contextMenuRelations') }}
-          </template>
+        <el-menu-item-group>
           <el-scrollbar wrap-class="scroll">
             <item v-for="(relation, index) in relations" :key="index" :item="relation" />
           </el-scrollbar>
-        </el-submenu>
-        <el-menu-item v-else disabled :index="indexMenu() + '1'">
-          {{ $t('components.contextMenuRelations') }}
-        </el-menu-item>
-        <el-submenu class="el-menu-item" :index="indexMenu() + '2'">
-          <template slot="title">
-            {{ $t('components.contextMenuActions') }}
-          </template>
-          <template v-for="(action, index) in actions">
-            <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
-              <template slot="title">
-                {{ action.name }}
-              </template>
-              <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
-                {{ child.name }}
-              </el-menu-item>
-            </el-submenu>
-            <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-              {{ action.name }}
-            </el-menu-item>
-          </template>
-          <el-menu-item v-show="isReport" index="4">
-            <a :href="downloads" :download="file">
-              {{ $t('components.contextMenuDownload') }}
-            </a>
-          </el-menu-item>
-        </el-submenu>
-        <el-menu-item :index="indexMenu() + '3'" :disabled="!(isReferecesContent && references.length > 0)">
-          {{ $t('components.contextMenuReferences') }}
-        </el-menu-item>
+        </el-menu-item-group>
       </el-submenu>
-      <template v-else class="container-submenu">
+      <el-submenu index="2">
+        <template slot="title">
+          <svg-icon icon-class="link" />{{ $t('components.contextMenuActions') }}
+        </template>
+        <el-menu-item-group>
+          <el-scrollbar wrap-class="scroll">
+            <template v-for="(action, index) in actions">
+              <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
+                <template slot="title">
+                  {{ action.name }}
+                </template>
+                <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+                  {{ child.name }}
+                </el-menu-item>
+              </el-submenu>
+              <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
+                {{ action.name }}
+              </el-menu-item>
+            </template>
+            <el-menu-item v-show="isReport" index="4">
+              <a :href="downloads" :download="file">
+                {{ $t('components.contextMenuDownload') }}
+              </a>
+            </el-menu-item>
+          </el-scrollbar>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-menu-item index="3" disabled>
+        <i class="el-icon-document" />{{ $t('components.contextMenuReferences') }}
+      </el-menu-item>
+    </el-menu>
+    <el-menu v-else :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
+      <template class="container-submenu">
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
           <template slot="title">
             {{ $t('components.contextMenuRelations') }}
@@ -406,7 +393,18 @@ export default {
   }
 }
 </script>
-
+<style scoped>
+  .el-submenu .el-menu-item {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 27px !important;
+    padding: 0 45px;
+    min-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>
 <style>
   .Run-Report {
     position: absolute;

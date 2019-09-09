@@ -1,39 +1,52 @@
 <template>
-  <div v-if="isLoading" class="view-base">
-    <context-menu
-      :menu-parent-uuid="$route.meta.parentUuid"
-      :container-uuid="processUuid"
-      :panel-type="panelType"
-      :is-report="processMetadata.isReport"
-    />
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-card class="content-collapse">
-          <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
-            <el-popover
-              v-if="!isEmptyValue(processMetadata.help)"
-              placement="top-start"
-              :title="processMetadata.name"
-              width="400"
-              trigger="hover"
-            >
-              <div v-html="processMetadata.help" />
-              <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
-            </el-popover>
-            <el-button v-if="isEmptyValue(processMetadata.help)" slot="reference" type="text" class="title text-center">{{ processMetadata.name }}</el-button>
-          </h3>
-          <panel
-            v-if="isLoading"
-            :position-tab="processMetadata.accesLevel"
-            :container-uuid="processUuid"
-            :metadata="processMetadata"
-            :is-edit="isEdit"
-            :panel-type="panelType"
-          />
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
+  <el-container v-if="isLoading" class="view-base" style="height: 84vh;">
+    <el-header style="height: 39px;">
+      <right-menu v-if="isMobile">
+        <context-menu
+          :menu-parent-uuid="$route.meta.parentUuid"
+          :container-uuid="processUuid"
+          :panel-type="panelType"
+          :is-report="processMetadata.isReport"
+        />
+      </right-menu>
+      <context-menu
+        v-else
+        :menu-parent-uuid="$route.meta.parentUuid"
+        :container-uuid="processUuid"
+        :panel-type="panelType"
+        :is-report="processMetadata.isReport"
+      />
+    </el-header>
+    <el-main>
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-card class="content-collapse">
+            <h3 v-show="!isEmptyValue(processMetadata.name)" class="warn-content text-center">
+              <el-popover
+                v-if="!isEmptyValue(processMetadata.help)"
+                placement="top-start"
+                :title="processMetadata.name"
+                width="400"
+                trigger="hover"
+              >
+                <div v-html="processMetadata.help" />
+                <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
+              </el-popover>
+              <el-button v-if="isEmptyValue(processMetadata.help)" slot="reference" type="text" class="title text-center">{{ processMetadata.name }}</el-button>
+            </h3>
+            <panel
+              v-if="isLoading"
+              :position-tab="processMetadata.accesLevel"
+              :container-uuid="processUuid"
+              :metadata="processMetadata"
+              :is-edit="isEdit"
+              :panel-type="panelType"
+            />
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
   <div
     v-else
     v-loading="!isLoading"
@@ -50,11 +63,13 @@
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
+import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'Process',
   components: {
     Panel,
+    RightMenu,
     ContextMenu
   },
   props: {
@@ -72,6 +87,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     getterProcess() {
       return this.$store.getters.getPanel(this.processUuid)
     }
