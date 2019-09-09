@@ -11,12 +11,17 @@ const processControl = {
     metadata: {},
     process: [], // process to run finish
     sessionProcess: [],
+    notificationProcess: [],
     inRequestMetadata: []
   },
   mutations: {
     // Add process in execution
     addInExecution(state, payload) {
       state.inExecution.push(payload)
+    },
+    // Add process in notifation
+    addNotificationProcess(state, payload) {
+      state.notificationProcess.push(payload)
     },
     // Delete process in execution afther some response from server
     deleteInExecution(state, payload) {
@@ -219,6 +224,7 @@ const processControl = {
               output: output
             }
             Object.assign(processResult, processResultSucess)
+            commit('addNotificationProcess', processResult)
             dispatch('finishProcess', processResult)
             resolve(processResult)
           })
@@ -369,6 +375,9 @@ const processControl = {
      */
     getAllFinishProcess: (state) => {
       return state.process
+    },
+    getNotificationProcess: (state) => {
+      return state.notificationProcess
     },
     /**
      * Process receibed from server associated whith this session

@@ -37,7 +37,6 @@
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
-                      optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                       value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :is-load-record="isLoadRecord"
@@ -91,13 +90,12 @@
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...subItem,
-                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                             value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
                           }"
                           :is-load-record="isLoadRecord"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
-                          :in-group="isMutipleGroups && fieldGroups.length > 1"
+                          :in-group="mutipleGroups && fieldGroups.length > 1"
                         />
                       </template>
                     </el-row>
@@ -182,7 +180,8 @@ export default {
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
-      isMutipleGroups: Boolean(this.panelType === 'window'),
+      isShowRecordNavigation: false,
+      mutipleGroups: Boolean(this.panelType === 'window'),
       tagTitle: { base: this.$route.meta.title, action: '' }
     }
   },
@@ -225,7 +224,6 @@ export default {
         this.generatePanel(this.getterFieldList)
       }
     },
-    // used only panel modal (process associated in browser or window)
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     },
@@ -262,7 +260,7 @@ export default {
   methods: {
     isEmptyValue,
     cards() {
-      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.isMutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.mutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
@@ -281,6 +279,7 @@ export default {
           type: this.panelType
         }).then(response => {
           this.isLoadFromServer = true
+          // this.generatePanel(response.fieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })
@@ -299,6 +298,7 @@ export default {
 
       this.isLoadPanel = true
       if (this.panelType === 'window') {
+        this.isShowRecordNavigation = this.getterIsShowedRecordNavigation
         if (totalRecords.length > 0) {
           this.$router.push({
             name: this.$route.name,
