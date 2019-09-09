@@ -183,14 +183,22 @@ export default {
     },
     isReadOnly() {
       const isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
-      const isUpdatableColumnBrowserResult = this.panelType === 'browser' && this.inTable && isUpdateableAllFields
 
-      // edit mode is diferent to create new
-      const editMode = (!this.inTable && this.field.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
-      const isUpdateableFieldWindow = (this.panelType === 'window' && !this.field.isUpdateable && editMode) ||
-        ((isUpdateableAllFields || this.field.isReadOnlyFromForm) && this.panelType !== 'browser') // logic to window, report and process
-
-      return isUpdateableFieldWindow || isUpdatableColumnBrowserResult
+      if (this.panelType === 'window') {
+        // edit mode is diferent to create new
+        const editMode = (!this.inTable && this.field.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
+        return (!this.field.isUpdateable && editMode) || (isUpdateableAllFields || this.field.isReadOnlyFromForm)
+      }
+      if (this.panelType === 'browser') {
+        if (this.inTable) {
+          // browser result
+          return this.field.isReadOnly
+        }
+        // query criteria
+        return this.field.isReadOnlyFromLogic
+      }
+      // other type of panels (process/report)
+      return isUpdateableAllFields
     },
     isMandatory() {
       return this.field.isMandatory || this.field.isMandatoryFromLogic
