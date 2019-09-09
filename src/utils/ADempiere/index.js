@@ -26,8 +26,8 @@ export function fieldIsDisplayed(field) {
  * @param {mixed} initialValue Value get of gRPC
  */
 export function convertValue(initialValue) {
-  if (initialValue === undefined) {
-    return null
+  if (initialValue === undefined || initialValue === null) {
+    return undefined
   }
   var returnValue = ''
   switch (initialValue.getValuetype()) {
@@ -253,7 +253,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   }
 
   // hidden field type button
-  var notShowedField = FIELD_NOT_SHOWED.find(itemField => {
+  const notShowedField = FIELD_NOT_SHOWED.find(itemField => {
     if (field.displayType === itemField.id) {
       return true
     }
@@ -504,6 +504,7 @@ export function assignedGroup(fieldList, assignedGroup = null) {
   if (fieldList === undefined || fieldList.length <= 0) {
     return fieldList
   }
+  fieldList = sortFields(fieldList, 'sequence', 'asc', fieldList[0].panelType)
 
   let firstChangeGroup = false
   let currentGroup = ''
@@ -542,6 +543,29 @@ export function assignedGroup(fieldList, assignedGroup = null) {
   })
 
   return fieldList
+}
+
+/**
+ * Order the fields, then assign the groups to each field, and finally group
+ * in an array according to each field group to show in panel (or table).
+ * @param {array} arr
+ * @param {string} orderBy
+ * @param {string} type
+ * @param {string} panelType
+ * @returns {array}
+ */
+export function sortFields(arr, orderBy = 'sequence', type = 'asc', panelType = 'window') {
+  if (panelType === 'browser') {
+    orderBy = 'seqNoGrid'
+  }
+  arr.sort((itemA, itemB) => {
+    return itemA[orderBy] - itemB[orderBy]
+    // return itemA[orderBy] > itemB[orderBy]
+  })
+  if (type.toLowerCase() === 'desc') {
+    return arr.reverse()
+  }
+  return arr
 }
 
 export default evaluator // from '@/utils/ADempiere/evaluator.js'

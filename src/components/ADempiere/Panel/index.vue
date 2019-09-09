@@ -307,9 +307,6 @@ export default {
     // get tab with uuid
     this.getPanel()
   },
-  mounted() {
-    this.cards()
-  },
   methods: {
     isEmptyValue,
     cards() {
@@ -455,42 +452,12 @@ export default {
         })
     },
     /**
-     * Order the fields, then assign the groups to each field, and finally group
-     * in an array according to each field group
-     * @param  {array} arrFields
-     * @return {array} arrFields
-     */
-    sortAndGroup(arrFields) {
-      return this.groupFields(
-        this.sortFields(arrFields)
-      )
-    },
-    /**
-     * Sorts the column components according to the value that is obtained from
-     * the array that contains the JSON objects in the data.SortNo property
-     * @param  {array} arr
-     * @return {array} order by arr.data.SortNo
-     */
-    sortFields(arr, orderBy = 'sequence', type = 'asc') {
-      if (this.panelType === 'browser') {
-        orderBy = 'seqNoGrid'
-      }
-      arr.sort((itemA, itemB) => {
-        return itemA[orderBy] - itemB[orderBy]
-        // return itemA[orderBy] > itemB[orderBy]
-      })
-      if (type.toLowerCase() === 'desc') {
-        return arr.reverse()
-      }
-      return arr
-    },
-    /**
      * Group the arrangement into groups of columns that they contain, it must
      * be grouped after having the order
      * @param {array} array
      * @return {array} res
      */
-    groupFields(arr) {
+    sortAndGroup(arr) {
       if (arr === undefined) {
         return
       }

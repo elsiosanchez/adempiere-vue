@@ -47,12 +47,13 @@ const browser = {
                 )
               }
               var field = convertField(fieldItem, someAttributes)
-              if (query.includes('@' + field.columnName + '@') || whereClause.includes('@' + field.columnName + '@')) {
+              if ((query.includes('@' + field.columnName + '@') ||
+                query.includes('@' + field.columnName + '_To@') ||
+                whereClause.includes('@' + field.columnName + '@') ||
+                whereClause.includes('@' + field.columnName + '_To@')) &&
+                field.isQueryCriteria) {
                 field.isMandatory = true
                 field.isMandatoryFromLogic = true
-                field.isDisplayed = true
-                field.isDisplayedFromLogic = true
-                field.isQueryCriteria = true
                 field.isShowedFromUser = true
               }
 
@@ -79,6 +80,7 @@ const browser = {
                   }
                 })
               })
+
             //  Panel for save on store
             var newBrowser = {
               id: response.getId(),

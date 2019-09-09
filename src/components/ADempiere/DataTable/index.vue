@@ -201,6 +201,7 @@ import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
 import Panel from '@/components/ADempiere/Panel'
+import { sortFields } from '@/utils/ADempiere'
 
 export default {
   name: 'DataTable',
@@ -327,7 +328,10 @@ export default {
     },
     fieldList() {
       if (this.getterPanel && this.getterPanel.fieldList) {
-        return this.sortFields(this.getterPanel.fieldList, 'SortNo')
+        return this.sortFields(
+          this.getterPanel.fieldList,
+          this.panelType !== 'browser' ? 'seqNoGrid' : 'sequence'
+        )
       }
       return []
     },
@@ -359,6 +363,7 @@ export default {
     }
   },
   methods: {
+    sortFields,
     /**
      * @param {object} row, row data
      * @param {object} field, field with attributes
@@ -595,22 +600,6 @@ export default {
           console.warn('FieldList Load Error ' + error.code + ': ' + error.message)
         })
       }
-    },
-    /**
-     * Sorts the column components according to the value that is obtained from
-     * the array that contains the JSON objects in the data.SortNo property
-     * @param  {array} arr
-     * @return {array} order by arr.data.SortNo
-     */
-    sortFields(arr, orderBy = 'sequence', type = 'asc') {
-      arr.sort((itemA, itemB) => {
-        return itemA[orderBy] - itemB[orderBy]
-        // return itemA[orderBy] > itemB[orderBy]
-      })
-      if (type.toLowerCase() === 'desc') {
-        return arr.reverse()
-      }
-      return arr
     },
     handleChangePage(newPage) {
       this.$store.dispatch('setPageNumber', {
