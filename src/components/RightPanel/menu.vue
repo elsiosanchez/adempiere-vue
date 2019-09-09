@@ -4,7 +4,6 @@
       <div class="showme">
         <!-- <div class="rightMenu-background" /> -->
         <div class="rightMenu">
-          dasdasda
           <div class="handle-button" :style="{'top':buttonTop+'%'}" @click="show=!show">
             <i :class="show?'el-icon-close':'el-icon-more'" style="color: gray;" />
           </div>
