@@ -4,11 +4,11 @@
       <el-timeline-item
         v-for="(activity, index) in getRunProcessAll"
         :key="index"
-        :timestamp="String(new Date())"
+        :timestamp="!isEmptyValue(activity.timeInitialized) ? String(new Date(activity.timeInitialized)) : String(new Date())"
         placement="top"
         type="primary"
         size="large"
-        :color="checkStatus(activity.isError, activity.isProcessing).color"
+        :color="checkStatus(activity.isError, activity.isProcessing, activity.isReport).color"
       >
         <el-card>
           <div slot="header" class="clearfix">
@@ -50,8 +50,8 @@
                     <!-- <span>{{ activity.url }}</span><br> -->
                   </div>
                 </div>
-                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing).type">
-                  {{ checkStatus(activity.isError, activity.isProcessing).text }}
+                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
+                  {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
                 </el-tag>
               </el-popover>
             </el-form-item>
@@ -138,8 +138,15 @@ export default {
         })
       }
     },
-    checkStatus(isError, isProcessing) {
-      var status = { text: '', type: '', color: '' }
+    checkStatus(isError, isProcessing, isReport) {
+      var status = {
+        text: this.$t('notifications.completed'),
+        type: 'success',
+        color: '#67C23A'
+      }
+      if (isReport) {
+        return status
+      }
       // is executing
       if (isProcessing) {
         status.text = this.$t('notifications.processing')
@@ -154,9 +161,6 @@ export default {
         return status
       }
       // is completed
-      status.text = this.$t('notifications.completed')
-      status.type = 'success'
-      status.color = '#67C23A'
       return status
     },
     generateTitle(title) {
