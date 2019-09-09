@@ -53,6 +53,7 @@
       </template>
       <div :class="cards()">
         <draggable
+          v-if="!isMobile"
           :list="fieldGroups"
           v-bind="$attrs"
           :set-data="setData"

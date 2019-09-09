@@ -17,6 +17,7 @@ export function loadMainMenu() {
         path: '/ProcessActivity',
         component: Layout,
         meta: { title: 'ProcessActivity', icon: 'skill', noCache: true, breadcrumb: false },
+        redirect: '/ProcessActivity/index',
         children: [
           {
             path: 'index',
