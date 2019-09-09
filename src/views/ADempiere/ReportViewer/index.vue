@@ -45,6 +45,7 @@
       :metadata="processMetadataValue"
       :parent-uuid="reportResult.processUuid"
       :report-export-type="reportFormat"
+      :panel-type="panelType"
       @closeDialog="visibleDialog=false"
     />
   </div>
