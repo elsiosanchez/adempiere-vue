@@ -108,6 +108,56 @@
             </el-row>
           </template>
         </draggable>
+        <template v-else>
+          <template v-for="(item, key) in fieldGroups">
+            <el-row :key="key">
+              <el-col :key="key" :span="24">
+                <div
+                  v-if="item.groupFinal !== ''
+                    && (group.groupType == 'T' && group.groupName == item.groupFinal)
+                    || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                  :key="key"
+                  class="card"
+                >
+                  <el-card
+                    shadow="hover"
+                  >
+                    <div slot="header" class="clearfix">
+                      <span>
+                        {{ item.groupFinal }}
+                      </span>
+                      <div v-if="!isSelectionColumn" class="select-filter-header">
+                        <filter-fields
+                          :container-uuid="containerUuid"
+                          :panel-type="panelType"
+                          :group-field="item.groupFinal"
+                          :is-first-group="false"
+                        />
+                      </div>
+                    </div>
+                    <el-row :gutter="gutterRow">
+                      <template v-for="(subItem, subKey) in item.metadataFields">
+                        <field
+                          :key="subKey"
+                          :parent-uuid="parentUuid"
+                          :container-uuid="containerUuid"
+                          :metadata-field="{
+                            ...subItem,
+                            value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                          }"
+                          :is-load-record="isLoadRecord"
+                          :record-data-fields="dataRecords[subItem.columnName]"
+                          :panel-type="panelType"
+                          :in-group="mutipleGroups && fieldGroups.length > 1"
+                        />
+                      </template>
+                    </el-row>
+                  </el-card>
+                </div>
+              </el-col>
+            </el-row>
+          </template>
+        </template>
       </div>
     </el-form>
     <div
