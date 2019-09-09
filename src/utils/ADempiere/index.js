@@ -153,14 +153,15 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
 
   var field = {
     ...moreAttributes,
-
+    // base attributes
     id: fieldGRPC.getId(),
     uuid: fieldGRPC.getUuid(),
     name: fieldGRPC.getName(),
     description: fieldGRPC.getDescription(),
     help: fieldGRPC.getHelp(),
     columnName: fieldGRPC.getColumnname(),
-
+    isActive: fieldGRPC.getIsactive(),
+    // displayed attributes
     fieldGroup: group,
     displayType: fieldGRPC.getDisplaytype(),
     componentPath: componentReference.type,
@@ -170,32 +171,35 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     isSameLine: fieldGRPC.getIssameline(),
     sequence: fieldGRPC.getSequence(),
     seqNoGrid: fieldGRPC.getSeqnogrid(),
-    isIdentifier: fieldGRPC.getIsidentifier(),
-    isKey: fieldGRPC.getIskey(),
-    isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
-    isUpdateable: fieldGRPC.getIsupdateable(),
+    // value attributes
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
     value: parsedDefaultValue,
+    defaultValue: fieldGRPC.getDefaultvalue(),
     oldValue: parsedDefaultValue,
     valueTo: parsedDefaultValue,
-    defaultValue: fieldGRPC.getDefaultvalue(),
     parsedDefaultValue: parsedDefaultValue,
     defaultValueTo: fieldGRPC.getDefaultvalueto(),
     parsedDefaultValueTo: parsedDefaultValueTo,
     valueMin: fieldGRPC.getValuemin(),
     valueMax: fieldGRPC.getValuemax(),
     //
+    isIdentifier: fieldGRPC.getIsidentifier(),
+    isKey: fieldGRPC.getIskey(),
+    isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
+    isUpdateable: fieldGRPC.getIsupdateable(),
+    //
     isDisplayed: fieldGRPC.getIsdisplayed(),
-    isActive: fieldGRPC.getIsactive(),
     isMandatory: fieldGRPC.getIsmandatory(),
     isReadOnly: fieldGRPC.getIsreadonly(),
     isDisplayedFromLogic: fieldGRPC.getIsdisplayed(),
-    isReadOnlyFromLogic: fieldGRPC.getIsreadonly(),
-    isMandatoryFromLogic: fieldGRPC.getIsmandatory(),
+    isReadOnlyFromLogic: undefined,
+    isMandatoryFromLogic: undefined,
+    // browser attributes
+    isQueryCriteria: fieldGRPC.getIsquerycriteria(),
+    isInfoOnly: fieldGRPC.getIsinfoonly(),
     //
     callout: fieldGRPC.getCallout(),
-    isQueryCriteria: fieldGRPC.getIsquerycriteria(),
     displayLogic: fieldGRPC.getDisplaylogic(),
     mandatoryLogic: fieldGRPC.getMandatorylogic(),
     readOnlyLogic: fieldGRPC.getReadonlylogic(),
@@ -322,7 +326,7 @@ export function getFieldTemplate(attributesOverwrite) {
     isDisplayedFromLogic: false,
     isReadOnlyFromLogic: false,
     isMandatoryFromLogic: false,
-    //
+    // browser attributes
     callout: undefined,
     isQueryCriteria: false,
     displayLogic: undefined,

@@ -149,7 +149,7 @@
         >
           <template slot-scope="scope">
             <!-- TODO: Support to binary fields. -->
-            <template v-if="scope.row.isEdit && !(item.isReadOnly || item.isReadOnlyFromLogic) && !(item.componentPath == 'Image' || item.componentPath == 'Binary')">
+            <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item)">
               <field
                 :is-data-table="true"
                 :is-show-label="false"
@@ -379,6 +379,26 @@ export default {
       } else {
         return row['DisplayColumn_' + field.columnName] || row[field.columnName]
       }
+    },
+    isReadOnly(row, field) {
+      // TODO: Add support to its type fields
+      if (field.componentPath === 'Image' || field.componentPath === 'Binary') {
+        return true
+      }
+
+      const isUpdateableAllFields = field.isReadOnly || field.isReadOnlyFromLogic
+
+      if (this.panelType === 'window') {
+        // edit mode is diferent to create new
+        const editMode = !this.isEmptyValue(row.UUID)
+        return (!field.isUpdateable && editMode) || (isUpdateableAllFields || field.isReadOnlyFromForm)
+      }
+      if (this.panelType === 'browser') {
+        // browser result
+        return field.isReadOnly
+      }
+      // other type of panels (process/reports)
+      return isUpdateableAllFields
     },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {

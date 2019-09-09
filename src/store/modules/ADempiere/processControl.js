@@ -127,9 +127,10 @@ const processControl = {
           summary: processDefinition.description,
           type: 'info'
         })
+        const timeInitialized = (new Date()).getTime()
         // Run process on server and wait for it for notify
         var processResult = {
-          timeInitialized: (new Date()).getTime(),
+          timeInitialized: timeInitialized,
           containerUuid: params.containerUuid,
           action: processToRun.name,
           name: processDefinition.name,
@@ -209,6 +210,7 @@ const processControl = {
 
             var processResultSucess = {
               action: processToRun.name,
+              timeInitialized: timeInitialized,
               instanceUuid: response.getInstanceuuid().trim(),
               url: link.href,
               download: link.download,
@@ -245,6 +247,9 @@ const processControl = {
           })
       })
     },
+    /**
+     * TODO: Add date time in which the process / report was executed
+     */
     getSessionProcessFromServer({ commit, dispatch, getters, rootGetters }) {
       return new Promise((resolve, reject) => {
         // Example of process Activity
