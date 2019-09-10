@@ -9,9 +9,8 @@
         :data="getStart"
         highlight-current-row
         @current-change="handleCurrentChange"
-        @click.native.prevent="deleteRow($index, getStart)"
       >
-        <el-table-column prop="name" :label="$t('navbar.Notifications')" />
+        <el-table-column prop="name" :label="$t('navbar.badge.Notifications')" />
         <el-table-column
           fixed="right"
           width="50"
@@ -29,7 +28,7 @@
           width="50"
         >
           <router-link :to="{ name: 'ProcessActivity'}">
-            <el-tooltip effect="dark" content="ir a actividad de proceso" placement="top-start">
+            <el-tooltip effect="dark" :content="$t('navbar.badge.link')" placement="top-start">
               <svg-icon icon-class="tree-table" />
             </el-tooltip>
           </router-link>
@@ -42,26 +41,33 @@
 <script>
 export default {
   name: 'Badge',
+  // data() {
+  //   return {
+  //     currentRow: this.getStart[0]
+  //   }
+  // },
   computed: {
     getStart() {
       return this.$store.getters.getNotificationProcess
     }
   },
   methods: {
-    handleCurrentChange(getStart) {
-      if (getStart.isReport) {
-        this.$router.push({
-          name: 'Report Viewer',
-          params: {
-            processId: getStart.processId,
-            instanceUuid: getStart.instanceUuid,
-            fileName: getStart.download
-          }
-        })
-      } else {
-        this.$router.push({
-          name: 'ProcessActivity'
-        })
+    handleCurrentChange(getStart, val) {
+      if (val !== null) {
+        if (getStart.isReport) {
+          this.$router.push({
+            name: 'Report Viewer',
+            params: {
+              processId: getStart.processId,
+              instanceUuid: getStart.instanceUuid,
+              fileName: getStart.download
+            }
+          })
+        } else {
+          this.$router.push({
+            name: 'ProcessActivity'
+          })
+        }
       }
     },
     deleteRow(index, rows) {

@@ -383,7 +383,6 @@ const processControl = {
       return state.process
     },
     getNotificationProcess: (state) => {
-      console.log(state.notificationProcess)
       return state.notificationProcess
     },
     /**

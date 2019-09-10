@@ -30,7 +30,10 @@ export default {
     errorChangeRole: 'The role has not been changed'
   },
   navbar: {
-    Notifications: 'Notifications',
+    badge: {
+      Notifications: 'Notifications',
+      link: 'go to ProccesActivity'
+    },
     dashboard: 'Dashboard',
     github: 'Github',
     logOut: 'Log Out',
