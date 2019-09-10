@@ -1,10 +1,5 @@
 <template>
-  <div v-if="isLoading" class="view-base">
-    <context-menu
-      :menu-parent-uuid="$route.meta.parentUuid"
-      :container-uuid="browserUuid"
-      :panel-type="panelType"
-    />
+  <el-container v-if="isLoading" class="view-base" style="height: 86vh;">
     <modal
       :visible="isVisisbleDialog"
       :container-uuid="browserUuid"
@@ -12,6 +7,19 @@
       @closeDialog="isVisisbleDialog=true"
     />
     <el-header>
+      <right-menu v-if="isMobile">
+        <context-menu
+          :menu-parent-uuid="$route.meta.parentUuid"
+          :container-uuid="browserUuid"
+          :panel-type="panelType"
+        />
+      </right-menu>
+      <context-menu
+        v-else
+        :menu-parent-uuid="$route.meta.parentUuid"
+        :container-uuid="browserUuid"
+        :panel-type="panelType"
+      />
       <div class="w-33">
         <div class="center">
           <el-button
@@ -63,7 +71,7 @@
         :metadata="browserMetadata"
       />
     </el-main>
-  </div>
+  </el-container>
   <div
     v-else
     v-loading="!isLoading"
@@ -82,11 +90,13 @@ import Panel from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
+import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'Browser',
   components: {
     Panel,
+    RightMenu,
     DataTable,
     ContextMenu,
     Modal
