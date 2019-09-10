@@ -235,6 +235,7 @@ const processControl = {
               isError: true,
               isProcessing: false
             })
+            commit('addNotificationProcess', processResult)
             dispatch('finishProcess', processResult)
             console.log('Error running the process', error)
             reject(error)
@@ -382,6 +383,7 @@ const processControl = {
       return state.process
     },
     getNotificationProcess: (state) => {
+      console.log(state.notificationProcess)
       return state.notificationProcess
     },
     /**

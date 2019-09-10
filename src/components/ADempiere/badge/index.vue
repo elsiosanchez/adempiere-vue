@@ -5,7 +5,12 @@
       width="400"
       trigger="click"
     >
-      <el-table :data="getStart">
+      <el-table
+        :data="getStart"
+        highlight-current-row
+        @current-change="handleCurrentChange"
+        @click.native.prevent="deleteRow($index, getStart)"
+      >
         <el-table-column prop="name" :label="$t('navbar.Notifications')" />
         <el-table-column
           fixed="right"
@@ -19,6 +24,15 @@
               @click.native.prevent="deleteRow(scope.$index, getStart)"
             />
           </template>
+        </el-table-column>
+        <el-table-column
+          width="50"
+        >
+          <router-link :to="{ name: 'ProcessActivity'}">
+            <el-tooltip effect="dark" content="ir a actividad de proceso" placement="top-start">
+              <svg-icon icon-class="tree-table" />
+            </el-tooltip>
+          </router-link>
         </el-table-column>
       </el-table>
       <el-button slot="reference" type="text" icon="el-icon-bell" style="float: left;color: #000000;font-size: 121%;font-weight: 615!important;" />
@@ -34,6 +48,22 @@ export default {
     }
   },
   methods: {
+    handleCurrentChange(getStart) {
+      if (getStart.isReport) {
+        this.$router.push({
+          name: 'Report Viewer',
+          params: {
+            processId: getStart.processId,
+            instanceUuid: getStart.instanceUuid,
+            fileName: getStart.download
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'ProcessActivity'
+        })
+      }
+    },
     deleteRow(index, rows) {
       rows.splice(index, 1)
     }

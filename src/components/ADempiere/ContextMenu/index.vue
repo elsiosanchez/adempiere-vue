@@ -3,7 +3,7 @@
     <el-menu v-if="device==='mobile'" :default-active="activeMenu" :router="false" class="el-menu-demo" mode="vertical" menu-trigger="hover" unique-opened style="width: 258px; float: right;">
       <el-submenu index="1">
         <template slot="title">
-          <svg-icon icon-class="tree-table" /> {{ $t('components.contextMenuRelations') }}
+          <svg-icon icon-class="tree" />{{ $t('components.contextMenuRelations') }}
         </template>
         <el-menu-item-group>
           <el-scrollbar wrap-class="scroll">
