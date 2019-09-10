@@ -1,47 +1,49 @@
 <template>
   <div :class="isMobileClassmenu() + ' container-context-menu'">
-    <el-menu v-if="device==='mobile'" :default-active="activeMenu" :router="false" class="el-menu-demo" mode="vertical" menu-trigger="hover" unique-opened style="width: 258px; float: right;">
-      <el-submenu index="1">
-        <template slot="title">
-          <svg-icon icon-class="tree-table" /> {{ $t('components.contextMenuRelations') }}
-        </template>
-        <el-menu-item-group>
-          <el-scrollbar wrap-class="scroll">
-            <item v-for="(relation, index) in relations" :key="index" :item="relation" />
-          </el-scrollbar>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-submenu index="2">
-        <template slot="title">
-          <svg-icon icon-class="link" />{{ $t('components.contextMenuActions') }}
-        </template>
-        <el-menu-item-group>
-          <el-scrollbar wrap-class="scroll">
-            <template v-for="(action, index) in actions">
-              <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
-                <template slot="title">
+    <right-menu v-if="device==='mobile'">
+      <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="vertical" menu-trigger="hover" unique-opened style="width: 258px; float: right;">
+        <el-submenu index="1">
+          <template slot="title">
+            <svg-icon icon-class="tree-table" /> {{ $t('components.contextMenuRelations') }}
+          </template>
+          <el-menu-item-group>
+            <el-scrollbar wrap-class="scroll">
+              <item v-for="(relation, index) in relations" :key="index" :item="relation" />
+            </el-scrollbar>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-submenu index="2">
+          <template slot="title">
+            <svg-icon icon-class="link" />{{ $t('components.contextMenuActions') }}
+          </template>
+          <el-menu-item-group>
+            <el-scrollbar wrap-class="scroll">
+              <template v-for="(action, index) in actions">
+                <el-submenu v-if="action.childs" :key="index" :index="action.name" :disabled="action.disabled">
+                  <template slot="title">
+                    {{ action.name }}
+                  </template>
+                  <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
+                    {{ child.name }}
+                  </el-menu-item>
+                </el-submenu>
+                <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
                   {{ action.name }}
-                </template>
-                <el-menu-item v-for="(child, key) in action.childs" :key="key" :index="child.uuid" @click="runAction(child)">
-                  {{ child.name }}
                 </el-menu-item>
-              </el-submenu>
-              <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-                {{ action.name }}
+              </template>
+              <el-menu-item v-show="isReport" index="4">
+                <a :href="downloads" :download="file">
+                  {{ $t('components.contextMenuDownload') }}
+                </a>
               </el-menu-item>
-            </template>
-            <el-menu-item v-show="isReport" index="4">
-              <a :href="downloads" :download="file">
-                {{ $t('components.contextMenuDownload') }}
-              </a>
-            </el-menu-item>
-          </el-scrollbar>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-menu-item index="3" disabled>
-        <i class="el-icon-document" />{{ $t('components.contextMenuReferences') }}
-      </el-menu-item>
-    </el-menu>
+            </el-scrollbar>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-menu-item index="3" disabled>
+          <i class="el-icon-document" />{{ $t('components.contextMenuReferences') }}
+        </el-menu-item>
+      </el-menu>
+    </right-menu>
     <el-menu v-else :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
       <template class="container-submenu">
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
@@ -92,12 +94,14 @@
 <script>
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import Item from './items'
+import RightMenu from '@/components/RightPanel/menu'
 import { isEmptyValue, showNotification } from '@/utils/ADempiere'
 
 export default {
   name: 'ContextMenu',
   components: {
-    Item
+    Item,
+    RightMenu
   },
   mixins: [ResizeMixin],
   props: {
