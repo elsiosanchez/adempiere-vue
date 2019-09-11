@@ -67,6 +67,7 @@ const processControl = {
       state.metadata = {}
       state.process = [] // process to run finish
       state.sessionProcess = []
+      state.notificationProcess = []
       state.inRequestMetadata = []
     }
   },

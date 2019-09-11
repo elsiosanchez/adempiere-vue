@@ -1,14 +1,20 @@
 <template>
-  <el-badge :value="getStart.length" :hidden="getStart.length === 0" type="primary" class="item" style="vertical-align: baseline;">
+  <el-badge :value="getRecordNotification.length" :hidden="getRecordNotification.length === 0" type="primary" class="item" style="vertical-align: baseline;">
     <el-popover
       placement="bottom"
       width="400"
       trigger="click"
     >
+      <el-button
+        icon="el-icon-delete"
+        type="text"
+        style="position: fixed;z-index: inherit;right: 4%;"
+        @click.native.prevent="deleteAll()"
+      />
       <el-table
-        :data="getStart"
-        highlight-current-row
-        @current-change="handleCurrentChange"
+        :data="getRecordNotification"
+        :highlight-current-row="true"
+        @row-click="handleCurrentChange"
       >
         <el-table-column prop="name" :label="$t('navbar.badge.Notifications')" />
         <el-table-column
@@ -20,7 +26,7 @@
               icon="el-icon-close"
               type="text"
               size="small"
-              @click.native.prevent="deleteRow(scope.$index, getStart)"
+              @click.native.prevent="deleteRow(scope.$index, getRecordNotification)"
             />
           </template>
         </el-table-column>
@@ -41,26 +47,26 @@
 <script>
 export default {
   name: 'Badge',
-  // data() {
-  //   return {
-  //     currentRow: this.getStart[0]
-  //   }
-  // },
+  data() {
+    return {
+      currentRow: null
+    }
+  },
   computed: {
-    getStart() {
+    getRecordNotification() {
       return this.$store.getters.getNotificationProcess
     }
   },
   methods: {
-    handleCurrentChange(getStart, val) {
+    handleCurrentChange(getRecordNotification, val, index, rows) {
       if (val !== null) {
-        if (getStart.isReport) {
+        if (getRecordNotification && getRecordNotification.isReport) {
           this.$router.push({
             name: 'Report Viewer',
             params: {
-              processId: getStart.processId,
-              instanceUuid: getStart.instanceUuid,
-              fileName: getStart.download
+              processId: getRecordNotification.processId,
+              instanceUuid: getRecordNotification.instanceUuid,
+              fileName: getRecordNotification.download
             }
           })
         } else {
@@ -72,6 +78,10 @@ export default {
     },
     deleteRow(index, rows) {
       rows.splice(index, 1)
+    },
+    deleteAll() {
+      // rows.splice(index, rows.lenght)
+      this.getRecordNotification.splice(0)
     }
   }
 }
