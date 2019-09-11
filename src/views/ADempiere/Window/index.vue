@@ -27,17 +27,7 @@
               <Split direction="vertical" @onDrag="onDrag">
                 <SplitArea :size="isShowedTabChildren ? 50 : 100">
                   <el-header style="height: 39px;">
-                    <right-menu v-if="isMobile">
-                      <context-menu
-                        :menu-parent-uuid="$route.meta.parentUuid"
-                        :parent-uuid="windowUuid"
-                        :container-uuid="windowMetadata.currentTabUuid"
-                        :panel-type="panelType"
-                        :modal-metadata="windowMetadata"
-                      />
-                    </right-menu>
                     <context-menu
-                      v-else
                       :menu-parent-uuid="$route.meta.parentUuid"
                       :parent-uuid="windowUuid"
                       :container-uuid="windowMetadata.currentTabUuid"
@@ -132,13 +122,13 @@ import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
 import splitPane from 'vue-splitpane'
-import RightMenu from '@/components/RightPanel/menu'
+// import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'Window',
   components: {
     TabParent,
-    RightMenu,
+    // RightMenu,
     TabChildren,
     ContextMenu,
     DataTable,

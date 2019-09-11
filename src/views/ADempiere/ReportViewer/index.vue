@@ -10,7 +10,6 @@
       />
     </right-menu>
     <context-menu
-      v-else
       :container-uuid="reportResult.processUuid"
       :panel-type="panelType"
       :is-report="true"
@@ -71,13 +70,11 @@ import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Modal from '@/components/ADempiere/Dialog'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import { showNotification } from '@/utils/ADempiere/notification'
-import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'ReportViewer',
   components: {
     ContextMenu,
-    RightMenu,
     Modal
   },
   data() {

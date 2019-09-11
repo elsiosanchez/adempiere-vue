@@ -1,16 +1,15 @@
 <template>
   <el-container v-if="isLoading" class="view-base" style="height: 84vh;">
     <el-header style="height: 39px;">
-      <right-menu v-if="isMobile">
+      <!-- <right-menu v-if="isMobile">
         <context-menu
           :menu-parent-uuid="$route.meta.parentUuid"
           :container-uuid="processUuid"
           :panel-type="panelType"
           :is-report="processMetadata.isReport"
         />
-      </right-menu>
+      </right-menu> -->
       <context-menu
-        v-else
         :menu-parent-uuid="$route.meta.parentUuid"
         :container-uuid="processUuid"
         :panel-type="panelType"
@@ -63,13 +62,13 @@
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
-import RightMenu from '@/components/RightPanel/menu'
+// import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'Process',
   components: {
     Panel,
-    RightMenu,
+    // RightMenu,
     ContextMenu
   },
   props: {

@@ -700,7 +700,7 @@ export default {
   }
   .panel-expand {
     float: right;
-    padding-right: 10%;
+    padding-right: 40px;
     display: flex;
   }
   .field-optional {
