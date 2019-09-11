@@ -424,24 +424,44 @@ const panel = {
       })
     },
     getUuid: (state, getters) => (containerUuid) => {
-      var uuid = getters.getColumnNamesAndValues(containerUuid).find(field => field.columnName === 'UUID')
-      if (uuid) {
-        return uuid.value
+      const fieldUuid = getters.getColumnNamesAndValues({
+        containerUuid: containerUuid,
+        propertyName: 'value',
+        isObjectReturn: true
+      })
+
+      if (fieldUuid) {
+        return fieldUuid.UUID
       }
       return undefined
     },
     /**
-     * @param {string}  containerUuid, unique identifier of the panel to search your list of fields
-     * @param {string}  propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
-     * @param {boolean} isObjectReturn, define if is an object to return, else arraylist return
-     * @param {boolean} isEvaluateValues, define if evaluate emty values
+     * @param {string}  parameters.containerUuid, unique identifier of the panel to search your list of fields
+     * @param {string}  parameters.propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
+     * @param {boolean} parameters.isObjectReturn, define if is an object to return, else arraylist return
+     * @param {boolean} parameters.isEvaluateValues, define if evaluate emty values
+     * @param {boolean} parameters.isAddDisplayColumn, define if return display columns
+     * @param {boolean} parameters.isAddRangeColumn, define if return rangue columns_To
+     * @param {array} parameters.withOut, define if return display columns
      * @returns {array|object}
      */
-    getColumnNamesAndValues: (state, getters) => (containerUuid, propertyName = 'value', isObjectReturn = false, isEvaluateValues = false) => {
-      var attributesList = getters.getFieldsListFromPanel(containerUuid)
+    getColumnNamesAndValues: (state, getters) => (parameters) => {
+      var attributesList = getters.getFieldsListFromPanel(parameters.containerUuid)
       var attributesObject = {}
+      var displayColumnsList = []
+      var rangeColumnsList = []
 
-      if (isEvaluateValues) {
+      if (parameters.withOut && parameters.withOut.length > 0) {
+        attributesList = attributesList.filter(fieldItem => {
+          // columns to exclude
+          if (parameters.withOut.includes(fieldItem.columnName)) {
+            return false
+          }
+          return true
+        })
+      }
+
+      if (parameters.isEvaluateValues) {
         attributesList = attributesList
           .filter(fieldItem => {
             if (!isEmptyValue(fieldItem.value)) {
@@ -453,36 +473,41 @@ const panel = {
 
       attributesList = attributesList
         .map(fieldItem => {
-          const valueToReturn = fieldItem[propertyName]
+          const valueToReturn = fieldItem[parameters.propertyName]
           attributesObject[fieldItem.columnName] = valueToReturn
+
+          // Add display columns
+          if (fieldItem.displayColumn) {
+            attributesObject['DisplayColumn_' + fieldItem.columnName] = fieldItem.displayColumn
+            displayColumnsList.push({
+              columnName: 'DisplayColumn_' + fieldItem.columnName,
+              value: fieldItem.displayColumn
+            })
+          }
+
+          // add range columns
+          if (parameters.isAddRangeColumn && fieldItem.isRange) {
+            attributesObject[fieldItem.columnName + '_To'] = fieldItem.valueTo
+            rangeColumnsList.push({
+              columnName: fieldItem.columnName + '_Tp',
+              value: fieldItem.valueTo
+            })
+          }
 
           return {
             columnName: fieldItem.columnName,
             value: valueToReturn
           }
         })
-      if (isObjectReturn) {
+
+      if (parameters.isAddDisplayColumn) {
+        attributesList = attributesList.concat(displayColumnsList, rangeColumnsList)
+      }
+
+      if (parameters.isObjectReturn) {
         return attributesObject
       }
       return attributesList
-    },
-    getColumnNamesAndValuesChanged: (state, getters) => (containerUuid) => {
-      return getters.getFieldsListFromPanel(containerUuid)
-        .filter(fieldItem => {
-          if (fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) {
-            return true
-          }
-          if (fieldItem.value !== fieldItem.oldValue &&
-            !isEmptyValue(fieldItem.value) === !isEmptyValue(fieldItem.oldValue)) {
-            return true
-          }
-        })
-        .map(fieldItem => {
-          return {
-            columnName: fieldItem.columnName,
-            value: fieldItem.value
-          }
-        })
     },
     /**
      * get field list visible and with values
@@ -502,12 +527,9 @@ const panel = {
             return false
           }
 
-          var isBrowserDisplayed = fieldItem.isQueryCriteria // browser query criteria
-          var isWindowDisplayed = fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic // window, process and report, browser result
-          var isDisplayedView = (panel.panelType === 'browser' && isBrowserDisplayed) || (panel.panelType !== 'browser' && isWindowDisplayed)
+          const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
+          const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
 
-          const isMandatory = fieldItem.isMandatory && fieldItem.isMandatoryFromLogic
-          const isDisplayed = fieldItem.isActive && isDisplayedView && (fieldItem.isShowedFromUser || isMandatory)
           // mandatory fields
           if (isMandatory) {
             fieldsMandatory.push(fieldItem)

@@ -90,12 +90,16 @@ const data = {
     },
     addNewRow({ commit, getters, rootGetters }, parameters) {
       var data = getters.getDataRecordsList(parameters.containerUuid)
-      var values = {}
+      var propertyName = 'parsedDefaultValue'
       if (parameters.isPanelValues) {
-        values = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'value', true)
-      } else {
-        values = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
+        propertyName = 'value'
       }
+      var values = rootGetters.getColumnNamesAndValues({
+        containerUuid: parameters.containerUuid,
+        propertyName: propertyName,
+        isObjectReturn: true,
+        isAddDisplayColumn: true
+      })
 
       values.isEdit = true
       if (parameters.hasOwnProperty('isEdit')) {
@@ -226,7 +230,11 @@ const data = {
       })
     },
     notifyRowTableChange: ({ commit, state, getters, rootGetters }, objectParams) => {
-      var currentValues = rootGetters.getColumnNamesAndValues(objectParams.containerUuid, 'value', true)
+      var currentValues = rootGetters.getColumnNamesAndValues({
+        containerUuid: objectParams.containerUuid,
+        propertyName: 'value',
+        isObjectReturn: true
+      })
       var row = getters.getRowData(objectParams.containerUuid, currentValues.UUID)
 
       var isEdit = true

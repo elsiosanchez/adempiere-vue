@@ -7,15 +7,14 @@
       @closeDialog="isVisisbleDialog=true"
     />
     <el-header>
-      <right-menu v-if="isMobile">
+      <!-- <right-menu v-if="isMobile">
         <context-menu
           :menu-parent-uuid="$route.meta.parentUuid"
           :container-uuid="browserUuid"
           :panel-type="panelType"
         />
-      </right-menu>
+      </right-menu> -->
       <context-menu
-        v-else
         :menu-parent-uuid="$route.meta.parentUuid"
         :container-uuid="browserUuid"
         :panel-type="panelType"
@@ -90,13 +89,13 @@ import Panel from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import Modal from '@/components/ADempiere/Dialog'
-import RightMenu from '@/components/RightPanel/menu'
+// import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'Browser',
   components: {
     Panel,
-    RightMenu,
+    // RightMenu,
     DataTable,
     ContextMenu,
     Modal

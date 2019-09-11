@@ -110,22 +110,23 @@ export function getObjectListFromCriteria(object) {
   return Instance.call(this).requestObjectListFromCriteria(criteriaForList, nextPageToken)
 }
 
-// Request a Lookup list data from Reference
-// The main attributes that function hope are:
-// reference {
-//   tableName,
-//   parsedQuery
-// }
+/**
+ * Request a Lookup list data from Reference
+ * The main attributes that function hope are:
+ * @param {string} reference.tableName
+ * @param {string} reference.parsedQuery
+ */
 export function getLookupList(reference) {
   return Instance.call(this).requestLookupListFromReference(reference)
 }
 
-// Request a Lookup data from Reference
-// The main attributes that function hope are:
-// reference {
-//   tableName,
-//   parsedDirectQuery
-// }
+/**
+ * Request a Lookup data from Reference
+ * The main attributes that function hope are:
+ * @param {string} reference.tableName
+ * @param {string} reference.parsedQuery
+ * @param {string|number} value
+ */
 export function getLookup(reference, value) {
   return Instance.call(this).requestLookupFromReference(reference, value)
 }
