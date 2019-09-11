@@ -148,7 +148,7 @@
                           :is-load-record="isLoadRecord"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
-                          :in-group="mutipleGroups && fieldGroups.length > 1"
+                          :in-group="isMutipleGroups && fieldGroups.length > 1"
                         />
                       </template>
                     </el-row>
