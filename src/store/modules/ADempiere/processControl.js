@@ -90,7 +90,7 @@ const processControl = {
         } else {
           reportExportType = params.action.reportExportType
         }
-        var finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
+        const finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
 
         var selection = []
         var tableName, recordId
@@ -99,14 +99,14 @@ const processControl = {
             selection = rootGetters.getSelectionToServer(params.containerUuid)
           }
           if (params.panelType === 'window') {
-            var tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
+            const tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
             tableName = tab.tableName
-            var field = rootGetters.getFieldFromColumnName(params.containerUuid, tableName + '_ID')
+            const field = rootGetters.getFieldFromColumnName(params.containerUuid, tableName + '_ID')
             recordId = field.value
           }
         }
 
-        var processDefinition = rootGetters.getProcess(params.action.uuid)
+        const processDefinition = rootGetters.getProcess(params.action.uuid)
 
         var processToRun = {
           uuid: processDefinition.uuid,

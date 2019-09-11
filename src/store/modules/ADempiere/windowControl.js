@@ -30,7 +30,11 @@ const windowControl = {
   },
   actions: {
     resetPanelToNew({ dispatch, rootGetters }, parameters) {
-      const defaultAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'parsedDefaultValue', true)
+      var defaultAttributes = rootGetters.getColumnNamesAndValues({
+        containerUuid: parameters.containerUuid,
+        propertyName: 'parsedDefaultValue',
+        isObjectReturn: true
+      })
 
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
@@ -39,7 +43,11 @@ const windowControl = {
       })
     },
     undoPanelToNew({ dispatch, rootGetters }, parameters) {
-      const oldAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'oldValue', true)
+      var oldAttributes = rootGetters.getColumnNamesAndValues({
+        containerUuid: parameters.containerUuid,
+        propertyName: 'oldValue',
+        isObjectReturn: true
+      })
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
         newValues: oldAttributes
@@ -57,7 +65,12 @@ const windowControl = {
 
         var panel = rootGetters.getPanel(parameters.containerUuid)
         // delete key from attributes
-        var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid, 'value', false, true)
+        var finalAttributes = rootGetters.getColumnNamesAndValues({
+          containerUuid: parameters.containerUuid,
+          propertyName: 'value',
+          isEvaluateValues: true
+        })
+
         commit('addInCreate', {
           containerUuid: parameters.containerUuid,
           tableName: panel.tableName,
@@ -166,7 +179,11 @@ const windowControl = {
         const columnsToDontSend = ['BinaryData']
 
         // attributes or fields
-        var finalAttributes = rootGetters.getColumnNamesAndValues(parameters.containerUuid) //, 'oldValue')
+        var finalAttributes = rootGetters.getColumnNamesAndValues({
+          containerUuid: parameters.containerUuid,
+          propertyName: 'value' // 'oldValue'
+        })
+
         finalAttributes = finalAttributes.filter(itemAttribute => {
           if (columnsToDontSend.includes(itemAttribute.columnName)) {
             return false
