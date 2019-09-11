@@ -1,5 +1,14 @@
 <template>
-  <div v-if="isLoading">
+  <div v-if="isLoading" style="min-height: inherit;">
+    <right-menu v-if="isMobile">
+      <context-menu
+        :container-uuid="reportResult.processUuid"
+        :panel-type="panelType"
+        :is-report="true"
+        :last-parameter="reportResult.processUuid"
+        :report-format="reportFormat"
+      />
+    </right-menu>
     <context-menu
       :container-uuid="reportResult.processUuid"
       :panel-type="panelType"
@@ -25,7 +34,7 @@
           <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" width="100%" height="100%" />
           <div v-else-if="collectionReportFormat.includes(reportFormat)" class="content-api" :src="url" />
           <div v-else-if="reportFormat === 'html'" class="content-txt">
-            <el-container style="width: 100%;padding-bottom: 140px;">
+            <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 2%;">
               <el-main style="padding: 0;">
                 <div
                   class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
@@ -166,7 +175,7 @@ export default {
   }
 	.content {
     width: 100%;
-    height: -webkit-fill-available;
+    height: 100%;
     padding: 20px;
     position: absolute;
     top: 0%;
@@ -184,7 +193,7 @@ export default {
 	}
   .content-txt {
 		width: 100%;
-		height: 100%;
+		height: inherit;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 0px;
