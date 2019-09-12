@@ -37,7 +37,6 @@
                   </el-header>
 
                   <el-main>
-                    {{ getHeightPanelTop }}
                     <tab-parent
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
