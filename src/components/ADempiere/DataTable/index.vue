@@ -298,7 +298,7 @@ export default {
       return false
     },
     getHeightPanelBottom() {
-      return this.$store.getters.getSplitHeight
+      return this.$store.getters.getSplitHeight - 35
     },
     getterHeight() {
       return this.$store.getters.getHeigth
@@ -310,7 +310,7 @@ export default {
           return this.getterHeight - 180
         }
         if (!this.isExpand) {
-          return this.getHeightPanelBottom
+          return this.getHeightPanelBottom + 'vh'
         }
         return this.getterHeight - 220
       } else if (this.panelType === 'browser') {
@@ -345,6 +345,7 @@ export default {
   created() {
     // get tab with uuid
     this.getPanel()
+    console.log(this.getHeightPanelBottom)
     // this.getList()
   },
   beforeMount() {
