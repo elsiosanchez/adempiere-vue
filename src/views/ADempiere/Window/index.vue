@@ -18,6 +18,7 @@
                   :table-name="windowMetadata.currentTab.tableName"
                   :is-showed-panel-record="true"
                   :is-parent="true"
+                  :window-query="windowMetadata.currentTab.query"
                 />
               </el-aside>
             </div>
@@ -32,10 +33,10 @@
                       :parent-uuid="windowUuid"
                       :container-uuid="windowMetadata.currentTabUuid"
                       :panel-type="panelType"
+                      :is-insert-record="getterCurrentTab.isInsertRecord"
                       :modal-metadata="windowMetadata"
                     />
                   </el-header>
-
                   <el-main>
                     <tab-parent
                       :window-uuid="windowUuid"
@@ -149,7 +150,6 @@ export default {
     }
   },
   computed: {
-
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -166,7 +166,10 @@ export default {
       return this.$store.getters.getSplitHeight - 18
     },
     getterRecordList() {
-      return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTab.uuid).length
+      return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTabUuid).length
+    },
+    getterCurrentTab() {
+      return this.$store.getters.getCurrentTab(this.windowUuid)
     }
   },
   watch: {

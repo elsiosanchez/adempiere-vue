@@ -1,6 +1,6 @@
 <template>
-  <div :class="isMobileClassmenu() + ' container-context-menu'">
-    <right-menu v-if="device==='mobile'">
+  <div :class="isMobileClassmenu + ' container-context-menu'">
+    <right-menu v-if="isMobile">
       <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="vertical" menu-trigger="hover" unique-opened style="width: 258px; float: right;">
         <el-submenu index="1">
           <template slot="title">
@@ -138,6 +138,11 @@ export default {
     modalMetadata: {
       type: Object,
       default: () => {}
+    },
+    // used only window
+    isInsertRecord: {
+      type: Boolean,
+      default: undefined
     }
   },
   data() {
@@ -152,6 +157,16 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
+    isMobileClassmenu() {
+      const cssClass = 'container-submenu'
+      if (this.isMobile) {
+        return cssClass + '-mobile'
+      }
+      return cssClass
+    },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route
@@ -164,15 +179,12 @@ export default {
     sidebar() {
       return this.$store.state.app.sidebar
     },
-    device() {
-      return this.$store.state.app.device
-    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
+        mobile: this.isMobile
       }
     },
     relations() {
@@ -202,13 +214,18 @@ export default {
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
       if (this.panelType === 'window') {
-        this.generateContextMenu(this.containerUuid)
+        this.generateContextMenu()
         this.getReferences()
+      }
+    },
+    isInsertRecord(newValue, oldValue) {
+      if (this.panelType === 'window' && newValue !== oldValue) {
+        this.generateContextMenu()
       }
     }
   },
   created() {
-    this.generateContextMenu(this.containerUuid)
+    this.generateContextMenu()
   },
   mounted() {
     this.getReferences()
@@ -239,7 +256,7 @@ export default {
         this.references = []
       }
     },
-    generateContextMenu(containerUuid) {
+    generateContextMenu() {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
 
@@ -259,29 +276,23 @@ export default {
 
           if (this.$route.meta.type === 'window') {
             // if (this.$route.query.action === 'create-new') {
-            if (this.recordUuid === 'create-new') {
-              itemAction.disabled = true
-            } else {
-              itemAction.disabled = false
+            if (itemAction.action === 'resetPanelToNew') {
+              if (this.recordUuid === 'create-new') {
+                itemAction.disabled = true
+              } else {
+                if (this.isInsertRecord) {
+                  itemAction.disabled = false
+                } else {
+                  itemAction.disabled = true
+                }
+              }
             }
-            // if (itemAction.type === 'dataAction') {
-            //   if (this.$route.query.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
-            //     itemAction.disabled = true
-            //   }
-            // }
           }
         })
       }
     },
-    isMobileClassmenu() {
-      const cssClass = 'container-submenu'
-      if (this.device === 'mobile') {
-        return cssClass + '-mobile'
-      }
-      return cssClass
-    },
     indexMenu(index = '') {
-      if (this.device === 'mobile') {
+      if (this.isMobile) {
         return index + '1-'
       }
       return index
@@ -397,6 +408,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
   .el-submenu .el-menu-item {
     height: 50px;

@@ -30,7 +30,10 @@ export default {
     errorChangeRole: 'El rol no se ha cambiado'
   },
   navbar: {
-    Notifications: 'Notificaciones',
+    badge: {
+      Notifications: 'Notificaciones',
+      link: 'ir a actividad de proceso'
+    },
     logOut: 'Salir',
     dashboard: 'Panel de control',
     github: 'Github',
