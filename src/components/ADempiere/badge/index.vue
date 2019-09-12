@@ -1,12 +1,22 @@
 <template>
-  <el-badge :value="getStart.length" :hidden="getStart.length === 0" type="primary" class="item" style="vertical-align: baseline;">
+  <el-badge :value="getRecordNotification.length" :hidden="getRecordNotification.length === 0" type="primary" class="item" style="vertical-align: baseline;">
     <el-popover
       placement="bottom"
       width="400"
       trigger="click"
     >
-      <el-table :data="getStart">
-        <el-table-column prop="name" :label="$t('navbar.Notifications')" />
+      <el-button
+        icon="el-icon-delete"
+        type="text"
+        style="position: fixed;z-index: inherit;right: 4%;"
+        @click.native.prevent="deleteAll()"
+      />
+      <el-table
+        :data="getRecordNotification"
+        :highlight-current-row="true"
+        @row-click="handleCurrentChange"
+      >
+        <el-table-column prop="name" :label="$t('navbar.badge.Notifications')" />
         <el-table-column
           fixed="right"
           width="50"
@@ -16,9 +26,18 @@
               icon="el-icon-close"
               type="text"
               size="small"
-              @click.native.prevent="deleteRow(scope.$index, getStart)"
+              @click.native.prevent="deleteRow(scope.$index, getRecordNotification)"
             />
           </template>
+        </el-table-column>
+        <el-table-column
+          width="50"
+        >
+          <router-link :to="{ name: 'ProcessActivity'}">
+            <el-tooltip effect="dark" :content="$t('navbar.badge.link')" placement="top-start">
+              <svg-icon icon-class="tree-table" />
+            </el-tooltip>
+          </router-link>
         </el-table-column>
       </el-table>
       <el-button slot="reference" type="text" icon="el-icon-bell" style="float: left;color: #000000;font-size: 121%;font-weight: 615!important;" />
@@ -28,14 +47,41 @@
 <script>
 export default {
   name: 'Badge',
+  data() {
+    return {
+      currentRow: null
+    }
+  },
   computed: {
-    getStart() {
+    getRecordNotification() {
       return this.$store.getters.getNotificationProcess
     }
   },
   methods: {
+    handleCurrentChange(getRecordNotification, val, index, rows) {
+      if (val !== null) {
+        if (getRecordNotification && getRecordNotification.isReport) {
+          this.$router.push({
+            name: 'Report Viewer',
+            params: {
+              processId: getRecordNotification.processId,
+              instanceUuid: getRecordNotification.instanceUuid,
+              fileName: getRecordNotification.download
+            }
+          })
+        } else {
+          this.$router.push({
+            name: 'ProcessActivity'
+          })
+        }
+      }
+    },
     deleteRow(index, rows) {
       rows.splice(index, 1)
+    },
+    deleteAll() {
+      // rows.splice(index, rows.lenght)
+      this.getRecordNotification.splice(0)
     }
   }
 }

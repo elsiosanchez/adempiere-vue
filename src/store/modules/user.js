@@ -119,6 +119,7 @@ const actions = {
         dispatch('clearProcessControl', null, {
           root: true
         })
+        // dispatch('tagsView/delAllViews', null, {root:true})
         removeToken()
         removeCurrentRole()
         resetRouter()
@@ -175,7 +176,9 @@ const actions = {
             }
             dispatch('tagsView/delOthersViews', selectedTag, { root: true })
           })
-
+        dispatch('clearProcessControl', null, {
+          root: true
+        })
         resolve({
           ...rol,
           sessionUuid: response.getUuid()

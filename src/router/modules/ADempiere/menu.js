@@ -16,14 +16,14 @@ export function loadMainMenu() {
       {
         path: '/ProcessActivity',
         component: Layout,
-        meta: { title: 'ProcessActivity', icon: 'skill', noCache: true, breadcrumb: false },
+        meta: { title: 'ProcessActivity', icon: 'tree-table', noCache: true, breadcrumb: false },
         redirect: '/ProcessActivity/index',
         children: [
           {
             path: 'index',
             component: () => import('@/views/ADempiere/ProcessActivity'),
             name: 'ProcessActivity',
-            meta: { title: 'ProcessActivity', icon: 'skill', noCache: true, isIndex: true }
+            meta: { title: 'ProcessActivity', icon: 'tree-table', noCache: true, isIndex: true }
           }
         ]
       },

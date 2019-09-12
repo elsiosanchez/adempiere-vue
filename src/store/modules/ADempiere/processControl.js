@@ -67,6 +67,7 @@ const processControl = {
       state.metadata = {}
       state.process = [] // process to run finish
       state.sessionProcess = []
+      state.notificationProcess = []
       state.inRequestMetadata = []
     }
   },
@@ -235,6 +236,7 @@ const processControl = {
               isError: true,
               isProcessing: false
             })
+            commit('addNotificationProcess', processResult)
             dispatch('finishProcess', processResult)
             console.log('Error running the process', error)
             reject(error)
