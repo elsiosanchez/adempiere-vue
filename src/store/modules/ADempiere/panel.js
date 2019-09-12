@@ -314,24 +314,24 @@ const panel = {
       if (parameters.type === 'process' || parameters.type === 'report') {
         return dispatch('getProcessFromServer', parameters.containerUuid)
           .then(response => {
-            if (response) {
-              return response
-            }
-          })
-          .catch(error => {
-            return error
-          })
-      } else if (parameters.type === 'browser') {
-        return dispatch('getBrowserFromServer', parameters.containerUuid)
-          .then(response => {
-            if (response) {
-              return response
-            }
+            return response
           })
           .catch(error => {
             return {
               ...error,
-              moreInfo: 'Dictionary getTabAndFieldFromServer Window (State Panel)',
+              moreInfo: `Dictionary getPanelAndFields ${parameters.type} (State Panel)`,
+              parameters: parameters
+            }
+          })
+      } else if (parameters.type === 'browser') {
+        return dispatch('getBrowserFromServer', parameters.containerUuid)
+          .then(response => {
+            return response
+          })
+          .catch(error => {
+            return {
+              ...error,
+              moreInfo: 'Dictionary getPanelAndFields browser (State Panel)',
               parameters: parameters
             }
           })
@@ -340,13 +340,11 @@ const panel = {
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid
         }).then(response => {
-          if (response) {
-            return response
-          }
+          return response
         }).catch(error => {
           return {
             ...error,
-            moreInfo: 'Dictionary getTabAndFieldFromServer Window (State Panel)',
+            moreInfo: 'Dictionary getPanelAndFields Window (State Panel)',
             parameters: parameters
           }
         })
@@ -489,7 +487,7 @@ const panel = {
           if (parameters.isAddRangeColumn && fieldItem.isRange) {
             attributesObject[fieldItem.columnName + '_To'] = fieldItem.valueTo
             rangeColumnsList.push({
-              columnName: fieldItem.columnName + '_Tp',
+              columnName: fieldItem.columnName + '_To',
               value: fieldItem.valueTo
             })
           }

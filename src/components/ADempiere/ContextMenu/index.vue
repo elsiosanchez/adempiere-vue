@@ -287,12 +287,6 @@ export default {
                 }
               }
             }
-
-            // if (itemAction.type === 'dataAction') {
-            //   if (this.$route.query.action === 'create-new' && (itemAction.action === 'deleteEntity' || itemAction.action === 'resetPanelToNew')) {
-            //     itemAction.disabled = true
-            //   }
-            // }
           }
         })
       }
