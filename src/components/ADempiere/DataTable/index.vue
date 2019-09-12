@@ -106,9 +106,11 @@
         v-if="isParent"
         v-show="isAvancedQuery"
         :container-uuid="containerUuid"
+        :parent-uuid="parentUuid"
         :metadata="getterPanel"
         :panel-type="'table'"
-        :is-selection-column="true"
+        :is-avanced-query="true"
+        :window-query="windowQuery"
       />
     </el-collapse-transition>
     <el-table
@@ -244,6 +246,10 @@ export default {
     isShowedPanelRecord: {
       type: Boolean,
       default: false
+    },
+    windowQuery: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -613,7 +619,8 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
-          type: this.panelType
+          type: this.panelType,
+          isAvancedQuery: this.isAvancedQuery
         }).then(response => {
           this.isLoadPanelFromServer = true
         }).catch(error => {

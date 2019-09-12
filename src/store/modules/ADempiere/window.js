@@ -163,7 +163,7 @@ const window = {
       return new Promise((resolve, reject) => {
         getTabfromDictionary(objectParams.containerUuid)
           .then(response => {
-            const panelType = 'window'
+            const panelType = objectParams.panelType
             var fieldsList = response.getFieldsList()
             var additionalAttributes = {
               parentUuid: objectParams.parentUuid,
@@ -171,7 +171,8 @@ const window = {
               isShowedFromUser: true,
               panelType: panelType,
               //
-              isReadOnlyFromForm: false
+              isReadOnlyFromForm: false,
+              isAvancedQuery: objectParams.isAvancedQuery
             }
 
             var fieldUuidsequence = 0
@@ -219,7 +220,9 @@ const window = {
               tableName: response.getTablename(),
               linkColumnName: response.getLinkcolumnname(),
               parentColumnName: response.getParentcolumnname(),
-              panelType: panelType
+              panelType: panelType,
+              isAvancedQuery: objectParams.isAvancedQuery,
+              windowQuery: objectParams.windowQuery
             }
 
             dispatch('addPanel', panel)

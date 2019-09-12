@@ -16,7 +16,7 @@
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
-            <div v-if="!isSelectionColumn" class="select-filter">
+            <div v-if="!isAvancedQuery" class="select-filter">
               <span>
                 {{ firstGroup.groupFinal }}
               </span>
@@ -44,6 +44,7 @@
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
                     :in-group="!getterIsShowedRecordNavigation"
+                    :is-avanced-query="isAvancedQuery"
                   />
                 </template>
               </el-row>
@@ -75,7 +76,7 @@
                       <span>
                         {{ item.groupFinal }}
                       </span>
-                      <div v-if="!isSelectionColumn" class="select-filter-header">
+                      <div v-if="!isAvancedQuery" class="select-filter-header">
                         <filter-fields
                           :container-uuid="containerUuid"
                           :panel-type="panelType"
@@ -99,6 +100,7 @@
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
                           :in-group="isMutipleGroups && fieldGroups.length > 1"
+                          :is-avanced-query="isAvancedQuery"
                         />
                       </template>
                     </el-row>
@@ -126,7 +128,7 @@
                       <span>
                         {{ item.groupFinal }}
                       </span>
-                      <div v-if="!isSelectionColumn" class="select-filter-header">
+                      <div v-if="!isAvancedQuery" class="select-filter-header">
                         <filter-fields
                           :container-uuid="containerUuid"
                           :panel-type="panelType"
@@ -216,9 +218,13 @@ export default {
       type: Boolean,
       default: true
     },
-    isSelectionColumn: {
+    isAvancedQuery: {
       type: Boolean,
       default: false
+    },
+    windowQuery: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -245,11 +251,8 @@ export default {
       return false
     },
     getterFieldList() {
-      var panel = this.$store.getters.getPanel(this.containerUuid)
+      var panel = this.$store.getters.getPanel(this.containerUuid, this.isAvancedQuery)
       if (panel) {
-        if (this.isSelectionColumn) {
-          return panel.fieldList.filter(field => panel.selectionColumn.includes(field.columnName))
-        }
         return panel.fieldList
       }
       return panel
@@ -305,7 +308,7 @@ export default {
   },
   created() {
     // get tab with uuid
-    this.getPanel()
+    this.getPanel(this.isAvancedQuery)
   },
   methods: {
     isEmptyValue,
@@ -318,7 +321,7 @@ export default {
     /**
      * Get the tab object with all its attributes as well as the fields it contains
      */
-    getPanel() {
+    getPanel(isAvancedQuery) {
       var fieldList = this.getterFieldList
       if (fieldList && Array.isArray(fieldList)) {
         this.generatePanel(fieldList)
@@ -326,7 +329,9 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          type: this.panelType
+          type: (isAvancedQuery) ? 'table' : this.panelType,
+          isAvancedQuery: isAvancedQuery,
+          windowQuery: (this.metadata.query !== undefined) ? this.metadata.query : this.windowQuery
         }).then(response => {
           this.isLoadFromServer = true
         }).catch(error => {

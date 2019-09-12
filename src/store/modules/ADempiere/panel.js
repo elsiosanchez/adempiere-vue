@@ -64,12 +64,19 @@ const panel = {
           value: itemField.value
         })
       })
-
-      params.keyColumn = keyColumn
-      params.selectionColumn = selectionColumn
-      params.recordUuid = null
-      params.fieldList = assignedGroup(params.fieldList)
-      commit('addPanel', params)
+      if (!params.isAvancedQuery) {
+        params.keyColumn = keyColumn
+        params.selectionColumn = selectionColumn
+        params.recordUuid = null
+        params.fieldList = assignedGroup(params.fieldList)
+        commit('addPanel', params)
+      } else {
+        params.keyColumn = keyColumn
+        params.selectionColumn = selectionColumn
+        params.recordUuid = null
+        params.fieldList = assignedGroup(params.fieldList.filter(field => params.selectionColumn.includes(field.columnName)))
+        commit('addPanel', params)
+      }
     },
     // used by components/fields/filterFields
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
@@ -177,7 +184,13 @@ const panel = {
       })
     },
     notifyFieldChange({ commit, state, dispatch, getters }, params) {
-      var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
+      // var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
+      var panel
+      if (params.isAvancedQuery) {
+        panel = getters.getPanel(params.containerUuid, params.isAvancedQuery)
+      } else {
+        panel = getters.getPanel(params.containerUuid)
+      }
       var fieldList = panel.fieldList
       var field = field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
 
@@ -258,9 +271,6 @@ const panel = {
       if (!params.isDontSendToEdit) {
         // TODO: refactory for it and change for a standard method
         if (getters.isReadyForSubmit(params.containerUuid)) {
-          if (params.panelType === 'table' && fieldIsDisplayed(field)) {
-            // TODO: Add action to get filtered data
-          }
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
               containerUuid: params.containerUuid,
@@ -308,6 +318,21 @@ const panel = {
             }
           }
         }
+      } else {
+        if (params.panelType === 'table' && fieldIsDisplayed(field)) {
+          var avancedQueryParameters = { tableName: '', whereClause: '', query: '' }
+          avancedQueryParameters.tableName = panel.tableName
+          avancedQueryParameters.whereClause = `${panel.tableName}.${field.columnName} LIKE '%${field.value}%'`
+          avancedQueryParameters.query = panel.windowQuery
+          if (panel.isAvancedQuery) {
+            dispatch('getObjectListFromCriteria', {
+              containerUuid: panel.uuid,
+              tableName: avancedQueryParameters.tableName,
+              query: avancedQueryParameters.query,
+              whereClause: avancedQueryParameters.whereClause
+            })
+          }
+        }
       }
     },
     getPanelAndFields({ dispatch }, parameters) {
@@ -335,10 +360,13 @@ const panel = {
               parameters: parameters
             }
           })
-      } else if (parameters.type === 'window') {
+      } else if (parameters.type === 'window' || parameters.type === 'table') {
         return dispatch('getTabAndFieldFromServer', {
           parentUuid: parameters.parentUuid,
-          containerUuid: parameters.containerUuid
+          containerUuid: parameters.containerUuid,
+          isAvancedQuery: parameters.isAvancedQuery,
+          panelType: parameters.type,
+          windowQuery: parameters.windowQuery
         }).then(response => {
           return response
         }).catch(error => {
@@ -358,8 +386,8 @@ const panel = {
     }
   },
   getters: {
-    getPanel: (state) => (containerUuid) => {
-      return state.panel.find(item => item.uuid === containerUuid)
+    getPanel: (state) => (containerUuid, isAvancedQuery = false) => {
+      return state.panel.find(item => item.uuid === containerUuid && item.isAvancedQuery === isAvancedQuery)
     },
     getFieldsListFromPanel: (state, getters) => (containerUuid) => {
       var panel = getters.getPanel(containerUuid)
