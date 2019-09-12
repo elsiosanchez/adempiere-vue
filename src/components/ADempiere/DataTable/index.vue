@@ -24,7 +24,7 @@
               </el-menu-item>
               <el-menu-item
                 v-if="!isParent && panelType === 'window'"
-                :disabled="inEdited.length > 0 || (!isParent && $route.query.action === 'create-new')"
+                :disabled="inEdited.length > 0 || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
                 index="new"
                 @click="addNewRow()"
               >

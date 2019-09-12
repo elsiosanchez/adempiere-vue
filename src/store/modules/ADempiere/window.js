@@ -40,7 +40,7 @@ const window = {
               isShowedRecordNavigation: undefined
             }
             var tabs = response.getTabsList()
-            var firstTab = tabs[0].getTablename()
+            const firstTab = tabs[0].getTablename()
             var childrenTabs = []
             var parentTabs = []
 
@@ -70,7 +70,8 @@ const window = {
                 displayLogic: tabItem.getDisplaylogic(),
                 isView: tabItem.getIsview(),
                 isDocument: tabItem.getIsdocument(),
-                isInserRecrod: tabItem.getIsinsertrecord(),
+                // TODO: Verify the value to return, the value is always false, and new records cannot be created
+                isInsertRecord: true, // tabItem.getIsinsertrecord(),
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
                 parentTab: Boolean(firstTab === tabItem.getTablename()),
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
@@ -273,6 +274,15 @@ const window = {
       if (window) {
         return window.tabsList.find(tabItem => {
           return tabItem.uuid === tabUuid
+        })
+      }
+      return window
+    },
+    getCurrentTab: (state, getters) => (windowUuid) => {
+      const window = getters.getWindow(windowUuid)
+      if (window) {
+        return window.tabsList.find(tabItem => {
+          return tabItem.uuid === window.currentTabUuid
         })
       }
       return window
