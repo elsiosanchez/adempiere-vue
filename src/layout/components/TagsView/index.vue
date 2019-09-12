@@ -5,6 +5,7 @@
         :list="visitedViews"
         v-bind="$attrs"
         :set-data="setData"
+        style="display: flex;"
       >
         <router-link
           v-for="tag in visitedViews"
@@ -17,8 +18,8 @@
           @click.middle.native="closeSelectedTag(tag)"
           @contextmenu.prevent.native="openMenu(tag,$event)"
         >
-          <p clas="tag-title" style="max-width: 94%; overflow: hidden; margin: 0px;text-overflow: ellipsis;">{{ generateTitle(tag.title) }}</p>
-          <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+          <div class="tag-title">{{ generateTitle(tag.title) }}</div>
+          <div v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
         </router-link>
       </draggable>
     </scroll-pane>
@@ -240,13 +241,11 @@ export default {
   .tags-view-wrapper {
     width: 100%;
     .tags-view-item {
-      flex: 1;
-      min-width: 10%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex:none;
       max-width: 32%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-inline-box;
-      position: relative;
       cursor: pointer;
       height: 26px;
       line-height: 26px;
@@ -257,6 +256,11 @@ export default {
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
+      div.tag-title{
+        width: -webkit-fill-available;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
       &:first-of-type {
         margin-left: 15px;
       }
@@ -266,6 +270,7 @@ export default {
         border-color: #42b983;
         &::before {
           content: '';
+          align-self: center;
           background: #fff;
           display: inline-block;
           width: 8px;
@@ -274,11 +279,6 @@ export default {
           position: relative;
           margin-right: 2px;
         }
-      }
-      .tag-title {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     }
   }
@@ -311,6 +311,7 @@ export default {
 .tags-view-wrapper {
   .tags-view-item {
     .el-icon-close {
+      align-self: center;
       width: 16px;
       height: 16px;
       vertical-align: 2px;
