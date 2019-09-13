@@ -10,7 +10,7 @@
         :name="String(key)"
         :lazy="true"
         style="height: 80vh; overflow: auto;"
-        :disabled="Boolean(key > 0 && $route.query.action === 'create-new')"
+        :disabled="Boolean(key > 0 && isCreateNew)"
       >
         <panel
           :parent-uuid="windowUuid"
@@ -55,6 +55,11 @@ export default {
       tabUuid: '',
       panelType: 'window',
       firstTableName: this.tabsList[0].tableName
+    }
+  },
+  computed: {
+    isCreateNew() {
+      return Boolean(this.$route.query.action === 'create-new')
     }
   },
   watch: {

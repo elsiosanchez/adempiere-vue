@@ -63,7 +63,6 @@ const window = {
                 uuid: tabItem.getUuid(),
                 windowUuid: windowUuid,
                 name: tabItem.getName(),
-                tableName: tabItem.getTablename(),
                 tabGroup: group,
                 sequence: tabItem.getSequence(),
                 tabLevel: tabItem.getTablevel(),
@@ -75,11 +74,20 @@ const window = {
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
                 parentTab: Boolean(firstTab === tabItem.getTablename()),
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
+                isAdvancedTab: tabItem.getIsadvancedtab(),
+                isHasTree: tabItem.getIshastree(),
+                isInfoTab: tabItem.getIsinfotab(),
+                isTranslationTab: tabItem.getIstranslationtab(),
+                isReadOnly: tabItem.getIsreadonly(),
+                isDeleteable: tabItem.getIsdeleteable(),
+                accessLevel: tabItem.getAccesslevel(),
                 isSingleRow: tabItem.getIssinglerow(),
                 // conditionals
                 linkColumnName: tabItem.getLinkcolumnname(),
                 parentColumnName: tabItem.getParentcolumnname(),
                 commitWarning: tabItem.getCommitwarning(),
+                // query db
+                tableName: tabItem.getTablename(),
                 query: tabItem.getQuery(),
                 whereClause: tabItem.getWhereclause(),
                 orderByClause: tabItem.getOrderbyclause(),
