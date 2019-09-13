@@ -206,6 +206,11 @@ export default {
   }
 }
 </script>
+<style>
+  .el-collapse-item__header:hover {
+    background-color: #fcfcfc;
+  }
+</style>
 
 <style scoped>
   .view-base {

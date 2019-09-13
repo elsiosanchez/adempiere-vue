@@ -276,17 +276,17 @@ export default {
 
           if (this.$route.meta.type === 'window') {
             // if (this.$route.query.action === 'create-new') {
-            if (itemAction.action === 'resetPanelToNew') {
-              if (this.recordUuid === 'create-new') {
-                itemAction.disabled = true
+            // if (itemAction.action === 'resetPanelToNew') {
+            if (this.recordUuid === 'create-new') {
+              itemAction.disabled = true
+            } else {
+              if (this.isInsertRecord) {
+                itemAction.disabled = false
               } else {
-                if (this.isInsertRecord) {
-                  itemAction.disabled = false
-                } else {
-                  itemAction.disabled = true
-                }
+                itemAction.disabled = true
               }
             }
+            // }
           }
         })
       }
