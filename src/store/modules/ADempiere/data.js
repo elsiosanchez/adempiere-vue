@@ -8,12 +8,15 @@ const data = {
     recentItems: []
   },
   mutations: {
-    recordSelection(state, payload) {
+    setRecordSelection(state, payload) {
       if (payload.index > -1 && payload.index !== undefined) {
         state.recordSelection.splice(payload.index, 1, payload)
       } else {
         state.recordSelection.push(payload)
       }
+    },
+    setSelection(state, payload) {
+      payload.data.selection = payload.newSelection
     },
     deleteRecordContainer(state, payload) {
       state.recordSelection = payload
@@ -63,14 +66,23 @@ const data = {
     }
   },
   actions: {
+    /**
+     * Set page number of pagination list
+     * @param {string}  parameters.parentUuid
+     * @param {string}  parameters.containerUuid
+     * @param {integer} parameters.panelType
+     * @param {string}  parameters.pageNumber
+     */
     setPageNumber({ commit, state, dispatch, rootGetters }, parameters) {
-      var data = state.recordSelection.find(recordItem => {
+      const data = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === parameters.containerUuid
       })
       commit('setPageNumber', {
         data: data,
         pageNumber: parameters.pageNumber
       })
+
+      // refresh list table with data from server
       if (parameters.panelType === 'window') {
         dispatch('getDataListTab', {
           parentUuid: parameters.parentUuid,
@@ -88,10 +100,18 @@ const data = {
         }
       }
     },
+    /**
+     * Insert new row bottom list table, used only from window
+     * @param {string}  containerUuid
+     * @param {boolean} isPanelValues, define if used values form panel
+     * @param {boolean} isEdit, define if used values form panel
+     */
     addNewRow({ commit, getters, rootGetters }, parameters) {
-      var data = getters.getDataRecordsList(parameters.containerUuid)
+      const data = getters.getDataRecordsList(parameters.containerUuid)
+      // add row with default values to create new record
       var propertyName = 'parsedDefaultValue'
       if (parameters.isPanelValues) {
+        // add row with values used from record in panel
         propertyName = 'value'
       }
       var values = rootGetters.getColumnNamesAndValues({
@@ -111,17 +131,44 @@ const data = {
         data: data
       })
     },
-    recordSelection({ commit, state }, parameters) {
+    /**
+     * Set record, selection, page number, token, and record count, with container uuid
+     * TODO: Refactor and optimize the mutation of state
+     * @param {string}  parameters.containerUuid
+     * @param {array}   parameters.record
+     * @param {array}   parameters.selection
+     * @param {integer} parameters.pageNumber
+     * @param {string}  parameters.nextPageToken
+     */
+    setRecordSelection({ commit, state, getters }, parameters) {
       var index = state.recordSelection.findIndex(recordItem => {
         return recordItem.containerUuid === parameters.containerUuid
       })
-      commit('recordSelection', {
+      commit('setRecordSelection', {
         ...parameters,
         index: index
       })
     },
+    /**
+     * Set selection in data list associated in container
+     * @param {string} parameters.containerUuid
+     * @param {string} parameters.selection
+     */
+    setSelection({ commit, state, getters }, parameters) {
+      const recordSelection = getters.getDataRecordAndSelection(parameters.containerUuid)
+      commit('setSelection', {
+        newSelection: parameters.selection,
+        data: recordSelection
+      })
+    },
+    /**
+     * Delete record result in container
+     * TODO: Add parent uuid, to delete all data result in tabs children before
+     * close some window view.
+     * @param {string} containerUuid
+     */
     deleteRecordContainer({ commit, state }, containerUuid) {
-      var record = state.recordSelection.filter(itemRecord => {
+      const record = state.recordSelection.filter(itemRecord => {
         return itemRecord.containerUuid !== containerUuid
       })
       commit('deleteRecordContainer', record)
@@ -186,7 +233,7 @@ const data = {
               token = allData.nextPageToken
             }
 
-            dispatch('recordSelection', {
+            dispatch('setRecordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,
               selection: allData.selection,
@@ -205,9 +252,7 @@ const data = {
       return new Promise((resolve, reject) => {
         getRecentItems()
           .then(response => {
-            var recentItemsList = response.getRecentitemsList()
-            var recentItems = recentItemsList.map(item => {
-              var tabUuid = item.getTabuuid()
+            const recentItems = response.getRecentitemsList().map(item => {
               return {
                 displayName: item.getDisplayname(),
                 menuUuid: item.getMenuuuid(),
@@ -216,7 +261,7 @@ const data = {
                 tableId: item.getTableid(),
                 recordId: item.getRecordid(),
                 uuidRecord: item.getRecorduuid(),
-                tabUuid: tabUuid,
+                tabUuid: item.getTabuuid(),
                 updated: new Date(item.getUpdated()),
                 description: item.getMenudescription()
               }
@@ -311,11 +356,9 @@ const data = {
      * @param {string} containerUuid
      */
     getDataRecordAndSelection: (state) => (containerUuid) => {
-      var data = state.recordSelection.find(itemRecord => {
+      return state.recordSelection.find(itemRecord => {
         return itemRecord.containerUuid === containerUuid
-      })
-
-      return data || {
+      }) || {
         containerUuid: containerUuid,
         record: [],
         recordCount: 0,
@@ -379,12 +422,12 @@ const data = {
      */
     getSelectionToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
       var selectionToServer = []
-      var data = getters.getDataRecordAndSelection(containerUuid)
-      if (data.selection.length > 0) {
+      var dataList = getters.getDataRecordAndSelection(containerUuid)
+      if (dataList.selection.length > 0) {
         var panel = rootGetters.getPanel(containerUuid)
         var keyColumn = panel.keyColumn
 
-        data.selection.forEach(itemRow => {
+        dataList.selection.forEach(itemRow => {
           var records = []
 
           Object.keys(itemRow).forEach(key => {
