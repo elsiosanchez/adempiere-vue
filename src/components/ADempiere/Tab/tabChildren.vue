@@ -9,15 +9,14 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
+        :disabled="isCreateNew"
       >
         <el-col :span="24">
-          <div class="paneltab">
-            <data-table
-              :parent-uuid="windowUuid"
-              :container-uuid="item.uuid"
-              :panel-type="panelType"
-            />
-          </div>
+          <data-table
+            :parent-uuid="windowUuid"
+            :container-uuid="item.uuid"
+            :panel-type="panelType"
+          />
         </el-col>
       </el-tab-pane>
     </template>
@@ -50,6 +49,11 @@ export default {
       uuidRecord: this.$route.params.uuidRecord,
       tabUuid: '',
       panelType: 'window'
+    }
+  },
+  computed: {
+    isCreateNew() {
+      return Boolean(this.$route.query.action === 'create-new')
     }
   },
   created() {

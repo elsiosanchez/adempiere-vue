@@ -387,7 +387,9 @@ const panel = {
   },
   getters: {
     getPanel: (state) => (containerUuid, isAvancedQuery = false) => {
-      return state.panel.find(item => item.uuid === containerUuid && item.isAvancedQuery === isAvancedQuery)
+      return state.panel.find(item => {
+        return item.uuid === containerUuid && (!isAvancedQuery || (isAvancedQuery && item.isAvancedQuery))
+      })
     },
     getFieldsListFromPanel: (state, getters) => (containerUuid) => {
       var panel = getters.getPanel(containerUuid)

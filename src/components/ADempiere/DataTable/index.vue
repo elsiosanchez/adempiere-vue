@@ -356,7 +356,7 @@ export default {
   beforeMount() {
     this.currentPage = this.getPageNumber
     if (this.isParent && this.panelType === 'window') {
-      this.$store.dispatch('recordSelection', {
+      this.$store.dispatch('setRecordSelection', {
         containerUuid: this.containerUuid,
         selection: [],
         record: []
@@ -411,7 +411,7 @@ export default {
         containerUuid: this.containerUuid,
         parentUuid: this.parentUuid
       })
-      this.$store.dispatch('recordSelection', {
+      this.$store.dispatch('setRecordSelection', {
         containerUuid: this.containerUuid,
         selection: [],
         record: []
@@ -554,10 +554,9 @@ export default {
       }
     },
     handleSelection(rowsSelection, rowSelected) {
-      this.$store.dispatch('recordSelection', {
+      this.$store.dispatch('setSelection', {
         containerUuid: this.containerUuid,
-        selection: rowsSelection,
-        record: this.getterDataRecords
+        selection: rowsSelection
       })
     },
     isAllSelected(selection = 0) {
@@ -572,10 +571,9 @@ export default {
       // if (this.isAllSelected(rowsSelection.length)) {
       //   selectAll = true
       // }
-      this.$store.dispatch('recordSelection', {
+      this.$store.dispatch('setSelection', {
         containerUuid: this.containerUuid,
-        selection: rowsSelection,
-        record: this.getterDataRecords
+        selection: rowsSelection
       })
       // rowsSelection.forEach(row => {
       //   row.isEdit = selectAll

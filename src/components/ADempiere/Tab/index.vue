@@ -9,7 +9,8 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
-        :disabled="Boolean(key > 0 && $route.query.action === 'create-new')"
+        style="height: 80vh; overflow: auto;"
+        :disabled="Boolean(key > 0 && isCreateNew)"
       >
         <div>
           <panel
@@ -58,7 +59,18 @@ export default {
       firstTableName: this.tabsList[0].tableName
     }
   },
+  computed: {
+    isCreateNew() {
+      return Boolean(this.$route.query.action === 'create-new')
+    }
+  },
   watch: {
+    // TODO: Remove watchers of action, and pased as props from window
+    '$route.query.action'(actionValue) {
+      if (actionValue === 'create-new') {
+        this.currentTab = '0'
+      }
+    },
     currentTab(tabNumber) {
       this.$router.push({
         name: this.$route.name,

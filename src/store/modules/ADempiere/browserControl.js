@@ -66,7 +66,7 @@ const browserControl = {
               token = token.slice(0, -2)
             }
 
-            dispatch('recordSelection', {
+            dispatch('setRecordSelection', {
               containerUuid: parameters.containerUuid,
               record: record,
               pageNumber: rootGetters.getPageNumber(parameters.containerUuid),
