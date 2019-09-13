@@ -351,7 +351,6 @@ export default {
   created() {
     // get tab with uuid
     this.getPanel()
-    console.log(this.getHeightPanelBottom)
     // this.getList()
   },
   beforeMount() {
