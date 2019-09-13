@@ -63,6 +63,12 @@ export default {
     }
   },
   watch: {
+    // TODO: Remove watchers of action, and pased as props from window
+    '$route.query.action'(actionValue) {
+      if (actionValue === 'create-new') {
+        this.currentTab = '0'
+      }
+    },
     currentTab(tabNumber) {
       this.$router.push({
         name: this.$route.name,

@@ -210,10 +210,6 @@ export default {
       type: String,
       default: 'window'
     },
-    windowType: {
-      type: String,
-      default: ''
-    },
     isReSearch: {
       type: Boolean,
       default: true
@@ -240,7 +236,9 @@ export default {
       firstGroup: {},
       groupsView: 0,
       isMutipleGroups: Boolean(this.panelType === 'window'),
-      tagTitle: { base: this.$route.meta.title, action: '' }
+      tagTitle: {
+        base: this.$route.meta.title, action: ''
+      }
     }
   },
   computed: {
@@ -290,10 +288,14 @@ export default {
         // TODO: Validate UUID value
         if (actionValue !== 'create-new' && this.isReSearch && this.panelType === 'window') {
           this.getData(this.metadata.tableName, actionValue)
-          // } else {
+        } else {
           //   this.$store.dispatch('resetPanelToNew', {
           //     containerUuid: this.containerUuid
           //   })
+          this.$message({
+            message: this.$t('data.createNewRecord'),
+            showClose: true
+          })
         }
         this.setTagsViewTitle(actionValue)
       }
@@ -360,25 +362,13 @@ export default {
               tabNumber: this.$route.query.tabNumber
             }
           })
-        } else if (this.uuidRecord === 'create-new' && !isEmptyValue(this.getterRecordUuid)) {
-          // TODO: Verify used
-          this.$store.dispatch('resetPanelToNew', {
-            containerUuid: this.containerUuid
-          })
-          this.$router.push({
-            name: this.$route.name,
-            query: { action: 'create-new', tabNumber: 0 }
-          })
-          this.$message({
-            message: this.$t('data.createNewRecord'),
-            showClose: true
-          })
         }
+        // TODO: Verify used, its is evaluate in watcher
         if (this.uuidRecord && this.uuidRecord !== 'create-new') {
           if (this.isReSearch || Object.entries(this.getterData).length === 0 && this.panelType === 'window') {
             this.getData(this.metadata.tableName, this.uuidRecord)
           } else {
-            this.dataRecords = this.getterData
+            this.dataRecords = this.getterData.data
             this.$store.dispatch('notifyPanelChange', {
               parentUuid: this.parentUuid,
               containerUuid: this.containerUuid,
@@ -436,7 +426,10 @@ export default {
           this.dataRecords = response
           this.$router.push({
             name: this.$route.name,
-            query: { action: this.dataRecords.UUID, tabNumber: 0 }
+            query: {
+              action: this.dataRecords.UUID,
+              tabNumber: 0
+            }
           })
           this.$store.dispatch('notifyPanelChange', {
             parentUuid: this.parentUuid,
