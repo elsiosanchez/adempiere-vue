@@ -2,9 +2,9 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb v-show="!show" id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
-    <el-button v-show="!show && isMobile" type="text" :circle="true" icon="el-icon-d-arrow-left" :style="show ? { position: 'absolute', right: '36px' } : { position: 'initial', right: 'opx' }" @click="show = !show" />
-    <div v-show="show && isMobile" style="display: inline-flex; float: right;" @click="show = !show">
+    <breadcrumb v-show="!isMenuMobile" id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
+    <el-button v-show="!isMenuMobile && isMobile" type="text" :circle="true" icon="el-icon-d-arrow-left" :style="isMenuMobile ? { position: 'absolute', right: '36px' } : { position: 'initial', right: 'opx' }" @click="isMenuMobile = !isMenuMobile" />
+    <div v-show="isMenuMobile && isMobile" style="display: inline-flex; float: right;" @click="isMenuMobile = !isMenuMobile">
       <el-button type="text" :circle="true" icon="el-icon-d-arrow-right" />
       <search id="header-search" class="right-menu-item" />
       <badge />
@@ -25,7 +25,7 @@
 
       </template>
 
-      <el-dropdown v-show="!show" class="avatar-container right-menu-item hover-effect" trigger="hover">
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
         <div class="avatar-wrapper" @click="handleClick">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -82,7 +82,7 @@ export default {
   },
   data() {
     return {
-      show: true
+      isMenuMobile: false
     }
   },
   computed: {
