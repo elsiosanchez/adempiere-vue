@@ -2,7 +2,7 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -76,6 +76,9 @@ export default {
     Search
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     ...mapGetters([
       'sidebar',
       'avatar',
