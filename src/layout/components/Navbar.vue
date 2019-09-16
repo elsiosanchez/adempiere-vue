@@ -2,8 +2,13 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
-
+    <breadcrumb v-show="!show" id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
+    <el-button v-show="!show && isMobile" type="text" :circle="true" icon="el-icon-d-arrow-left" :style="show ? { position: 'absolute', right: '36px' } : { position: 'initial', right: 'opx' }" @click="show = !show" />
+    <div v-show="show && isMobile" style="display: inline-flex; float: right;" @click="show = !show">
+      <el-button type="text" :circle="true" icon="el-icon-d-arrow-right" />
+      <search id="header-search" class="right-menu-item" />
+      <badge />
+    </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
@@ -20,7 +25,7 @@
 
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
+      <el-dropdown v-show="!show" class="avatar-container right-menu-item hover-effect" trigger="hover">
         <div class="avatar-wrapper" @click="handleClick">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -74,6 +79,11 @@ export default {
     SizeSelect,
     LangSelect,
     Search
+  },
+  data() {
+    return {
+      show: true
+    }
   },
   computed: {
     isMobile() {
