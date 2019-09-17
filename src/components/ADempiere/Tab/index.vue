@@ -9,7 +9,7 @@
         :position-tab="key"
         :name="String(key)"
         :lazy="true"
-        style="height: 80vh; overflow: auto;"
+        :style="getterWindow ? {height: '100%', overflow: 'hidden'} : { height: '75vh', overflow: 'auto'}"
         :disabled="Boolean(key > 0 && isCreateNew)"
       >
         <div>
@@ -62,6 +62,9 @@ export default {
   computed: {
     isCreateNew() {
       return Boolean(this.$route.query.action === 'create-new')
+    },
+    getterWindow() {
+      return this.$store.getters.getWindow(this.windowUuid).isShowedDetail
     }
   },
   watch: {
