@@ -152,8 +152,7 @@ export default {
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
-      recordUuid: this.$route.query.action,
-      tempRoute: {}
+      recordUuid: this.$route.query.action
     }
   },
   computed: {
@@ -229,7 +228,6 @@ export default {
   },
   mounted() {
     this.getReferences()
-    this.tempRoute = this.$route
   },
   methods: {
     isEmptyValue,
@@ -291,31 +289,30 @@ export default {
         })
       }
     },
-    indexMenu(index = '') {
-      if (this.isMobile) {
-        return index + '1-'
-      }
-      return index
-    },
-    showModal(type, action) {
-      if (type === 'process') {
+    showModal(action) {
+      // TODO: Refactor and remove redundant dispatchs
+      if (action.type === 'process') {
         var processData = this.$store.getters.getProcess(action.uuid)
         if (processData === undefined) {
           this.$store.dispatch('getProcessFromServer', action.uuid)
             .then(response => {
-              this.$store.dispatch('setShowDialog', { type: type, action: response })
+              this.$store.dispatch('setShowDialog', {
+                type: action.type,
+                action: response
+              })
             }).catch(error => {
               console.warn('ContextMenu: Dictionary Process (State) - Error ' + error.code + ': ' + error.message)
             })
         } else {
-          this.$store.dispatch('setShowDialog', { type: type, action: processData })
+          this.$store.dispatch('setShowDialog', { type: action.type, action: processData })
         }
       } else {
-        this.$store.dispatch('setShowDialog', { type: type, action: this.modalMetadata })
+        this.$store.dispatch('setShowDialog', { type: action.type, action: this.modalMetadata })
       }
     },
     runAction(action) {
       if (action.type === 'action') {
+        // run process or report
         var isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
         if (isReadyForSubmit) {
           var containerParams = this.$route.meta.uuid
@@ -356,7 +353,8 @@ export default {
           })
         }
       } else if (action.type === 'process') {
-        this.showModal(action.type, action)
+        // run process associate with view (window or browser)
+        this.showModal(action)
       } else if (action.type === 'dataAction') {
         this.$store.dispatch(action.action, {
           containerUuid: this.containerUuid,

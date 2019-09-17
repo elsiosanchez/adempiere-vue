@@ -6,7 +6,7 @@ import router from '@/router'
 const processControl = {
   state: {
     inExecution: [], // process not response from server
-    visibleDialog: false,
+    isVisibleDialog: false,
     reportObject: {},
     reportList: [],
     metadata: {},
@@ -42,11 +42,13 @@ const processControl = {
     dataResetCacheProcess(state, payload) {
       state.process = payload
     },
-    setShowDialog(state) {
-      state.visibleDialog = true
-    },
-    setCloseDialog(state) {
-      state.visibleDialog = false
+    /**
+     *
+     * @param {object} state
+     * @param {boolean} payload, true or false value to change displayed dialog
+     */
+    setShowDialog(state, payload) {
+      state.isVisibleDialog = payload
     },
     setMetadata(state, payload) {
       state.metadata = payload
@@ -325,20 +327,17 @@ const processControl = {
           })
       })
     },
+    /**
+     *
+     * @param {object} params
+     */
     setShowDialog({ commit }, params) {
-      if (params.type === 'process' || params.type === 'report') {
-        if (params.action === undefined) {
-          commit('setCloseDialog')
-        } else {
+      if (params.type === 'process' || params.type === 'report' || params.type === 'window') {
+        if (params.action) {
           commit('setMetadata', params.action)
-          commit('setShowDialog')
-        }
-      } else if (params.type === 'window') {
-        if (params.action === undefined) {
-          commit('setCloseDialog')
+          commit('setShowDialog', true)
         } else {
-          commit('setMetadata', params.action)
-          commit('setShowDialog')
+          commit('setShowDialog', false)
         }
       }
     },

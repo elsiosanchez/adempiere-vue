@@ -75,7 +75,7 @@ export default {
       return 50
     },
     isVisibleDialog() {
-      return this.$store.state.processControl.visibleDialog
+      return this.$store.state.processControl.isVisibleDialog
     },
     modalMetadata() {
       return this.$store.state.processControl.metadata
