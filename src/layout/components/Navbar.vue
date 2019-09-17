@@ -2,8 +2,13 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-
+    <breadcrumb v-show="!isMenuMobile" id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
+    <el-button v-show="!isMenuMobile && isMobile" type="text" :circle="true" icon="el-icon-d-arrow-left" :style="isMenuMobile ? { position: 'absolute', right: '36px' } : { position: 'initial', right: 'opx' }" @click="isMenuMobile = !isMenuMobile" />
+    <div v-show="isMenuMobile && isMobile" style="display: inline-flex; float: right;" @click="isMenuMobile = !isMenuMobile">
+      <el-button type="text" :circle="true" icon="el-icon-d-arrow-right" />
+      <search id="header-search" class="right-menu-item" />
+      <badge />
+    </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
@@ -75,7 +80,15 @@ export default {
     LangSelect,
     Search
   },
+  data() {
+    return {
+      isMenuMobile: false
+    }
+  },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     ...mapGetters([
       'sidebar',
       'avatar',
