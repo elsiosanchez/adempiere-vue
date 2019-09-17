@@ -3,7 +3,8 @@ const utils = {
   state: {
     width: 0,
     height: 0,
-    splitHeight: 160,
+    splitHeight: 50,
+    splitHeightTop: 0,
     widthLayout: 0
   },
   mutations: {
@@ -18,6 +19,9 @@ const utils = {
     },
     setSplitHeight(state, splitHeight) {
       state.splitHeight = splitHeight
+    },
+    setSplitHeightTop(state, splitHeightTop) {
+      state.splitHeightTop = splitHeightTop
     }
   },
   actions: {
@@ -32,6 +36,9 @@ const utils = {
     },
     setSplitHeight({ commit }, splitHeight) {
       commit('setSplitHeight', splitHeight)
+    },
+    setSplitHeightTop({ commit }, splitHeightTop) {
+      commit('setSplitHeightTop', splitHeightTop)
     },
     changeShowedDetail({ dispatch }, params) {
       if (params.panelType === 'window') {
@@ -54,13 +61,17 @@ const utils = {
     getHeigth: (state) => {
       return state.height
     },
+    getSplitHeightTop: (state) => {
+      console.log(state.getSplitHeightTop)
+      return state.getSplitHeightTop
+    },
     getSplitHeight: (state) => {
       const split = state.splitHeight
       var panelHeight = 0
-      if (split !== 160) {
+      if (split !== 50) {
         panelHeight = split.splitHeight
       } else {
-        panelHeight = split
+        panelHeight = 50
       }
       return panelHeight
     }

@@ -94,6 +94,7 @@
                     <tab-children
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListChildren"
+                      :style="{'height':getHeightPanelBottom+'vh'}"
                     />
                   </el-header>
                 </SplitArea>
@@ -158,6 +159,12 @@ export default {
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
     },
+    getHeightPanelTop() {
+      return this.$store.getters.getSplitHeightTop
+    },
+    getHeightPanelBottom() {
+      return this.$store.getters.getSplitHeight - 18
+    },
     getterRecordList() {
       return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTabUuid).length
     },
@@ -190,11 +197,16 @@ export default {
   },
   mounted() {
     this.getWindow()
+    console.log(this.getHeightPanelTop)
   },
   methods: {
     // callback new size
     onDrag(size) {
-      var bottomPanel = size[1] - 30 + 'vh'
+      var bottomPanel = size[1]
+      var topPanel = size[0]
+      this.$store.dispatch('setSplitHeightTop', {
+        splitHeightTop: topPanel
+      })
       this.$store.dispatch('setSplitHeight', {
         splitHeight: bottomPanel
       })
@@ -378,17 +390,17 @@ export default {
   }
 
   .left-container {
-    background-color: #F38181;
+    background-color: #ffffff;
     height: 100%;
   }
 
   .right-container {
-    background-color: #FCE38A;
+    background-color: #ffffff;
     height: 200px;
   }
 
   .top-container {
-    background-color: #FCE38A;
+    background-color: #ffffff;
     width: 100%;
     height: 100%;
   }
