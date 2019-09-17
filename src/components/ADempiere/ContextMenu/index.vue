@@ -276,17 +276,17 @@ export default {
 
           if (this.$route.meta.type === 'window') {
             // if (this.$route.query.action === 'create-new') {
-            if (itemAction.action === 'resetPanelToNew') {
-              if (this.recordUuid === 'create-new') {
-                itemAction.disabled = true
+            // if (itemAction.action === 'resetPanelToNew') {
+            if (this.recordUuid === 'create-new') {
+              itemAction.disabled = true
+            } else {
+              if (this.isInsertRecord) {
+                itemAction.disabled = false
               } else {
-                if (this.isInsertRecord) {
-                  itemAction.disabled = false
-                } else {
-                  itemAction.disabled = true
-                }
+                itemAction.disabled = true
               }
             }
+            // }
           }
         })
       }
@@ -324,10 +324,9 @@ export default {
           }
           this.$store.dispatch(action.action, {
             action: action,
-            containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.containerUuid,
-            panelType: this.panelType,
-            processName: action.processName,
+            containerUuid: containerParams, // EVALUATE IF IS action.uuid
+            panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
             reportFormat: this.reportFormat
           })
             .catch(error => {

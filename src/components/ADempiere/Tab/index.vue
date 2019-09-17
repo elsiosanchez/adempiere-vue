@@ -12,15 +12,17 @@
         :style="getterWindow ? {height: '100%', overflow: 'hidden'} : { height: '75vh', overflow: 'auto'}"
         :disabled="Boolean(key > 0 && isCreateNew)"
       >
-        <panel
-          :parent-uuid="windowUuid"
-          :container-uuid="item.uuid"
-          :metadata="item"
-          :group="item.tabGroup"
-          :panel-type="panelType"
-          :window-type="windowType"
-          :is-re-search="Boolean(key == 0 || (key > 0 && firstTableName != item.tableName))"
-        />
+        <div>
+          <panel
+            :parent-uuid="windowUuid"
+            :container-uuid="item.uuid"
+            :metadata="item"
+            :group="item.tabGroup"
+            :panel-type="panelType"
+            :window-type="windowType"
+            :is-re-search="Boolean(key == 0 || (key > 0 && firstTableName != item.tableName))"
+          />
+        </div>
       </el-tab-pane>
     </template>
   </el-tabs>

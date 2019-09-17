@@ -203,6 +203,7 @@ export default {
     createNewRecord: 'Mode New record',
     createRecordError: 'Error creating new record',
     deleteRecordSuccessful: 'Record deleted successfully',
-    deleteRecordError: 'Error deleting record'
+    deleteRecordError: 'Error deleting record',
+    selectionRequired: 'You must select a record'
   }
 }
