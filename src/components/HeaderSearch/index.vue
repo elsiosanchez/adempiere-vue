@@ -37,6 +37,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
     routes() {
       return this.$store.getters.permission_routes
     },
@@ -191,7 +194,7 @@ export default {
 
   &.show {
     .header-search-select {
-      width: 180px;
+      width: 150px;
       margin-left: 10px;
     }
   }
