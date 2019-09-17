@@ -36,6 +36,16 @@ const windowControl = {
         isObjectReturn: true
       })
 
+      // redirect to create new record
+      const oldRoute = router.app._route
+      router.push({
+        name: oldRoute.name,
+        query: {
+          action: 'create-new',
+          tabNumber: oldRoute.query.tabNumber
+        }
+      })
+
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
         newValues: defaultAttributes,
@@ -258,20 +268,14 @@ const windowControl = {
           recordUuid: recordUuid
         })
           .then(response => {
+            const oldRoute = router.app._route
+
             // clear fields with default values
             dispatch('resetPanelToNew', {
               containerUuid: parameters.containerUuid
             })
 
-            // redirect to create new record
-            var oldRoute = router.app._route
-            router.push({
-              name: oldRoute.name,
-              query: {
-                action: 'create-new',
-                tabNumber: oldRoute.query.tabNumber
-              }
-            })
+            // TODO: Verify if necessary
             // delete view with uuid record delete
             dispatch('tagsView/delView', oldRoute, true)
 

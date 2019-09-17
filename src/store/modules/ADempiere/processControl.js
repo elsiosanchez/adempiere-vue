@@ -1,6 +1,7 @@
 import { runProcess, requestProcessActivity } from '@/api/ADempiere'
 import { showNotification } from '@/utils/ADempiere/notification'
 import language from '@/lang'
+import router from '@/router'
 
 const processControl = {
   state: {
@@ -130,8 +131,13 @@ const processControl = {
         const timeInitialized = (new Date()).getTime()
         // Run process on server and wait for it for notify
         var processResult = {
-          timeInitialized: timeInitialized,
+          // panel attributes from where it was executed
+          parentUuid: params.parentUuid,
           containerUuid: params.containerUuid,
+          panelType: params.panelType,
+          menuParentUuid: params.menuParentUuid,
+          // process attributes
+          timeInitialized: timeInitialized,
           action: processDefinition.name,
           name: processDefinition.name,
           description: processDefinition.description,
@@ -173,34 +179,33 @@ const processControl = {
               name: '',
               description: '',
               fileName: '',
+              mimeType: '',
               output: '',
               outputStream: '',
               reportExportType: ''
             }
 
-            if (response.getOutput() !== undefined) {
-              var responseOutput = response.getOutput()
+            if (response.getOutput()) {
+              const responseOutput = response.getOutput()
               output = {
                 uuid: responseOutput.getUuid(),
                 name: responseOutput.getName(),
                 description: responseOutput.getDescription(),
                 fileName: responseOutput.getFilename(),
-                output: responseOutput.getOutput(),
                 mimeType: responseOutput.getMimetype(),
+                output: responseOutput.getOutput(),
                 outputStream: responseOutput.getOutputstream(),
                 reportExportType: responseOutput.getReportexporttype()
               }
             }
-            var logList = response.getLogsList()
-            if (logList !== undefined) {
-              logList = logList.map(itemLog => {
+            var logList = []
+            if (response.getLogsList()) {
+              logList = response.getLogsList().map(itemLog => {
                 return {
                   log: itemLog.getLog(),
                   recordId: itemLog.getRecordid()
                 }
               })
-            } else {
-              logList = []
             }
 
             var link = {
@@ -208,7 +213,7 @@ const processControl = {
               download: undefined
             }
             if (processDefinition.isReport) {
-              var blob = new Blob([output.outputStream], { type: output.mimeType })
+              const blob = new Blob([output.outputStream], { type: output.mimeType })
               link = document.createElement('a')
               link.href = window.URL.createObjectURL(blob)
               link.download = output.fileName
@@ -217,26 +222,18 @@ const processControl = {
               }
             }
 
-            var processResultSucess = {
-              action: processDefinition.name,
-              timeInitialized: timeInitialized,
+            // assign new attributes
+            Object.assign(processResult, {
               instanceUuid: response.getInstanceuuid(),
               url: link.href,
               download: link.download,
-              processUuid: processDefinition.uuid,
-              processId: processDefinition.id,
-              processName: processDefinition.name,
               isError: response.getIserror(),
               isProcessing: response.getIsprocessing(),
-              isReport: processDefinition.isReport,
               summary: response.getSummary(),
               resultTableId: response.getResulttableid(),
               logs: logList,
               output: output
-            }
-            Object.assign(processResult, processResultSucess)
-            commit('addNotificationProcess', processResult)
-            dispatch('finishProcess', processResult)
+            })
             resolve(processResult)
           })
           .catch(error => {
@@ -244,12 +241,13 @@ const processControl = {
               isError: true,
               isProcessing: false
             })
-            commit('addNotificationProcess', processResult)
-            dispatch('finishProcess', processResult)
             console.log('Error running the process', error)
             reject(error)
           })
           .finally(() => {
+            commit('addNotificationProcess', processResult)
+            dispatch('finishProcess', processResult)
+
             commit('deleteInExecution', {
               containerUuid: params.containerUuid
             })
@@ -258,7 +256,7 @@ const processControl = {
       })
     },
     /**
-     * TODO: Add date time in which the process / report was executed
+     * TODO: Add date time in which the process/report was executed
      */
     getSessionProcessFromServer({ commit, dispatch, getters, rootGetters }) {
       return new Promise((resolve, reject) => {
@@ -344,7 +342,7 @@ const processControl = {
         }
       }
     },
-    finishProcess({ commit }, processOutput) {
+    finishProcess({ commit, dispatch }, processOutput) {
       var processMessage = {
         name: processOutput.processName,
         title: language.t('notifications.succesful'),
@@ -353,11 +351,32 @@ const processControl = {
         logs: processOutput.logs,
         summary: processOutput.summary
       }
+      // TODO: Add isReport to type always 'success'
       if (processOutput.isError) {
         processMessage.title = language.t('notifications.error')
         processMessage.message = language.t('notifications.processError')
         processMessage.type = 'error'
       }
+
+      const oldRoute = router.app._route
+      if (processOutput.isReport) {
+        // open report viewer with report response
+        router.push({
+          name: 'Report Viewer',
+          params: {
+            processId: processOutput.processId,
+            instanceUuid: processOutput.instanceUuid,
+            fileName: processOutput.output.fileName,
+            menuParentUuid: processOutput.menuParentUuid
+          }
+        })
+      }
+
+      // close view if is process, report or browser.
+      if (processOutput.panelType !== 'window') {
+        dispatch('tagsView/delView', oldRoute, true)
+      }
+
       showNotification(processMessage)
       commit('addStartedProcess', processOutput)
       commit('setReportValues', processOutput)
@@ -410,10 +429,9 @@ const processControl = {
       return state.reportObject
     },
     getCachedReport: (state) => (instanceUuid) => {
-      var cachedReport = state.reportList.find(
+      return state.reportList.find(
         item => item.instanceUuid === instanceUuid
       )
-      return cachedReport
     }
   }
 }

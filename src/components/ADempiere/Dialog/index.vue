@@ -116,30 +116,6 @@ export default {
             .catch(error => {
               console.warn(error)
             })
-          if (action.isReport) {
-            this.$store.subscribeAction({
-              after: (action, state) => {
-                if (action.type === 'finishProcess') {
-                  this.$router.push({
-                    name: 'Report Viewer',
-                    params: {
-                      processId: action.payload.processId,
-                      instanceUuid: action.payload.instanceUuid,
-                      fileName: action.payload.output.fileName
-                    }
-                  })
-                  this.$store.dispatch('tagsView/delView', this.$route)
-                }
-              }
-            })
-          }
-          // evaluate if need close view
-          if (!this.$route.meta.type === 'window') {
-            this.$store.dispatch('tagsView/delView', this.$route)
-              .then(({ visitedViews }) => {
-                this.$router.push('/')
-              })
-          }
         } else {
           const emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({

@@ -322,58 +322,27 @@ export default {
           if (this.lastParameter !== undefined) {
             containerParams = this.lastParameter
           }
+
+          var parentMenu = this.menuParentUuid
+          if (this.$route.params) {
+            if (this.$route.params.menuParentUuid) {
+              parentMenu = this.$route.params.menuParentUuid
+            }
+          }
           this.$store.dispatch(action.action, {
             action: action,
             parentUuid: this.containerUuid,
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
-            reportFormat: this.reportFormat
+            reportFormat: this.reportFormat,
+            menuParentUuid: parentMenu // to load relations in context menu (report view)
           })
             .catch(error => {
               console.warn(error)
             })
-          this.$store.dispatch('tagsView/delView', this.$route)
-            .then(({ visitedViews }) => {
-              this.$router.push('/dashboard')
-            })
-          if (action.isReport) {
-            this.$store.subscribeAction({
-              after: (action, state) => {
-                if (action.type === 'finishProcess') {
-                  if (!action.payload.isError) {
-                    var parentMenu = this.menuParentUuid
-                    if (this.$route.params !== undefined) {
-                      if (this.$route.params.menuParentUuid !== undefined) {
-                        parentMenu = this.$route.params.menuParentUuid
-                      }
-                    }
-                    if (!action.payload.isReport) {
-                      this.$store.dispatch('tagsView/delView', this.$route)
-                        .then(({ visitedViews }) => {
-                          this.$router.push('/dashboard')
-                        })
-                    } else {
-                      this.$router.push({
-                        name: 'Report Viewer',
-                        params: {
-                          menuParentUuid: parentMenu,
-                          processId: action.payload.processId,
-                          instanceUuid: action.payload.instanceUuid,
-                          fileName: action.payload.output.fileName
-                        }
-                      })
-                      this.$nextTick(() => {
-                        if (this.tempRoute.path === this.$route.path) {
-                          this.$store.dispatch('tagsView/delView', this.tempRoute)
-                        }
-                      })
-                    }
-                  }
-                }
-              }
-            })
-          }
-          if (this.report === true) {
+
+          // TODO: evaluate if necessary
+          if (this.isReport) {
             return true
           }
           return false
@@ -389,15 +358,6 @@ export default {
       } else if (action.type === 'process') {
         this.showModal(action.type, action)
       } else if (action.type === 'dataAction') {
-        if (action.action === 'resetPanelToNew') {
-          this.$router.push({
-            name: this.$route.name,
-            query: {
-              action: 'create-new',
-              tabNumber: this.$route.query.tabNumber
-            }
-          })
-        }
         this.$store.dispatch(action.action, {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid
