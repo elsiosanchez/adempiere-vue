@@ -24,9 +24,9 @@
             </div>
           </template>
           <template slot="paneR">
-            <el-container style="height: 88vh;">
+            <el-container style="height: 86vh;">
               <Split direction="vertical" @onDrag="onDrag">
-                <SplitArea :size="isShowedTabChildren ? 50 : 100">
+                <SplitArea :size="isShowedTabChildren ? 50 : 100" style="overflow-y: auto;">
                   <el-header style="height: 39px;">
                     <context-menu
                       :menu-parent-uuid="$route.meta.parentUuid"
@@ -37,7 +37,7 @@
                       :modal-metadata="windowMetadata"
                     />
                   </el-header>
-                  <el-main>
+                  <el-main :style="isShowedTabChildren ? { height: 'initial', overflow: 'auto'} : { height: 'initial', overflow: 'auto'} ">
                     <tab-parent
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
