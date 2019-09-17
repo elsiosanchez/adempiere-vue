@@ -324,10 +324,9 @@ export default {
           }
           this.$store.dispatch(action.action, {
             action: action,
-            containerUuid: containerParams, // EVALUATE IF IS action.uuid
             parentUuid: this.containerUuid,
-            panelType: this.panelType,
-            processName: action.processName,
+            containerUuid: containerParams, // EVALUATE IF IS action.uuid
+            panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
             reportFormat: this.reportFormat
           })
             .catch(error => {

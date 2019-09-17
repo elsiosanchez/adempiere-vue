@@ -423,22 +423,24 @@ const data = {
     getSelectionToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
       var selectionToServer = []
       var dataList = getters.getDataRecordAndSelection(containerUuid)
+      const withOut = ['isEdit', 'isSelected']
       if (dataList.selection.length > 0) {
-        var panel = rootGetters.getPanel(containerUuid)
-        var keyColumn = panel.keyColumn
+        const panel = rootGetters.getPanel(containerUuid)
 
         dataList.selection.forEach(itemRow => {
           var records = []
 
           Object.keys(itemRow).forEach(key => {
-            records.push({
-              columnName: key,
-              value: itemRow[key]
-            })
+            if (!key.includes('DisplayColumn') && !withOut.includes(key)) {
+              records.push({
+                columnName: key,
+                value: itemRow[key]
+              })
+            }
           })
 
           selectionToServer.push({
-            selectionId: itemRow[keyColumn],
+            selectionId: itemRow[panel.keyColumn],
             selectionValues: records
           })
         })

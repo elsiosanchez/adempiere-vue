@@ -178,6 +178,7 @@ export default {
     createNewRecord: 'Modo nuevo registro',
     createRecordError: 'Error al crear nuevo registro',
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
-    deleteRecordError: 'Error al eliminar el regitro'
+    deleteRecordError: 'Error al eliminar el regitro',
+    selectionRequired: 'Debe seleccionar un registro'
   }
 }

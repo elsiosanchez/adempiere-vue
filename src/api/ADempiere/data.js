@@ -136,12 +136,11 @@ export function getLookup(reference, value) {
  * This function allows follow structure:
  * @param {object}  process
  * @param {string}  process.uuid, uuid from process to run
- * @param {integer} process.tableId
- * @param {integer} process.recordId
- * @param {integer} process.tableSelectedId
+ * @param {integer} process.tableName, table name of tab, used only window
+ * @param {integer} process.recordId, record identifier, used only window
  * @param {array}   process.parameters, parameters from process
       [ { columnName, value } ]
- * @param {array}   process.selection, selection records
+ * @param {array}   process.selection, selection records, used only browser
       [ {
           selectionId,
           selectionValues [
@@ -162,18 +161,23 @@ export function runProcess(process) {
     processRequest.setRecordid(process.recordId)
   }
 
+  // browser selection list records
+  if (process.selection && process.selection.length > 0) {
+    process.selection.forEach(record => {
+      // selection format = { selectionId: integer, selectionValues: array }
+      const convertedRecord = Instance.call(this).convertSelection(record)
+      processRequest.addSelections(convertedRecord)
+    })
+  }
+
+  // report export type
   processRequest.setReportexporttype(process.reportExportType)
+
+  // process params
   if (process.parameters && process.parameters.length > 0) {
     process.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
       processRequest.addParameters(convertedParameter)
-    })
-  }
-
-  if (process.selection && process.selection.length > 0) {
-    process.selection.forEach(record => {
-      const convertedRecord = Instance.call(this).convertSelection(record)
-      processRequest.addSelections(convertedRecord)
     })
   }
 
@@ -197,12 +201,11 @@ export function runProcess(process) {
  * ]
  */
 export function getBrowserSearch(browser) {
-  var notificationParams = {
+  showMessage({
     title: 'Loading...',
     message: 'Searching records in server',
     type: 'info'
-  }
-  showMessage(notificationParams)
+  })
   var browserRequest = Instance.call(this).getBrowserRequest()
   var criteria = Instance.call(this).getCriteria('')
   //  Fill Request browser
