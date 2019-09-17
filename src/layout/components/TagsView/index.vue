@@ -299,6 +299,7 @@ export default {
           align-self: center;
           background: #fff;
           display: inline-block;
+          min-width: 8px;
           width: 8px;
           height: 8px;
           border-radius: 50%;
@@ -338,6 +339,7 @@ export default {
   .tags-view-item {
     .el-icon-close {
       align-self: center;
+      min-width: 16px;
       width: 16px;
       height: 16px;
       vertical-align: 2px;

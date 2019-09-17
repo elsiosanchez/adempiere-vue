@@ -85,19 +85,22 @@ const processControl = {
           })
         }
 
-        var reportExportType
-        if (params.action.reportExportType === undefined) {
-          reportExportType = params.reportFormat
-        } else {
-          reportExportType = params.action.reportExportType
-        }
-        const finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
-
+        // additional attributes to send server, selection to browser, or table name and record id to window
         var selection = []
         var tableName, recordId
         if (params.panelType) {
           if (params.panelType === 'browser') {
             selection = rootGetters.getSelectionToServer(params.containerUuid)
+            if (selection.length < 1) {
+              showNotification({
+                title: language.t('data.selectionRequired'),
+                type: 'warning'
+              })
+              return reject({
+                error: 0,
+                message: `Required selection data record to run this process (${samePocessInExecution.name})`
+              })
+            }
           }
           if (params.panelType === 'window') {
             const tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
@@ -107,21 +110,17 @@ const processControl = {
           }
         }
 
+        // get info metadata process
         const processDefinition = rootGetters.getProcess(params.action.uuid)
 
-        var processToRun = {
-          uuid: processDefinition.uuid,
-          id: processDefinition.id,
-          name: processDefinition.name,
-          description: processDefinition.description,
-          reportExportType: reportExportType,
-          parameters: finalParameters.params,
-          selection: selection,
-          tableName: tableName,
-          recordId: recordId,
-          isProcessing: true,
-          instanceUuid: undefined
+        var reportExportType
+        if (params.action.reportExportType === undefined) {
+          reportExportType = params.reportFormat
+        } else {
+          reportExportType = params.action.reportExportType
         }
+        const finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
+
         showNotification({
           title: language.t('notifications.processing'),
           message: processDefinition.name,
@@ -133,13 +132,13 @@ const processControl = {
         var processResult = {
           timeInitialized: timeInitialized,
           containerUuid: params.containerUuid,
-          action: processToRun.name,
+          action: processDefinition.name,
           name: processDefinition.name,
           description: processDefinition.description,
           instanceUuid: '',
-          processUuid: processToRun.uuid,
-          processId: processToRun.id,
-          processName: processToRun.processName,
+          processUuid: processDefinition.uuid,
+          processId: processDefinition.id,
+          processName: processDefinition.processName,
           parameters: finalParameters.params,
           isError: false,
           isProcessing: true,
@@ -158,7 +157,16 @@ const processControl = {
           }
         }
         commit('addInExecution', processResult)
-        runProcess(processToRun)
+
+        runProcess({
+          uuid: processDefinition.uuid,
+          id: processDefinition.id,
+          reportExportType: reportExportType,
+          parameters: finalParameters.params,
+          selection: selection,
+          tableName: tableName,
+          recordId: recordId
+        })
           .then(response => {
             var output = {
               uuid: '',
@@ -210,14 +218,14 @@ const processControl = {
             }
 
             var processResultSucess = {
-              action: processToRun.name,
+              action: processDefinition.name,
               timeInitialized: timeInitialized,
-              instanceUuid: response.getInstanceuuid().trim(),
+              instanceUuid: response.getInstanceuuid(),
               url: link.href,
               download: link.download,
-              processUuid: processToRun.uuid.trim(),
-              processId: processToRun.id,
-              processName: processToRun.processName,
+              processUuid: processDefinition.uuid,
+              processId: processDefinition.id,
+              processName: processDefinition.name,
               isError: response.getIserror(),
               isProcessing: response.getIsprocessing(),
               isReport: processDefinition.isReport,
@@ -245,7 +253,7 @@ const processControl = {
             commit('deleteInExecution', {
               containerUuid: params.containerUuid
             })
-            dispatch('deleteRecordContainer', processToRun.uuid)
+            dispatch('deleteRecordContainer', processDefinition.uuid)
           })
       })
     },

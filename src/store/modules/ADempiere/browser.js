@@ -28,7 +28,7 @@ const browser = {
             const additionalAttributes = {
               browserUuid: response.getUuid(),
               browserId: response.getId(),
-              parentUuid: response.getUuid(),
+              parentUuid: response.getUuid(), // TODO: Evaluate if is required
               containerUuid: response.getUuid(),
               panelType: panelType
             }
@@ -37,7 +37,7 @@ const browser = {
             var fieldsRangeList = []
             var isMandatoryParams = false
             fieldsList = fieldsList.map((fieldItem, index) => {
-              var someAttributes = {
+              const someAttributes = {
                 ...additionalAttributes,
                 fieldListIndex: index
               }
@@ -82,7 +82,7 @@ const browser = {
               })
 
             //  Panel for save on store
-            var newBrowser = {
+            const newBrowser = {
               id: response.getId(),
               uuid: response.getUuid(),
               containerUuid: response.getUuid(),
@@ -91,9 +91,11 @@ const browser = {
               name: response.getName(),
               description: response.getDescription(),
               help: response.getHelp(),
+              // sql query
               query: query,
               whereClause: whereClause,
               orderByClause: response.getOrderbyclause(),
+              //
               isUpdateable: response.getIsupdateable(),
               isDeleteable: response.getIsdeleteable(),
               isSelectedByDefault: response.getIsselectedbydefault(),
@@ -109,9 +111,9 @@ const browser = {
               isShowedCriteria: Boolean(fieldsList.length > 0 && isMandatoryParams)
             }
             //  Convert from gRPC process list
-            var process = response.getProcess()
+            const process = response.getProcess()
             var actions = []
-            if (process !== undefined) {
+            if (process) {
               actions.push({
                 name: process.getName(),
                 type: 'process',
@@ -124,7 +126,7 @@ const browser = {
                 isDirectPrint: process.getIsdirectprint()
               })
 
-              // TO DO convert gRPC attributes from response.getProcess() to object
+              // TODO: convert gRPC attributes from response.getProcess() to object
               // Add process asociate in store
               // var processStore = rootGetters.getProcess(process.getUuid())
               // if (processStore === undefined) {
@@ -132,17 +134,16 @@ const browser = {
               // }
             }
 
+            dispatch('addPanel', newBrowser)
+            commit('addBrowser', newBrowser)
+
             //  Add process menu
-            var contextMenu = {
+            dispatch('setContextMenu', {
               containerUuid: response.getUuid(),
               relations: [],
               actions: actions,
               references: []
-            }
-
-            dispatch('addPanel', newBrowser)
-            commit('addBrowser', newBrowser)
-            dispatch('setContextMenu', contextMenu)
+            })
             resolve(newBrowser)
           })
           .catch(error => {

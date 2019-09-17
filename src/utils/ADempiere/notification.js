@@ -11,37 +11,47 @@ export function hasTranslation(text) {
   return text
 }
 
+/**
+ *
+ * @param {object} parameters
+ * @param {object} parameters.type, required
+ * @param {object} parameters.title, required
+ * @param {object} parameters.message, required
+ * @param {object} parameters.summary, required
+ * @param {object} parameters.name, required
+ */
 export function showNotification(parameters) {
-  if (parameters !== undefined) {
-    var title = hasTranslation(parameters.title)
-    var message = hasTranslation(parameters.message)
-    //  For summary
-    if (parameters.summary !== undefined) {
-      if (message !== undefined) {
-        message = message + '<br>' + parameters.summary
-      } else {
-        message = parameters.summary
+  var title = hasTranslation(parameters.title)
+  var message = ''
+  if (parameters.message) {
+    message = hasTranslation(parameters.message)
+  }
+  //  For summary
+  if (parameters.summary) {
+    if (message) {
+      message = message + '<br>' + parameters.summary
+    } else {
+      message = parameters.summary
+    }
+  }
+  //  For logs
+  if (parameters.logs) {
+    parameters.logs.forEach(logResult => {
+      if (logResult) {
+        message = message + '<br>' + logResult.log
       }
-    }
-    //  For logs
-    if (parameters.logs !== undefined) {
-      parameters.logs.forEach(logResult => {
-        if (logResult !== undefined) {
-          message = message + '<br>' + logResult.log
-        }
-      })
-    }
-    if (parameters.name) {
-      message = parameters.name + message
-    }
-    Notification({
-      title: title,
-      message: `<div style="max-height: 100px; overflow-y: auto;">` + message + `</div>`,
-      type: parameters.type,
-      position: 'bottom-right',
-      dangerouslyUseHTMLString: true
     })
   }
+  if (parameters.name) {
+    message = parameters.name + message
+  }
+  Notification({
+    title: title,
+    message: `<div style="max-height: 100px; overflow-y: auto;">` + message + `</div>`,
+    type: parameters.type,
+    position: 'bottom-right',
+    dangerouslyUseHTMLString: true
+  })
 }
 
 export function showMessage(parameters) {

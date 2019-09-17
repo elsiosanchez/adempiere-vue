@@ -3,25 +3,19 @@
     :title="modalMetadata.name"
     :visible="isVisibleDialog"
     :show-close="false"
-    :width="width+'%'"
+    :width="width + '%'"
     top="5vh"
     :close-on-press-escape="true"
     :close-on-click-modal="true"
   >
     {{ modalMetadata.description }}
     <panel
-      v-if="(modalMetadata.panelType === 'process' || modalMetadata.panelType === 'report') && modalMetadata.uuid !== ''"
+      v-if="(modalMetadata.panelType === 'process' || modalMetadata.panelType === 'report') && !isEmptyValue(modalMetadata.uuid)"
       :parent-uuid="parentUuid"
       :container-uuid="modalMetadata.uuid"
       :metadata="modalMetadata"
       :is-view="false"
-      :panel-type="'process'"
-    />
-    <search-window
-      v-else-if="isLoaded(modalMetadata)"
-      :tab-uuid="modalMetadata.currentTab.uuid"
-      :window-uuid="modalMetadata.currentTab.windowUuid"
-      :table-name="modalMetadata.currentTab.tableName"
+      panel-type="process"
     />
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">
@@ -37,12 +31,10 @@
 <script>
 import Panel from '@/components/ADempiere/Panel'
 import { isEmptyValue, showNotification } from '@/utils/ADempiere'
-import SearchWindow from '@/views/ADempiere/SearchWindow'
 
 export default {
   name: 'ModalProcess',
   components: {
-    SearchWindow,
     Panel
   },
   props: {
@@ -69,8 +61,7 @@ export default {
   },
   data() {
     return {
-      processMetadata: {},
-      titleDialog: ''
+      processMetadata: {}
     }
   },
   computed: {
@@ -104,18 +95,23 @@ export default {
     },
     runAction(action) {
       if (action === undefined && this.windowRecordSelected !== undefined) {
-        this.$router.push({ name: this.$route.name, query: { action: this.windowRecordSelected.UUID }})
+        this.$router.push({
+          name: this.$route.name,
+          query: {
+            action: this.windowRecordSelected.UUID
+          }
+        })
         this.closeDialog()
       } else if (action !== undefined) {
-        var isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
+        const isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
         if (isReadyForSubmit) {
           this.closeDialog()
           this.$store.dispatch('startProcess', {
             action: action, // process metadata
-            reportFormat: this.reportExportType,
-            containerUuid: this.containerUuid,
             parentUuid: this.parentUuid,
-            panelType: this.panelType // TODO: evaluate used
+            containerUuid: this.containerUuid,
+            panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
+            reportFormat: this.reportExportType
           })
             .catch(error => {
               console.warn(error)
@@ -145,7 +141,7 @@ export default {
               })
           }
         } else {
-          var emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
+          const emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({
             type: 'warning',
             title: this.$t('notifications.emptyValues'),
@@ -154,12 +150,6 @@ export default {
           })
         }
       }
-    },
-    isLoaded(obj) {
-      if (Object.keys(obj).length === 0) {
-        return false
-      }
-      return true
     }
   }
 }
