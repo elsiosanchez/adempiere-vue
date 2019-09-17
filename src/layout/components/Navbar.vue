@@ -1,13 +1,40 @@
 <template>
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
-    <breadcrumb v-show="!isMenuMobile" id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
-    <el-button v-show="!isMenuMobile && isMobile" type="text" :circle="true" icon="el-icon-d-arrow-left" :style="isMenuMobile ? { position: 'absolute', right: '36px' } : { position: 'initial', right: 'opx' }" @click="isMenuMobile = !isMenuMobile" />
-    <div v-show="isMenuMobile && isMobile" style="display: inline-flex; float: right;" @click="isMenuMobile = !isMenuMobile">
-      <el-button type="text" :circle="true" icon="el-icon-d-arrow-right" />
-      <search id="header-search" class="right-menu-item" />
-      <badge />
+    <breadcrumb v-show="!isMenuMobile || device!=='mobile'" id="breadcrumb-container" class="breadcrumb-container" :style="isMobile ? { width: '40%'} : { width: 'auto'} " />
+    <div v-show="isMenuMobile && isMobile" style="display: inline-flex; float: right;">
+      <el-button type="text" icon="el-icon-close" style="padding-bottom: 27px; color: #000000;font-size: 121%;font-weight: 615!important;" @click="isMenuOption()" />
+      <search id="header-search" class="right-menu-item" style="padding-top: 10px;" />
+      <badge style="padding-top: 6px;" />
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
+        <div class="avatar-wrapper">
+          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <router-link to="/profile/index">
+            <el-dropdown-item>
+              {{ $t('navbar.profile') }}
+            </el-dropdown-item>
+          </router-link>
+          <router-link to="/">
+            <el-dropdown-item>
+              {{ $t('navbar.dashboard') }}
+            </el-dropdown-item>
+          </router-link>
+          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
+            <el-dropdown-item>
+              {{ $t('navbar.github') }}
+            </el-dropdown-item>
+          </a>
+          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
+            <el-dropdown-item>Docs</el-dropdown-item>
+          </a>
+          <el-dropdown-item divided>
+            <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -24,8 +51,8 @@
         <lang-select class="right-menu-item hover-effect" />
 
       </template>
-
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
+      <el-button v-show="!isMenuMobile && isMobile" type="text" icon="el-icon-more" @click="isMenuOption()" />
+      <el-dropdown v-if="!isMenuMobile" class="avatar-container right-menu-item hover-effect" trigger="hover">
         <div class="avatar-wrapper" @click="handleClick">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -96,6 +123,9 @@ export default {
     ])
   },
   methods: {
+    isMenuOption() {
+      this.isMenuMobile = !this.isMenuMobile
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -111,6 +141,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-dropdown {
+  display: inline-block;
+  position: relative;
+  color: #606266;
+  font-size: 14px;
+  width: 50px;
+}
 .navbar {
   height: 50px;
   overflow: hidden;
@@ -142,6 +179,7 @@ export default {
 
   .right-menu {
     float: right;
+    display: flex;
     height: 100%;
     line-height: 50px;
 

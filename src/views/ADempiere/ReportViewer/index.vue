@@ -34,7 +34,7 @@
           <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" width="100%" height="100%" />
           <div v-else-if="collectionReportFormat.includes(reportFormat)" class="content-api" :src="url" />
           <div v-else-if="reportFormat === 'html'" class="content-txt">
-            <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 2%;">
+            <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 3%;">
               <el-main style="padding: 0;">
                 <div
                   class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
