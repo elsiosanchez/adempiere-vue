@@ -197,7 +197,6 @@ export default {
   },
   mounted() {
     this.getWindow()
-    console.log(this.getHeightPanelTop)
   },
   methods: {
     // callback new size

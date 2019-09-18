@@ -1,14 +1,32 @@
 <template>
-  <el-upload
-    :show-file-list="false"
-    :before-upload="beforeAvatarUpload"
-    class="avatar-uploader"
-    action="https://jsonplaceholder.typicode.com/posts/"
-    :disabled="metadata.readonly || metadata.disabled"
-  >
-    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-    <i v-else class="el-icon-plus avatar-uploader-icon" />
-  </el-upload>
+  <div>
+    <el-upload
+      with-credentials
+      action="https://jsonplaceholder.typicode.com/posts/"
+      list-type="picture-card"
+      :on-preview="handlePictureCardPreview"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload"
+    >
+      <i class="el-icon-plus" />
+    </el-upload>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+    <!-- <el-upload
+      :show-file-list="false"
+      :before-upload="beforeAvatarUpload"
+      class="avatar-uploader"
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :disabled="metadata.readonly || metadata.disabled"
+    >
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
+    </el-upload>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog> -->
+  </div>
 </template>
 
 <script>
@@ -28,7 +46,9 @@ export default {
   data() {
     return {
       imageUrl: '',
-      value: this.metadata.value
+      value: this.metadata.value,
+      dialogImageUrl: '',
+      dialogVisible: false
     }
   },
   computed: {
@@ -57,6 +77,12 @@ export default {
     }
   },
   methods: {
+    handlePictureCardPreview(file) {
+      console.log(file)
+      this.dialogImageUrl = file.url
+      console.log(this.dialogImageUrl)
+      this.dialogVisible = true
+    },
     handleChange(value) {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
@@ -89,8 +115,11 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(res)
+      console.log(file)
     },
     beforeAvatarUpload(file) {
+      console.log(file)
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       // const isGIF = file.type === 'image/gif'
