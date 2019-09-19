@@ -1,18 +1,18 @@
 <template>
   <div>
-    <el-upload
-      with-credentials
-      action="https://jsonplaceholder.typicode.com/posts/"
-      list-type="picture-card"
-      :on-preview="handlePictureCardPreview"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload"
-    >
-      <i class="el-icon-plus" />
-    </el-upload>
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
+    <el-upload
+      action="https://jsonplaceholder.typicode.com/posts/"
+      list-type="picture-card"
+      class="avatar-uploader"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload"
+      :disabled="metadata.readonly || metadata.disabled"
+    >
+      <i class="el-icon-plus" />
+    </el-upload>
     <!-- <el-upload
       :show-file-list="false"
       :before-upload="beforeAvatarUpload"
@@ -78,9 +78,7 @@ export default {
   },
   methods: {
     handlePictureCardPreview(file) {
-      console.log(file)
       this.dialogImageUrl = file.url
-      console.log(this.dialogImageUrl)
       this.dialogVisible = true
     },
     handleChange(value) {
@@ -115,11 +113,14 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      console.log(res)
-      console.log(file)
     },
     beforeAvatarUpload(file) {
-      console.log(file)
+      this.$store.dispatch('notifyFieldChange', {
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        columnName: this.metadata.columnName,
+        newValue: file
+      })
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       // const isGIF = file.type === 'image/gif'
