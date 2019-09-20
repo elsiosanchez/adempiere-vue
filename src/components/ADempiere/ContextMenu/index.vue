@@ -44,8 +44,9 @@
         </el-menu-item>
       </el-menu>
     </right-menu>
-    <el-menu v-else :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
-      <template class="container-submenu">
+    <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
+      <template v-if="isMobile" class="container-submenu" />
+      <template v-else>
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
           <template slot="title">
             {{ $t('components.contextMenuRelations') }}
