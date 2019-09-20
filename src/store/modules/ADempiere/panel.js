@@ -42,6 +42,7 @@ const panel = {
       payload.field.oldValue = payload.field.value
       payload.field.value = payload.newValue
       payload.field.valueTo = payload.valueTo
+      payload.field.displayColumn = payload.displayColumn
     }
   },
   actions: {
@@ -168,7 +169,6 @@ const panel = {
       } else {
         fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
       }
-
       fieldList.forEach(actionField => {
         if (parameters.newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
@@ -176,6 +176,7 @@ const panel = {
             parentUuid: parameters.parentUuid,
             containerUuid: parameters.containerUuid,
             columnName: actionField.columnName,
+            displayColumn: parameters.newValues['DisplayColumn_' + actionField.columnName],
             newValue: parameters.newValues[actionField.columnName],
             fieldList: fieldList,
             field: actionField
@@ -216,7 +217,8 @@ const panel = {
       commit('changeFieldValue', {
         field: field,
         newValue: params.newValue,
-        valueTo: params.valueTo
+        valueTo: params.valueTo,
+        displayColumn: params.displayColumn
       })
       //  Change Dependents
       var dependents = fieldList.filter(fieldItem => {
@@ -334,6 +336,16 @@ const panel = {
           }
         }
       }
+    },
+    notifyFieldChangeDisplayColumn({ commit, getters }, parameters) {
+      var field = getters.getFieldFromColumnName(parameters.containerUuid, parameters.columnName)
+      var newField = {
+        field: field,
+        newValue: field.value,
+        valueTo: field.valueTo,
+        displayColumn: parameters.displayColumn
+      }
+      commit('changeFieldValue', newField)
     },
     getPanelAndFields({ dispatch }, parameters) {
       if (parameters.type === 'process' || parameters.type === 'report') {
@@ -455,7 +467,8 @@ const panel = {
       const fieldUuid = getters.getColumnNamesAndValues({
         containerUuid: containerUuid,
         propertyName: 'value',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
 
       if (fieldUuid) {
@@ -498,7 +511,6 @@ const panel = {
             return false
           })
       }
-
       attributesList = attributesList
         .map(fieldItem => {
           const valueToReturn = fieldItem[parameters.propertyName]

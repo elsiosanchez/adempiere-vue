@@ -33,7 +33,8 @@ const windowControl = {
       var defaultAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
         propertyName: 'parsedDefaultValue',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
 
       // redirect to create new record
@@ -56,7 +57,8 @@ const windowControl = {
       var oldAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
         propertyName: 'oldValue',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
@@ -78,7 +80,8 @@ const windowControl = {
         var finalAttributes = rootGetters.getColumnNamesAndValues({
           containerUuid: parameters.containerUuid,
           propertyName: 'value',
-          isEvaluateValues: true
+          isEvaluateValues: true,
+          isAddDisplayColumn: true
         })
 
         commit('addInCreate', {
@@ -92,7 +95,11 @@ const windowControl = {
         })
           .then(response => {
             var newValues = convertValuesMapToObject(response.getValuesMap())
-
+            finalAttributes.forEach((element) => {
+              if (element.columnName.includes('DisplayColumn')) {
+                newValues[element.columnName] = element.value
+              }
+            })
             var result = {
               data: newValues,
               recordUuid: response.getUuid(),

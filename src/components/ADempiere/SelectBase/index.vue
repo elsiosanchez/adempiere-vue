@@ -119,6 +119,8 @@ export default {
         } else {
           this.value = parseInt(this.metadata.parsedDefaultValue)
         }
+      } else {
+        this.getDataTrigger()
       }
       if (!this.isEmptyValue(this.value) && this.options.length > 0 && this.options.find(item => item.key === this.value) === undefined) {
         this.getDataTrigger()
@@ -205,6 +207,13 @@ export default {
         value: this.value
       })
         .then(response => {
+          if (this.metadata.panelType === 'window') {
+            this.$store.dispatch('notifyFieldChangeDisplayColumn', {
+              containerUuid: this.metadata.containerUuid,
+              columnName: this.metadata.columnName,
+              displayColumn: response.label
+            })
+          }
           this.options = this.getterLookupAll.concat(this.othersOptions)
           if (this.options.length > 0 && this.options[0].key !== -1) {
             this.options.unshift(this.blanckOption)

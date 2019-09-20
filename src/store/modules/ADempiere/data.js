@@ -278,7 +278,8 @@ const data = {
       var currentValues = rootGetters.getColumnNamesAndValues({
         containerUuid: objectParams.containerUuid,
         propertyName: 'value',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
       var row = getters.getRowData(objectParams.containerUuid, currentValues.UUID)
 

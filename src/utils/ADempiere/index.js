@@ -171,6 +171,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     isSameLine: fieldGRPC.getIssameline(),
     sequence: fieldGRPC.getSequence(),
     seqNoGrid: fieldGRPC.getSeqnogrid(),
+    displayColumn: undefined, // link to value from selects and table
     // value attributes
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
