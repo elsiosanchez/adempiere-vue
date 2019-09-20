@@ -89,7 +89,7 @@ const data = {
           containerUuid: parameters.containerUuid
         })
       } else if (parameters.panelType === 'browser') {
-        if (rootGetters.isReadyForSubmit(parameters.containerUuid)) {
+        if (!rootGetters.isNotReadyForSubmit(parameters.containerUuid)) {
           dispatch('getBrowserSearch', {
             containerUuid: parameters.containerUuid,
             clearSelection: true

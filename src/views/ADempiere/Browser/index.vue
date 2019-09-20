@@ -112,7 +112,7 @@ export default {
       return this.$store.getters.getDataRecordsList(this.browserUuid)
     },
     getContainerIsReadyForSubmit() {
-      return this.$store.getters.isReadyForSubmit(this.browserUuid)
+      return !this.$store.getters.isNotReadyForSubmit(this.browserUuid)
     },
     cssClass() {
       if (this.$store.state.app.sidebar.opened) {

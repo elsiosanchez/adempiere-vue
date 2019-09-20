@@ -274,7 +274,7 @@ const panel = {
       })
       if (!params.isDontSendToEdit) {
         // TODO: refactory for it and change for a standard method
-        if (getters.isReadyForSubmit(params.containerUuid)) {
+        if (!getters.isNotReadyForSubmit(params.containerUuid)) {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
               containerUuid: params.containerUuid,
@@ -420,10 +420,11 @@ const panel = {
       return getters.getFieldsListFromPanel(containerUuid).find(itemField => itemField.columnName === columnName)
     },
     /**
+     * Determinate if panel is ready fron send, all fiedls mandatory and displayed with values
      * @param {string}  containerUuid
-     * @param {boolean} evaluateShowed, indicate if evaluate showed fields
+     * @returns {boolean}
      */
-    isReadyForSubmit: (state, getters) => (containerUuid, evaluateShowed = true) => {
+    isNotReadyForSubmit: (state, getters) => (containerUuid) => {
       const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(fieldItem.value)) {
@@ -431,7 +432,7 @@ const panel = {
         }
       })
 
-      return Boolean(!field)
+      return field
     },
     /**
      * @param {string}  containerUuid
