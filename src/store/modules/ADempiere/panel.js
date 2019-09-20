@@ -322,9 +322,13 @@ const panel = {
         }
       } else {
         if (params.panelType === 'table' && fieldIsDisplayed(field)) {
+          var value = field.value
+          if (typeof value === 'boolean') {
+            value = value ? 'Y' : 'N'
+          }
           var avancedQueryParameters = { tableName: '', whereClause: '', query: '' }
           avancedQueryParameters.tableName = panel.tableName
-          avancedQueryParameters.whereClause = `${panel.tableName}.${field.columnName} LIKE '%${field.value}%'`
+          avancedQueryParameters.whereClause = `${panel.tableName}.${field.columnName} LIKE '%${value}%'`
           avancedQueryParameters.query = panel.windowQuery
           if (panel.isAvancedQuery) {
             dispatch('getObjectListFromCriteria', {
