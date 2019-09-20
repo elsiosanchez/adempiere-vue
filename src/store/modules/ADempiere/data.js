@@ -173,7 +173,11 @@ const data = {
       })
       commit('deleteRecordContainer', record)
     },
-    getEntity: ({ commit, dispatch }, parameters) => {
+    /**
+     * @param {string} tableName
+     * @param {string} recordUuid
+     */
+    getEntity: ({ commit }, parameters) => {
       return new Promise((resolve, reject) => {
         getObject(parameters.tableName, parameters.recordUuid)
           .then(response => {
@@ -274,6 +278,11 @@ const data = {
           })
       })
     },
+    /**
+     * @param {object} objectParams
+     * @param {string} objectParams.containerUuid
+     * @param {objec} objectParams.row, new data
+     */
     notifyRowTableChange: ({ commit, state, getters, rootGetters }, objectParams) => {
       var currentValues = rootGetters.getColumnNamesAndValues({
         containerUuid: objectParams.containerUuid,

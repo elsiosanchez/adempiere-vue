@@ -160,7 +160,9 @@ const panel = {
      * Changed panel when receive or reset panel to new record
      * @param {string} parameters.parentUuid
      * @param {string} parameters.containerUuid
-     * @param {object} parameters.newValues
+     * @param {object} parameters.fieldList, field list of panel
+     * @param {object} parameters.newValues, values to set in panel
+     * @param {object} parameters.isDontSendToEdit, indicate if changes not send to server
      */
     notifyPanelChange({ dispatch, getters }, parameters) {
       var fieldList = []

@@ -265,6 +265,41 @@ const windowControl = {
           console.warn(error)
         })
     },
+    /**
+     * Update record after run process associated with window
+     * @param {object} parameters
+     * @param {string} parameters.parentUuid
+     * @param {string} parameters.containerUuid
+     * @param {object} parameters.tab
+     */
+    updateRecordAfterRunProcess({ dispatch, rootGetters }, parameters) {
+      const recordUuid = rootGetters.getUuid(parameters.containerUuid)
+      // get new values
+      dispatch('getEntity', {
+        parentUuid: parameters.parentUuid,
+        containerUuid: parameters.containerUuid,
+        tableName: parameters.tab.tableName,
+        recordUuid: recordUuid
+      })
+        .then(response => {
+          // update panel
+          if (parameters.tab.isParentTab) {
+            dispatch('notifyPanelChange', {
+              parentUuid: parameters.parentUuid,
+              containerUuid: parameters.containerUuid,
+              newValues: response,
+              isDontSendToEdit: true
+            })
+          }
+          // update row in table
+          dispatch('notifyRowTableChange', {
+            parentUuid: parameters.parentUuid,
+            containerUuid: parameters.containerUuid,
+            row: response,
+            isEdit: false
+          })
+        })
+    },
     deleteEntity({ commit, dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(parameters.containerUuid)
