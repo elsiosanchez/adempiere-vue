@@ -1,18 +1,31 @@
 <template>
   <div>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
     <el-upload
+      with-credentials
       action="https://jsonplaceholder.typicode.com/posts/"
       list-type="picture-card"
-      class="avatar-uploader"
+      :on-preview="handlePictureCardPreview"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
-      :disabled="metadata.readonly || metadata.disabled"
     >
       <i class="el-icon-plus" />
     </el-upload>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+    <!-- <el-upload
+      :show-file-list="false"
+      :before-upload="beforeAvatarUpload"
+      class="avatar-uploader"
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :disabled="metadata.readonly || metadata.disabled"
+    >
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
+    </el-upload>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog> -->
   </div>
 </template>
 
@@ -33,7 +46,9 @@ export default {
   data() {
     return {
       imageUrl: '',
-      value: this.metadata.value
+      value: this.metadata.value,
+      dialogImageUrl: '',
+      dialogVisible: false
     }
   },
   computed: {
@@ -56,7 +71,6 @@ export default {
     }
   },
   beforeMount() {
-    console.log(this.getterValue)
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = this.valueModel
@@ -64,7 +78,6 @@ export default {
   },
   methods: {
     handlePictureCardPreview(file) {
-      console.log(file, 'hp')
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
@@ -96,25 +109,12 @@ export default {
           columnName: this.metadata.columnName,
           newValue: this.value
         })
-        console.log(this.value)
       }
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      console.log(res)
-      this.$store.dispatch('getqlq', {
-        qlq: file
-      })
-      console.log(file)
     },
     beforeAvatarUpload(file) {
-      console.log(file)
-      this.$store.dispatch('notifyFieldChange', {
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        columnName: this.metadata.columnName,
-        newValue: file
-      })
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       // const isGIF = file.type === 'image/gif'
