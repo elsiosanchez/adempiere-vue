@@ -42,6 +42,7 @@ const panel = {
       payload.field.oldValue = payload.field.value
       payload.field.value = payload.newValue
       payload.field.valueTo = payload.valueTo
+      payload.field.displayColumn = payload.displayColumn
     }
   },
   actions: {
@@ -159,7 +160,9 @@ const panel = {
      * Changed panel when receive or reset panel to new record
      * @param {string} parameters.parentUuid
      * @param {string} parameters.containerUuid
-     * @param {object} parameters.newValues
+     * @param {object} parameters.fieldList, field list of panel
+     * @param {object} parameters.newValues, values to set in panel
+     * @param {object} parameters.isDontSendToEdit, indicate if changes not send to server
      */
     notifyPanelChange({ dispatch, getters }, parameters) {
       var fieldList = []
@@ -168,7 +171,6 @@ const panel = {
       } else {
         fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
       }
-
       fieldList.forEach(actionField => {
         if (parameters.newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
@@ -176,6 +178,7 @@ const panel = {
             parentUuid: parameters.parentUuid,
             containerUuid: parameters.containerUuid,
             columnName: actionField.columnName,
+            displayColumn: parameters.newValues['DisplayColumn_' + actionField.columnName],
             newValue: parameters.newValues[actionField.columnName],
             fieldList: fieldList,
             field: actionField
@@ -216,7 +219,8 @@ const panel = {
       commit('changeFieldValue', {
         field: field,
         newValue: params.newValue,
-        valueTo: params.valueTo
+        valueTo: params.valueTo,
+        displayColumn: params.displayColumn
       })
       //  Change Dependents
       var dependents = fieldList.filter(fieldItem => {
@@ -270,7 +274,7 @@ const panel = {
       })
       if (!params.isDontSendToEdit) {
         // TODO: refactory for it and change for a standard method
-        if (getters.isReadyForSubmit(params.containerUuid)) {
+        if (!getters.isNotReadyForSubmit(params.containerUuid)) {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
               containerUuid: params.containerUuid,
@@ -320,9 +324,13 @@ const panel = {
         }
       } else {
         if (params.panelType === 'table' && fieldIsDisplayed(field)) {
+          var value = field.value
+          if (typeof value === 'boolean') {
+            value = value ? 'Y' : 'N'
+          }
           var avancedQueryParameters = { tableName: '', whereClause: '', query: '' }
           avancedQueryParameters.tableName = panel.tableName
-          avancedQueryParameters.whereClause = `${panel.tableName}.${field.columnName} LIKE '%${field.value}%'`
+          avancedQueryParameters.whereClause = `${panel.tableName}.${field.columnName} LIKE '%${value}%'`
           avancedQueryParameters.query = panel.windowQuery
           if (panel.isAvancedQuery) {
             dispatch('getObjectListFromCriteria', {
@@ -334,6 +342,16 @@ const panel = {
           }
         }
       }
+    },
+    notifyFieldChangeDisplayColumn({ commit, getters }, parameters) {
+      var field = getters.getFieldFromColumnName(parameters.containerUuid, parameters.columnName)
+      var newField = {
+        field: field,
+        newValue: field.value,
+        valueTo: field.valueTo,
+        displayColumn: parameters.displayColumn
+      }
+      commit('changeFieldValue', newField)
     },
     getPanelAndFields({ dispatch }, parameters) {
       if (parameters.type === 'process' || parameters.type === 'report') {
@@ -402,10 +420,11 @@ const panel = {
       return getters.getFieldsListFromPanel(containerUuid).find(itemField => itemField.columnName === columnName)
     },
     /**
+     * Determinate if panel is ready fron send, all fiedls mandatory and displayed with values
      * @param {string}  containerUuid
-     * @param {boolean} evaluateShowed, indicate if evaluate showed fields
+     * @returns {boolean}
      */
-    isReadyForSubmit: (state, getters) => (containerUuid, evaluateShowed = true) => {
+    isNotReadyForSubmit: (state, getters) => (containerUuid) => {
       const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(fieldItem.value)) {
@@ -413,7 +432,7 @@ const panel = {
         }
       })
 
-      return Boolean(!field)
+      return field
     },
     /**
      * @param {string}  containerUuid
@@ -455,7 +474,8 @@ const panel = {
       const fieldUuid = getters.getColumnNamesAndValues({
         containerUuid: containerUuid,
         propertyName: 'value',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
 
       if (fieldUuid) {
@@ -498,7 +518,6 @@ const panel = {
             return false
           })
       }
-
       attributesList = attributesList
         .map(fieldItem => {
           const valueToReturn = fieldItem[parameters.propertyName]

@@ -1,14 +1,5 @@
 <template>
   <div v-if="isLoading" style="min-height: inherit;">
-    <right-menu v-if="isMobile">
-      <context-menu
-        :container-uuid="reportResult.processUuid"
-        :panel-type="panelType"
-        :is-report="true"
-        :last-parameter="reportResult.processUuid"
-        :report-format="reportFormat"
-      />
-    </right-menu>
     <context-menu
       :container-uuid="reportResult.processUuid"
       :panel-type="panelType"
@@ -21,14 +12,14 @@
         <div class="content">
           <h3 class="text-center">
             <el-popover
-              v-if="!isEmptyValue(processMetadataValue.help)"
+              v-if="!isEmptyValue(processMetadata.help)"
               placement="top-start"
-              :title="processMetadataValue.name"
+              :title="processMetadata.name"
               width="400"
               trigger="hover"
             >
-              <div v-html="processMetadataValue.help" />
-              <el-button slot="reference" type="text" class="title">{{ processMetadataValue.name }}</el-button>
+              <div v-html="processMetadata.help" />
+              <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
             </el-popover>
           </h3>
           <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" width="100%" height="100%" />
@@ -46,13 +37,11 @@
         </div>
       </el-col>
     </el-row>
-    <modal
-      :visible="visibleDialog"
-      :metadata="processMetadataValue"
+    <modal-dialog
+      :metadata="processMetadata"
       :parent-uuid="reportResult.processUuid"
       :report-export-type="reportFormat"
       :panel-type="panelType"
-      @closeDialog="visibleDialog=false"
     />
   </div>
   <div
@@ -67,7 +56,7 @@
 
 <script>
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Modal from '@/components/ADempiere/Dialog'
+import ModalDialog from '@/components/ADempiere/Dialog'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import { showNotification } from '@/utils/ADempiere/notification'
 
@@ -75,7 +64,7 @@ export default {
   name: 'ReportViewer',
   components: {
     ContextMenu,
-    Modal
+    ModalDialog
   },
   data() {
     return {
@@ -96,18 +85,16 @@ export default {
       ],
       reportContent: '',
       reportHeader: '',
-      tableData: [],
-      tableHeader: [],
       isLoading: false,
-      reportResult: {},
-      visibleDialog: this.$store.state.processControl.visibleDialog
+      reportResult: {}
     }
   },
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
-    processMetadataValue() {
+    // TODO: Add get metadata from server to open report view from link
+    processMetadata() {
       return this.$store.getters.getProcessById(this.$route.params.processId)
     },
     getterCachedReport() {

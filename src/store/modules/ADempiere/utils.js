@@ -62,7 +62,6 @@ const utils = {
       return state.height
     },
     getSplitHeightTop: (state) => {
-      console.log(state.getSplitHeightTop)
       return state.getSplitHeightTop
     },
     getSplitHeight: (state) => {

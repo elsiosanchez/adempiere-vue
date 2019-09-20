@@ -71,6 +71,7 @@ export default {
     }
   },
   beforeMount() {
+    console.log(this.getterValue)
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = this.valueModel
@@ -93,14 +94,15 @@ export default {
           rowKey: this.metadata.rowKey,
           panelType: this.metadata.panelType
         })
-      } else if (this.metadata.panelType === 'table') {
+      } else if (this.metadata.isAvancedQuery) {
         this.$store.dispatch('notifyFieldChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           newValue: this.value,
-          isDontSendToEdit: false,
-          panelType: this.metadata.panelType
+          isDontSendToEdit: true,
+          panelType: this.metadata.panelType,
+          isAvancedQuery: this.metadata.isAvancedQuery
         })
       } else {
         this.$store.dispatch('notifyFieldChange', {
@@ -109,12 +111,25 @@ export default {
           columnName: this.metadata.columnName,
           newValue: this.value
         })
+        console.log(this.value)
       }
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(res)
+      this.$store.dispatch('getqlq', {
+        qlq: file
+      })
+      console.log(file)
     },
     beforeAvatarUpload(file) {
+      console.log(file)
+      this.$store.dispatch('notifyFieldChange', {
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        columnName: this.metadata.columnName,
+        newValue: file
+      })
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       // const isGIF = file.type === 'image/gif'

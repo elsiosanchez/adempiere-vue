@@ -38,10 +38,6 @@ export default {
     Panel
   },
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
     parentUuid: {
       type: String,
       default: undefined
@@ -103,8 +99,8 @@ export default {
         })
         this.closeDialog()
       } else if (action !== undefined) {
-        const isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
-        if (isReadyForSubmit) {
+        const fieldNotReady = this.$store.getters.isNotReadyForSubmit(action.uuid)
+        if (!fieldNotReady) {
           this.closeDialog()
           this.$store.dispatch('startProcess', {
             action: action, // process metadata
@@ -117,11 +113,10 @@ export default {
               console.warn(error)
             })
         } else {
-          const emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({
             type: 'warning',
             title: this.$t('notifications.emptyValues'),
-            name: '<b>' + emptyField.name + '.</b> ',
+            name: '<b>' + fieldNotReady.name + '.</b> ',
             message: this.$t('notifications.fieldMandatory')
           })
         }

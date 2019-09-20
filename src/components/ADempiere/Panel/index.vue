@@ -27,7 +27,8 @@
               />
             </div>
             <el-card
-              shadow="hover"
+              :shadow="isMobile ? 'never' : 'hover'"
+              :body-style="{ padding: '10px' }"
             >
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
@@ -70,7 +71,8 @@
                   class="card"
                 >
                   <el-card
-                    shadow="hover"
+                    :shadow="isMobile ? 'never' : 'hover'"
+                    :body-style="{ padding: '10px' }"
                   >
                     <div slot="header" class="clearfix">
                       <span>
@@ -122,7 +124,8 @@
                   class="card"
                 >
                   <el-card
-                    shadow="hover"
+                    :shadow="isMobile ? 'never' : 'hover'"
+                    :body-style="{ padding: '10px' }"
                   >
                     <div slot="header" class="clearfix">
                       <span>

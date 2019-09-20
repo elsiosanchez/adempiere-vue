@@ -90,7 +90,7 @@ const processControl = {
 
         // additional attributes to send server, selection to browser, or table name and record id to window
         var selection = []
-        var tableName, recordId
+        var tab, tableName, recordId
         if (params.panelType) {
           if (params.panelType === 'browser') {
             selection = rootGetters.getSelectionToServer(params.containerUuid)
@@ -106,7 +106,7 @@ const processControl = {
             }
           }
           if (params.panelType === 'window') {
-            const tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
+            tab = rootGetters.getTab(params.parentUuid, params.containerUuid)
             tableName = tab.tableName
             const field = rootGetters.getFieldFromColumnName(params.containerUuid, tableName + '_ID')
             recordId = field.value
@@ -247,6 +247,15 @@ const processControl = {
             reject(error)
           })
           .finally(() => {
+            // TODO: Add conditional to indicate when update record
+            if (params.panelType === 'window' && !processResult.isError) {
+              dispatch('updateRecordAfterRunProcess', {
+                parentUuid: params.parentUuid,
+                containerUuid: params.containerUuid,
+                tab: tab
+              })
+            }
+
             commit('addNotificationProcess', processResult)
             dispatch('finishProcess', processResult)
 

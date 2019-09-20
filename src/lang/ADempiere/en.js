@@ -8,7 +8,6 @@ export default {
     profile: 'Profile',
     ProcessActivity: 'Process Activity',
     Role: 'Role',
-    SearchWindow: 'Search Window',
     ReportViewer: 'Report Viewer'
   },
   notifications: {
@@ -53,7 +52,7 @@ export default {
     password: 'Password',
     any: 'any',
     thirdparty: 'Or connect with',
-    thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation! ! !'
+    thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation.'
   },
   documentation: {
     documentation: 'Documentation',

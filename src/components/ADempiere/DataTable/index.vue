@@ -215,7 +215,6 @@
           :fixed="item.isFixedTableColumn"
         >
           <template slot-scope="scope">
-            <!-- TODO: Support to binary fields. -->
             <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item)">
               <field
                 :is-data-table="true"

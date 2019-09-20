@@ -40,7 +40,7 @@
           </router-link>
         </el-table-column>
       </el-table>
-      <el-button slot="reference" type="text" icon="el-icon-bell" style="float: left;color: #000000;font-size: 121%;font-weight: 615!important;" />
+      <el-button slot="reference" type="text" icon="el-icon-bell" style="float: left;color: #000000;font-size: 121%;font-weight: 615!important;padding-top: 14px;" />
     </el-popover>
   </el-badge>
 </template>

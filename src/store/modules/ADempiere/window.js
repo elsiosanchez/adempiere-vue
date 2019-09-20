@@ -61,6 +61,8 @@ const window = {
               var tab = {
                 id: tabItem.getId(),
                 uuid: tabItem.getUuid(),
+                containerUuid: tabItem.getUuid(),
+                parentUuid: windowUuid,
                 windowUuid: windowUuid,
                 name: tabItem.getName(),
                 tabGroup: group,
@@ -72,7 +74,7 @@ const window = {
                 // TODO: Verify the value to return, the value is always false, and new records cannot be created
                 isInsertRecord: true, // tabItem.getIsinsertrecord(),
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
-                parentTab: Boolean(firstTab === tabItem.getTablename()),
+                isParentTab: Boolean(firstTab === tabItem.getTablename()),
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
                 isAdvancedTab: tabItem.getIsadvancedtab(),
                 isHasTree: tabItem.getIshastree(),
@@ -136,7 +138,7 @@ const window = {
                 references: []
               })
 
-              if (tab.parentTab) {
+              if (tab.isParentTab) {
                 parentTabs.push(tab)
               } else {
                 childrenTabs.push(tab)

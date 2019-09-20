@@ -33,7 +33,8 @@ const windowControl = {
       var defaultAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
         propertyName: 'parsedDefaultValue',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
 
       // redirect to create new record
@@ -56,7 +57,8 @@ const windowControl = {
       var oldAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
         propertyName: 'oldValue',
-        isObjectReturn: true
+        isObjectReturn: true,
+        isAddDisplayColumn: true
       })
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
@@ -78,7 +80,8 @@ const windowControl = {
         var finalAttributes = rootGetters.getColumnNamesAndValues({
           containerUuid: parameters.containerUuid,
           propertyName: 'value',
-          isEvaluateValues: true
+          isEvaluateValues: true,
+          isAddDisplayColumn: true
         })
 
         commit('addInCreate', {
@@ -92,7 +95,11 @@ const windowControl = {
         })
           .then(response => {
             var newValues = convertValuesMapToObject(response.getValuesMap())
-
+            finalAttributes.forEach((element) => {
+              if (element.columnName.includes('DisplayColumn')) {
+                newValues[element.columnName] = element.value
+              }
+            })
             var result = {
               data: newValues,
               recordUuid: response.getUuid(),
@@ -256,6 +263,41 @@ const windowControl = {
         })
         .catch(error => {
           console.warn(error)
+        })
+    },
+    /**
+     * Update record after run process associated with window
+     * @param {object} parameters
+     * @param {string} parameters.parentUuid
+     * @param {string} parameters.containerUuid
+     * @param {object} parameters.tab
+     */
+    updateRecordAfterRunProcess({ dispatch, rootGetters }, parameters) {
+      const recordUuid = rootGetters.getUuid(parameters.containerUuid)
+      // get new values
+      dispatch('getEntity', {
+        parentUuid: parameters.parentUuid,
+        containerUuid: parameters.containerUuid,
+        tableName: parameters.tab.tableName,
+        recordUuid: recordUuid
+      })
+        .then(response => {
+          // update panel
+          if (parameters.tab.isParentTab) {
+            dispatch('notifyPanelChange', {
+              parentUuid: parameters.parentUuid,
+              containerUuid: parameters.containerUuid,
+              newValues: response,
+              isDontSendToEdit: true
+            })
+          }
+          // update row in table
+          dispatch('notifyRowTableChange', {
+            parentUuid: parameters.parentUuid,
+            containerUuid: parameters.containerUuid,
+            row: response,
+            isEdit: false
+          })
         })
     },
     deleteEntity({ commit, dispatch, rootGetters }, parameters) {

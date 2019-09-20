@@ -16,5 +16,5 @@ export function formatDate(value, referenceType = 'DateTime') {
     }
     return dateTime.format(format)
   }
-  return undefined
+  return null
 }

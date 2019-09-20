@@ -273,8 +273,6 @@ export default {
           }
 
           if (this.$route.meta.type === 'window') {
-            // if (this.$route.query.action === 'create-new') {
-            // if (itemAction.action === 'resetPanelToNew') {
             if (this.recordUuid === 'create-new') {
               itemAction.disabled = true
             } else {
@@ -284,7 +282,6 @@ export default {
                 itemAction.disabled = true
               }
             }
-            // }
           }
         })
       }
@@ -313,8 +310,8 @@ export default {
     runAction(action) {
       if (action.type === 'action') {
         // run process or report
-        var isReadyForSubmit = this.$store.getters.isReadyForSubmit(this.$route.meta.uuid)
-        if (isReadyForSubmit) {
+        const fieldNotReady = this.$store.getters.isNotReadyForSubmit(this.$route.meta.uuid)
+        if (!fieldNotReady) {
           var containerParams = this.$route.meta.uuid
           if (this.lastParameter !== undefined) {
             containerParams = this.lastParameter
@@ -337,18 +334,11 @@ export default {
             .catch(error => {
               console.warn(error)
             })
-
-          // TODO: evaluate if necessary
-          if (this.isReport) {
-            return true
-          }
-          return false
         } else {
-          var emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({
             type: 'warning',
             title: this.$t('notifications.emptyValues'),
-            name: '<b>' + emptyField.name + '.</b> ',
+            name: '<b>' + fieldNotReady.name + '.</b> ',
             message: this.$t('notifications.fieldMandatory')
           })
         }

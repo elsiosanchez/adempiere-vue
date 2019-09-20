@@ -30,8 +30,7 @@ export default {
   data() {
     return {
       columnsFixed: [], // columns showed
-      columnListAvailable: [], // available fields
-      isLoadFromServer: false
+      columnListAvailable: [] // available fields
     }
   },
   computed: {
@@ -40,13 +39,6 @@ export default {
     },
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-    }
-  },
-  watch: {
-    isLoadFromServer(value) {
-      if (value) {
-        this.generatePanel(this.getterFieldList)
-      }
     }
   },
   created() {
