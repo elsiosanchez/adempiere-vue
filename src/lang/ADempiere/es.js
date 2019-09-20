@@ -8,7 +8,6 @@ export default {
     profile: 'Perfil',
     ProcessActivity: 'Actividad de Procesos',
     Role: 'Rol',
-    SearchWindow: 'Ventana de Búsqueda',
     ReportViewer: 'Visor de Reportes'
   },
   notifications: {
@@ -53,7 +52,7 @@ export default {
     password: 'Contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',
-    thirdpartyTips: 'No se puede simular en local, así que combine su propia simulación de negocios. !'
+    thirdpartyTips: 'No se puede simular en local, así que combine su propia simulación de negocios.'
   },
   documentation: {
     documentation: 'Documentación',

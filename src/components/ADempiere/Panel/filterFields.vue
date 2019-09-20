@@ -77,6 +77,7 @@ export default {
   }
 }
 </script>
+
 <style>
   .el-tag--small {
     height: 24px;

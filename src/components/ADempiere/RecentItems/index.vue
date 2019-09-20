@@ -90,6 +90,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 	.header {
 		padding-bottom: 10px;

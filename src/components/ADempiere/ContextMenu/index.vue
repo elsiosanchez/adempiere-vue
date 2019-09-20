@@ -337,12 +337,6 @@ export default {
             .catch(error => {
               console.warn(error)
             })
-
-          // TODO: evaluate if necessary
-          if (this.isReport) {
-            return true
-          }
-          return false
         } else {
           var emptyField = this.$store.getters.getEmptyMandatory(this.$route.meta.uuid)
           this.showNotification({

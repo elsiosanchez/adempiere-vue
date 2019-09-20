@@ -124,13 +124,11 @@ import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import DataTable from '@/components/ADempiere/DataTable'
 import splitPane from 'vue-splitpane'
-// import RightMenu from '@/components/RightPanel/menu'
 
 export default {
   name: 'Window',
   components: {
     TabParent,
-    // RightMenu,
     TabChildren,
     ContextMenu,
     DataTable,
@@ -197,7 +195,6 @@ export default {
   },
   mounted() {
     this.getWindow()
-    console.log(this.getHeightPanelTop)
   },
   methods: {
     // callback new size

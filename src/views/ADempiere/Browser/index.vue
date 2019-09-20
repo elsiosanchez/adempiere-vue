@@ -1,19 +1,10 @@
 <template>
   <el-container v-if="isLoading" class="view-base" style="height: 86vh;">
-    <modal
-      :visible="isVisisbleDialog"
+    <modal-dialog
       :container-uuid="browserUuid"
       :panel-type="panelType"
-      @closeDialog="isVisisbleDialog=true"
     />
     <el-header>
-      <!-- <right-menu v-if="isMobile">
-        <context-menu
-          :menu-parent-uuid="$route.meta.parentUuid"
-          :container-uuid="browserUuid"
-          :panel-type="panelType"
-        />
-      </right-menu> -->
       <context-menu
         :menu-parent-uuid="$route.meta.parentUuid"
         :container-uuid="browserUuid"
@@ -88,17 +79,15 @@ import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
-import Modal from '@/components/ADempiere/Dialog'
-// import RightMenu from '@/components/RightPanel/menu'
+import ModalDialog from '@/components/ADempiere/Dialog'
 
 export default {
   name: 'Browser',
   components: {
     Panel,
-    // RightMenu,
     DataTable,
     ContextMenu,
-    Modal
+    ModalDialog
   },
   props: {
     isEdit: {
@@ -112,7 +101,6 @@ export default {
       browserUuid: this.$route.meta.uuid,
       activeSearch: [],
       isLoading: false,
-      isVisisbleDialog: this.$store.state.processControl.visibleDialog,
       panelType: 'browser'
     }
   },
@@ -206,12 +194,12 @@ export default {
   }
 }
 </script>
+
 <style>
   .el-collapse-item__header:hover {
     background-color: #fcfcfc;
   }
 </style>
-
 <style scoped>
   .view-base {
     height: 100%;

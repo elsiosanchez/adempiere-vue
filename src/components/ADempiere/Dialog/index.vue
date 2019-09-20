@@ -38,10 +38,6 @@ export default {
     Panel
   },
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
     parentUuid: {
       type: String,
       default: undefined

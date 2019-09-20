@@ -177,7 +177,7 @@ export default {
 </script>
 
 <style scoped>
-.el-popover {
+  .el-popover {
     position: absolute;
     background: #FFFFFF;
     overflow: auto;

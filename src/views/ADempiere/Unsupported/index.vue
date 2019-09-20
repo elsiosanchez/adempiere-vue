@@ -10,9 +10,8 @@
 </template>
 
 <script>
-
 export default {
-  name: 'Unsupported',
+  name: 'UnsupportedView',
   methods: {
     redirect() {
       this.$store.dispatch('tagsView/delView', this.$route)
@@ -25,12 +24,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wscn-http404-container{
-  transform: translate(-50%,-50%);
-  position: absolute;
-  top: 40%;
-  left: 50%;
-}
+  .wscn-http404-container {
+    transform: translate(-50%,-50%);
+    position: absolute;
+    top: 40%;
+    left: 50%;
+  }
   .unsupported {
     position: relative;
     float: left;

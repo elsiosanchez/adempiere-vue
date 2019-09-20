@@ -26,6 +26,7 @@
     <router-view />
   </div>
 </template>
+
 <script>
 import Dropdown from '@/components/ADempiere/Dropdown'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
@@ -60,6 +61,7 @@ export default {
   }
 }
 </script>
+
 <style>
   .description {
     text-align: center;
