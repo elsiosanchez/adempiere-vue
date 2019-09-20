@@ -126,9 +126,9 @@ export default {
         valueFirst = value[0]
         valueTo = value[1]
       }
-      if (valueFirst == null) {
-        valueFirst = ''
-        valueTo = ''
+      if (valueFirst === undefined) {
+        valueFirst = null
+        valueTo = null
       }
       if (typeof valueFirst !== 'object') {
         valueFirst = new Date(valueFirst)
