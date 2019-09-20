@@ -28,7 +28,7 @@
                   </el-menu-item>
                 </el-submenu>
                 <el-menu-item v-else :key="index" :index="action.name" :disabled="action.disabled" @click="runAction(action)">
-                  {{ action.name }}
+                  <svg-icon v-if="action.type === 'process'" icon-class="component" /> {{ action.name }}
                 </el-menu-item>
               </template>
               <el-menu-item v-show="isReport" index="4">
@@ -45,8 +45,7 @@
       </el-menu>
     </right-menu>
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
-      <template v-if="isMobile" class="container-submenu" />
-      <template v-else>
+      <template v-if="!isMobile">
         <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
           <template slot="title">
             {{ $t('components.contextMenuRelations') }}
