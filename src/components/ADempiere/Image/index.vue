@@ -71,7 +71,6 @@ export default {
     }
   },
   beforeMount() {
-    console.log(this.getterValue)
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = this.valueModel
@@ -111,19 +110,12 @@ export default {
           columnName: this.metadata.columnName,
           newValue: this.value
         })
-        console.log(this.value)
       }
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      console.log(res)
-      this.$store.dispatch('getqlq', {
-        qlq: file
-      })
-      console.log(file)
     },
     beforeAvatarUpload(file) {
-      console.log(file)
       this.$store.dispatch('notifyFieldChange', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,

@@ -5,11 +5,11 @@
     :index="item.meta.uuid"
     @click="handleClick(item)"
   >
-    {{ item.meta.title }}
+    <svg-icon v-if="item.meta.type === 'window'" icon-class="tab" /> <svg-icon v-if="item.meta.type === 'report'" icon-class="skill" /> <svg-icon v-if="item.meta.type === 'browser'" icon-class="search" />{{ item.meta.title }}
   </el-menu-item>
   <el-submenu v-else v-show="!item.hidden" :index="item.meta.title" popper-append-to-body>
     <template slot="title">
-      {{ item.meta.title }}
+      <svg-icon icon-class="nested" /> {{ item.meta.title }}
     </template>
     <el-scrollbar wrap-class="scroll">
       <item v-for="(child, key) in item.children" :key="key" :item="child">
