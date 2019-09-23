@@ -195,6 +195,10 @@ export default {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
+      if (this.isAvancedQuery) {
+        return false
+      }
+
       const isUpdateableAllFields = this.field.isReadOnly || this.field.isReadOnlyFromLogic
 
       if (this.panelType === 'window') {
@@ -214,6 +218,9 @@ export default {
       return isUpdateableAllFields
     },
     isMandatory() {
+      if (this.isAvancedQuery) {
+        return false
+      }
       return this.field.isMandatory || this.field.isMandatoryFromLogic
     },
     isFieldOnly() {
