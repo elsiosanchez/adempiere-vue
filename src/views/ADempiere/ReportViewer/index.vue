@@ -25,7 +25,7 @@
           <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" width="100%" height="100%" />
           <div v-else-if="collectionReportFormat.includes(reportFormat)" class="content-api" :src="url" />
           <div v-else-if="reportFormat === 'html'" class="content-txt">
-            <el-container style="height: -webkit-fill-available;width: 100%;padding-bottom: 3%;">
+            <el-container class="sub-content-html">
               <el-main style="padding: 0;">
                 <div
                   class="el-table--striped el-table--border el-table--scrollable-y el-table--scrollable-x"
@@ -148,7 +148,7 @@ export default {
 }
 </script>
 
-<style scoped >
+<style lang="scss" scoped>
   .loading-report-viewer {
     padding: 100px 100px;
     height: 100%;
@@ -163,7 +163,7 @@ export default {
 	.content {
     width: 100%;
     height: 100%;
-    padding: 20px;
+    padding: 20px 0px;
     position: absolute;
     top: 0%;
   }
@@ -185,12 +185,23 @@ export default {
     padding-right: 10px;
     padding-top: 0px;
     padding-bottom: 20px;
+
+    .sub-content-html {
+      min-height: inherit;
+      height: inherit;
+      height: -webkit-fill-available;
+      max-height: -webkit-max-content;
+      max-height: -moz-max-content;
+      max-height: max-content;
+      width: 100%;
+      padding-bottom: 4%;
+    }
 	}
   .content-excel {
     width: 100%;
     margin-top:20px;
   }
-  .container{
+  .container {
     width: 200%;
     /* left: 50%; */
   }
