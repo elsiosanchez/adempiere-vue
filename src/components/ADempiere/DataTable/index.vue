@@ -649,13 +649,9 @@ export default {
         if (this.searchTable.trim().length > 0) {
           let find = false
           Object.keys(rowItem).forEach(key => {
-            // if exists some selection columns
-            if (this.getterPanel.selectionColumn.length > 0) {
-              if (this.getterPanel.selectionColumn.indexOf(key) > -1 &&
-                String(rowItem[key]).includes(String(this.searchTable))) {
-                find = true
-                return find
-              }
+            if (String(rowItem[key]).includes(String(this.searchTable))) {
+              find = true
+              return find
             }
           })
           return find
