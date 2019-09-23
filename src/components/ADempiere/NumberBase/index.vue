@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
-
 export default {
   name: 'NumberBase',
   props: {
@@ -80,7 +78,6 @@ export default {
     }
   },
   methods: {
-    isEmptyValue,
     handleChange() {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {

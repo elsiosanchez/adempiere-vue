@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
-
 export default {
   name: 'TimeBase',
   props: {
@@ -84,7 +82,6 @@ export default {
     }
   },
   methods: {
-    isEmptyValue,
     handleChange(value) {
       if (typeof value !== 'object') {
         value = new Date(value)

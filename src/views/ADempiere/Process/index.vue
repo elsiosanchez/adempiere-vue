@@ -21,9 +21,13 @@
                 trigger="hover"
               >
                 <div v-html="processMetadata.help" />
-                <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
+                <el-button slot="reference" type="text" class="title">
+                  {{ processMetadata.name }}
+                </el-button>
               </el-popover>
-              <el-button v-if="isEmptyValue(processMetadata.help)" slot="reference" type="text" class="title text-center">{{ processMetadata.name }}</el-button>
+              <el-button v-if="isEmptyValue(processMetadata.help)" slot="reference" type="text" class="title text-center">
+                {{ processMetadata.name }}
+              </el-button>
             </h3>
             <panel
               v-if="isLoading"
@@ -53,7 +57,6 @@
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 export default {
   name: 'Process',
@@ -94,7 +97,6 @@ export default {
     this.getProcess()
   },
   methods: {
-    isEmptyValue,
     getProcess() {
       if (this.getterProcess) {
         this.isLoading = true

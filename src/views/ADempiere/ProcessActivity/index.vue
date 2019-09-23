@@ -66,8 +66,6 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
-
 export default {
   name: 'ProcessActivity',
   data() {
@@ -102,7 +100,7 @@ export default {
         }
         Object.assign(processMetadataReturned, element, infoMetadata)
 
-        var indexRepeat = processAllReturned.findIndex(item => item.instanceUuid === element.instanceUuid && !isEmptyValue(element.instanceUuid))
+        var indexRepeat = processAllReturned.findIndex(item => item.instanceUuid === element.instanceUuid && !this.isEmptyValue(element.instanceUuid))
         if (indexRepeat > -1) {
           // update attributes in exists process to return
           // Object.assign(processAllReturned[indexRepeat], processMetadataReturned)
@@ -122,7 +120,6 @@ export default {
     this.$store.dispatch('getSessionProcessFromServer')
   },
   methods: {
-    isEmptyValue,
     getProcessMetadata(uuid) {
       return this.$store.getters.getProcess(uuid)
     },

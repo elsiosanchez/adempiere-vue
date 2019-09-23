@@ -95,7 +95,7 @@
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import Item from './items'
 import RightMenu from '@/components/RightPanel/menu'
-import { isEmptyValue, showNotification } from '@/utils/ADempiere'
+import { showNotification } from '@/utils/ADempiere/notification'
 
 export default {
   name: 'ContextMenu',
@@ -196,7 +196,7 @@ export default {
       return this.$store.getters.getContextMenu(this.containerUuid)
     },
     isReferecesContent() {
-      if (this.panelType === 'window' && !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
+      if (this.panelType === 'window' && !this.isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
         return true
       }
       return false
@@ -230,7 +230,6 @@ export default {
     this.getReferences()
   },
   methods: {
-    isEmptyValue,
     showNotification,
     getReferences() {
       if (this.isReferecesContent) {

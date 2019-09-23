@@ -51,7 +51,7 @@
 <script>
 import { FIELD_ONLY } from '@/components/ADempiere/Field/references'
 import { DEFAULT_SIZE } from '@/components/ADempiere/Field/fieldSize'
-import { fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
+import { fieldIsDisplayed } from '@/utils/ADempiere'
 
 /**
  * This is the base component for linking the components according to the
@@ -190,7 +190,6 @@ export default {
     this.field = this.metadataField
   },
   methods: {
-    isEmptyValue,
     isDisplayed() {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },

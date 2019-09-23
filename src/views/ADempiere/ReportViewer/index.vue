@@ -57,7 +57,6 @@
 <script>
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import ModalDialog from '@/components/ADempiere/Dialog'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import { showNotification } from '@/utils/ADempiere/notification'
 
 export default {
@@ -105,7 +104,6 @@ export default {
     this.getCachedReport()
   },
   methods: {
-    isEmptyValue,
     showNotification,
     displayReport(reportResult) {
       if (!reportResult.isError) {

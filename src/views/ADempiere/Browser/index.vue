@@ -78,7 +78,6 @@
 import ContextMenu from '@/components/ADempiere/ContextMenu'
 import Panel from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import ModalDialog from '@/components/ADempiere/Dialog'
 
 export default {
@@ -153,7 +152,6 @@ export default {
     this.getBrowser()
   },
   methods: {
-    isEmptyValue,
     handleChange(value) {
       var showCriteria = false
       if (this.activeSearch.length > 0) {

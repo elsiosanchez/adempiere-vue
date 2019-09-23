@@ -175,7 +175,6 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
 import Field from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
@@ -314,7 +313,6 @@ export default {
     this.getPanel(this.isAvancedQuery)
   },
   methods: {
-    isEmptyValue,
     cards() {
       if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.isMutipleGroups || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
@@ -387,7 +385,7 @@ export default {
      */
     getData(table = null, uuidRecord = null) {
       // break get data, this record is the same
-      if (!isEmptyValue(uuidRecord) && uuidRecord === this.getterRecordUuid) {
+      if (!this.isEmptyValue(uuidRecord) && uuidRecord === this.getterRecordUuid) {
         return
       }
       // this data row exists in vuex store

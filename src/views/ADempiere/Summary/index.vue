@@ -29,7 +29,6 @@
 
 <script>
 import Dropdown from '@/components/ADempiere/Dropdown'
-import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 export default {
   name: 'Summary',
@@ -52,7 +51,6 @@ export default {
     this.generateRoutesPool()
   },
   methods: {
-    isEmptyValue,
     generateRoutesPool() {
       if (this.$route.meta && this.$route.meta.childs.length > 0) {
         this.optionList = this.$route.meta.childs
