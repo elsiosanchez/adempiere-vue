@@ -108,7 +108,7 @@ export default {
     valueModel(value) {
       this.value = isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
     },
-    // TODO: Verify peformance in props with watcher in panel.
+    // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {
       if (actionValue === 'create-new') {
         // this.value = String(this.metadata.parsedDefaultValue).trim() === '' ? -1 : isNaN(this.metadata.parsedDefaultValue) ? this.metadata.parsedDefaultValue : parseInt(this.metadata.parsedDefaultValue)

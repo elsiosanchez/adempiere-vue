@@ -38,10 +38,8 @@ export default {
     valueModel(value) {
       this.value = String(value)
     },
-    '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
-      }
+    'metadata.value'(value) {
+      this.value = String(value)
     }
   },
   beforeMount() {

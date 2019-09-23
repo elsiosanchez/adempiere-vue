@@ -39,9 +39,8 @@
                     :metadata-field="{
                       ...subItem,
                       optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                      value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                      value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                     }"
-                    :is-load-record="isLoadRecord"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
                     :in-group="!getterIsShowedRecordNavigation"
@@ -96,9 +95,8 @@
                           :metadata-field="{
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                            value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                            value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                           }"
-                          :is-load-record="isLoadRecord"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
                           :in-group="isMutipleGroups && fieldGroups.length > 1"
@@ -148,9 +146,9 @@
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...subItem,
-                            value: isLoadRecord ? dataRecords[subItem.columnName] : subItem.value
+                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
+                            value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                           }"
-                          :is-load-record="isLoadRecord"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
                           :in-group="isMutipleGroups && fieldGroups.length > 1"

@@ -66,10 +66,11 @@ export default {
       }
       this.value = value
     },
-    '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
+    'metadata.value'(value) {
+      if (!value) {
+        value = ''
       }
+      this.value = value
     }
   },
   beforeMount() {

@@ -51,12 +51,10 @@ export default {
     valueModel(value) {
       this.value = Boolean(value)
     },
-    '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
-      }
+    'metadata.value'(value) {
+      this.value = Boolean(value)
     },
-    value(value) {
+    value(value, oldValue) {
       if (typeof value !== 'boolean') {
         this.value = Boolean(value)
       }

@@ -70,10 +70,11 @@ export default {
       }
       this.value = value
     },
-    '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
+    'metadata.value'(value) {
+      if (typeof value === 'number') {
+        value = new Date(value)
       }
+      this.value = value
     }
   },
   beforeMount() {

@@ -66,10 +66,11 @@ export default {
       }
       this.value = value
     },
-    '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new') {
-        this.value = this.metadata.defaultValue
+    'metadata.value'(value) {
+      if (typeof value === 'number') {
+        value = new Date(value)
       }
+      this.value = value
     }
   },
   created() {
@@ -112,7 +113,7 @@ export default {
       return (new Date(value)).getTime()
     },
     convertTimestampToString(value) {
-      var newValue = Number(value)
+      const newValue = Number(value)
       if (isNaN(newValue)) {
         return newValue
       }
