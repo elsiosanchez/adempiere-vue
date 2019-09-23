@@ -51,7 +51,8 @@
                           class="open-detail"
                         />
                         <el-button
-                          v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                          v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0 &&
+                            (isMobile && !isShowedRecordNavigation || !isMobile)"
                           v-show="!isShowedTabChildren"
                           icon="el-icon-caret-top"
                           :class="isMobile ? 'open-table-detail-mobile' : 'open-table-detail'"
@@ -363,7 +364,6 @@ export default {
   height: 100%;
 }
 </style>
-
 <style>
   .el-card__header {
     background: rgba(245, 247, 250, 0.75);
