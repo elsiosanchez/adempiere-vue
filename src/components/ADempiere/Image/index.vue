@@ -1,18 +1,31 @@
 <template>
   <div>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
     <el-upload
+      with-credentials
       action="https://jsonplaceholder.typicode.com/posts/"
       list-type="picture-card"
-      class="avatar-uploader"
+      :on-preview="handlePictureCardPreview"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
-      :disabled="metadata.readonly || metadata.disabled"
     >
       <i class="el-icon-plus" />
     </el-upload>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+    <!-- <el-upload
+      :show-file-list="false"
+      :before-upload="beforeAvatarUpload"
+      class="avatar-uploader"
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :disabled="metadata.readonly || metadata.disabled"
+    >
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
+    </el-upload>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog> -->
   </div>
 </template>
 
@@ -66,7 +79,6 @@ export default {
   },
   methods: {
     handlePictureCardPreview(file) {
-      console.log(file, 'hp')
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },

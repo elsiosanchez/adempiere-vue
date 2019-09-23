@@ -9,7 +9,7 @@
                 <i
                   v-if="isMobile"
                   class="el-icon-close"
-                  style="position: fixed;top: 20%;"
+                  style="position: fixed;padding-top: 15px; color: #000000;font-size: 121%;font-weight: 615!important;padding-left: 9px;"
                   @click="handleChangeShowedRecordNavigation()"
                 />
                 <data-table
