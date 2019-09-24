@@ -1,4 +1,4 @@
-import { isEmptyValue, showNotification } from '@/utils/ADempiere'
+import { showNotification } from '@/utils/ADempiere/notification'
 import Item from './items'
 
 export const contextMixin = {
@@ -76,7 +76,7 @@ export const contextMixin = {
       return this.$store.getters.getContextMenu(this.containerUuid)
     },
     isReferecesContent() {
-      if (this.panelType === 'window' && !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
+      if (this.panelType === 'window' && !this.isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
         return true
       }
       return false
@@ -110,7 +110,6 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
-    isEmptyValue,
     showNotification,
     getReferences() {
       if (this.isReferecesContent) {
