@@ -17,36 +17,19 @@
 </template>
 
 <script>
-import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
+import { clientDateTime } from '@/utils/ADempiere'
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
-  name: 'DateBase',
-  props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
-    // value received from data result
-    valueModel: {
-      type: [String, Number, Date],
-      default: undefined
-    }
-  },
+  name: 'FieldDate',
+  mixins: [fieldMixin],
   data() {
     return {
-      value: this.metadata.value,
       formatView: undefined,
       formatSend: undefined
     }
   },
   computed: {
-    getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return field.value
-      }
-      return undefined
-    },
     typePicker() {
       var range = ''
       var time = ''

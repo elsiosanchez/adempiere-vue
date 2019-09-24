@@ -1,23 +1,5 @@
-<template>
-  <el-time-picker
-    v-model="value"
-    :picker-options="{
-      minTime: minValue,
-      maxTime: maxValue
-    }"
-    :is-range="isPickerRange"
-    range-separator="-"
-    :placeholder="$t('components.timePlaceholder')"
-    class="time-base"
-    :readonly="Boolean(metadata.readonly)"
-    :disabled="Boolean(metadata.disabled || metadata.readonly)"
-    @change="handleChange"
-  />
-</template>
 
-<script>
-export default {
-  name: 'TimeBase',
+export const fieldMixin = {
   props: {
     metadata: {
       type: Object,
@@ -25,7 +7,7 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: [String, Number],
+      type: [String, Number, Boolean, Date, Array],
       default: undefined
     }
   },
@@ -34,7 +16,7 @@ export default {
       value: this.metadata.value
     }
   },
-  computed: {
+  comuted: {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
@@ -42,51 +24,12 @@ export default {
       }
       return undefined
     },
-    isPickerRange() {
-      if (this.metadata.isRange && !this.metadata.inTable) {
-        return true
-      }
-      return false
-    },
-    maxValue() {
-      if (!this.isEmptyValue(this.metadata.valueMax)) {
-        return Number(this.metadata.valueMax)
-      }
-      return Infinity
-    },
-    minValue() {
-      if (!this.isEmptyValue(this.metadata.valueMin)) {
-        return Number(this.metadata.valueMin)
-      }
-      return -Infinity
-    }
-  },
-  watch: {
-    valueModel(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
-      }
-      this.value = value
-    },
-    'metadata.value'(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
-      }
-      this.value = value
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = this.valueModel
+    isDisabled() {
+      return Boolean(this.metadata.readonly || this.metadata.disabled)
     }
   },
   methods: {
     handleChange(value) {
-      if (typeof value !== 'object') {
-        value = new Date(value)
-      }
-
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
@@ -113,16 +56,14 @@ export default {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
-          newValue: this.value
+          newValue: this.value,
+          isDontSendToEdit: Boolean(value === 'NotSend')
         })
       }
     }
   }
 }
-</script>
 
-<style scoped>
-  .time-base {
-    width: 100% !important;
-  }
-</style>
+export const fieldMixin2 = {
+
+}

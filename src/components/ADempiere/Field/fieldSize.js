@@ -1,7 +1,7 @@
 
 export const FIELD_DISPLAY_SIZES = [
   {
-    type: 'Binary',
+    type: 'FieldBinary',
     size: {
       xs: 6,
       sm: 6,
@@ -11,7 +11,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'Button',
+    type: 'FieldButton',
     size: {
       xs: 0,
       sm: 0,
@@ -21,7 +21,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'Color',
+    type: 'FieldColor',
     size: {
       xs: 6,
       sm: 6,
@@ -31,7 +31,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'Date',
+    type: 'FieldDate',
     size: {
       xs: 24,
       sm: 12,
@@ -51,7 +51,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'NumberBase',
+    type: 'FieldNumber',
     size: {
       xs: 24,
       sm: 12,
@@ -61,7 +61,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'SelectBase',
+    type: 'FieldSelect',
     size: {
       xs: 24,
       sm: 12,
@@ -71,7 +71,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'TextBase',
+    type: 'FieldText',
     size: {
       xs: 24,
       sm: 12,
@@ -81,7 +81,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'TextAreaBase',
+    type: 'FieldTextArea',
     size: {
       xs: 24,
       sm: 12,
@@ -91,7 +91,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'Time',
+    type: 'FieldTime',
     size: {
       xs: 24,
       sm: 12,
@@ -101,7 +101,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'YesNo',
+    type: 'FieldYesNo',
     size: {
       xs: 14,
       sm: 8,
@@ -113,7 +113,7 @@ export const FIELD_DISPLAY_SIZES = [
 ]
 
 export const DEFAULT_SIZE = {
-  type: 'YesNo',
+  type: 'FieldYesNo',
   size: {
     xs: 6,
     sm: 8,

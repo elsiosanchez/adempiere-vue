@@ -23,20 +23,11 @@
 
 <script>
 import { parseContext } from '@/utils/ADempiere'
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
-  name: 'SelectBase',
-  props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
-    // value received from data result
-    valueModel: {
-      type: [String, Number],
-      default: undefined
-    }
-  },
+  name: 'FieldSelect',
+  mixins: [fieldMixin],
   data() {
     return {
       value: this.isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value, 10),
@@ -106,7 +97,7 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
+      this.value = this.sEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
     },
     // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {

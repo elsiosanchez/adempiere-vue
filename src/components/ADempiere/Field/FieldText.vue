@@ -13,13 +13,12 @@
 </template>
 
 <script>
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
+
 export default {
-  name: 'TextBase',
+  name: 'FieldText',
+  mixins: [fieldMixin],
   props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
     pattern: {
       type: String,
       default: undefined
@@ -32,11 +31,6 @@ export default {
       type: Function,
       default: () => undefined
     },
-    // value received from data result
-    valueModel: {
-      type: [String, Number],
-      default: undefined
-    },
     // Only used when prop type='TextArea'
     rows: {
       type: Number,
@@ -45,18 +39,8 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.value,
       patternFileName: '[A-Za-zñÑ0-9-_]{1,}',
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
-    }
-  },
-  computed: {
-    getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return field.value
-      }
-      return undefined
     }
   },
   watch: {
@@ -80,37 +64,6 @@ export default {
     }
   },
   methods: {
-    handleChange(value) {
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value
-        })
-      }
-    },
     validateUrl(e) {
       // Entry pattern, in this case only accepts numbers and letters
       var _Pattern = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{1,5})+)(\/(.)*)?(\?(.)*)?/g

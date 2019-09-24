@@ -1,14 +1,23 @@
 <template>
-  <el-input
+  <el-time-picker
     v-model="value"
-    type="hidden"
+    :picker-options="{
+      minTime: minValue,
+      maxTime: maxValue
+    }"
+    :is-range="isPickerRange"
+    range-separator="-"
+    :placeholder="$t('components.timePlaceholder')"
+    class="time-base"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="Boolean(metadata.readonly || metadata.disabled)"
     @change="handleChange"
   />
 </template>
 
 <script>
 export default {
-  name: 'ButtonBase',
+  name: 'FieldTime',
   props: {
     metadata: {
       type: Object,
@@ -16,13 +25,13 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: [String, Number, Boolean],
+      type: [String, Number],
       default: undefined
     }
   },
   data() {
     return {
-      value: String(this.metadata.value)
+      value: this.metadata.value
     }
   },
   computed: {
@@ -32,14 +41,38 @@ export default {
         return field.value
       }
       return undefined
+    },
+    isPickerRange() {
+      if (this.metadata.isRange && !this.metadata.inTable) {
+        return true
+      }
+      return false
+    },
+    maxValue() {
+      if (!this.isEmptyValue(this.metadata.valueMax)) {
+        return Number(this.metadata.valueMax)
+      }
+      return Infinity
+    },
+    minValue() {
+      if (!this.isEmptyValue(this.metadata.valueMin)) {
+        return Number(this.metadata.valueMin)
+      }
+      return -Infinity
     }
   },
   watch: {
     valueModel(value) {
-      this.value = String(value)
+      if (typeof value === 'number') {
+        value = new Date(value)
+      }
+      this.value = value
     },
     'metadata.value'(value) {
-      this.value = String(value)
+      if (typeof value === 'number') {
+        value = new Date(value)
+      }
+      this.value = value
     }
   },
   beforeMount() {
@@ -50,34 +83,46 @@ export default {
   },
   methods: {
     handleChange(value) {
+      if (typeof value !== 'object') {
+        value = new Date(value)
+      }
+
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
-          newValue: String(this.value),
+          newValue: this.value,
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey
+          rowKey: this.metadata.rowKey,
+          panelType: this.metadata.panelType
         })
-      } else if (this.metadata.panelType === 'table') {
+      } else if (this.metadata.isAvancedQuery) {
         this.$store.dispatch('notifyFieldChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           newValue: this.value,
-          isDontSendToEdit: false,
-          panelType: this.metadata.panelType
+          isDontSendToEdit: true,
+          panelType: this.metadata.panelType,
+          isAvancedQuery: this.metadata.isAvancedQuery
         })
       } else {
         this.$store.dispatch('notifyFieldChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
-          newValue: String(this.value)
+          newValue: this.value
         })
       }
     }
   }
 }
 </script>
+
+<style scoped>
+  .time-base {
+    width: 100% !important;
+  }
+</style>
