@@ -214,6 +214,12 @@ export const contextMixin = {
             .catch(error => {
               console.warn(error)
             })
+          if (this.panelType !== 'window') {
+            this.$store.dispatch('tagsView/delView', this.$route)
+              .then(({ visitedViews }) => {
+                this.$router.push('/dashboard')
+              })
+          }
         } else {
           this.showNotification({
             type: 'warning',
