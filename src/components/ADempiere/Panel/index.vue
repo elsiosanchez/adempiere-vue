@@ -2,6 +2,7 @@
   <div class="wrapper">
     <el-form
       v-if="isLoadPanel"
+      key="panel-loaded"
       v-model="dataRecords"
       label-position="top"
       label-width="200px"
@@ -10,7 +11,7 @@
         v-if="firstGroup !== undefined &&
           firstGroup.groupFinal === ''"
       >
-        <div v-show="firstGroup.activeFields > 0" class="cards-not-group">
+        <div v-show="firstGroup.activeFields" class="cards-not-group">
           <div
             v-if="(group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
@@ -165,6 +166,7 @@
     </el-form>
     <div
       v-else
+      key="panel-loading"
       v-loading="!isLoadPanel"
       :element-loading-text="$t('notifications.loading')"
       element-loading-spinner="el-icon-loading"
@@ -180,7 +182,7 @@ import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
 
 export default {
-  name: 'Panel',
+  name: 'PanelFields',
   components: {
     Field,
     FilterFields,
@@ -353,7 +355,7 @@ export default {
 
       this.isLoadPanel = true
       if (this.panelType === 'window') {
-        if (totalRecords.length > 0) {
+        if (totalRecords.length) {
           this.$router.push({
             name: this.$route.name,
             query: {

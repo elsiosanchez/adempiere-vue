@@ -24,85 +24,18 @@
 </template>
 
 <script>
+import { tabMixin } from '@/components/ADempiere/Tab/tabMixin'
 import DataTable from '@/components/ADempiere/DataTable'
 
 export default {
-  name: 'Tab',
+  name: 'TabChildren',
   components: {
     DataTable
   },
-  props: {
-    windowUuid: {
-      type: String,
-      default: ''
-    },
-    tabsList: {
-      type: [Array, Object],
-      default: () => []
-    }
-  },
-  data() {
-    return {
-      tableName: [],
-      isLoading: false,
-      currentTab: this.$route.params.tabNumber,
-      uuidRecord: this.$route.params.uuidRecord,
-      tabUuid: '',
-      panelType: 'window'
-    }
-  },
-  computed: {
-    isCreateNew() {
-      return Boolean(this.$route.query.action === 'create-new')
-    }
-  },
-  created() {
-    this.tabUuid = this.tabsList[0].uuid
-    this.getData()
-  },
-  methods: {
-    setCurrentTab() {
-      this.$store.dispatch('setCurrentTab', {
-        parentUuid: this.windowUuid,
-        containerUuid: this.tabUuid
-      })
-    },
-    /**
-     * @param {object} tabHTML DOM HTML the tab clicked
-     */
-    handleClick(tabHTML) {
-      if (this.tabUuid !== tabHTML.$attrs.tabuuid) {
-        this.tabUuid = tabHTML.$attrs.tabuuid
-        this.setCurrentTab()
-      }
-      this.getData()
-      // this.setPemantLink(tabHTML)
-    },
-    /**
-     * TODO: Verify use
-     */
-    setPemantLink(tabHTML) {
-      this.$route.params.tabNumber = tabHTML.name
-      this.currentTab = this.$route.params.tabNumber
-      this.$router.push({
-        name: this.$route.name,
-        query: {
-          tabNumber: tabHTML.name
-        }
-      })
-    },
-    getData() {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.windowUuid,
-        containerUuid: this.tabUuid
-      })
-        .catch(error => {
-          console.warn(error)
-        })
-    }
-  }
+  mixins: [tabMixin]
 }
 </script>
+
 <style>
   .el-tabs__content {
     overflow: hidden;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading" style="min-height: inherit;">
+  <div v-if="isLoading" key="report-viewer-loaded" style="min-height: inherit;">
     <context-menu
       :container-uuid="reportResult.processUuid"
       :panel-type="panelType"
@@ -22,9 +22,9 @@
               <el-button slot="reference" type="text" class="title">{{ processMetadata.name }}</el-button>
             </el-popover>
           </h3>
-          <iframe v-if="reportFormat === 'pdf'" class="content-api" :src="url" width="100%" height="100%" />
-          <div v-else-if="collectionReportFormat.includes(reportFormat)" class="content-api" :src="url" />
-          <div v-else-if="reportFormat === 'html'" class="content-txt">
+          <iframe v-if="reportFormat === 'pdf'" key="report-content-pdf" class="content-api" :src="url" width="100%" height="100%" />
+          <div v-else-if="collectionReportFormat.includes(reportFormat)" key="report-content-all" class="content-api" :src="url" />
+          <div v-else-if="reportFormat === 'html'" key="report-content-html" class="content-txt">
             <el-container class="sub-content-html">
               <el-main style="padding: 0;">
                 <div
@@ -46,6 +46,7 @@
   </div>
   <div
     v-else
+    key="report-viewer-loading"
     v-loading="!isLoading"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"

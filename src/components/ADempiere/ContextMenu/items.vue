@@ -5,11 +5,11 @@
     :index="item.meta.uuid"
     @click="handleClick(item)"
   >
-    <svg-icon v-if="item.meta.type === 'window'" icon-class="tab" /> <svg-icon v-if="item.meta.type === 'report'" icon-class="skill" /> <svg-icon v-if="item.meta.type === 'browser'" icon-class="search" />{{ item.meta.title }}
+    <svg-icon v-if="isMobile" :icon-class="classIconMenuRight" /> {{ item.meta.title }}
   </el-menu-item>
   <el-submenu v-else v-show="!item.hidden" :index="item.meta.title" popper-append-to-body>
     <template slot="title">
-      <svg-icon icon-class="nested" /> {{ item.meta.title }}
+      <svg-icon v-if="isMobile" icon-class="nested" /> {{ item.meta.title }}
     </template>
     <el-scrollbar wrap-class="scroll">
       <item v-for="(child, key) in item.children" :key="key" :item="child">
@@ -20,12 +20,26 @@
 </template>
 
 <script>
+import { icon } from '@/components/ADempiere/ContextMenu/icon'
+
 export default {
   name: 'Item',
   props: {
     item: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
+    classIconMenuRight(iconMenu) {
+      var typeMenu = this.item.meta.type
+      iconMenu = icon.find(function(element) {
+        return element.type === typeMenu
+      })
+      return iconMenu.icon
     }
   },
   methods: {
