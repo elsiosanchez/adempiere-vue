@@ -13,20 +13,11 @@
 <script>
 import { fieldIsDisplayed } from '@/utils/ADempiere'
 import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
-  name: 'YesNo',
-  props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
-    // value received from data result
-    valueModel: {
-      type: [String, Boolean],
-      default: undefined
-    }
-  },
+  name: 'FieldYesNo',
+  mixins: [fieldMixin],
   data() {
     return {
       value: Boolean(this.metadata.value),

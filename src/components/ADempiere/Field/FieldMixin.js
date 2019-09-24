@@ -1,15 +1,5 @@
-<template>
-  <el-color-picker
-    v-model="value"
-    :show-alpha="showAlphaColor"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
-    @change="handleChange"
-  />
-</template>
 
-<script>
-export default {
-  name: 'ColorBase',
+export const fieldMixin = {
   props: {
     metadata: {
       type: Object,
@@ -17,37 +7,25 @@ export default {
     },
     // value received from data result
     valueModel: {
-      type: String,
+      type: [String, Number, Boolean, Date, Array],
       default: undefined
     }
   },
   data() {
     return {
-      value: this.metadata.value,
-      showAlphaColor: true
+      value: this.metadata.value
     }
   },
-  computed: {
+  comuted: {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
         return field.value
       }
       return undefined
-    }
-  },
-  watch: {
-    valueModel(value) {
-      this.value = value
     },
-    'metadata.value'(value) {
-      this.value = value
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = String(this.valueModel)
+    isDisabled() {
+      return Boolean(this.metadata.readonly || this.metadata.disabled)
     }
   },
   methods: {
@@ -78,10 +56,14 @@ export default {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
-          newValue: this.value
+          newValue: this.value,
+          isDontSendToEdit: Boolean(value === 'NotSend')
         })
       }
     }
   }
 }
-</script>
+
+export const fieldMixin2 = {
+
+}
