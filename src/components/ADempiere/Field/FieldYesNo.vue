@@ -5,7 +5,7 @@
     :active-text="$t('components.switchActiveText')"
     true-value="true"
     false-value="false"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     @change="handleChange"
   />
 </template>
@@ -27,15 +27,6 @@ export default {
           isReadOnlyValue: false
         }
       ]
-    }
-  },
-  computed: {
-    getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return field.value
-      }
-      return undefined
     }
   },
   watch: {

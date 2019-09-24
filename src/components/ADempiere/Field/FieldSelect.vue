@@ -7,7 +7,7 @@
     value-key="key"
     class="select-base"
     clearable
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     @change="handleChange"
     @visible-change="getDataLookupList"
     @clear="clearLookup"

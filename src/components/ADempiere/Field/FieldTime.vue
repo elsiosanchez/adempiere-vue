@@ -10,40 +10,19 @@
     :placeholder="$t('components.timePlaceholder')"
     class="time-base"
     :readonly="Boolean(metadata.readonly)"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     @change="handleChange"
   />
 </template>
 
 <script>
 import { isEmptyValue } from '@/utils/ADempiere'
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
   name: 'FieldTime',
-  props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
-    // value received from data result
-    valueModel: {
-      type: [String, Number],
-      default: undefined
-    }
-  },
-  data() {
-    return {
-      value: this.metadata.value
-    }
-  },
+  mixins: [fieldMixin],
   computed: {
-    getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return field.value
-      }
-      return undefined
-    },
     isPickerRange() {
       if (this.metadata.isRange && !this.metadata.inTable) {
         return true

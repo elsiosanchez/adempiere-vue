@@ -6,7 +6,7 @@
     :min="minValue"
     :max="maxValue"
     :placeholder="metadata.help"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     controls-position="right"
     :class="'display-type-' + cssClass"
     @blur="validateInput"

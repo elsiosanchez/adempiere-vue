@@ -16,7 +16,7 @@ export const fieldMixin = {
       value: this.metadata.value
     }
   },
-  comuted: {
+  computed: {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
