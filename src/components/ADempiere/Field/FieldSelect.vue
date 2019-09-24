@@ -23,20 +23,11 @@
 
 <script>
 import { isEmptyValue, parseContext } from '@/utils/ADempiere'
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
-  name: 'SelectBase',
-  props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
-    // value received from data result
-    valueModel: {
-      type: [String, Number],
-      default: undefined
-    }
-  },
+  name: 'FieldSelect',
+  mixins: [fieldMixin],
   data() {
     return {
       value: isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value, 10),

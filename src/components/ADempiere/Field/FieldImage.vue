@@ -7,6 +7,7 @@
       :on-preview="handlePictureCardPreview"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
+      :disabled="Boolean(metadata.readonly || metadata.disabled)"
     >
       <i class="el-icon-plus" />
     </el-upload>
@@ -30,34 +31,16 @@
 </template>
 
 <script>
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
+
 export default {
-  name: 'ImageBase',
-  props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
-    // value received from data result
-    valueModel: {
-      type: [String, Number],
-      default: undefined
-    }
-  },
+  name: 'FieldImage',
+  mixins: [fieldMixin],
   data() {
     return {
       imageUrl: '',
-      value: this.metadata.value,
       dialogImageUrl: '',
       dialogVisible: false
-    }
-  },
-  computed: {
-    getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return field.value
-      }
-      return undefined
     }
   },
   watch: {
@@ -78,37 +61,6 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
-    },
-    handleChange(value) {
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value
-        })
-      }
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)

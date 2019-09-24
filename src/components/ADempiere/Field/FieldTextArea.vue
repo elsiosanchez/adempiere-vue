@@ -10,10 +10,10 @@
 </template>
 
 <script>
-import TextBase from '@/components/ADempiere/TextBase'
+import TextBase from '@/components/ADempiere/Field/FieldText'
 
 export default {
-  name: 'TextAreaBase',
+  name: 'FieldTextArea',
   components: {
     TextBase
   },
@@ -30,25 +30,9 @@ export default {
   },
   data() {
     return {
-      value: this.metadata.value,
       typeInput: 'textarea',
       pattern: undefined,
       rows: 5
-    }
-  },
-  watch: {
-    valueModel(value) {
-      if (!value) {
-        value = ''
-      }
-      this.value = value
-    },
-    // TODO: Verify if is nescesary watch this value
-    'metadata.value'(value) {
-      if (!value) {
-        value = ''
-      }
-      this.value = value
     }
   },
   created() {
@@ -56,12 +40,6 @@ export default {
       // avoid drastically changing the style of the table
       // this.typeInput = 'text'
       this.rows = 1
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = String(this.valueModel)
     }
   }
 }

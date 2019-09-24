@@ -16,39 +16,24 @@
 
 <script>
 import { isEmptyValue } from '@/utils/ADempiere'
+import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
-  name: 'NumberBase',
+  name: 'FieldNumber',
+  mixins: [fieldMixin],
   props: {
-    metadata: {
-      type: Object,
-      required: true
-    },
     validateInput: {
       type: Function,
       default: () => undefined
-    },
-    // value received from data result
-    valueModel: {
-      type: [Number, String],
-      default: undefined
     }
   },
   data() {
     return {
-      value: this.metadata.value,
       pattern: undefined,
       showControls: true
     }
   },
   computed: {
-    getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return field.value
-      }
-      return undefined
-    },
     maxValue() {
       if (!this.isEmptyValue(this.metadata.valueMax)) {
         return Number(this.metadata.valueMax)
@@ -80,38 +65,7 @@ export default {
     }
   },
   methods: {
-    isEmptyValue,
-    handleChange() {
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value
-        })
-      }
-    }
+    isEmptyValue
   }
 }
 </script>
