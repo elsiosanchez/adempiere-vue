@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isIndex" class="app-container">
+  <div v-if="isIndex" key="sumary" class="app-container">
     <el-popover
       v-if="!isEmptyValue($route.meta.description)"
       ref="routeDescription"
@@ -22,7 +22,7 @@
       </template>
     </el-row>
   </div>
-  <div v-else>
+  <div v-else key="view">
     <router-view />
   </div>
 </template>
@@ -54,7 +54,7 @@ export default {
   methods: {
     isEmptyValue,
     generateRoutesPool() {
-      if (this.$route.meta && this.$route.meta.childs.length > 0) {
+      if (this.$route.meta && this.$route.meta.childs.length) {
         this.optionList = this.$route.meta.childs
       }
     }

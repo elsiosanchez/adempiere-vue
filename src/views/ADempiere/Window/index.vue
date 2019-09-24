@@ -1,9 +1,13 @@
 <template>
-  <div v-if="isLoading">
+  <div
+    v-if="isLoading"
+    key="window-loaded"
+  >
     <el-container style="height: 86vh;">
       <el-main>
         <split-pane :min-percent="10" :default-percent="isMobile ? (isShowedRecordNavigation ? 100 : 0) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
           <template>
+            <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
             <div slot="paneL" class="left-container">
               <el-aside v-show="isShowedRecordNavigation" width="100%">
                 <i
@@ -41,17 +45,16 @@
                     <tab-parent
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
-                      :window-type="windowMetadata.windowType"
                       class="tab-window"
                     />
                     <div class="small-4 columns">
                       <div class="wrapper">
                         <div
-                          v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                          v-show="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length"
                           class="open-detail"
                         />
                         <el-button
-                          v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0 &&
+                          v-if="windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length &&
                             (isMobile && !isShowedRecordNavigation || !isMobile)"
                           v-show="!isShowedTabChildren"
                           icon="el-icon-caret-top"
@@ -80,7 +83,7 @@
                 </SplitArea>
                 <SplitArea v-show="isShowedTabChildren" :size="50">
                   <el-header
-                    v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length > 0"
+                    v-if="isShowedTabChildren && windowMetadata.tabsListChildren && windowMetadata.tabsListChildren.length"
                     style="height: auto; padding-right: 35px !important;padding-bottom: 33px;"
                   >
                     <div class="w-33">
@@ -108,6 +111,7 @@
   </div>
   <div
     v-else
+    key="window-loading"
     v-loading="!isLoading"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
@@ -127,7 +131,7 @@ import DataTable from '@/components/ADempiere/DataTable'
 import splitPane from 'vue-splitpane'
 
 export default {
-  name: 'Window',
+  name: 'WindowView',
   components: {
     TabParent,
     TabChildren,

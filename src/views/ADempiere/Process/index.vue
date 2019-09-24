@@ -1,5 +1,5 @@
 <template>
-  <el-container v-if="isLoading" class="view-base" style="height: 84vh;">
+  <el-container v-if="isLoading" key="process-loaded" class="view-base" style="height: 84vh;">
     <el-header style="height: 39px;">
       <context-menu
         :menu-parent-uuid="$route.meta.parentUuid"
@@ -25,8 +25,7 @@
               </el-popover>
               <el-button v-if="isEmptyValue(processMetadata.help)" slot="reference" type="text" class="title text-center">{{ processMetadata.name }}</el-button>
             </h3>
-            <panel
-              v-if="isLoading"
+            <panel-fields
               :position-tab="processMetadata.accesLevel"
               :container-uuid="processUuid"
               :metadata="processMetadata"
@@ -40,6 +39,7 @@
   </el-container>
   <div
     v-else
+    key="process-loading"
     v-loading="!isLoading"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
@@ -52,13 +52,13 @@
 // When supporting the processes, smart browser and reports,
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Panel from '@/components/ADempiere/Panel'
+import PanelFields from '@/components/ADempiere/Panel'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 
 export default {
-  name: 'Process',
+  name: 'ProcessView',
   components: {
-    Panel,
+    PanelFields,
     ContextMenu
   },
   props: {

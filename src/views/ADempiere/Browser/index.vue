@@ -1,5 +1,5 @@
 <template>
-  <el-container v-if="isLoading" class="view-base" style="height: 86vh;">
+  <el-container v-if="isLoading" key="browser-loaded" class="view-base" style="height: 86vh;">
     <modal-dialog
       :container-uuid="browserUuid"
       :panel-type="panelType"
@@ -47,7 +47,7 @@
     <el-main>
       <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
         <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
-          <panel
+          <panel-fields
             :container-uuid="browserUuid"
             :metadata="browserMetadata"
             :panel-type="panelType"
@@ -64,6 +64,7 @@
   </el-container>
   <div
     v-else
+    key="browser-loading"
     v-loading="!isLoading"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
@@ -76,15 +77,15 @@
 // When supporting the processes, smart browser and reports,
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import Panel from '@/components/ADempiere/Panel'
+import PanelFields from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil'
 import ModalDialog from '@/components/ADempiere/Dialog'
 
 export default {
-  name: 'Browser',
+  name: 'BrowserView',
   components: {
-    Panel,
+    PanelFields,
     DataTable,
     ContextMenu,
     ModalDialog
@@ -156,7 +157,7 @@ export default {
     isEmptyValue,
     handleChange(value) {
       var showCriteria = false
-      if (this.activeSearch.length > 0) {
+      if (this.activeSearch.length) {
         showCriteria = true
       }
       this.$store.dispatch('changeShowedCriteriaBrowser', {
