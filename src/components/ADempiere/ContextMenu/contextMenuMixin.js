@@ -115,7 +115,7 @@ export const contextMixin = {
     getReferences() {
       if (this.isReferecesContent) {
         var references = this.getterReferences
-        if (references && references.length > 0) {
+        if (references && references.length) {
           this.references = references
         } else {
           this.$store.dispatch('getReferencesListFromServer', {
@@ -138,7 +138,7 @@ export const contextMixin = {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
 
-      if (this.actions && this.actions.length > 0) {
+      if (this.actions && this.actions.length) {
         this.actions.forEach(itemAction => {
           // if no exists set prop with value
           itemAction.disabled = false

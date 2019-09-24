@@ -2,7 +2,7 @@
   <div class="container-submenu container-context-menu">
     <el-menu :default-active="activeMenu" :router="false" class="el-menu-demo" mode="horizontal" menu-trigger="hover" unique-opened>
       <template>
-        <el-submenu v-if="relations !== undefined && relations.length > 0" class="el-menu-item" index="1">
+        <el-submenu v-if="relations !== undefined && relations.length" class="el-menu-item" index="1">
           <template slot="title">
             {{ $t('components.contextMenuRelations') }}
           </template>
@@ -13,7 +13,7 @@
         <el-menu-item v-else disabled index="1">
           {{ $t('components.contextMenuRelations') }}
         </el-menu-item>
-        <el-submenu v-if="actions !== undefined && actions.length > 0" class="el-menu-item" index="2" @click.native="runAction(actions[0])">
+        <el-submenu v-if="actions !== undefined && actions.length" class="el-menu-item" index="2" @click.native="runAction(actions[0])">
           <template slot="title">
             {{ $t('components.contextMenuActions') }}
           </template>
@@ -39,7 +39,7 @@
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
-        <el-menu-item index="3" :disabled="!(isReferecesContent && references.length > 0)">
+        <el-menu-item index="3" :disabled="!(isReferecesContent && references.length)">
           {{ $t('components.contextMenuReferences') }}
         </el-menu-item>
       </template>

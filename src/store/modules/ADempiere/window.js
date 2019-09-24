@@ -152,7 +152,7 @@ const window = {
               tabsListParent: parentTabs,
               tabsListChildren: childrenTabs,
               // app attributes
-              isShowedDetail: Boolean(childrenTabs.length > 0),
+              isShowedDetail: Boolean(childrenTabs.length),
               currentTabUuid: parentTabs[0].uuid
             }
 

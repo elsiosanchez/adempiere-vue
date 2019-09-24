@@ -1,5 +1,5 @@
 <template>
-  <div v-if="getRunProcessAll.length > 0" class="app-container">
+  <div v-if="getRunProcessAll.length" class="app-container">
     <el-timeline :reverse="true">
       <el-timeline-item
         v-for="(activity, index) in getRunProcessAll"

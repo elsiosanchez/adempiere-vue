@@ -75,7 +75,7 @@ export default {
         tableName: this.metadata.reference.tableName,
         value: this.value
       })
-      if (allOptions.length > 0 && allOptions[0].key !== -1) {
+      if (allOptions.length && allOptions[0].key !== -1) {
         allOptions.unshift(this.blanckOption)
       }
       return allOptions
@@ -113,7 +113,7 @@ export default {
       } else {
         this.getDataTrigger()
       }
-      if (!this.isEmptyValue(this.value) && this.options.length > 0 && this.options.find(item => item.key === this.value) === undefined) {
+      if (!this.isEmptyValue(this.value) && this.options.length && this.options.find(item => item.key === this.value) === undefined) {
         this.getDataTrigger()
       }
     }
@@ -207,7 +207,7 @@ export default {
             })
           }
           this.options = this.getterLookupAll.concat(this.othersOptions)
-          if (this.options.length > 0 && this.options[0].key !== -1) {
+          if (this.options.length && this.options[0].key !== -1) {
             this.options.unshift(this.blanckOption)
           }
           this.isLoading = false

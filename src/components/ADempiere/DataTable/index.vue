@@ -24,7 +24,7 @@
               </el-menu-item>
               <el-menu-item
                 v-if="!isParent && panelType === 'window'"
-                :disabled="inEdited.length > 0 || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
+                :disabled="inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
                 index="new"
                 @click="addNewRow()"
               >
@@ -88,7 +88,7 @@
                 </el-menu-item>
                 <el-menu-item
                   v-if="!isParent && panelType === 'window'"
-                  :disabled="inEdited.length > 0 || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
+                  :disabled="inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
                   index="new"
                   @click="addNewRow()"
                 >
@@ -142,7 +142,7 @@
               />
             </div>
             <el-button
-              v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length > 0"
+              v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length"
               type="text"
               icon="el-icon-delete"
               style="color: black;font-size: 17px;font-weight: 605!important;"
@@ -646,7 +646,7 @@ export default {
     filterResult() {
       var data = []
       data = this.getterDataRecords.filter(rowItem => {
-        if (this.searchTable.trim().length > 0) {
+        if (this.searchTable.trim().length) {
           let find = false
           Object.keys(rowItem).forEach(key => {
             if (String(rowItem[key]).includes(String(this.searchTable))) {
