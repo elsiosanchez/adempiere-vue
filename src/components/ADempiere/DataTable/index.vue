@@ -694,8 +694,18 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+  .el-table-row {
+    .hover-row {
+      background-color: black;
+    }
+  }
+</style>
 
 <style>
+  .hover-row > td {
+    background-color: initial !important;
+  }
   .header-table-records {
     padding: 0 !important;
   }
@@ -769,6 +779,12 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  .el-table__header-wrapper {
+    .el-table__footer-wrapper {
+      overflow: auto;
+      /* background: black; */
+    }
+  }
   /* style in cursor if cell is no edit */
   .cell-no-edit {
     cursor: not-allowed !important;
