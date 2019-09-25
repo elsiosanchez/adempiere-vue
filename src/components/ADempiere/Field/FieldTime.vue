@@ -16,11 +16,7 @@
 </template>
 
 <script>
-
-
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
-
-
 
 export default {
   name: 'FieldTime',
