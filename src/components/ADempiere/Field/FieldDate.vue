@@ -11,7 +11,7 @@
     unlink-panels
     class="date-base"
     :readonly="Boolean(metadata.readonly)"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     @change="handleChange"
   />
 </template>

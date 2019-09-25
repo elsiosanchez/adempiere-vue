@@ -7,7 +7,7 @@
     :on-error="handleError"
     class="image-uploader"
     action="https://jsonplaceholder.typicode.com/posts/"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     @change="handleChange"
   >
     <el-button size="small" type="primary">

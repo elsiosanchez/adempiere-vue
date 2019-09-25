@@ -7,7 +7,7 @@
       :on-preview="handlePictureCardPreview"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
-      :disabled="Boolean(metadata.readonly || metadata.disabled)"
+      :disabled="isDisabled"
     >
       <i class="el-icon-plus" />
     </el-upload>

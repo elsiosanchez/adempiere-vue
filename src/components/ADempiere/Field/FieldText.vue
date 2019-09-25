@@ -6,7 +6,7 @@
     :type="typeInput"
     :placeholder="metadata.help"
     :readonly="Boolean(metadata.readonly)"
-    :disabled="Boolean(metadata.readonly || metadata.disabled)"
+    :disabled="isDisabled"
     @blur="validateInput"
     @change="handleChange"
   />
