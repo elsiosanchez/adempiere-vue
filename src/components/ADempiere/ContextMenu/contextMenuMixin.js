@@ -1,4 +1,4 @@
-import { isEmptyValue, showNotification } from '@/utils/ADempiere'
+import { showNotification } from '@/utils/ADempiere/notification'
 import Item from './items'
 
 export const contextMixin = {
@@ -76,7 +76,7 @@ export const contextMixin = {
       return this.$store.getters.getContextMenu(this.containerUuid)
     },
     isReferecesContent() {
-      if (this.panelType === 'window' && !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
+      if (this.panelType === 'window' && !this.isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
         return true
       }
       return false
@@ -110,12 +110,11 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
-    isEmptyValue,
     showNotification,
     getReferences() {
       if (this.isReferecesContent) {
         var references = this.getterReferences
-        if (references && references.length > 0) {
+        if (references && references.length) {
           this.references = references
         } else {
           this.$store.dispatch('getReferencesListFromServer', {
@@ -138,7 +137,7 @@ export const contextMixin = {
       this.metadataMenu = this.getterContextMenu
       this.actions = this.metadataMenu.actions
 
-      if (this.actions && this.actions.length > 0) {
+      if (this.actions && this.actions.length) {
         this.actions.forEach(itemAction => {
           // if no exists set prop with value
           itemAction.disabled = false
@@ -214,6 +213,12 @@ export const contextMixin = {
             .catch(error => {
               console.warn(error)
             })
+          if (this.panelType !== 'window') {
+            this.$store.dispatch('tagsView/delView', this.$route)
+              .then(({ visitedViews }) => {
+                this.$router.push('/dashboard')
+              })
+          }
         } else {
           this.showNotification({
             type: 'warning',

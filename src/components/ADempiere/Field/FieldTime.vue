@@ -16,8 +16,11 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
+
+
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
+
+
 
 export default {
   name: 'FieldTime',
@@ -63,7 +66,6 @@ export default {
     }
   },
   methods: {
-    isEmptyValue,
     handleChange(value) {
       if (typeof value !== 'object') {
         value = new Date(value)

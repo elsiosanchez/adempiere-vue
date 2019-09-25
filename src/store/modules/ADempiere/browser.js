@@ -108,7 +108,7 @@ const browser = {
               panelType: panelType,
               // app attributes
               isMandatoryParams: isMandatoryParams,
-              isShowedCriteria: Boolean(fieldsList.length > 0 && isMandatoryParams)
+              isShowedCriteria: Boolean(fieldsList.length && isMandatoryParams)
             }
             //  Convert from gRPC process list
             const process = response.getProcess()

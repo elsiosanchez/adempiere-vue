@@ -434,7 +434,7 @@ const data = {
       var selectionToServer = []
       var dataList = getters.getDataRecordAndSelection(containerUuid)
       const withOut = ['isEdit', 'isSelected']
-      if (dataList.selection.length > 0) {
+      if (dataList.selection.length) {
         const panel = rootGetters.getPanel(containerUuid)
 
         dataList.selection.forEach(itemRow => {

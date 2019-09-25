@@ -27,7 +27,7 @@ export function getObject(table, uuid = false, id = false) {
 export function createEntity(parameters) {
   var entityRequest = Instance.call(this).getCreateEntityRequest()
   entityRequest.setTablename(parameters.tableName)
-  if (parameters.attributesList && parameters.attributesList.length > 0) {
+  if (parameters.attributesList && parameters.attributesList.length) {
     parameters.attributesList.forEach(attribute => {
       const convertedAttribute = Instance.call(this).convertParameter(attribute)
       entityRequest.addAttributes(convertedAttribute)
@@ -51,7 +51,7 @@ export function updateEntity(parameters) {
     entityRequest.setRecordid(parameters.recordId)
   }
   entityRequest.setUuid(parameters.recordUuid)
-  if (parameters.attributesList && parameters.attributesList.length > 0) {
+  if (parameters.attributesList && parameters.attributesList.length) {
     parameters.attributesList.forEach(attribute => {
       const convertedAttribute = Instance.call(this).convertParameter(attribute)
       entityRequest.addAttributes(convertedAttribute)
@@ -162,7 +162,7 @@ export function runProcess(process) {
   }
 
   // browser selection list records
-  if (process.selection && process.selection.length > 0) {
+  if (process.selection && process.selection.length) {
     process.selection.forEach(record => {
       // selection format = { selectionId: integer, selectionValues: array }
       const convertedRecord = Instance.call(this).convertSelection(record)
@@ -174,7 +174,7 @@ export function runProcess(process) {
   processRequest.setReportexporttype(process.reportExportType)
 
   // process params
-  if (process.parameters && process.parameters.length > 0) {
+  if (process.parameters && process.parameters.length) {
     process.parameters.forEach(parameter => {
       const convertedParameter = Instance.call(this).convertParameter(parameter)
       processRequest.addParameters(convertedParameter)

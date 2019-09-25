@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { clientDateTime, isEmptyValue } from '@/utils/ADempiere'
+import { clientDateTime } from '@/utils/ADempiere'
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
@@ -70,7 +70,6 @@ export default {
   },
   methods: {
     clientDateTime,
-    isEmptyValue,
     /**
      * Parse the date format to be compatible with element-ui
      */

@@ -41,7 +41,7 @@ export const FIELD_DISPLAY_SIZES = [
     }
   },
   {
-    type: 'Image',
+    type: 'FieldImage',
     size: {
       xs: 6,
       sm: 6,
