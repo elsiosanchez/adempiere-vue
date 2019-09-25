@@ -16,7 +16,7 @@
               </el-menu-item>
               <el-menu-item
                 v-if="panelType === 'window'"
-                :disabled="getDataSelection.length < 1"
+                :disabled="Boolean(getDataSelection.length < 1)"
                 index="delete"
                 @click="deleteSelection()"
               >
@@ -24,7 +24,7 @@
               </el-menu-item>
               <el-menu-item
                 v-if="!isParent && panelType === 'window'"
-                :disabled="inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
+                :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                 index="new"
                 @click="addNewRow()"
               >
@@ -32,7 +32,7 @@
               </el-menu-item>
               <el-menu-item
                 v-if="panelType === 'window'"
-                :disabled="getterTotalDataRecordCount <= 0"
+                :disabled="Boolean(getterTotalDataRecordCount <= 0)"
                 index="avancedQuery"
                 @click="isAvancedQuery = !isAvancedQuery"
               >
@@ -80,7 +80,7 @@
                 </el-menu-item>
                 <el-menu-item
                   v-if="panelType === 'window'"
-                  :disabled="getDataSelection.length < 1"
+                  :disabled="Boolean(getDataSelection.length < 1)"
                   index="delete"
                   @click="deleteSelection()"
                 >
@@ -88,7 +88,7 @@
                 </el-menu-item>
                 <el-menu-item
                   v-if="!isParent && panelType === 'window'"
-                  :disabled="inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new')"
+                  :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                   index="new"
                   @click="addNewRow()"
                 >
@@ -96,7 +96,7 @@
                 </el-menu-item>
                 <el-menu-item
                   v-if="panelType === 'window'"
-                  :disabled="getterTotalDataRecordCount <= 0"
+                  :disabled="Boolean(getterTotalDataRecordCount <= 0)"
                   index="avancedQuery"
                   @click="isAvancedQuery = !isAvancedQuery"
                 >

@@ -30,7 +30,7 @@ const windowControl = {
   },
   actions: {
     resetPanelToNew({ dispatch, rootGetters }, parameters) {
-      var defaultAttributes = rootGetters.getColumnNamesAndValues({
+      const defaultAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
         propertyName: 'parsedDefaultValue',
         isObjectReturn: true,
@@ -54,7 +54,7 @@ const windowControl = {
       })
     },
     undoPanelToNew({ dispatch, rootGetters }, parameters) {
-      var oldAttributes = rootGetters.getColumnNamesAndValues({
+      const oldAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
         propertyName: 'oldValue',
         isObjectReturn: true,
@@ -75,9 +75,9 @@ const windowControl = {
           })
         }
 
-        var panel = rootGetters.getPanel(parameters.containerUuid)
+        const panel = rootGetters.getPanel(parameters.containerUuid)
         // delete key from attributes
-        var finalAttributes = rootGetters.getColumnNamesAndValues({
+        const finalAttributes = rootGetters.getColumnNamesAndValues({
           containerUuid: parameters.containerUuid,
           propertyName: 'value',
           isEvaluateValues: true,
@@ -95,17 +95,12 @@ const windowControl = {
         })
           .then(response => {
             var newValues = convertValuesMapToObject(response.getValuesMap())
-            finalAttributes.forEach((element) => {
+            finalAttributes.forEach(element => {
               if (element.columnName.includes('DisplayColumn')) {
                 newValues[element.columnName] = element.value
               }
             })
-            var result = {
-              data: newValues,
-              recordUuid: response.getUuid(),
-              recordId: response.getId(),
-              tableName: response.getTablename()
-            }
+
             showMessage({
               message: language.t('data.createRecordSuccessful'),
               type: 'success'
@@ -122,7 +117,12 @@ const windowControl = {
               isPanelValues: true,
               isEdit: false
             })
-            resolve(result)
+            resolve({
+              data: newValues,
+              recordUuid: response.getUuid(),
+              recordId: response.getId(),
+              tableName: response.getTablename()
+            })
           })
           .catch(error => {
             reject(error)
@@ -136,7 +136,7 @@ const windowControl = {
           })
       })
     },
-    createEntityFromTable({ commit, dispatch, rootGetters }, parameters) {
+    createEntityFromTable({ rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
         var panel = rootGetters.getPanel(parameters.containerUuid)
 
@@ -159,9 +159,9 @@ const windowControl = {
           attributesList: finalAttributes
         })
           .then(response => {
-            var newValues = convertValuesMapToObject(response.getValuesMap())
+            const newValues = convertValuesMapToObject(response.getValuesMap())
 
-            var result = {
+            const result = {
               data: newValues,
               recordUuid: response.getUuid(),
               recordId: response.getId(),
@@ -172,7 +172,7 @@ const windowControl = {
               type: 'success'
             })
             // redirect to create new record
-            var oldRoute = router.app._route
+            const oldRoute = router.app._route
             router.push({
               name: oldRoute.name,
               query: {
@@ -187,7 +187,7 @@ const windowControl = {
           })
       })
     },
-    updateCurrentEntity({ commit, dispatch, rootGetters }, parameters) {
+    updateCurrentEntity({ commit, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
         const panel = rootGetters.getPanel(parameters.containerUuid)
         const recordUuid = rootGetters.getUuid(parameters.containerUuid)
@@ -205,7 +205,7 @@ const windowControl = {
           if (columnsToDontSend.includes(itemAttribute.columnName)) {
             return false
           }
-          var field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
+          const field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
           if (!field || !field.isUpdateable || !field.isDisplayed) {
             return false
           }
@@ -234,7 +234,7 @@ const windowControl = {
           })
       })
     },
-    updateCurrentEntityFromTable({ commit, dispatch, rootGetters }, parameters) {
+    updateCurrentEntityFromTable({ dispatch, rootGetters }, parameters) {
       const panel = rootGetters.getPanel(parameters.containerUuid)
 
       // TODO: Add support to Binary columns (BinaryData)
@@ -246,7 +246,7 @@ const windowControl = {
         if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
           return false
         }
-        var field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
+        const field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
         if (!field || !field.isUpdateable || !field.isDisplayed) {
           return false
         }
@@ -300,10 +300,10 @@ const windowControl = {
           })
         })
     },
-    deleteEntity({ commit, dispatch, rootGetters }, parameters) {
+    deleteEntity({ dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
-        var panel = rootGetters.getPanel(parameters.containerUuid)
-        var recordUuid = rootGetters.getUuid(parameters.containerUuid)
+        const panel = rootGetters.getPanel(parameters.containerUuid)
+        const recordUuid = rootGetters.getUuid(parameters.containerUuid)
 
         deleteEntity({
           tableName: panel.tableName,
@@ -350,7 +350,7 @@ const windowControl = {
      */
     deleteSelectionDataList({ dispatch, rootGetters }, parameters) {
       var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
-      var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
       var selectionLength = allData.selection.length
 
       allData.selection.forEach((record, index) => {
@@ -404,10 +404,10 @@ const windowControl = {
      * @param {string}  parameters.containerUuid, tab to search record data
      * @param {boolean} parameters.clearSelection, clear selection after search
      */
-    getDataListTab({ commit, dispatch, rootGetters }, parameters) {
+    getDataListTab({ dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
-        var tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
-        var parsedQuery = parseContext({
+        const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+        const parsedQuery = parseContext({
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
           value: tab.query
@@ -443,7 +443,7 @@ const windowControl = {
      * @param {string} parameters.containerUuid
      * @param {string} parameters.recordUuid
      */
-    getReferencesListFromServer({ commit, rootGetters }, parameters) {
+    getReferencesListFromServer({ rootGetters }, parameters) {
       // TODO: check if you get better performance search only the window and get the current tab
       const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
       return new Promise((resolve, reject) => {

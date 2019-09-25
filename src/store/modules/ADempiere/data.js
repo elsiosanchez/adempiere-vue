@@ -309,13 +309,13 @@ const data = {
       })
     },
     notifyCellTableChange: ({ commit, state, dispatch, rootGetters }, objectParams) => {
-      var recordSelection = state.recordSelection.find(recordItem => {
+      const recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === objectParams.containerUuid
       })
-      var row = recordSelection.record.find(itemRecord => {
+      const row = recordSelection.record.find(itemRecord => {
         return itemRecord[objectParams.keyColumn] === objectParams.rowKey
       })
-      var rowSelection = recordSelection.selection.find(itemRecord => {
+      const rowSelection = recordSelection.selection.find(itemRecord => {
         return itemRecord[objectParams.keyColumn] === objectParams.rowKey
       })
       commit('notifyCellTableChange', {
@@ -333,28 +333,30 @@ const data = {
           displayColumn: objectParams.displayColumn
         })
       }
-      var isReady = rootGetters.isReadyForSubmitRowTable(objectParams.containerUuid, row)
-      if (objectParams.panelType === 'window') {
-        if (isReady) {
-          if (!isEmptyValue(row.UUID)) {
-            dispatch('updateCurrentEntityFromTable', {
-              parentUuid: objectParams.parentUuid,
-              containerUuid: objectParams.containerUuid,
-              row: row
-            })
-          } else {
-            dispatch('createEntityFromTable', {
-              parentUuid: objectParams.parentUuid,
-              containerUuid: objectParams.containerUuid,
-              row: row
-            })
-              .then(resolve => {
-                // refresh record list
-                dispatch('getDataListTab', {
-                  parentUuid: objectParams.parentUuid,
-                  containerUuid: objectParams.containerUuid
-                })
+      if (!objectParams.isDontSendToEdit) {
+        if (objectParams.panelType === 'window') {
+          const isReady = rootGetters.isReadyForSubmitRowTable(objectParams.containerUuid, row)
+          if (isReady) {
+            if (!isEmptyValue(row.UUID)) {
+              dispatch('updateCurrentEntityFromTable', {
+                parentUuid: objectParams.parentUuid,
+                containerUuid: objectParams.containerUuid,
+                row: row
               })
+            } else {
+              dispatch('createEntityFromTable', {
+                parentUuid: objectParams.parentUuid,
+                containerUuid: objectParams.containerUuid,
+                row: row
+              })
+                .then(() => {
+                  // refresh record list
+                  dispatch('getDataListTab', {
+                    parentUuid: objectParams.parentUuid,
+                    containerUuid: objectParams.containerUuid
+                  })
+                })
+            }
           }
         }
       }

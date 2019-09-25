@@ -57,7 +57,8 @@ export default {
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
           rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
+          panelType: this.metadata.panelType,
+          isDontSendToEdit: Boolean(value === 'NotSend')
         })
       } else if (this.metadata.isAvancedQuery && this.value !== 'NotSend') {
         this.$store.dispatch('notifyFieldChange', {

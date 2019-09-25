@@ -97,7 +97,7 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = this.sEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
+      this.value = this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
     },
     // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {
