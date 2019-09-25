@@ -20,6 +20,7 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
+import * as globalMethods from '@/utils/ADempiere/globalMethods' // global methods
 
 /**
  * If you don't want to use mock-server
@@ -42,6 +43,11 @@ Vue.use(Element, {
 // register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
+})
+
+// register global utility methods
+Object.keys(globalMethods).forEach(key => {
+  Vue.prototype[key] = globalMethods[key]
 })
 
 Vue.config.productionTip = false

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { isEmptyValue, parseContext } from '@/utils/ADempiere'
+import { parseContext } from '@/utils/ADempiere'
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
@@ -30,7 +30,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      value: isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value, 10),
+      value: this.isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value, 10),
       isLoading: false,
       baseNumber: 10,
       options: [{
@@ -48,7 +48,7 @@ export default {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
-        return isEmptyValue(field.value) ? -1 : isNaN(field.value) ? field.value : parseInt(field.value)
+        return this.isEmptyValue(field.value) ? -1 : isNaN(field.value) ? field.value : parseInt(field.value)
       }
       return undefined
     },
@@ -97,7 +97,7 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
+      this.value = this.sEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
     },
     // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {
@@ -123,7 +123,7 @@ export default {
 
     // enable to dataTable records
     if (this.metadata.displayColumn !== undefined) {
-      var key = isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value)
+      var key = this.isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value)
       if (this.valueModel !== undefined) {
         key = this.valueModel
       }
@@ -143,7 +143,6 @@ export default {
   },
   methods: {
     parseContext,
-    isEmptyValue,
     handleChange(value) {
       var label
       const selected = this.options.find(option => option.key === this.value)

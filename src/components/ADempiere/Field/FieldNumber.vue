@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { isEmptyValue } from '@/utils/ADempiere'
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
@@ -63,9 +62,6 @@ export default {
     if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = Number(this.valueModel)
     }
-  },
-  methods: {
-    isEmptyValue
   }
 }
 </script>

@@ -30,7 +30,7 @@
 
 <script>
 import Panel from '@/components/ADempiere/Panel'
-import { isEmptyValue, showNotification } from '@/utils/ADempiere'
+import { showNotification } from '@/utils/ADempiere/notification'
 
 export default {
   name: 'ModalProcess',
@@ -81,7 +81,6 @@ export default {
     }
   },
   methods: {
-    isEmptyValue,
     showNotification,
     closeDialog() {
       this.$store.dispatch('setShowDialog', {
