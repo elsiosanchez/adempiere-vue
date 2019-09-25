@@ -7,15 +7,15 @@
   >
     <svg-icon v-if="isMobile" :icon-class="classIconMenuRight" /> {{ item.meta.title }}
   </el-menu-item>
-  <el-submenu v-else v-show="!item.hidden" :index="item.meta.title" popper-append-to-body>
+  <el-submenu v-else :index="item.meta.title" popper-append-to-body>
     <template slot="title">
       <svg-icon v-if="isMobile" icon-class="nested" /> {{ item.meta.title }}
     </template>
-    <el-scrollbar wrap-class="scroll">
-      <item v-for="(child, key) in item.children" :key="key" :item="child">
-        {{ child.meta.title }}
-      </item>
-    </el-scrollbar>
+    <!-- <el-scrollbar wrap-class="scroll"> -->
+    <item v-for="(child, key) in item.children" :key="key" :item="child">
+      {{ child.meta.title }}
+    </item>
+    <!-- </el-scrollbar> -->
   </el-submenu>
 </template>
 

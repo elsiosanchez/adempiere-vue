@@ -298,7 +298,7 @@ export function getFieldTemplate(attributesOverwrite) {
     columnName: '',
     fieldGroup: group,
     displayType: 10,
-    componentPath: 'Button',
+    componentPath: 'FieldButton',
     referenceType: 'Button',
     isFieldOnly: false,
     isRange: false,

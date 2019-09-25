@@ -201,7 +201,7 @@ const panel = {
         return
       }
 
-      if (field.componentPath === 'Date') {
+      if (field.componentPath === 'FieldDate') {
         if (typeof params.newValue === 'number') {
           params.newValue = new Date(params.newValue)
         }
