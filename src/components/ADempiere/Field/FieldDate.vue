@@ -12,7 +12,7 @@
     class="date-base"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
-    @change="handleChange"
+    @change="preHandleChange"
   />
 </template>
 
@@ -101,7 +101,8 @@ export default {
       }
       return value
     },
-    handleChange(value) {
+    // validate values before send values to store or server
+    preHandleChange(value) {
       var valueFirst, valueTo
       valueFirst = value
 
@@ -117,37 +118,7 @@ export default {
         valueFirst = new Date(valueFirst)
         valueTo = new Date(valueTo)
       }
-
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: valueFirst,
-          valueTo: valueTo
-        })
-      }
+      this.handleChange(valueFirst, valueTo)
     }
   }
 }

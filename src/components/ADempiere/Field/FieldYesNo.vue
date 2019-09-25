@@ -6,7 +6,7 @@
     true-value="true"
     false-value="false"
     :disabled="isDisabled"
-    @change="handleChange"
+    @change="preHandleChange"
   />
 </template>
 
@@ -40,43 +40,16 @@ export default {
       if (typeof value !== 'boolean') {
         this.value = Boolean(value)
       }
-      this.handleChange('NotSend')
+      this.preHandleChange('NotSend')
     }
   },
   mounted() {
-    this.handleChange('NotSend') // activate logics
+    this.preHandleChange('NotSend') // activate logics
   },
   methods: {
-    handleChange(value) {
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery && this.value !== 'NotSend') {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: Boolean(value === 'NotSend')
-        })
+    preHandleChange(value) {
+      this.handleChange(value)
+      if (!this.metadata.inTable && !this.metadata.isAvancedQuery) {
         this.isReadOnlyForm(this.value)
       }
     },

@@ -8,7 +8,7 @@
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
     @blur="validateInput"
-    @change="handleChange"
+    @change="preHandleChange"
   />
 </template>
 
@@ -64,6 +64,10 @@ export default {
     }
   },
   methods: {
+    // validate values before send values to store or server
+    preHandleChange(value) {
+      this.handleChange(value)
+    },
     validateUrl(e) {
       // Entry pattern, in this case only accepts numbers and letters
       var _Pattern = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{1,5})+)(\/(.)*)?(\?(.)*)?/g
