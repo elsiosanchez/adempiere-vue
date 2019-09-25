@@ -54,7 +54,7 @@
             class="field-optional"
           />
           <div :class="{'show':showTableSearch}" class="table-search">
-            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
             <el-input
               ref="headerSearchSelect"
               v-model="searchTable"
@@ -118,7 +118,7 @@
               class="field-optional"
             />
             <div :class="{'show':showTableSearch}" class="table-search">
-              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
               <el-input
                 ref="headerSearchSelect"
                 v-model="searchTable"
@@ -131,7 +131,7 @@
           </div>
           <div v-else class="panel-expand">
             <div :class="{'show':showTableSearch}" class="table-search">
-              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
               <el-input
                 ref="headerSearchSelect"
                 v-model="searchTable"
@@ -319,15 +319,11 @@ export default {
   data() {
     return {
       searchTable: '', // text from search
-      showSearch: false, // show input from search,
-      show: false,
       defaultMaxPagination: 100,
       menuTable: '1',
       isOptional: false,
       isFixed: false,
       isLoadPanelFromServer: false,
-      tableData: [],
-      isEdit: false, // get data
       rowStyle: { height: '52px' },
       sortable: null,
       isExpand: false,
@@ -442,7 +438,7 @@ export default {
       if (typeof row[field.columnName] === 'boolean') {
         // replace boolean true-false value for 'Yes' or 'Not'
         return row[field.columnName] ? this.$t('components.switchActiveText') : this.$t('components.switchInactiveText')
-      } else if (field.componentPath === 'Date' || field.componentPath === 'Time') {
+      } else if (field.componentPath === 'FieldDate' || field.componentPath === 'FieldTime') {
         // replace number timestamp value for date
         return formatDate(row[field.columnName], field.referenceType)
         // return typeof row[field.columnName] === 'number' ? new Date.UTC(row[field.columnName]) : row[field.columnName]
@@ -452,7 +448,7 @@ export default {
     },
     isReadOnly(row, field) {
       // TODO: Add support to its type fields
-      if (field.componentPath === 'Image' || field.componentPath === 'Binary') {
+      if (field.componentPath === 'FieldImage' || field.componentPath === 'FieldBinary') {
         return true
       }
 
@@ -488,14 +484,6 @@ export default {
       })
       // this.inEdited.push(undefined)
     },
-    classTableMenu() {
-      if (this.isMobile) {
-        return 'menu-table-mobile'
-      } else if (this.$store.state.app.sidebar.opened) {
-        return 'menu-table'
-      }
-      return 'menu-table'
-    },
     optionalPanel() {
       this.showTableSearch = false
       this.isOptional = !this.isOptional
@@ -506,12 +494,6 @@ export default {
     },
     expandPanel() {
       this.isExpand = !this.isExpand
-    },
-    /**
-     * ASOCIATE WITH SEARCH INPUT
-     */
-    handleChangeInput(value) {
-      this.toggleSelection(this.getDataSelection)
     },
     async getList() {
       this.oldgetDataDetail = this.getterDataRecords.map(v => v.id)
@@ -545,6 +527,14 @@ export default {
       var reversed = this.getterDataRecords.reverse()
       return reversed
     },
+    classTableMenu() {
+      if (this.isMobile) {
+        return 'menu-table-mobile'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'menu-table'
+      }
+      return 'menu-table'
+    },
     /**
      * @param {object} field
      */
@@ -553,7 +543,7 @@ export default {
       if (field.isReadOnly) {
         classReturn += 'cell-no-edit'
       }
-      if (field.componentPath === 'NumberBase') {
+      if (field.componentPath === 'FieldNumber') {
         classReturn += 'cell-align-right'
       }
       // return 'cell-edit'
