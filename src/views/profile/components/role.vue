@@ -116,7 +116,7 @@ export default {
     },
     getLanguageList(open) {
       if (open) {
-        if (this.getterLanguageList.length > 0) {
+        if (this.getterLanguageList.length) {
           this.languageList = this.getterLanguageList
         } else {
           this.getLanguageData()

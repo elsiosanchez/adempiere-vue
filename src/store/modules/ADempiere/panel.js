@@ -88,8 +88,7 @@ const panel = {
         const isMandatory = itemField.isMandatory || itemField.isMandatoryFromLogic
         if (!isMandatory && fieldIsDisplayed(itemField)) {
           if (itemField.groupAssigned === params.groupField) {
-            if (params.fieldsUser.length > 0 &&
-              params.fieldsUser.includes(itemField.columnName)) {
+            if (params.fieldsUser.length && params.fieldsUser.includes(itemField.columnName)) {
               // if it isShowedFromUser it is false, and it has some value, it means
               // that it is going to show, therefore the SmartBrowser must be searched
               if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
@@ -138,11 +137,11 @@ const panel = {
         // var oldValue = itemField[params.attribute]
 
         // not change exlude field
-        if (params.fieldsExcludes && params.fieldsExcludes.length > 0 && params.fieldsExcludes.includes(itemField.columnName)) {
+        if (params.fieldsExcludes && params.fieldsExcludes.length && params.fieldsExcludes.includes(itemField.columnName)) {
           return itemField
         }
         // if it field is included to change value
-        if (params.fieldsIncludes.length > 0 && params.fieldsIncludes.includes(itemField.columnName)) {
+        if (params.fieldsIncludes.length && params.fieldsIncludes.includes(itemField.columnName)) {
           itemField[params.attribute] = params.valueAttribute
           return itemField
         }
@@ -166,7 +165,7 @@ const panel = {
      */
     notifyPanelChange({ dispatch, getters }, parameters) {
       var fieldList = []
-      if (parameters.fieldList && parameters.fieldList.length > 0) {
+      if (parameters.fieldList && parameters.fieldList.length) {
         fieldList = parameters.fieldList
       } else {
         fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
@@ -499,7 +498,7 @@ const panel = {
       var displayColumnsList = []
       var rangeColumnsList = []
 
-      if (parameters.withOut && parameters.withOut.length > 0) {
+      if (parameters.withOut && parameters.withOut.length) {
         attributesList = attributesList.filter(fieldItem => {
           // columns to exclude
           if (parameters.withOut.includes(fieldItem.columnName)) {
@@ -609,7 +608,7 @@ const panel = {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
       var fieldsIsDisplayed = []
       var fieldsNotDisplayed = []
-      if (fieldList.length > 0) {
+      if (fieldList.length) {
         fieldsIsDisplayed = fieldList.filter(itemField => {
           const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
           if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {

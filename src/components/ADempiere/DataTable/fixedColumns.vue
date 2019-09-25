@@ -47,7 +47,7 @@ export default {
   methods: {
     getPanel() {
       var fieldList = this.getterFieldList
-      if (fieldList && fieldList.length > 0) {
+      if (fieldList && fieldList.length) {
         this.generatePanel(fieldList)
       }
     },

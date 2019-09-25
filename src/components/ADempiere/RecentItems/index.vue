@@ -1,7 +1,7 @@
 <template>
   <div class="recent-items">
     <el-table
-      :data="(search.length > 0) ? filterResult(search) : recentItems"
+      :data="search.length ? filterResult(search) : recentItems"
       @row-click="handleClick"
     >
       <el-table-column
