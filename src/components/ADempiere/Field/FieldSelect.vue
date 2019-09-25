@@ -75,6 +75,7 @@ export default {
         tableName: this.metadata.reference.tableName,
         value: this.value
       })
+      // TODO: Evaluate -1 when list is string key
       if (allOptions.length && allOptions[0].key !== -1) {
         allOptions.unshift(this.blanckOption)
       }
@@ -143,52 +144,13 @@ export default {
   },
   methods: {
     parseContext,
-    handleChange(value) {
+    preHandleChange(value) {
       var label
       const selected = this.options.find(option => option.key === this.value)
       if (selected) {
         label = selected.label
       }
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          displayColumn: label,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.panelType === 'table') {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: false,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          displayColumn: label,
-          newValue: this.value
-        })
-      }
+      this.handleChange(value, undefined, label)
     },
     getDataTrigger() {
       this.isLoading = true
@@ -247,6 +209,7 @@ export default {
         parsedDirectQuery: this.parsedDirectQuery,
         value: this.value
       })
+      // TODO: Evaluate if is number -1 or string '' (or default value)
       this.value = this.blanckOption.key
     }
   }

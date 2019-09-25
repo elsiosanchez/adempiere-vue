@@ -18,7 +18,7 @@ export const fieldMixin = {
   },
   computed: {
     getterValue() {
-      var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
+      const field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
         return field.value
       }
@@ -29,35 +29,29 @@ export const fieldMixin = {
     }
   },
   methods: {
-    handleChange(value) {
+    handleChange(value, valueTo = undefined, label = undefined) {
       if (this.metadata.inTable) {
         this.$store.dispatch('notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
-          newValue: this.value,
+          newValue: value,
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
           rowKey: this.metadata.rowKey,
           panelType: this.metadata.panelType
         })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
       } else {
         this.$store.dispatch('notifyFieldChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
+          panelType: this.metadata.panelType,
           columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: Boolean(value === 'NotSend')
+          newValue: value,
+          valueTo: valueTo,
+          displayColumn: label,
+          isDontSendToEdit: Boolean(value === 'NotSend') || this.metadata.isAvancedQuery,
+          isAvancedQuery: this.metadata.isAvancedQuery
         })
       }
     }

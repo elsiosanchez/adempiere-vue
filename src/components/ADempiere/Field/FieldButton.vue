@@ -2,7 +2,7 @@
   <el-input
     v-model="value"
     type="hidden"
-    @change="handleChange"
+    @change="preHandleChange"
   />
 </template>
 
@@ -24,6 +24,12 @@ export default {
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined) {
       this.value = this.valueModel
+    }
+  },
+  methods: {
+    // validate values before send values to store or server
+    preHandleChange(value) {
+      this.handleChange(value)
     }
   }
 }

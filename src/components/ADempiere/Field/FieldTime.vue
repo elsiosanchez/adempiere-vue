@@ -11,7 +11,7 @@
     class="time-base"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
-    @change="handleChange"
+    @change="preHandleChange"
   />
 </template>
 
@@ -62,40 +62,13 @@ export default {
     }
   },
   methods: {
-    handleChange(value) {
+    // validate values before send values to store or server
+    preHandleChange(value) {
       if (typeof value !== 'object') {
         value = new Date(value)
       }
 
-      if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          keyColumn: this.metadata.keyColumn,
-          tableIndex: this.metadata.tableIndex,
-          rowKey: this.metadata.rowKey,
-          panelType: this.metadata.panelType
-        })
-      } else if (this.metadata.isAvancedQuery) {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value,
-          isDontSendToEdit: true,
-          panelType: this.metadata.panelType,
-          isAvancedQuery: this.metadata.isAvancedQuery
-        })
-      } else {
-        this.$store.dispatch('notifyFieldChange', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          columnName: this.metadata.columnName,
-          newValue: this.value
-        })
-      }
+      this.handleChange(value)
     }
   }
 }

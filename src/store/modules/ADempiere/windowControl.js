@@ -202,7 +202,7 @@ const windowControl = {
         })
 
         finalAttributes = finalAttributes.filter(itemAttribute => {
-          if (columnsToDontSend.includes(itemAttribute.columnName)) {
+          if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
             return false
           }
           const field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)

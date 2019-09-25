@@ -8,7 +8,7 @@
     class="image-uploader"
     action="https://jsonplaceholder.typicode.com/posts/"
     :disabled="isDisabled"
-    @change="handleChange"
+    @change="preHandleChange"
   >
     <el-button size="small" type="primary">
       {{ $t('components.binaryButton') }}
@@ -40,6 +40,10 @@ export default {
     }
   },
   methods: {
+    // validate values before send values to store or server
+    preHandleChange(value) {
+      this.handleChange(value)
+    },
     handleRemove(file) {
       this.$message.success(`The previously uploaded file has been deleted.`)
     },
