@@ -1,25 +1,29 @@
+import Vue from 'vue'
 // Delete when get global context and account context
-import { contextInitial } from '@/utils/ADempiere'
+import { contextInitialObject } from '@/utils/ADempiere/dataEmulation.js'
 
 const context = {
   state: {
-    context: contextInitial()
-    // context: new Map()
+    context: contextInitialObject()
   },
   mutations: {
     setContext(state, payload) {
-      var parent = ''
-      var container = ''
+      var key = ''
       if (payload.parentUuid) {
-        parent = payload.parentUuid + '|'
+        key += payload.parentUuid + '|'
       }
       if (payload.containerUuid) {
-        container = payload.containerUuid + '|'
+        key += payload.containerUuid + '|'
       }
-      state.context.set(
-        parent + container + payload.columnName,
-        payload.value
-      )
+      key += payload.columnName
+      // set property to object
+      Vue.set(state.context, key, payload.value)
+    },
+    setInitialContext(state, objectContext) {
+      state.context = contextInitialObject()
+      Object.keys(objectContext).forEach(key => {
+        Vue.set(state.context, key, objectContext[key])
+      })
     }
   },
   actions: {
@@ -30,6 +34,9 @@ const context = {
       valuesToSetter.forEach(itemToSetter => {
         commit('setContext', itemToSetter)
       })
+    },
+    setInitialContext: ({ commit }, otherContext = {}) => {
+      commit('setInitialContext', otherContext)
     }
   },
   getters: {
@@ -40,16 +47,19 @@ const context = {
      *  - columnName
      */
     getContext: (state) => (findedContext) => {
-      var parent = ''
-      var container = ''
+      var key = ''
       if (findedContext.parentUuid) {
-        parent = findedContext.parentUuid + '|'
+        key += findedContext.parentUuid + '|'
       }
       if (findedContext.containerUuid) {
-        container = findedContext.containerUuid + '|'
+        key += findedContext.containerUuid + '|'
       }
-      var key = parent + container + findedContext.columnName
-      return state.context.get(key)
+      key += findedContext.columnName
+
+      return state.context[key]
+    },
+    getContextAll: (state) => {
+      state.context
     }
   }
 }

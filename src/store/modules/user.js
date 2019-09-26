@@ -83,6 +83,10 @@ const actions = {
           return itemRol.uuid === getCurrentRole()
         })
 
+        // set initial context
+        dispatch('setInitialContext', {}, { root: true })
+
+        // set multiple context
         dispatch('setMultipleContext', [
           { columnName: '#AD_User_Name', value: response.name },
           { columnName: '#AD_Role_ID', value: rol.id },

@@ -42,20 +42,20 @@ export default {
       return 'date' + time + range
     }
   },
-  watch: {
-    valueModel(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
-      }
-      this.value = value
-    },
-    'metadata.value'(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
-      }
-      this.value = value
-    }
-  },
+  // watch: {
+  //   valueModel(value) {
+  //     if (typeof value === 'number') {
+  //       value = new Date(value)
+  //     }
+  //     this.value = value
+  //   },
+  //   'metadata.value'(value) {
+  //     if (typeof value === 'number') {
+  //       value = new Date(value)
+  //     }
+  //     this.value = value
+  //   }
+  // },
   created() {
     this.checkValueFormat()
     if (this.metadata.isRange) {
@@ -65,7 +65,7 @@ export default {
   beforeMount() {
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined && this.value !== null) {
-      this.value = this.valueModel
+      this.value = this.value
     }
   },
   methods: {
