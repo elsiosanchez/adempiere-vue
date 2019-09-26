@@ -1,4 +1,4 @@
-import { getBrowser as getBrowserFromDictionary } from '@/api/ADempiere'
+import { getBrowser as getBrowserMetadata } from '@/api/ADempiere'
 import { convertField, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 
 const browser = {
@@ -19,7 +19,7 @@ const browser = {
   actions: {
     getBrowserFromServer: ({ commit, dispatch }, browserUuid) => {
       return new Promise((resolve, reject) => {
-        getBrowserFromDictionary(browserUuid)
+        getBrowserMetadata(browserUuid)
           .then(response => {
             const panelType = 'browser'
             var fieldsList = response.getFieldsList()

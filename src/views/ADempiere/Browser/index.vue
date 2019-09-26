@@ -186,7 +186,7 @@ export default {
           containerUuid: this.browserUuid
         })
           .catch(error => {
-            console.war(error)
+            console.warn(error)
           })
       }
     }
