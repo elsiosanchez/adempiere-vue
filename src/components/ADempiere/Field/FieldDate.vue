@@ -1,19 +1,21 @@
 <template>
-  <el-date-picker
-    v-model="value"
-    :format="formatView"
-    :value-format="formatSend"
-    :type="typePicker"
-    range-separator="-"
-    :placeholder="metadata.help"
-    :start-placeholder="$t('components.dateStartPlaceholder')"
-    :end-placeholder="$t('components.dateEndPlaceholder')"
-    unlink-panels
-    class="date-base"
-    :readonly="Boolean(metadata.readonly)"
-    :disabled="isDisabled"
-    @change="preHandleChange"
-  />
+  <div>
+    <el-date-picker
+      v-model="value"
+      :format="formatView"
+      :value-format="formatSend"
+      :type="typePicker"
+      range-separator="-"
+      :placeholder="metadata.help"
+      :start-placeholder="$t('components.dateStartPlaceholder')"
+      :end-placeholder="$t('components.dateEndPlaceholder')"
+      unlink-panels
+      class="date-base"
+      :readonly="Boolean(metadata.readonly)"
+      :disabled="isDisabled"
+      @change="preHandleChange"
+    />
+  </div>
 </template>
 
 <script>
@@ -42,20 +44,20 @@ export default {
       return 'date' + time + range
     }
   },
-  watch: {
-    valueModel(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
-      }
-      this.value = value
-    },
-    'metadata.value'(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
-      }
-      this.value = value
-    }
-  },
+  // watch: {
+  //   valueModel(value) {
+  //     if (typeof value === 'number') {
+  //       value = new Date(value)
+  //     }
+  //     this.value = value
+  //   },
+  //   'metadata.value'(value) {
+  //     if (typeof value === 'number') {
+  //       value = new Date(value)
+  //     }
+  //     this.value = value
+  //   }
+  // },
   created() {
     this.checkValueFormat()
     if (this.metadata.isRange) {
@@ -65,7 +67,7 @@ export default {
   beforeMount() {
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined && this.value !== null) {
-      this.value = this.valueModel
+      this.value = this.value
     }
   },
   methods: {
