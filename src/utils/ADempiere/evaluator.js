@@ -87,7 +87,7 @@ class evaluator {
     if (logic === undefined) {
       return _defaultUndefined
     }
-    var expr = /^(['"@a-zA-Z0-9\-_\s]){0,}((!*={1})|(!{1})|(<{1})|(>{1}))([\s"'@a-zA-Z0-9\-_]){0,}$/i
+    var expr = /^(['"@#$a-zA-Z0-9\-_\s]){0,}((!*={1})|(!{1})|(<{1})|(>{1}))([\s"'@#$a-zA-Z0-9\-_]){0,}$/i
     var st = expr.test(logic)
 
     if (!st) {
@@ -97,7 +97,7 @@ class evaluator {
       )
       return _defaultUndefined
     }
-    expr = /(!*={1})/
+    expr = /(!{1}|={1})/
     st = logic.split(expr)
     if (st.length === 1) {
       expr = /(<{1})/
@@ -113,9 +113,11 @@ class evaluator {
     expr = /@/
     if (expr.test(first)) {
       first = first.replace(/@/g, '').trim()
+      var isGlobal = first.startsWith('#')
+      var isCountable = first.startsWith('$')
       var value = objectToEvaluate.context.getContext({
-        parentUuid: objectToEvaluate.parentUuid,
-        containerUuid: objectToEvaluate.containerUuid,
+        parentUuid: (isGlobal || isCountable) ? '' : objectToEvaluate.parentUuid,
+        containerUuid: (isGlobal || isCountable) ? '' : objectToEvaluate.containerUuid,
         columnName: first
       })
       // in context exists this column name
@@ -140,15 +142,17 @@ class evaluator {
     //	Second Part
     var second = st[2].trim()
     var secondEval = second.trim()
-    if (second.includes('@')) {
-      second = second.replace('@', ' ').trim() // strip tag
+    if (expr.test(second)) {
+      second = second.replace(/@/g, ' ').trim() // strip tag
       secondEval = objectToEvaluate.context.getContext({
-        parentUuid: objectToEvaluate.parentUuid,
-        containerUuid: objectToEvaluate.containerUuid,
+        parentUuid: (isGlobal || isCountable) ? '' : objectToEvaluate.parentUuid,
+        containerUuid: (isGlobal || isCountable) ? '' : objectToEvaluate.containerUuid,
         columnName: first
       })	//	replace with it's value
     }
-    secondEval = secondEval.replace(/['"]/g, '').trim()	//	strip ' and "
+    if (typeof secondEval === 'string') {
+      secondEval = secondEval.replace(/['"]/g, '').trim()	//	strip ' and " for string values
+    }
 
     //	Handling of ID compare (null => 0)
     if (first.includes('_ID') && firstEval.length === 0) {
