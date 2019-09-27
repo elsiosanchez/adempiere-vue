@@ -412,7 +412,6 @@ const windowControl = {
           containerUuid: parameters.containerUuid,
           value: tab.query
         })
-
         var parsedWhereClause
         if (!isEmptyValue(tab.whereClause)) {
           parsedWhereClause = parseContext({
@@ -420,21 +419,21 @@ const windowControl = {
             containerUuid: parameters.containerUuid,
             value: tab.whereClause
           })
+          dispatch('getObjectListFromCriteria', {
+            parentUuid: parameters.parentUuid,
+            containerUuid: parameters.containerUuid,
+            tableName: tab.tableName,
+            query: parsedQuery,
+            whereClause: parsedWhereClause,
+            orderByClause: tab.orderByClause
+          })
+            .then(response => {
+              resolve(response)
+            })
+            .catch(error => {
+              reject(error)
+            })
         }
-        dispatch('getObjectListFromCriteria', {
-          parentUuid: parameters.parentUuid,
-          containerUuid: parameters.containerUuid,
-          tableName: tab.tableName,
-          query: parsedQuery,
-          whereClause: parsedWhereClause,
-          orderByClause: tab.orderByClause
-        })
-          .then(response => {
-            resolve(response)
-          })
-          .catch(error => {
-            reject(error)
-          })
       })
     },
     /**
