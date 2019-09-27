@@ -1,19 +1,40 @@
 <template>
-  <el-date-picker
-    v-model="value"
-    :format="formatView"
-    :value-format="formatSend"
-    :type="typePicker"
-    range-separator="-"
-    :placeholder="metadata.help"
-    :start-placeholder="$t('components.dateStartPlaceholder')"
-    :end-placeholder="$t('components.dateEndPlaceholder')"
-    unlink-panels
-    class="date-base"
-    :readonly="Boolean(metadata.readonly)"
-    :disabled="isDisabled"
-    @change="preHandleChange"
-  />
+  <div>
+    {{ typePicker }}
+    <el-date-picker
+      v-if="typePicker === 'daterange'"
+      v-model="value"
+      :format="formatView"
+      :value-format="formatSend"
+      :type="typePicker"
+      range-separator="-"
+      :placeholder="metadata.help"
+      :start-placeholder="$t('components.dateStartPlaceholder')"
+      :end-placeholder="$t('components.dateEndPlaceholder')"
+      unlink-panels
+      class="date-base"
+      :readonly="Boolean(metadata.readonly)"
+      :disabled="isDisabled"
+      :picker-options="pickerOptions"
+      @change="preHandleChange"
+    />
+    <el-date-picker
+      v-else
+      v-model="value"
+      :format="formatView"
+      :value-format="formatSend"
+      :type="typePicker"
+      range-separator="-"
+      :placeholder="metadata.help"
+      :start-placeholder="$t('components.dateStartPlaceholder')"
+      :end-placeholder="$t('components.dateEndPlaceholder')"
+      unlink-panels
+      class="date-base"
+      :readonly="Boolean(metadata.readonly)"
+      :disabled="isDisabled"
+      @change="preHandleChange"
+    />
+  </div>
 </template>
 
 <script>
@@ -25,6 +46,17 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [{
+          text: 'Last week',
+          onClick(picker) {
+            const end = ''
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       formatView: undefined,
       formatSend: undefined
     }
