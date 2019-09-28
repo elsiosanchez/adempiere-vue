@@ -73,6 +73,11 @@ export default {
     button: 'Ver guía'
   },
   components: {
+    date: {
+      Today: 'Hoy',
+      Yesterday: 'ayer',
+      week: 'Hace una semana'
+    },
     documentation: 'Documentación',
     binaryButton: 'Subir archivo',
     binaryTip: 'Solo archivos con un tamaño menor a 500kb',

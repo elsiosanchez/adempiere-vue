@@ -1,39 +1,37 @@
 <template>
-  <div>
-    <el-date-picker
-      v-if="typePicker === 'daterange'"
-      v-model="value"
-      :format="formatView"
-      :value-format="formatSend"
-      type="dates"
-      range-separator="-"
-      :placeholder="metadata.help"
-      :start-placeholder="$t('components.dateStartPlaceholder')"
-      :end-placeholder="$t('components.dateEndPlaceholder')"
-      unlink-panels
-      class="date-base"
-      :readonly="Boolean(metadata.readonly)"
-      :disabled="isDisabled"
-      :picker-options="pickerOptions"
-      @change="preHandleChange"
-    />
-    <el-date-picker
-      v-else
-      v-model="value"
-      :format="formatView"
-      :value-format="formatSend"
-      :type="typePicker"
-      range-separator="-"
-      :placeholder="metadata.help"
-      :start-placeholder="$t('components.dateStartPlaceholder')"
-      :end-placeholder="$t('components.dateEndPlaceholder')"
-      unlink-panels
-      class="date-base"
-      :readonly="Boolean(metadata.readonly)"
-      :disabled="isDisabled"
-      @change="preHandleChange"
-    />
-  </div>
+  <el-date-picker
+    v-if="typePicker === 'daterange'"
+    v-model="value"
+    :format="formatView"
+    :value-format="formatSend"
+    type="dates"
+    range-separator="-"
+    :placeholder="metadata.help"
+    :start-placeholder="$t('components.dateStartPlaceholder')"
+    :end-placeholder="$t('components.dateEndPlaceholder')"
+    unlink-panels
+    class="date-base"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="isDisabled"
+    @change="preHandleChange"
+  />
+  <el-date-picker
+    v-else
+    v-model="value"
+    :format="formatView"
+    :value-format="formatSend"
+    :type="typePicker"
+    range-separator="-"
+    :placeholder="metadata.help"
+    :start-placeholder="$t('components.dateStartPlaceholder')"
+    :end-placeholder="$t('components.dateEndPlaceholder')"
+    unlink-panels
+    class="date-base"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="isDisabled"
+    :picker-options="pickerOptions"
+    @change="preHandleChange"
+  />
 </template>
 
 <script>
@@ -50,19 +48,19 @@ export default {
           return time.getTime() > Date.now()
         },
         shortcuts: [{
-          text: 'Today',
+          text: this.$t('components.date.Today'),
           onClick(picker) {
             picker.$emit('pick', new Date())
           }
         }, {
-          text: 'Yesterday',
+          text: this.$t('components.date.Yesterday'),
           onClick(picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24)
             picker.$emit('pick', date)
           }
         }, {
-          text: 'A week ago',
+          text: this.$t('components.date.week'),
           onClick(picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
