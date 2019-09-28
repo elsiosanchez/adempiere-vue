@@ -1,12 +1,11 @@
 <template>
   <div>
-    {{ typePicker }}
     <el-date-picker
       v-if="typePicker === 'daterange'"
       v-model="value"
       :format="formatView"
       :value-format="formatSend"
-      :type="typePicker"
+      type="dates"
       range-separator="-"
       :placeholder="metadata.help"
       :start-placeholder="$t('components.dateStartPlaceholder')"
@@ -47,13 +46,27 @@ export default {
   data() {
     return {
       pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
         shortcuts: [{
-          text: 'Last week',
+          text: 'Today',
           onClick(picker) {
-            const end = ''
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: 'Yesterday',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: 'A week ago',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
           }
         }]
       },
