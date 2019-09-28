@@ -60,7 +60,7 @@ export default {
             picker.$emit('pick', date)
           }
         }, {
-          text: this.$t('components.date.week'),
+          text: this.$t('components.date.Week'),
           onClick(picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)

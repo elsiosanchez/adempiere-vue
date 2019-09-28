@@ -76,7 +76,7 @@ export default {
     date: {
       Today: 'Today',
       Yesterday: 'Yesterday',
-      week: 'A week ago'
+      Week: 'A week ago'
     },
     documentation: 'Documentation',
     binaryButton: 'Upload file',

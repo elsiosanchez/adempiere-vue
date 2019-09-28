@@ -75,8 +75,8 @@ export default {
   components: {
     date: {
       Today: 'Hoy',
-      Yesterday: 'ayer',
-      week: 'Hace una semana'
+      Yesterday: 'Ayer',
+      Week: 'Hace una semana'
     },
     documentation: 'Documentación',
     binaryButton: 'Subir archivo',
