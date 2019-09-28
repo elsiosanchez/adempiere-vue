@@ -145,8 +145,8 @@ class evaluator {
     if (expr.test(second)) {
       second = second.replace(/@/g, ' ').trim() // strip tag
       secondEval = objectToEvaluate.context.getContext({
-        parentUuid: (isGlobal || isCountable) ? '' : objectToEvaluate.parentUuid,
-        containerUuid: (isGlobal || isCountable) ? '' : objectToEvaluate.containerUuid,
+        parentUuid: (isGlobal || isCountable) ? null : objectToEvaluate.parentUuid,
+        containerUuid: (isGlobal || isCountable) ? null : objectToEvaluate.containerUuid,
         columnName: first
       })	//	replace with it's value
     }
