@@ -6,7 +6,8 @@ import router from '@/router'
 const windowControl = {
   state: {
     inCreate: [],
-    references: []
+    references: [],
+    windowRoute: {}
   },
   mutations: {
     addInCreate(state, payload) {
@@ -15,7 +16,7 @@ const windowControl = {
     deleteInCreate(state, payload) {
       state.inCreate = state.inCreate.filter(item => item.containerUuid !== payload.containerUuid)
     },
-    addReference(state, payload) {
+    addReferencesList(state, payload) {
       state.references.push(payload)
     },
     deleteReference(state, payload) {
@@ -26,6 +27,9 @@ const windowControl = {
         }
         return true
       })
+    },
+    addWindowRoute(state, payload) {
+      state.windowRoute = payload
     }
   },
   actions: {
@@ -443,7 +447,7 @@ const windowControl = {
      * @param {string} parameters.containerUuid
      * @param {string} parameters.recordUuid
      */
-    getReferencesListFromServer({ rootGetters }, parameters) {
+    getReferencesListFromServer({ commit, rootGetters }, parameters) {
       // TODO: check if you get better performance search only the window and get the current tab
       const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
       return new Promise((resolve, reject) => {
@@ -453,13 +457,39 @@ const windowControl = {
           recordUuid: parameters.recordUuid
         })
           .then(response => {
-            // commit('deleteReference')
-            console.log(response)
+            const referencesList = response.getReferencesList().map(item => {
+              return {
+                windowUuid: item.getWindowuuid(),
+                displayName: item.getDisplayname(),
+                tableName: item.getTablename(),
+                whereClause: item.getWhereclause(),
+                recordCount: item.getRecordcount(),
+                recordUuid: parameters.recordUuid,
+                type: 'reference'
+              }
+            })
+            const references = {
+              windowUuid: parameters.parentUuid,
+              recordUuid: parameters.recordUuid,
+              recordCount: response.getRecordcount(),
+              referencesList: referencesList,
+              nextPageToken: response.getNextPageToken()
+            }
+            commit('addReferencesList', references)
             resolve(response)
           })
           .catch(error => {
             reject(error)
           })
+      })
+    },
+    getWindowByUuid({ dispatch, commit }, parameters) {
+      parameters.routes.forEach((routeItem) => {
+        if (routeItem.meta && routeItem.meta.uuid === parameters.windowUuid) {
+          commit('addWindowRoute', routeItem)
+        } else if (routeItem.meta && routeItem.meta.childs && routeItem.meta.childs.length > 0) {
+          dispatch('getWindowByUuid', { routes: routeItem.meta.childs, windowUuid: parameters.windowUuid })
+        }
       })
     }
   },
@@ -468,12 +498,12 @@ const windowControl = {
       return state.inCreate.find(item => item.containerUuid === containerUuid)
     },
     getReferencesList: (state) => (windowUuid, recordUuid) => {
-      return state.references.filter(itemReference => {
-        if (itemReference.parentUuid === windowUuid &&
-          itemReference.recordUuid === recordUuid) {
-          return true
-        }
-      })
+      return (state.references.find(item => item.windowUuid === windowUuid && item.recordUuid === recordUuid))
+    },
+    getWindowRoute: (state) => (windowUuid) => {
+      if (state.windowRoute && state.windowRoute.meta && state.windowRoute.meta.uuid === windowUuid) {
+        return state.windowRoute
+      }
     }
   }
 }
