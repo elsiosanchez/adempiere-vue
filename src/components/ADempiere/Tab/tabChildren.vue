@@ -32,7 +32,25 @@ export default {
   components: {
     DataTable
   },
-  mixins: [tabMixin]
+  mixins: [tabMixin],
+  props: {
+    firstTab: {
+      type: String,
+      default: undefined
+    }
+  },
+  computed: {
+    getterIsLoadRecordParent() {
+      return this.$store.getters.getTabIsLoadRecord(this.windowUuid, this.firstTab)
+    }
+  },
+  watch: {
+    getterIsLoadRecordParent(value) {
+      if (value) {
+        this.getData()
+      }
+    }
+  }
 }
 </script>
 

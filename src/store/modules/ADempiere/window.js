@@ -1,7 +1,7 @@
 import {
-  getWindow as getWindowFromDictionary,
-  getTab as getTabfromDictionary
-} from '@/api/ADempiere'
+  getWindow as getWindowMetadata,
+  getTab as getTabMetadata
+} from '@/api/ADempiere/dictionary'
 import { convertContextInfoFromGRPC, convertField, getFieldTemplate } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -22,6 +22,9 @@ const window = {
     changeShowedRecordWindow(state, payload) {
       payload.window.isShowedRecordNavigation = payload.isShowedRecordNavigation
     },
+    changeTabIsLoadRecord(state, payload) {
+      payload.tab.isLoadRecord = payload.isLoadRecord
+    },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
     }
@@ -29,7 +32,7 @@ const window = {
   actions: {
     getWindowFromServer: ({ commit, dispatch }, windowUuid) => {
       return new Promise((resolve, reject) => {
-        getWindowFromDictionary(windowUuid)
+        getWindowMetadata(windowUuid)
           .then(response => {
             var newWindow = {
               id: response.getId(),
@@ -93,6 +96,7 @@ const window = {
                 query: tabItem.getQuery(),
                 whereClause: tabItem.getWhereclause(),
                 orderByClause: tabItem.getOrderbyclause(),
+                isLoadRecord: false,
                 // app properties
                 isShowedRecordNavigation: !(tabItem.getIssinglerow())
               }
@@ -171,7 +175,7 @@ const window = {
     },
     getTabAndFieldFromServer: ({ commit, dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
-        getTabfromDictionary(objectParams.containerUuid)
+        getTabMetadata(objectParams.containerUuid)
           .then(response => {
             const panelType = objectParams.panelType
             var fieldsList = response.getFieldsList()
@@ -262,6 +266,13 @@ const window = {
         isShowedRecordNavigation: params.isShowedRecordNavigation
       })
     },
+    changeTabIsLoadRecord: ({ commit, getters }, parameters) => {
+      const tab = getters.getTab(parameters.parentUuid, parameters.containerUuid)
+      commit('changeTabIsLoadRecord', {
+        tab: tab,
+        isLoadRecord: parameters.isLoadRecord
+      })
+    },
     /**
      * @param {string} parameters.parentUuid
      * @param {string} parameters.containerUuid
@@ -299,6 +310,13 @@ const window = {
         })
       }
       return window
+    },
+    getTabIsLoadRecord: (state, getters) => (windowUuid, tabUuid) => {
+      const tab = getters.getTab(windowUuid, tabUuid)
+      if (tab) {
+        return tab.isLoadRecord
+      }
+      return tab
     }
   }
 }

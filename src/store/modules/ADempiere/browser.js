@@ -1,4 +1,4 @@
-import { getBrowser as getBrowserMetadata } from '@/api/ADempiere'
+import { getBrowser as getBrowserMetadata } from '@/api/ADempiere/dictionary'
 import { convertField, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
 
 const browser = {

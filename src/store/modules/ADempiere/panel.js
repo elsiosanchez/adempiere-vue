@@ -58,12 +58,15 @@ const panel = {
           selectionColumn.push(itemField.columnName)
         }
 
-        dispatch('setContext', {
-          parentUuid: params.parentUuid,
-          containerUuid: params.uuid,
-          columnName: itemField.columnName,
-          value: itemField.value
-        })
+        if (!(params.panelType === 'table' || params.isAvancedQuery)) {
+          // TODO: Evaluate if send context when is children tab
+          dispatch('setContext', {
+            parentUuid: params.parentUuid,
+            containerUuid: params.uuid,
+            columnName: itemField.columnName,
+            value: itemField.value
+          })
+        }
       })
       if (!params.isAvancedQuery) {
         params.keyColumn = keyColumn
@@ -185,6 +188,14 @@ const panel = {
         }
       })
     },
+    /**
+     * @param {string} params.parentUuid
+     * @param {string} params.containerUuid
+     * @param {string} params.columnName
+     * @param {string} params.newValue
+     * @param {string} params.panelType
+     * @param {string} params.isAvancedQuery
+     */
     notifyFieldChange({ commit, state, dispatch, getters }, params) {
       // var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
       var panel
@@ -210,11 +221,16 @@ const panel = {
         }
       }
 
-      //  Call context management
-      dispatch('setContext', {
-        ...params,
-        value: params.newValue
-      })
+      if (!(params.panelType === 'table' || params.isAvancedQuery)) {
+        //  Call context management
+        dispatch('setContext', {
+          parentUuid: params.parentUuid,
+          containerUuid: params.containerUuid,
+          columnName: params.columnName,
+          value: params.newValue
+        })
+      }
+
       commit('changeFieldValue', {
         field: field,
         newValue: params.newValue,
@@ -321,7 +337,7 @@ const panel = {
             }
           }
         }
-      } else {
+      } else if (!params.isDontSendToQuery) {
         if (params.panelType === 'table' && fieldIsDisplayed(field)) {
           var value = field.value
           if (typeof value === 'boolean') {

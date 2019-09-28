@@ -25,7 +25,6 @@ export const tabMixin = {
   },
   created() {
     this.tabUuid = this.tabsList[0].uuid
-    this.getData()
   },
   methods: {
     setCurrentTab() {

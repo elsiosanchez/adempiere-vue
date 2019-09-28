@@ -343,7 +343,7 @@ export default {
       }
     },
     generatePanel(fieldList) {
-      var totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid)
+      // order and assign groups
       this.fieldList = fieldList
       this.fieldGroups = this.sortAndGroup(fieldList)
       var firstGroup
@@ -354,7 +354,9 @@ export default {
       this.firstGroup = firstGroup
 
       this.isLoadPanel = true
+
       if (this.panelType === 'window') {
+        const totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid)
         if (totalRecords.length) {
           this.$router.push({
             name: this.$route.name,
@@ -399,6 +401,8 @@ export default {
           newValues: this.getterRowData,
           isDontSendToEdit: true,
           fieldList: this.fieldList
+        }).then(() => {
+          this.changeIsLoadRecord()
         })
         this.setTagsViewTitle(this.$route.query.action)
         this.isLoadRecord = true
@@ -450,6 +454,16 @@ export default {
           })
           console.warn('DataRecord Panel - Error ' + error.code + ': ' + error.message)
         })
+    },
+    changeIsLoadRecord() {
+      // notify record is load
+      if (!this.metadata.isLoadRecord) {
+        this.$store.dispatch('changeTabIsLoadRecord', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          isLoadRecord: true
+        })
+      }
     },
     /**
      * Group the arrangement into groups of columns that they contain, it must
