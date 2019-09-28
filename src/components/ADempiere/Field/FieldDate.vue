@@ -1,5 +1,22 @@
 <template>
   <el-date-picker
+    v-if="typePicker === 'daterange'"
+    v-model="value"
+    :format="formatView"
+    :value-format="formatSend"
+    type="dates"
+    range-separator="-"
+    :placeholder="metadata.help"
+    :start-placeholder="$t('components.dateStartPlaceholder')"
+    :end-placeholder="$t('components.dateEndPlaceholder')"
+    unlink-panels
+    class="date-base"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="isDisabled"
+    @change="preHandleChange"
+  />
+  <el-date-picker
+    v-else
     v-model="value"
     :format="formatView"
     :value-format="formatSend"
@@ -12,6 +29,7 @@
     class="date-base"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
+    :picker-options="pickerOptions"
     @change="preHandleChange"
   />
 </template>
@@ -25,6 +43,31 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: this.$t('components.date.Today'),
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: this.$t('components.date.Yesterday'),
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: this.$t('components.date.Week'),
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
       formatView: undefined,
       formatSend: undefined
     }
