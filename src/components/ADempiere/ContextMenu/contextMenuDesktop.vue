@@ -39,9 +39,16 @@
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
-        <el-menu-item index="3" :disabled="!(isReferecesContent && references.length)">
-          {{ $t('components.contextMenuReferences') }}
-        </el-menu-item>
+        <el-submenu :disabled="!(isReferecesContent)" class="el-menu-item" index="3">
+          <template slot="title">
+            {{ $t('components.contextMenuReferences') }}
+          </template>
+          <template v-for="(reference, index) in references.referencesList">
+            <el-menu-item :key="index" :index="reference.displayName" @click="runAction(reference)">
+              {{ reference.displayName }}
+            </el-menu-item>
+          </template>
+        </el-submenu>
       </template>
     </el-menu>
   </div>
