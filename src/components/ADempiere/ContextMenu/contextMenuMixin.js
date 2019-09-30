@@ -218,9 +218,6 @@ export const contextMixin = {
             })
           if (this.panelType !== 'window') {
             this.$store.dispatch('tagsView/delView', this.$route)
-              .then(({ visitedViews }) => {
-                this.$router.push('/dashboard')
-              })
           }
         } else {
           this.showNotification({
