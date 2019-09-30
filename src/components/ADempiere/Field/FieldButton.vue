@@ -23,7 +23,9 @@ export default {
   beforeMount() {
     // enable to dataTable records
     if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = this.valueModel
+      this.value = String(this.valueModel)
+    } else if (typeof this.valueModel === 'boolean') {
+      this.value = String(this.valueModel)
     }
   },
   methods: {

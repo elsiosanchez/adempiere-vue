@@ -173,9 +173,8 @@ export default {
 	}
   .content-api {
 		width: 100%;
-    height: 84%;
+    height: 90%;
     padding-right: 10px;
-    padding-bottom: 1%;
 	}
   .content-txt {
 		width: 100%;

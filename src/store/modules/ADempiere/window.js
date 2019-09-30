@@ -74,8 +74,7 @@ const window = {
                 displayLogic: tabItem.getDisplaylogic(),
                 isView: tabItem.getIsview(),
                 isDocument: tabItem.getIsdocument(),
-                // TODO: Verify the value to return, the value is always false, and new records cannot be created
-                isInsertRecord: true, // tabItem.getIsinsertrecord(),
+                isInsertRecord: tabItem.getIsinsertrecord(),
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
                 isParentTab: Boolean(firstTab === tabItem.getTablename()),
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
@@ -103,22 +102,21 @@ const window = {
 
               //  Convert from gRPC process list
               var actions = []
-              actions.push(
-                {
-                  name: language.t('window.newRecord'),
-                  processName: language.t('window.newRecord'),
-                  type: 'dataAction',
-                  action: 'resetPanelToNew',
-                  uuidParent: newWindow.uuid
-                },
-                {
-                  name: language.t('window.deleteRecord'),
-                  processName: language.t('window.deleteRecord'),
-                  type: 'dataAction',
-                  action: 'deleteEntity',
-                  uuidParent: newWindow.uuid
-                }
-              )
+              actions.push({
+                name: language.t('window.newRecord'),
+                processName: language.t('window.newRecord'),
+                type: 'dataAction',
+                action: 'resetPanelToNew',
+                uuidParent: newWindow.uuid,
+                disabled: tab.isInsertRecord || tab.isReadOnly
+              }, {
+                name: language.t('window.deleteRecord'),
+                processName: language.t('window.deleteRecord'),
+                type: 'dataAction',
+                action: 'deleteEntity',
+                uuidParent: newWindow.uuid,
+                disabled: tab.isReadOnly
+              })
               const processList = tabItem.getProcessesList().map(processItem => {
                 return {
                   name: processItem.getName(),
