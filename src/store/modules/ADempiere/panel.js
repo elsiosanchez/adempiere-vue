@@ -219,6 +219,8 @@ const panel = {
         if (typeof params.newValue === 'number') {
           params.valueTo = new Date(params.valueTo)
         }
+      } else if (field.componentPath === 'FieldNumber') {
+        params.newValue = Number(params.newValue)
       }
 
       if (!(params.panelType === 'table' || params.isAvancedQuery)) {
