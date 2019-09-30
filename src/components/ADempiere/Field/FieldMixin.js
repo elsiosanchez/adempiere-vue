@@ -51,6 +51,7 @@ export const fieldMixin = {
           valueTo: valueTo,
           displayColumn: label,
           isDontSendToEdit: Boolean(value === 'NotSend') || this.metadata.isAvancedQuery,
+          isDontSendToQuery: Boolean(value === 'NotSend'),
           isAvancedQuery: this.metadata.isAvancedQuery
         })
       }

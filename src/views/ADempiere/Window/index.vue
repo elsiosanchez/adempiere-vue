@@ -98,7 +98,8 @@
                     <tab-children
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListChildren"
-                      :style="{'height':getHeightPanelBottom+'vh'}"
+                      :first-tab="windowMetadata.tabsListParent[0].uuid"
+                      :style="{ 'height': getHeightPanelBottom + 'vh' }"
                     />
                   </el-header>
                 </SplitArea>

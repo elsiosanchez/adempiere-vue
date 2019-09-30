@@ -1,6 +1,7 @@
 import Vue from 'vue'
 // Delete when get global context and account context
 import { contextInitialObject } from '@/utils/ADempiere/dataEmulation.js'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 const context = {
   state: {
@@ -11,6 +12,10 @@ const context = {
       var key = ''
       if (payload.parentUuid) {
         key += payload.parentUuid + '|'
+
+        // set context for window
+        const keyParent = key + payload.columnName
+        Vue.set(state.context, keyParent, payload.value)
       }
       if (payload.containerUuid) {
         key += payload.containerUuid + '|'
@@ -50,6 +55,13 @@ const context = {
       var key = ''
       if (findedContext.parentUuid) {
         key += findedContext.parentUuid + '|'
+
+        // context for window
+        const keyParent = key + findedContext.columnName
+        const valueParent = state.context[keyParent]
+        if (!isEmptyValue(valueParent)) {
+          return valueParent
+        }
       }
       if (findedContext.containerUuid) {
         key += findedContext.containerUuid + '|'

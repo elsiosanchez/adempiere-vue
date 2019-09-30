@@ -201,7 +201,9 @@ const data = {
     /**
      * Request list to view in table
      * @param {string} params.tableName, table name to search record data
-     * @param {string} params.criteria, criteria to search record data
+     * @param {string} params.query, criteria to search record data
+     * @param {string} params.whereClause, criteria to search record data
+     * @param {string} params.orderByClause, criteria to search record data
      */
     getObjectListFromCriteria: ({ dispatch, rootGetters }, objectParams) => {
       var allData = rootGetters.getDataRecordAndSelection(objectParams.containerUuid)
@@ -281,7 +283,9 @@ const data = {
     /**
      * @param {object} objectParams
      * @param {string} objectParams.containerUuid
-     * @param {objec} objectParams.row, new data
+     * @param {objec}  objectParams.row, new data to change
+     * @param {objec}  objectParams.isEdit, if the row displayed to edit mode
+     * @param {objec}  objectParams.isNew, if insert data to new row
      */
     notifyRowTableChange: ({ commit, state, getters, rootGetters }, objectParams) => {
       var currentValues = rootGetters.getColumnNamesAndValues({

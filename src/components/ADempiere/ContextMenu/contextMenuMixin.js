@@ -86,6 +86,9 @@ export const contextMixin = {
         return this.$store.getters.getReferencesList(this.parentUuid, this.recordUuid)
       }
       return []
+    },
+    permissionRoutes() {
+      return this.$store.getters.permission_routes
     }
   },
   watch: {
@@ -123,7 +126,7 @@ export const contextMixin = {
             recordUuid: this.recordUuid
           })
             .then(response => {
-              this.references = response
+              this.references = this.$store.getters.getReferencesList(this.parentUuid, this.recordUuid)
             })
             .catch(error => {
               console.warn('References Load Error ' + error.code + ': ' + error.message)
@@ -235,6 +238,12 @@ export const contextMixin = {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid
         })
+      } else if (action.type === 'reference') {
+        this.$store.dispatch('getWindowByUuid', { routes: this.permissionRoutes, windowUuid: action.windowUuid })
+        if (action.windowUuid && action.recordUuid) {
+          var windowRoute = this.$store.getters.getWindowRoute(action.windowUuid)
+          this.$router.push({ name: windowRoute.name, query: { tabNumber: 0 }, params: action })
+        }
       }
     }
   }
