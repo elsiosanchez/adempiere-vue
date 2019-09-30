@@ -310,6 +310,9 @@ export default {
       }
     }
   },
+  beforeMount() {
+    this.verifyReferenced(this.$route)
+  },
   created() {
     // get tab with uuid
     this.getPanel(this.isAvancedQuery)
@@ -544,6 +547,16 @@ export default {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '')
+    },
+    verifyReferenced(route) {
+      if (route.params && route.params.whereClause && route.params.type === 'reference') {
+        this.$store.dispatch('getObjectListFromCriteria', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          tableName: this.metadata.tableName,
+          whereClause: route.params.whereClause
+        })
+      }
     }
   }
 }

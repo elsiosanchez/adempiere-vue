@@ -60,13 +60,15 @@ export const tabMixin = {
       })
     },
     getData() {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.windowUuid,
-        containerUuid: this.tabUuid
-      })
-        .catch(error => {
-          console.warn(error)
+      if (this.$route.params && this.$route.params.type !== 'reference') {
+        this.$store.dispatch('getDataListTab', {
+          parentUuid: this.windowUuid,
+          containerUuid: this.tabUuid
         })
+          .catch(error => {
+            console.warn(error)
+          })
+      }
     }
   }
 }
