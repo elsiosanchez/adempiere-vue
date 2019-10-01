@@ -12,7 +12,7 @@
         :disabled="Boolean(key > 0 && isCreateNew)"
         :style="isShowedDetail ? {height: '100%', overflow: 'hidden'} : { height: '75vh', overflow: 'auto'}"
       >
-        <panel-fields
+        <main-panel
           :parent-uuid="windowUuid"
           :container-uuid="item.uuid"
           :metadata="item"
@@ -27,12 +27,12 @@
 
 <script>
 import { tabMixin } from '@/components/ADempiere/Tab/tabMixin'
-import PanelFields from '@/components/ADempiere/Panel'
+import MainPanel from '@/components/ADempiere/Panel'
 
 export default {
   name: 'TabParent',
   components: {
-    PanelFields
+    MainPanel
   },
   mixins: [tabMixin],
   computed: {

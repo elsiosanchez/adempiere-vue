@@ -47,7 +47,7 @@
     <el-main>
       <el-collapse v-model="activeSearch" class="container-collasep-open" @change="handleChange">
         <el-collapse-item :title="$t('views.searchCriteria')" name="opened-criteria">
-          <panel-fields
+          <main-panel
             :container-uuid="browserUuid"
             :metadata="browserMetadata"
             :panel-type="panelType"
@@ -77,14 +77,14 @@
 // When supporting the processes, smart browser and reports,
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import PanelFields from '@/components/ADempiere/Panel'
+import MainPanel from '@/components/ADempiere/Panel'
 import DataTable from '@/components/ADempiere/DataTable'
 import ModalDialog from '@/components/ADempiere/Dialog'
 
 export default {
   name: 'BrowserView',
   components: {
-    PanelFields,
+    MainPanel,
     DataTable,
     ContextMenu,
     ModalDialog

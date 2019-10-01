@@ -54,7 +54,10 @@ export default {
       this.value = Number(value)
     },
     'metadata.value'(value) {
-      this.value = Number(value)
+      if (value === undefined || value === '') {
+        value = null
+      }
+      this.value = value
     }
   },
   beforeMount() {

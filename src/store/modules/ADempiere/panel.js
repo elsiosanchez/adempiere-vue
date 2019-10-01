@@ -68,23 +68,21 @@ const panel = {
           })
         }
       })
-      if (!params.isAvancedQuery) {
-        params.keyColumn = keyColumn
-        params.selectionColumn = selectionColumn
-        params.recordUuid = null
-        params.fieldList = assignedGroup(params.fieldList)
-        commit('addPanel', params)
-      } else {
-        params.keyColumn = keyColumn
-        params.selectionColumn = selectionColumn
-        params.recordUuid = null
+
+      params.keyColumn = keyColumn
+      params.selectionColumn = selectionColumn
+      params.recordUuid = null
+      if (params.isAvancedQuery) {
         params.fieldList = assignedGroup(params.fieldList.filter(field => params.selectionColumn.includes(field.columnName)))
-        commit('addPanel', params)
+      } else {
+        params.fieldList = assignedGroup(params.fieldList)
       }
+
+      commit('addPanel', params)
     },
     // used by components/fields/filterFields
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
-      var panel = getters.getPanel(params.containerUuid)
+      var panel = getters.getPanel(params.containerUuid, params.isAvancedQuery)
       var showsFieldsWithValue = false
       var hiddenFieldsWithValue = false
       var newFields = panel.fieldList.map(itemField => {
@@ -97,6 +95,9 @@ const panel = {
               if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
                 showsFieldsWithValue = true
               }
+              if (params.isAvancedQuery) {
+                itemField.isShowedFromUser = false
+              }
               itemField.isShowedFromUser = true
               return itemField
             }
@@ -104,6 +105,31 @@ const panel = {
             // that it is going to hidden, therefore the SmartBrowser must be searched
             if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
               hiddenFieldsWithValue = true
+            }
+            if (params.isAvancedQuery) {
+              itemField.isShowedFromUser = false
+            }
+            itemField.isShowedFromUser = false
+          }
+        } else {
+          if (itemField.groupAssigned === params.groupField) {
+            if (params.fieldsUser.length && params.fieldsUser.includes(itemField.columnName)) {
+              // if it isShowedFromUser it is false, and it has some value, it means
+              // that it is going to show, therefore the SmartBrowser must be searched
+              if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
+                showsFieldsWithValue = true
+              }
+              if (params.isAvancedQuery) {
+                itemField.isShowedFromUser = false
+              }
+              itemField.isShowedFromUser = true
+              return itemField
+            }
+            if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
+              hiddenFieldsWithValue = true
+            }
+            if (params.isAvancedQuery) {
+              itemField.isShowedFromUser = false
             }
             itemField.isShowedFromUser = false
           }
@@ -220,7 +246,17 @@ const panel = {
           params.valueTo = new Date(params.valueTo)
         }
       } else if (field.componentPath === 'FieldNumber') {
-        params.newValue = Number(params.newValue)
+        if (params.newValue === undefined || params.newValue === '') {
+          params.newValue = null
+        } else {
+          params.newValue = Number(params.newValue)
+        }
+      } else if (field.componentPath === 'FieldText' || field.componentPath === 'FieldTextArea') {
+        if (params.newValue === undefined || params.newValue === null) {
+          params.newValue = null
+        } else {
+          params.newValue = String(params.newValue)
+        }
       }
 
       if (!(params.panelType === 'table' || params.isAvancedQuery)) {
@@ -426,8 +462,8 @@ const panel = {
         return item.uuid === containerUuid && (!isAvancedQuery || (isAvancedQuery && item.isAvancedQuery))
       })
     },
-    getFieldsListFromPanel: (state, getters) => (containerUuid) => {
-      var panel = getters.getPanel(containerUuid)
+    getFieldsListFromPanel: (state, getters) => (containerUuid, isAvancedQuery = false) => {
+      var panel = getters.getPanel(containerUuid, isAvancedQuery)
       if (panel === undefined) {
         return []
       }

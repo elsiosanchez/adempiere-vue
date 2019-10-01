@@ -29,6 +29,14 @@ export default {
     groupField: {
       type: String,
       default: ''
+    },
+    panelType: {
+      type: String,
+      default: 'window'
+    },
+    isAvancedQuery: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -41,11 +49,20 @@ export default {
       return this.$store.state.app.device === 'mobile'
     },
     getterFieldListOptional() {
+      if (this.panelType === 'table') {
+        return this.$store.getters.getFieldsListFromPanel(this.containerUuid, this.isAvancedQuery).filter(
+          fieldItem => {
+            return fieldItem.groupAssigned === this.groupField
+          })
+      }
       return this.$store.getters.getFieldsListNotMandatory(this.containerUuid).filter(fieldItem => {
         return fieldItem.groupAssigned === this.groupField
       })
     },
     getFieldSelected() {
+      if (this.panelType === 'table') {
+        return new Array(this.getterFieldListOptional[0].columnName)
+      }
       return this.getterFieldListOptional
         .filter(fieldItem => {
           return fieldItem.isShowedFromUser
@@ -56,12 +73,6 @@ export default {
   created() {
     this.selectedFields = this.getFieldSelected
   },
-  // updated() {
-  //   setTimeout(() => {
-  //     //your code to be executed after 1 second
-  //     this.selectedFields = this.getFieldSelected
-  //   }, 2000);
-  // },
   methods: {
     /**
      * @param {array} selectedValues
@@ -71,7 +82,8 @@ export default {
         containerUuid: this.containerUuid,
         fieldsUser: selectedValues,
         show: true,
-        groupField: this.groupField
+        groupField: this.groupField,
+        isAvancedQuery: this.isAvancedQuery
       })
     }
   }

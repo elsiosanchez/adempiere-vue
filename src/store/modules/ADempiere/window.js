@@ -171,7 +171,7 @@ const window = {
           })
       })
     },
-    getTabAndFieldFromServer: ({ commit, dispatch }, objectParams) => {
+    getTabAndFieldFromServer: ({ dispatch }, objectParams) => {
       return new Promise((resolve, reject) => {
         getTabMetadata(objectParams.containerUuid)
           .then(response => {

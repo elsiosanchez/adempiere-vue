@@ -8,8 +8,7 @@
       label-width="200px"
     >
       <template
-        v-if="firstGroup !== undefined &&
-          firstGroup.groupFinal === ''"
+        v-if="firstGroup && firstGroup.groupFinal === ''"
       >
         <div v-show="firstGroup.activeFields" class="cards-not-group">
           <div
@@ -17,7 +16,7 @@
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
-            <div v-if="!isAvancedQuery" class="select-filter">
+            <div class="select-filter">
               <span>
                 {{ firstGroup.groupFinal }}
               </span>
@@ -25,6 +24,7 @@
                 :container-uuid="containerUuid"
                 :panel-type="panelType"
                 :group-field="firstGroup.groupFinal"
+                :is-avanced-query="isAvancedQuery"
               />
             </div>
             <el-card
@@ -33,14 +33,13 @@
             >
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
-                  <field
+                  <field-definition
                     :key="subKey"
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
                       optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                      value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
@@ -78,25 +77,25 @@
                       <span>
                         {{ item.groupFinal }}
                       </span>
-                      <div v-if="!isAvancedQuery" class="select-filter-header">
+                      <div class="select-filter-header">
                         <filter-fields
                           :container-uuid="containerUuid"
                           :panel-type="panelType"
                           :group-field="item.groupFinal"
                           :is-first-group="false"
+                          :is-avanced-query="isAvancedQuery"
                         />
                       </div>
                     </div>
                     <el-row :gutter="gutterRow">
                       <template v-for="(subItem, subKey) in item.metadataFields">
-                        <field
+                        <field-definition
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                            value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                           }"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
@@ -141,14 +140,13 @@
                     </div>
                     <el-row :gutter="gutterRow">
                       <template v-for="(subItem, subKey) in item.metadataFields">
-                        <field
+                        <field-definition
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                            value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                           }"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
@@ -177,14 +175,14 @@
 </template>
 
 <script>
-import Field from '@/components/ADempiere/Field'
+import FieldDefinition from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
 
 export default {
   name: 'PanelFields',
   components: {
-    Field,
+    FieldDefinition,
     FilterFields,
     draggable
   },
@@ -505,7 +503,15 @@ export default {
         res[key].typeGroup = typeG
         res[key].numberFields = res[key].metadataFields.length
 
-        res[key].metadataFields.forEach(element => {
+        res[key].metadataFields.forEach((element, index) => {
+          if (element.isAvancedQuery) {
+            element.isDisplayed = true
+            element.isDisplayedFromLogic = true
+            element.isShowedFromUser = true
+            if (index > 0) {
+              element.isShowedFromUser = false
+            }
+          }
           if (element.isDisplayed) {
             count++
           }
