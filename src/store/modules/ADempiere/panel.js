@@ -68,19 +68,17 @@ const panel = {
           })
         }
       })
-      if (!params.isAvancedQuery) {
-        params.keyColumn = keyColumn
-        params.selectionColumn = selectionColumn
-        params.recordUuid = null
-        params.fieldList = assignedGroup(params.fieldList)
-        commit('addPanel', params)
-      } else {
-        params.keyColumn = keyColumn
-        params.selectionColumn = selectionColumn
-        params.recordUuid = null
+
+      params.keyColumn = keyColumn
+      params.selectionColumn = selectionColumn
+      params.recordUuid = null
+      if (params.isAvancedQuery) {
         params.fieldList = assignedGroup(params.fieldList.filter(field => params.selectionColumn.includes(field.columnName)))
-        commit('addPanel', params)
+      } else {
+        params.fieldList = assignedGroup(params.fieldList)
       }
+
+      commit('addPanel', params)
     },
     // used by components/fields/filterFields
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
@@ -248,7 +246,17 @@ const panel = {
           params.valueTo = new Date(params.valueTo)
         }
       } else if (field.componentPath === 'FieldNumber') {
-        params.newValue = Number(params.newValue)
+        if (params.newValue === undefined || params.newValue === '') {
+          params.newValue = null
+        } else {
+          params.newValue = Number(params.newValue)
+        }
+      } else if (field.componentPath === 'FieldText' || field.componentPath === 'FieldTextArea') {
+        if (params.newValue === undefined || params.newValue === null) {
+          params.newValue = null
+        } else {
+          params.newValue = String(params.newValue)
+        }
       }
 
       if (!(params.panelType === 'table' || params.isAvancedQuery)) {

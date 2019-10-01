@@ -8,8 +8,7 @@
       label-width="200px"
     >
       <template
-        v-if="firstGroup !== undefined &&
-          firstGroup.groupFinal === ''"
+        v-if="firstGroup && firstGroup.groupFinal === ''"
       >
         <div v-show="firstGroup.activeFields" class="cards-not-group">
           <div
@@ -34,14 +33,13 @@
             >
               <el-row :gutter="gutterRow">
                 <template v-for="(subItem, subKey) in firstGroup.metadataFields">
-                  <field
+                  <field-definition
                     :key="subKey"
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...subItem,
                       optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                      value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                     }"
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
@@ -91,14 +89,13 @@
                     </div>
                     <el-row :gutter="gutterRow">
                       <template v-for="(subItem, subKey) in item.metadataFields">
-                        <field
+                        <field-definition
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                            value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                           }"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
@@ -143,14 +140,13 @@
                     </div>
                     <el-row :gutter="gutterRow">
                       <template v-for="(subItem, subKey) in item.metadataFields">
-                        <field
+                        <field-definition
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
-                            value: isLoadRecord && uuidRecord !== 'create-new' ? dataRecords[subItem.columnName] : subItem.value
                           }"
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
@@ -179,14 +175,14 @@
 </template>
 
 <script>
-import Field from '@/components/ADempiere/Field'
+import FieldDefinition from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
 
 export default {
   name: 'PanelFields',
   components: {
-    Field,
+    FieldDefinition,
     FilterFields,
     draggable
   },

@@ -8,7 +8,7 @@ export const fieldMixin = {
     // value received from data result
     valueModel: {
       type: [String, Number, Boolean, Date, Array],
-      default: undefined
+      default: null
     }
   },
   data() {

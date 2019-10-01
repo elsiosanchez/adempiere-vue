@@ -167,7 +167,9 @@
       </div>
     </el-header>
     <el-collapse-transition>
-      <panel
+      <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
+      <!-- // TODO: Copy panell with getter and filter fields -->
+      <main-panel
         v-if="isParent"
         v-show="isAvancedQuery"
         :container-uuid="containerUuid"
@@ -216,7 +218,7 @@
         >
           <template slot-scope="scope">
             <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item)">
-              <field
+              <field-definition
                 :is-data-table="true"
                 :is-show-label="false"
                 :in-table="true"
@@ -260,23 +262,23 @@
 </template>
 
 <script>
-import Field from '@/components/ADempiere/Field'
+import FieldDefinition from '@/components/ADempiere/Field'
 import Sortable from 'sortablejs'
 import FilterColumns from '@/components/ADempiere/DataTable/filterColumns'
 import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
-import Panel from '@/components/ADempiere/Panel'
+import MainPanel from '@/components/ADempiere/Panel'
 import { sortFields } from '@/utils/ADempiere'
 
 export default {
   name: 'DataTable',
   components: {
-    Field,
+    FieldDefinition,
     FilterColumns,
     FixedColumns,
     IconElement,
-    Panel
+    MainPanel
   },
   props: {
     parentUuid: {

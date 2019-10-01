@@ -1,4 +1,4 @@
-import { createEntity, updateEntity, deleteEntity, getReferencesList } from '@/api/ADempiere'
+import { createEntity, updateEntity, deleteEntity, getReferencesList } from '@/api/ADempiere/data'
 import { convertObjectToArrayPairs, convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
@@ -197,7 +197,7 @@ const windowControl = {
         const recordUuid = rootGetters.getUuid(parameters.containerUuid)
 
         // TODO: Add support to Binary columns (BinaryData)
-        const columnsToDontSend = ['BinaryData']
+        const columnsToDontSend = ['BinaryData', 'Account_Acct']
 
         // attributes or fields
         var finalAttributes = rootGetters.getColumnNamesAndValues({

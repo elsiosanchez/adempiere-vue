@@ -29,7 +29,7 @@
                 {{ processMetadata.name }}
               </el-button>
             </h3>
-            <panel-fields
+            <main-panel
               :position-tab="processMetadata.accesLevel"
               :container-uuid="processUuid"
               :metadata="processMetadata"
@@ -56,12 +56,12 @@
 // When supporting the processes, smart browser and reports,
 // the ContextMenu and sticky must be placed in the layout
 import ContextMenu from '@/components/ADempiere/ContextMenu'
-import PanelFields from '@/components/ADempiere/Panel'
+import MainPanel from '@/components/ADempiere/Panel'
 
 export default {
   name: 'ProcessView',
   components: {
-    PanelFields,
+    MainPanel,
     ContextMenu
   },
   props: {
