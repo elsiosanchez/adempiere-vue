@@ -4,7 +4,7 @@
     v-model="value"
     :format="formatView"
     :value-format="formatSend"
-    type="dates"
+    :type="typePicker"
     range-separator="-"
     :placeholder="metadata.help"
     :start-placeholder="$t('components.dateStartPlaceholder')"
