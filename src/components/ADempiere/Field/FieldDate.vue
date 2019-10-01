@@ -12,7 +12,6 @@
     class="date-base"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
-    :picker-options="pickerOptions"
     @change="preHandleChange"
   />
 </template>
