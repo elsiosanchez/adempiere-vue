@@ -699,14 +699,35 @@ export default {
     .hover-row {
       background-color: black;
     }
+    .current-row {
+      .hover-row {
+        background-color: initial !important;
+  }
+    }
   }
 </style>
 
 <style>
+  .el-table > .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    max-height: 41px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    line-height: 23px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .hover-row > tr {
+    background-color: initial !important;
+  }
   .hover-row > td {
     background-color: initial !important;
   }
   .header-table-records {
+    height: 45px !important;
     padding: 0 !important;
   }
   .el-table .cell {

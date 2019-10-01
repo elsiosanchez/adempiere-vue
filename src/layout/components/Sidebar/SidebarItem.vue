@@ -76,11 +76,11 @@ export default {
     },
     widthItem: {
       type: Number,
-      default: 24
+      default: 29
     },
     widthOnlyOneChild: {
       type: Number,
-      default: 22
+      default: 21
     }
   },
   data() {
