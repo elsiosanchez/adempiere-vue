@@ -2,7 +2,7 @@
   <div v-if="!item.hidden" class="menu-wrapper">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="onlyOneChild">
-        <el-tooltip v-if="onlyOneChild.meta.title.length >= widthOnlyOneChild" :content="generateTitle(onlyOneChild.meta.title)" placement="top">
+        <el-tooltip v-if="onlyOneChild.meta.title.length >= widthOnlyOneChild" :content="generateTitle(onlyOneChild.meta.title)" placement="right">
           <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
             <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="generateTitle(onlyOneChild.meta.title)" />
           </el-menu-item>
@@ -13,7 +13,7 @@
       </app-link>
     </template>
     <template v-else>
-      <el-tooltip v-if="item.meta.title.length >= widthItem" :content="generateTitle(item.meta.title)" placement="top">
+      <el-tooltip v-if="item.meta.title.length >= widthItem" :content="generateTitle(item.meta.title)" placement="right">
         <el-submenu ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
           <template slot="title">
             <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="generateTitle(item.meta.title)" />
@@ -76,11 +76,11 @@ export default {
     },
     widthItem: {
       type: Number,
-      default: 24
+      default: 29
     },
     widthOnlyOneChild: {
       type: Number,
-      default: 22
+      default: 21
     }
   },
   data() {

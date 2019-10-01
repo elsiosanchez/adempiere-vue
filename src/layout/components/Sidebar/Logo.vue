@@ -2,13 +2,16 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link sidebar-logo-link-close" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+        <el-tooltip placement="right">
+          <div slot="content">{{ getRol.name }} | {{ getRol.clientName }}</div>
+          <img v-if="logo" :src="logo" class="sidebar-logo">
+          <h1 v-else class="sidebar-title">{{ title }} </h1>
+        </el-tooltip>
       </router-link>
       <div v-else key="expand" class="sidebar-logo-link">
         <img v-if="logo" :src="logo" class="sidebar-logo" @click="dashboard()">
         <h1 class="sidebar-title" @click="dashboard()">{{ title }}</h1><br>
-        <el-tooltip placement="top">
+        <el-tooltip placement="right">
           <div slot="content">{{ getRol.name }} | {{ getRol.clientName }}</div>
           <p class="sidebar-sub-title" @click="profile()">
             {{ getRol.name }} | {{ getRol.clientName }}
