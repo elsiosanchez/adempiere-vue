@@ -39,7 +39,11 @@ const panel = {
       })
     },
     changeFieldValue(state, payload) {
-      payload.field.oldValue = payload.field.value
+      if (payload.isChangedOldValue) {
+        payload.field.oldValue = payload.newValue
+      } else {
+        payload.field.oldValue = payload.field.value
+      }
       payload.field.value = payload.newValue
       payload.field.valueTo = payload.valueTo
       payload.field.displayColumn = payload.displayColumn
@@ -209,7 +213,8 @@ const panel = {
             displayColumn: parameters.newValues['DisplayColumn_' + actionField.columnName],
             newValue: parameters.newValues[actionField.columnName],
             fieldList: fieldList,
-            field: actionField
+            field: actionField,
+            isChangedOldValue: true // defines if set oldValue with newValue instead of current value
           })
         }
       })
@@ -222,8 +227,7 @@ const panel = {
      * @param {string} params.panelType
      * @param {string} params.isAvancedQuery
      */
-    notifyFieldChange({ commit, state, dispatch, getters }, params) {
-      // var panel = state.panel.find(panelItem => panelItem.uuid === params.containerUuid)
+    notifyFieldChange({ commit, dispatch, getters }, params) {
       var panel
       if (params.isAvancedQuery) {
         panel = getters.getPanel(params.containerUuid, params.isAvancedQuery)
@@ -273,7 +277,8 @@ const panel = {
         field: field,
         newValue: params.newValue,
         valueTo: params.valueTo,
-        displayColumn: params.displayColumn
+        displayColumn: params.displayColumn,
+        isChangedOldValue: params.isChangedOldValue
       })
       //  Change Dependents
       var dependents = fieldList.filter(fieldItem => {
@@ -537,32 +542,45 @@ const panel = {
       return undefined
     },
     /**
-     * @param {string}  parameters.containerUuid, unique identifier of the panel to search your list of fields
-     * @param {string}  parameters.propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
-     * @param {boolean} parameters.isObjectReturn, define if is an object to return, else arraylist return
-     * @param {boolean} parameters.isEvaluateValues, define if evaluate emty values
-     * @param {boolean} parameters.isAddDisplayColumn, define if return display columns
-     * @param {boolean} parameters.isAddRangeColumn, define if return rangue columns_To
-     * @param {array} parameters.withOut, define if return display columns
+     * @param {string}  containerUuid, unique identifier of the panel to search your list of fields
+     * @param {string}  propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
+     * @param {boolean} isObjectReturn, define if is an object to return, else arraylist return
+     * @param {boolean} isEvaluateValues, define if evaluate emty values
+     * @param {boolean} isAddDisplayColumn, define if return display columns
+     * @param {boolean} isAddRangeColumn, define if return rangue columns_To
+     * @param {array} withOut, define if return display columns
+     * @param {array} isEvaluatedChangedValue, define if return only fields with values changes
      * @returns {array|object}
      */
-    getColumnNamesAndValues: (state, getters) => (parameters) => {
-      var attributesList = getters.getFieldsListFromPanel(parameters.containerUuid)
+    getColumnNamesAndValues: (state, getters) => ({
+      containerUuid,
+      propertyName = 'value',
+      isObjectReturn = false,
+      isEvaluateValues = false,
+      isAddDisplayColumn = false,
+      isAddRangeColumn = false,
+      withOut = [],
+      isEvaluatedChangedValue = false
+    }) => {
+      var attributesList = getters.getFieldsListFromPanel(containerUuid)
       var attributesObject = {}
       var displayColumnsList = []
       var rangeColumnsList = []
 
-      if (parameters.withOut && parameters.withOut.length) {
+      if (withOut.length || isEvaluatedChangedValue) {
         attributesList = attributesList.filter(fieldItem => {
           // columns to exclude
-          if (parameters.withOut.includes(fieldItem.columnName)) {
+          if (withOut.includes(fieldItem.columnName)) {
+            return false
+          }
+          if (isEvaluatedChangedValue && fieldItem.value === fieldItem.oldValue) {
             return false
           }
           return true
         })
       }
 
-      if (parameters.isEvaluateValues) {
+      if (isEvaluateValues) {
         attributesList = attributesList
           .filter(fieldItem => {
             if (!isEmptyValue(fieldItem.value)) {
@@ -573,7 +591,7 @@ const panel = {
       }
       attributesList = attributesList
         .map(fieldItem => {
-          const valueToReturn = fieldItem[parameters.propertyName]
+          const valueToReturn = fieldItem[propertyName]
           attributesObject[fieldItem.columnName] = valueToReturn
 
           // Add display columns
@@ -586,7 +604,7 @@ const panel = {
           }
 
           // add range columns
-          if (parameters.isAddRangeColumn && fieldItem.isRange) {
+          if (isAddRangeColumn && fieldItem.isRange) {
             attributesObject[fieldItem.columnName + '_To'] = fieldItem.valueTo
             rangeColumnsList.push({
               columnName: fieldItem.columnName + '_To',
@@ -600,11 +618,11 @@ const panel = {
           }
         })
 
-      if (parameters.isAddDisplayColumn) {
+      if (isAddDisplayColumn) {
         attributesList = attributesList.concat(displayColumnsList, rangeColumnsList)
       }
 
-      if (parameters.isObjectReturn) {
+      if (isObjectReturn) {
         return attributesObject
       }
       return attributesList
