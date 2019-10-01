@@ -1,22 +1,5 @@
 <template>
   <el-date-picker
-    v-if="typePicker === 'daterange'"
-    v-model="value"
-    :format="formatView"
-    :value-format="formatSend"
-    :type="typePicker"
-    range-separator="-"
-    :placeholder="metadata.help"
-    :start-placeholder="$t('components.dateStartPlaceholder')"
-    :end-placeholder="$t('components.dateEndPlaceholder')"
-    unlink-panels
-    class="date-base"
-    :readonly="Boolean(metadata.readonly)"
-    :disabled="isDisabled"
-    @change="preHandleChange"
-  />
-  <el-date-picker
-    v-else
     v-model="value"
     :format="formatView"
     :value-format="formatSend"
