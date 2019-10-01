@@ -448,10 +448,14 @@ const data = {
 
           Object.keys(itemRow).forEach(key => {
             if (!key.includes('DisplayColumn') && !withOut.includes(key)) {
-              records.push({
-                columnName: key,
-                value: itemRow[key]
-              })
+              // evaluate metadata attributes before to convert
+              const field = panel.fieldList.find(itemField => itemField.columnName === key)
+              if (field && (field.isIdentifier || field.isUpdateable)) {
+                records.push({
+                  columnName: key,
+                  value: itemRow[key]
+                })
+              }
             }
           })
 
