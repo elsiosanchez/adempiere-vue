@@ -639,7 +639,7 @@ export default {
         if (this.searchTable.trim().length) {
           let find = false
           Object.keys(rowItem).forEach(key => {
-            if (String(rowItem[key]).includes(String(this.searchTable))) {
+            if (String(rowItem[key]).toLowerCase().includes(String(this.searchTable).toLowerCase())) {
               find = true
               return find
             }
