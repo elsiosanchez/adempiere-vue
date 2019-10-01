@@ -84,7 +84,7 @@ const panel = {
     },
     // used by components/fields/filterFields
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
-      var panel = getters.getPanel(params.containerUuid)
+      var panel = getters.getPanel(params.containerUuid, params.isAvancedQuery)
       var showsFieldsWithValue = false
       var hiddenFieldsWithValue = false
       var newFields = panel.fieldList.map(itemField => {
@@ -97,6 +97,9 @@ const panel = {
               if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
                 showsFieldsWithValue = true
               }
+              if (params.isAvancedQuery) {
+                itemField.isShowedFromUser = false
+              }
               itemField.isShowedFromUser = true
               return itemField
             }
@@ -104,6 +107,31 @@ const panel = {
             // that it is going to hidden, therefore the SmartBrowser must be searched
             if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
               hiddenFieldsWithValue = true
+            }
+            if (params.isAvancedQuery) {
+              itemField.isShowedFromUser = false
+            }
+            itemField.isShowedFromUser = false
+          }
+        } else {
+          if (itemField.groupAssigned === params.groupField) {
+            if (params.fieldsUser.length && params.fieldsUser.includes(itemField.columnName)) {
+              // if it isShowedFromUser it is false, and it has some value, it means
+              // that it is going to show, therefore the SmartBrowser must be searched
+              if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
+                showsFieldsWithValue = true
+              }
+              if (params.isAvancedQuery) {
+                itemField.isShowedFromUser = false
+              }
+              itemField.isShowedFromUser = true
+              return itemField
+            }
+            if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
+              hiddenFieldsWithValue = true
+            }
+            if (params.isAvancedQuery) {
+              itemField.isShowedFromUser = false
             }
             itemField.isShowedFromUser = false
           }
@@ -426,8 +454,8 @@ const panel = {
         return item.uuid === containerUuid && (!isAvancedQuery || (isAvancedQuery && item.isAvancedQuery))
       })
     },
-    getFieldsListFromPanel: (state, getters) => (containerUuid) => {
-      var panel = getters.getPanel(containerUuid)
+    getFieldsListFromPanel: (state, getters) => (containerUuid, isAvancedQuery = false) => {
+      var panel = getters.getPanel(containerUuid, isAvancedQuery)
       if (panel === undefined) {
         return []
       }

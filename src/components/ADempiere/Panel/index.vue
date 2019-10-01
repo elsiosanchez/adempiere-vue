@@ -17,7 +17,7 @@
               || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
-            <div v-if="!isAvancedQuery" class="select-filter">
+            <div class="select-filter">
               <span>
                 {{ firstGroup.groupFinal }}
               </span>
@@ -25,6 +25,7 @@
                 :container-uuid="containerUuid"
                 :panel-type="panelType"
                 :group-field="firstGroup.groupFinal"
+                :is-avanced-query="isAvancedQuery"
               />
             </div>
             <el-card
@@ -78,12 +79,13 @@
                       <span>
                         {{ item.groupFinal }}
                       </span>
-                      <div v-if="!isAvancedQuery" class="select-filter-header">
+                      <div class="select-filter-header">
                         <filter-fields
                           :container-uuid="containerUuid"
                           :panel-type="panelType"
                           :group-field="item.groupFinal"
                           :is-first-group="false"
+                          :is-avanced-query="isAvancedQuery"
                         />
                       </div>
                     </div>
@@ -505,7 +507,15 @@ export default {
         res[key].typeGroup = typeG
         res[key].numberFields = res[key].metadataFields.length
 
-        res[key].metadataFields.forEach(element => {
+        res[key].metadataFields.forEach((element, index) => {
+          if (element.isAvancedQuery) {
+            element.isDisplayed = true
+            element.isDisplayedFromLogic = true
+            element.isShowedFromUser = true
+            if (index > 0) {
+              element.isShowedFromUser = false
+            }
+          }
           if (element.isDisplayed) {
             count++
           }
