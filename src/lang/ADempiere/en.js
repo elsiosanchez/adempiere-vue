@@ -91,6 +91,7 @@ export default {
     RunProcessAs: 'Run As',
     ExportTo: 'Export to',
     contextMenuDownload: 'Download',
+    contextMenuShareLink: 'Share link',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
     timePlaceholder: 'Select time',

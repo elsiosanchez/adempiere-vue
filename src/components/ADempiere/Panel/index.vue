@@ -382,6 +382,13 @@ export default {
             })
           }
         }
+      } else {
+        this.fieldList.forEach((fieldItem) => {
+          if (this.$route.query[fieldItem.columnName]) {
+            fieldItem.isShowedFromUser = true
+            fieldItem.value = this.$route.query[fieldItem.columnName]
+          }
+        })
       }
     },
     /**

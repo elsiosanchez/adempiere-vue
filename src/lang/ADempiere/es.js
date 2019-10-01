@@ -87,6 +87,7 @@ export default {
     contextMenuActions: 'Acciones',
     contextMenuReferences: 'Referencias',
     contextMenuDownload: 'Descargar',
+    contextMenuShareLink: 'Compartir link',
     RunProcess: 'Ejecutar',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',

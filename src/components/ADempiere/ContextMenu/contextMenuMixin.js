@@ -89,6 +89,9 @@ export const contextMixin = {
     },
     permissionRoutes() {
       return this.$store.getters.permission_routes
+    },
+    routeQueryValues() {
+      return this.$store.getters.getParametersProcessToServer(this.containerUuid).params
     }
   },
   watch: {
@@ -242,6 +245,19 @@ export const contextMixin = {
           this.$router.push({ name: windowRoute.name, query: { tabNumber: 0 }, params: action })
         }
       }
+    },
+    setShareLink() {
+      var shareLink = window.location.href + '?'
+      var totalQueryValues = this.routeQueryValues.length
+      if (this.routeQueryValues && this.routeQueryValues.length) {
+        this.routeQueryValues.forEach((element, index) => {
+          shareLink += `${element.columnName}=${element.value}`
+          if (index < totalQueryValues - 1) {
+            shareLink += '&'
+          }
+        })
+      }
+      navigator.clipboard.writeText(shareLink)
     }
   }
 }
