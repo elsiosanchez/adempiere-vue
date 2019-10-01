@@ -167,7 +167,7 @@ export default {
       return this.$store.getters.getSplitHeightTop
     },
     getHeightPanelBottom() {
-      return this.$store.getters.getSplitHeight - 15
+      return this.$store.getters.getSplitHeight - 11
     },
     getterRecordList() {
       return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTabUuid).length

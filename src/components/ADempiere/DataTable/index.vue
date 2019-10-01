@@ -364,7 +364,7 @@ export default {
       return false
     },
     getHeightPanelBottom() {
-      return this.$store.getters.getSplitHeight - 35
+      return this.$store.getters.getSplitHeight - 25
     },
     getterHeight() {
       return this.$store.getters.getHeigth
