@@ -10,11 +10,11 @@
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
-              <el-tab-pane :label="$t('profile.recentItems')" name="recentItems">
-                <recent-items />
-              </el-tab-pane>
               <el-tab-pane :label="$t('profile.role')" name="role">
                 <role />
+              </el-tab-pane>
+              <el-tab-pane :label="$t('profile.recentItems')" name="recentItems">
+                <recent-items />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       user: {},
-      activeTab: 'recentItems'
+      activeTab: 'role'
     }
   },
   computed: {
