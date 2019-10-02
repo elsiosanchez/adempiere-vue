@@ -59,14 +59,18 @@ export default {
         }, {
           text: this.$t('components.date.LastMonth'),
           onClick(picker) {
-            const start = new Date()
-            const year = start.getFullYear()
-            const month = start.getMonth()
-            const date = 1
-            const dateEnd = 30
-            const startDate = { year, month, date }
-            const end = { year, month, dateEnd }
-            picker.$emit('pick', [Object.values(startDate), Object.values(end)])
+            var date = new Date()
+            var monthEndDay = new Date(date.getFullYear(), date.getMonth(), 0)
+            var monthStartDay = new Date(date.getFullYear(), date.getMonth() - 1, 1)
+            picker.$emit('pick', [monthStartDay, monthEndDay])
+          }
+        }, {
+          text: this.$t('components.date.CurrentMonth'),
+          onClick(picker) {
+            var date = new Date()
+            var monthEndDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+            var monthStartDay = new Date(date.getFullYear(), date.getMonth(), 1)
+            picker.$emit('pick', [monthStartDay, monthEndDay])
           }
         }]
       },
