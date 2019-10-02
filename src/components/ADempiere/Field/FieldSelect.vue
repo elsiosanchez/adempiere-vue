@@ -30,25 +30,26 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      value: this.isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value, 10),
+      value: this.validateValue(this.metadata.value),
       isLoading: false,
       baseNumber: 10,
       options: [{
         label: ' ',
-        key: -1
+        key: undefined
       }],
       othersOptions: [],
       blanckOption: {
         label: ' ',
-        key: -1
-      }
+        key: undefined
+      },
+      blancksValues: [null, -1, '', undefined]
     }
   },
   computed: {
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
-        return this.isEmptyValue(field.value) ? -1 : isNaN(field.value) ? field.value : parseInt(field.value)
+        return this.validateValue(field.value)
       }
       return undefined
     },
@@ -76,7 +77,7 @@ export default {
         value: this.value
       })
       // TODO: Evaluate -1 when list is string key
-      if (allOptions.length && allOptions[0].key !== -1) {
+      if (allOptions.length && !allOptions[0].key) {
         allOptions.unshift(this.blanckOption)
       }
       return allOptions
@@ -98,24 +99,22 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value)
+      this.value = this.validateValue(value)
     },
     // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {
       if (actionValue === 'create-new') {
-        // this.value = String(this.metadata.parsedDefaultValue).trim() === '' ? -1 : isNaN(this.metadata.parsedDefaultValue) ? this.metadata.parsedDefaultValue : parseInt(this.metadata.parsedDefaultValue)
-        if (this.isEmptyValue(this.metadata.parsedDefaultValue)) {
-          this.value = -1
-        } else if (isNaN(this.metadata.parsedDefaultValue)) {
-          this.value = this.metadata.parsedDefaultValue
-        } else {
-          this.value = parseInt(this.metadata.parsedDefaultValue)
-        }
-      } else {
-        this.getDataTrigger()
+        this.value = this.validateValue(this.metadata.parsedDefaultValue)
       }
-      if (!this.isEmptyValue(this.value) && this.options.length && this.options.find(item => item.key === this.value) === undefined) {
-        this.getDataTrigger()
+      if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
+        this.getDataLookupItem()
+      }
+    },
+    'metadata.displayed'(value, oldValue) {
+      if (value) {
+        if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
+          this.getDataLookupItem()
+        }
       }
     }
   },
@@ -123,13 +122,13 @@ export default {
     this.options = this.getterLookupAll
 
     // enable to dataTable records
-    if (this.metadata.displayColumn !== undefined) {
-      var key = this.isEmptyValue(this.metadata.value) ? -1 : isNaN(this.metadata.value) ? this.metadata.value : parseInt(this.metadata.value)
-      if (this.valueModel !== undefined) {
+    if (this.metadata.displayColumn !== undefined && this.metada.displayColumn === null) {
+      var key = this.validateValue(this.metadata.value)
+      if (this.valueModel !== undefined && this.validateValue !== null) {
         key = this.valueModel
       }
       // verify if exists to add
-      if (!this.options.find(option => option.key === key)) {
+      if (!this.findLabel(key)) {
         this.othersOptions.push({
           key: key,
           label: this.metadata.displayColumn
@@ -138,21 +137,34 @@ export default {
       // join options in store with pased from props
       this.options = this.getterLookupAll.concat(this.othersOptions)
       this.value = key
-    } else if (!this.options.find(item => item.key === this.value)) {
-      this.getDataTrigger()
+    } else if (!this.isEmptyValue(this.value) && (!this.findLabel(this.value) && this.metadata.displayed)) {
+      this.getDataLookupItem()
     }
   },
   methods: {
     parseContext,
     preHandleChange(value) {
-      var label
-      const selected = this.options.find(option => option.key === this.value)
-      if (selected) {
-        label = selected.label
-      }
+      const label = this.findLabel(this.value)
       this.handleChange(value, undefined, label)
     },
-    getDataTrigger() {
+    validateValue(value) {
+      // return this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value, 10)
+      if (this.isEmptyValue(value)) {
+        return undefined
+      } else if (isNaN(value)) {
+        return value
+      } else {
+        return parseInt(value, 10)
+      }
+    },
+    findLabel(value) {
+      const selected = this.options.find(item => item.key === value)
+      if (selected) {
+        return selected.label
+      }
+      return selected
+    },
+    getDataLookupItem() {
       this.isLoading = true
       this.$store.dispatch('getLookup', {
         tableName: this.metadata.reference.tableName,
@@ -168,7 +180,7 @@ export default {
             })
           }
           this.options = this.getterLookupAll.concat(this.othersOptions)
-          if (this.options.length && this.options[0].key !== -1) {
+          if (this.options.length && !this.options[0].key) {
             this.options.unshift(this.blanckOption)
           }
           this.isLoading = false

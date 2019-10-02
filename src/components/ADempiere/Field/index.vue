@@ -22,9 +22,10 @@
           panelType: panelType,
           inTable: inTable,
           isAvancedQuery: isAvancedQuery,
-          // DOM properties
+          // other properties
           required: isMandatory(),
           readonly: isReadOnly(),
+          displayed: isDisplayed(),
           disabled: !field.isActive
         }"
         :value-model="recordDataFields"
@@ -106,7 +107,10 @@ export default {
   computed: {
     // load the component that is indicated in the attributes of received property
     afterLoader() {
-      return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
+      if (this.field.isSupport) {
+        return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
+      }
+      return () => import(`@/components/ADempiere/Field/FieldText`)
     },
     getWidth() {
       return this.$store.getters.getWidthLayout

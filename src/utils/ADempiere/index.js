@@ -27,9 +27,9 @@ export function fieldIsDisplayed(field) {
  */
 export function convertValue(initialValue) {
   if (initialValue === undefined || initialValue === null) {
-    return null
+    return undefined
   }
-  var returnValue = null
+  var returnValue
   switch (initialValue.getValuetype()) {
     case 0:
       returnValue = initialValue.getIntvalue()
@@ -57,7 +57,7 @@ export function convertValuesMapToObject(map) {
   var objectConverted = {}
   map.forEach((value, key) => {
     var valueResult = map.get(key)
-    var tempValue = null
+    var tempValue
     if (valueResult) {
       tempValue = convertValue(value)
     }
@@ -94,8 +94,18 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   }
 
   var reference = fieldGRPC.getReference()
-  var referenceValue
   var zoomWindowList = []
+  var referenceValue = {
+    tableName: '',
+    keyColumnName: '',
+    displayColumnName: '',
+    query: '',
+    parsedQuery: '',
+    directQuery: '',
+    parsedDirectQuery: '',
+    validationCode: '',
+    zoomWindowList: zoomWindowList
+  }
   if (reference) {
     if (reference.getWindowsList()) {
       zoomWindowList = reference.getWindowsList().map(zoomWindow => {
@@ -120,18 +130,6 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
       validationCode: reference.getValidationcode(),
       zoomWindowList: zoomWindowList
     }
-  } else {
-    referenceValue = {
-      tableName: '',
-      keyColumnName: '',
-      displayColumnName: '',
-      query: '',
-      parsedQuery: '',
-      directQuery: '',
-      parsedDirectQuery: '',
-      validationCode: '',
-      zoomWindowList: zoomWindowList
-    }
   }
 
   var parsedDefaultValue = parseContext({
@@ -139,17 +137,16 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     columnName: fieldGRPC.getColumnname(),
     value: fieldGRPC.getDefaultvalue()
   })
-  var parsedDefaultValueTo = parseContext({
-    ...moreAttributes,
-    columnName: fieldGRPC.getColumnname(),
-    value: fieldGRPC.getDefaultvalueto()
-  })
+  var parsedDefaultValueTo
+  if (fieldGRPC.getIsrange()) {
+    parseContext({
+      ...moreAttributes,
+      columnName: fieldGRPC.getColumnname(),
+      value: fieldGRPC.getDefaultvalueto()
+    })
+  }
 
   var componentReference = evalutateTypeField(fieldGRPC.getDisplaytype(), true)
-
-  if (componentReference.type === 'NumberBase' && !parsedDefaultValue) {
-    parsedDefaultValue = 0
-  }
 
   var field = {
     ...moreAttributes,
@@ -165,6 +162,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     fieldGroup: group,
     displayType: fieldGRPC.getDisplaytype(),
     componentPath: componentReference.type,
+    isSupport: componentReference.support,
     referenceType: componentReference.alias[0],
     isFieldOnly: fieldGRPC.getIsfieldonly(),
     isRange: fieldGRPC.getIsrange(),
@@ -175,7 +173,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     // value attributes
     formatPattern: fieldGRPC.getFormatpattern(),
     VFormat: fieldGRPC.getVformat(),
-    value: parsedDefaultValue,
+    value: String(parsedDefaultValue).trim() === '' ? undefined : parsedDefaultValue,
     defaultValue: fieldGRPC.getDefaultvalue(),
     oldValue: parsedDefaultValue,
     valueTo: parsedDefaultValue,
@@ -240,7 +238,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     return item.type === field.componentPath
   })
   if (field.sizeFieldFromType === undefined) {
-    console.warn('Field size no found:', field.name, 'type: ', field.componentPath)
+    console.warn('Field size no found:', field.name, 'type:', field.componentPath)
     field.sizeFieldFromType = {
       type: field.componentPath,
       size: DEFAULT_SIZE
@@ -256,7 +254,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     field.defaultValue = field.defaultValueTo
     field.parsedDefaultValue = field.parsedDefaultValueTo
   }
-  field.value = field.value === undefined ? null : field.value
+  // field.value = field.value === undefined ? null : field.value
 
   // hidden field type button
   const notShowedField = FIELD_NOT_SHOWED.find(itemField => {
@@ -421,8 +419,8 @@ export function parseContext(context) {
 
     var ctxInfo = store.default.getters.getContext(context)	// get context
     if ((ctxInfo === undefined || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
-      context.parentUuid = null
-      context.containerUuid = null
+      context.parentUuid = undefined
+      context.containerUuid = undefined
       ctxInfo = store.default.getters.getContext(context)	// get global context
     }
     if (ctxInfo === undefined || ctxInfo.length === 0) {
@@ -506,7 +504,7 @@ export function convertMessageTextFromGRPC(messageTextGRPC) {
  * @param  {array} fieldList Field of List with
  * @return {array} fieldList
  */
-export function assignedGroup(fieldList, assignedGroup = null) {
+export function assignedGroup(fieldList, assignedGroup) {
   if (fieldList === undefined || fieldList.length <= 0) {
     return fieldList
   }
@@ -519,9 +517,7 @@ export function assignedGroup(fieldList, assignedGroup = null) {
   fieldList.forEach(fieldElement => {
     // change the first field group, change the band
     if (!firstChangeGroup) {
-      if (fieldElement.fieldGroup.name !== undefined &&
-        fieldElement.fieldGroup.name !== null &&
-        fieldElement.fieldGroup.name !== '' &&
+      if (!valueUtil.isEmptyValue(fieldElement.fieldGroup.name) &&
         currentGroup !== fieldElement.fieldGroup.name &&
         fieldElement.isDisplayed) {
         firstChangeGroup = true
@@ -532,9 +528,7 @@ export function assignedGroup(fieldList, assignedGroup = null) {
     //  assigns the following field items to the current field group whose
     //  field group is '' or null
     if (firstChangeGroup) {
-      if (fieldElement.fieldGroup.name !== undefined &&
-        fieldElement.fieldGroup.name !== null &&
-        fieldElement.fieldGroup.name !== '') {
+      if (!valueUtil.isEmptyValue(fieldElement.fieldGroup.name)) {
         currentGroup = fieldElement.fieldGroup.name
         typeGroup = fieldElement.fieldGroup.fieldGroupType
       }
@@ -543,7 +537,7 @@ export function assignedGroup(fieldList, assignedGroup = null) {
     fieldElement.groupAssigned = currentGroup
     fieldElement.typeGroupAssigned = typeGroup
 
-    if (assignedGroup !== null) {
+    if (assignedGroup !== undefined) {
       fieldElement.groupAssigned = assignedGroup
     }
   })
