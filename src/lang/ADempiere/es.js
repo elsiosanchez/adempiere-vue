@@ -79,7 +79,8 @@ export default {
       Today: 'Hoy',
       Yesterday: 'Ayer',
       Week: 'Hace una semana atras',
-      LastMonth: 'El mes pasado'
+      LastMonth: 'El mes pasado',
+      CurrentMonth: 'El mes actual'
     },
     documentation: 'Documentación',
     binaryButton: 'Subir archivo',

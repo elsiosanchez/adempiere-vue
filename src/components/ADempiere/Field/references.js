@@ -4,7 +4,7 @@ const REFERENCES = [
   {
     id: 25,
     type: 'FieldText',
-    support: true,
+    support: false,
     description: 'Account Element',
     alias: ['Account']
   },
@@ -18,7 +18,7 @@ const REFERENCES = [
   {
     id: 33,
     type: 'FieldSelect',
-    support: true,
+    support: false,
     description: 'Resource Assignment',
     alias: ['Assignment']
   },
@@ -46,7 +46,7 @@ const REFERENCES = [
   {
     id: 27,
     type: 'FieldColor',
-    support: true,
+    support: false,
     description: 'Color element',
     alias: ['Color']
   },
@@ -123,7 +123,7 @@ const REFERENCES = [
   {
     id: 21,
     type: 'FieldSelect',
-    support: true,
+    support: false,
     description: 'Location/Address',
     alias: ['Location', 'Location (Address)', 'Location/Address']
   },
@@ -158,7 +158,7 @@ const REFERENCES = [
   {
     id: 35,
     type: 'FieldSelect',
-    support: true,
+    support: false,
     description: 'Product Attribute',
     alias: ['ProductAttribute', 'Product Attribute']
   },

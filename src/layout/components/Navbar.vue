@@ -55,16 +55,14 @@
       <el-popover
         placement="bottom"
         width="245"
-        trigger="click"
+        trigger="hover"
       >
         <div>
           <user-card :user="user" />
-          <router-link to="/profile/index">
-            <el-button type="text" style="float: left;" @click="logout">{{ $t('navbar.profile') }}</el-button>
-          </router-link>
+          <el-button type="text" style="float: left;" @click="handleClick">{{ $t('navbar.profile') }}</el-button>
           <el-button type="text" style="float: right;" @click="logout">{{ $t('navbar.logOut') }}</el-button>
         </div>
-        <el-button slot="reference" type="text" style="padding-top: 0px;"><img :src="avatar+'?imageView2/1/w/40/h/40'" class="user-avatar"></el-button>
+        <el-button slot="reference" type="text" style="padding-top: 0px;" @click="handleClick"><img :src="avatar+'?imageView2/1/w/40/h/40'" class="user-avatar"></el-button>
       </el-popover>
     </div>
   </div>
