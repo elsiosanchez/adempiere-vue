@@ -53,7 +53,8 @@ export const contextMixin = {
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
-      recordUuid: this.$route.query.action
+      recordUuid: this.$route.query.action,
+      isReferencesLoaded: false
     }
   },
   computed: {
@@ -122,6 +123,7 @@ export const contextMixin = {
         var references = this.getterReferences
         if (references && references.length) {
           this.references = references
+          this.isReferencesLoaded = true
         } else {
           this.$store.dispatch('getReferencesListFromServer', {
             parentUuid: this.parentUuid,
@@ -130,6 +132,7 @@ export const contextMixin = {
           })
             .then(response => {
               this.references = this.$store.getters.getReferencesList(this.parentUuid, this.recordUuid)
+              this.isReferencesLoaded = true
             })
             .catch(error => {
               console.warn('References Load Error ' + error.code + ': ' + error.message)

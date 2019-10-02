@@ -42,7 +42,7 @@
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}
         </el-menu-item>
-        <el-submenu :disabled="!(isReferecesContent && references.referencesList.length)" class="el-menu-item" index="3">
+        <el-submenu :disabled="!isReferecesContent && isReferencesLoaded" class="el-menu-item" index="3">
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}
           </template>
