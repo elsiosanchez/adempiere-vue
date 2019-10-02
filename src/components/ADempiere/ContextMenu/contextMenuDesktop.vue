@@ -35,7 +35,7 @@
               {{ $t('components.contextMenuDownload') }}
             </a>
           </el-menu-item>
-          <el-menu-item v-show="isReport" index="5" @click="setShareLink">
+          <el-menu-item index="5" @click="setShareLink">
             {{ $t('components.contextMenuShareLink') }}
           </el-menu-item>
         </el-submenu>

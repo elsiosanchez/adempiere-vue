@@ -5,7 +5,8 @@ const utils = {
     height: 0,
     splitHeight: 50,
     splitHeightTop: 0,
-    widthLayout: 0
+    widthLayout: 0,
+    tempShareLink: ''
   },
   mutations: {
     setWidth(state, width) {
@@ -22,6 +23,9 @@ const utils = {
     },
     setSplitHeightTop(state, splitHeightTop) {
       state.splitHeightTop = splitHeightTop
+    },
+    setTempShareLink(state, payload) {
+      state.tempShareLink = payload
     }
   },
   actions: {
@@ -46,6 +50,9 @@ const utils = {
       } else if (params.panelType === 'browser') {
         dispatch('changeShowedCriteriaBrowser', params)
       }
+    },
+    setTempShareLink({ commit }, text) {
+      commit('setTempShareLink', text)
     }
   },
   getters: {
@@ -73,6 +80,9 @@ const utils = {
         panelHeight = 50
       }
       return panelHeight
+    },
+    getTempShareLink: (state) => {
+      return state.tempShareLink
     }
   }
 }
