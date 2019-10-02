@@ -60,7 +60,7 @@
         <div>
           <user-card :user="user" />
           <router-link to="/profile/index">
-            <el-button type="text" style="float: left;" @click="logout">{{ $t('navbar.profile') }}</el-button>
+            <el-button type="text" style="float: left;">{{ $t('navbar.profile') }}</el-button>
           </router-link>
           <el-button type="text" style="float: right;" @click="logout">{{ $t('navbar.logOut') }}</el-button>
         </div>
