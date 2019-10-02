@@ -368,6 +368,16 @@ const panel = {
                 recordUuid: uuid
               })
                 .then(response => {
+                  // change old value so that it is not sent in the next update
+                  commit('changeFieldValue', {
+                    field: field,
+                    newValue: params.newValue,
+                    valueTo: params.valueTo,
+                    displayColumn: params.displayColumn,
+                    isChangedOldValue: true
+                  })
+
+                  // change value in table
                   dispatch('notifyRowTableChange', {
                     containerUuid: params.containerUuid,
                     row: response,
