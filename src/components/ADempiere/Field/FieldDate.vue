@@ -64,6 +64,14 @@ export default {
             var monthStartDay = new Date(date.getFullYear(), date.getMonth() - 1, 1)
             picker.$emit('pick', [monthStartDay, monthEndDay])
           }
+        }, {
+          text: this.$t('components.date.CurrentMonth'),
+          onClick(picker) {
+            var date = new Date()
+            var monthEndDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+            var monthStartDay = new Date(date.getFullYear(), date.getMonth(), 1)
+            picker.$emit('pick', [monthStartDay, monthEndDay])
+          }
         }]
       },
       formatView: undefined,
