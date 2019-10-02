@@ -52,27 +52,21 @@ export default {
         shortcuts: [{
           text: this.$t('components.date.Yesterday'),
           onClick(picker) {
-            const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', [start, end])
+            picker.$emit('pick', [start, start])
           }
         }, {
-          text: this.$t('components.date.Week'),
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        },
-        {
           text: this.$t('components.date.LastMonth'),
           onClick(picker) {
-            const end = new Date()
             const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
+            const year = start.getFullYear()
+            const month = start.getMonth()
+            const date = 1
+            const dateEnd = 30
+            const startDate = { year, month, date }
+            const end = { year, month, dateEnd }
+            picker.$emit('pick', [Object.values(startDate), Object.values(end)])
           }
         }]
       },

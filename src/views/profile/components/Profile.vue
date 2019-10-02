@@ -1,7 +1,9 @@
 <template>
   <div class="user-profi">
-    <img v-if="logo" :src="logo" class="sidebar-logo">
-    <p style="float: right;">{{ getRol.name }}</p>
+    <router-link to="/profile/index">
+      <img v-if="logo" :src="logo" class="sidebar-logo">
+      <p style="float: right;max-width: 175px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ getRol.name }}</p>
+    </router-link>
     <roles-navbar />
   </div>
 </template>
