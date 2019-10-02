@@ -52,40 +52,26 @@
 
       </template>
       <el-button v-show="!isMenuMobile && isMobile" type="text" icon="el-icon-more" @click="isMenuOption()" />
-      <el-dropdown v-if="!isMenuMobile" class="avatar-container right-menu-item hover-effect" trigger="hover">
-        <div class="avatar-wrapper" @click="handleClick">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown">
+      <el-popover
+        placement="bottom"
+        width="245"
+        trigger="click"
+      >
+        <div>
+          <user-card :user="user" />
           <router-link to="/profile/index">
-            <el-dropdown-item>
-              {{ $t('navbar.profile') }}
-            </el-dropdown-item>
+            <el-button type="text" style="float: left;" @click="logout">{{ $t('navbar.profile') }}</el-button>
           </router-link>
-          <router-link to="/">
-            <el-dropdown-item>
-              {{ $t('navbar.dashboard') }}
-            </el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>
-              {{ $t('navbar.github') }}
-            </el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+          <el-button type="text" style="float: right;" @click="logout">{{ $t('navbar.logOut') }}</el-button>
+        </div>
+        <el-button slot="reference" type="text" style="padding-top: 0px;"><img :src="avatar+'?imageView2/1/w/40/h/40'" class="user-avatar"></el-button>
+      </el-popover>
     </div>
   </div>
 </template>
 
 <script>
+import UserCard from '@/views/profile/components/Profile'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -105,10 +91,12 @@ export default {
     Screenfull,
     SizeSelect,
     LangSelect,
+    UserCard,
     Search
   },
   data() {
     return {
+      user: {},
       isMenuMobile: false
     }
   },
@@ -123,6 +111,12 @@ export default {
     ])
   },
   methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath)
+    },
     isMenuOption() {
       this.isMenuMobile = !this.isMenuMobile
     },

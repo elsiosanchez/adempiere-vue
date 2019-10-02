@@ -171,7 +171,7 @@ export function runProcess(process) {
   }
 
   // report export type
-  processRequest.setReportexporttype(process.reportExportType)
+  processRequest.setReporttype(process.reportType)
 
   // process params
   if (process.parameters && process.parameters.length) {

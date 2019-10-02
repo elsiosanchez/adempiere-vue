@@ -53,7 +53,8 @@ export const contextMixin = {
       file: this.$store.getters.getProcessResult.download,
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
-      recordUuid: this.$route.query.action
+      recordUuid: this.$route.query.action,
+      isReferencesLoaded: false
     }
   },
   computed: {
@@ -122,6 +123,7 @@ export const contextMixin = {
         var references = this.getterReferences
         if (references && references.length) {
           this.references = references
+          this.isReferencesLoaded = true
         } else {
           this.$store.dispatch('getReferencesListFromServer', {
             parentUuid: this.parentUuid,
@@ -130,6 +132,7 @@ export const contextMixin = {
           })
             .then(response => {
               this.references = this.$store.getters.getReferencesList(this.parentUuid, this.recordUuid)
+              this.isReferencesLoaded = true
             })
             .catch(error => {
               console.warn('References Load Error ' + error.code + ': ' + error.message)
@@ -220,6 +223,7 @@ export const contextMixin = {
               console.warn(error)
             })
           if (this.panelType !== 'window') {
+            this.$store.dispatch('setTempShareLink', window.location.href)
             this.$store.dispatch('tagsView/delView', this.$route)
           }
         } else {
@@ -247,7 +251,10 @@ export const contextMixin = {
       }
     },
     setShareLink() {
-      var shareLink = window.location.href + '?'
+      var shareLink = (this.panelType === 'window') ? window.location.href : window.location.href + '?'
+      if (this.$route.name === 'Report Viewer') {
+        shareLink = this.$store.getters.getTempShareLink
+      }
       var totalQueryValues = this.routeQueryValues.length
       if (this.routeQueryValues && this.routeQueryValues.length) {
         this.routeQueryValues.forEach((element, index) => {
@@ -257,7 +264,48 @@ export const contextMixin = {
           }
         })
       }
-      navigator.clipboard.writeText(shareLink)
+      this.activeClipboard(shareLink)
+    },
+    fallbackCopyTextToClipboard(text) {
+      var textArea = document.createElement('textarea')
+      textArea.value = text
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        var successful = document.execCommand('copy')
+        if (successful) {
+          var message = this.$t('notifications.copySuccessful')
+          this.clipboardMessage(message)
+        }
+      } catch (err) {
+        message = this.$t('notifications.copyUnsuccessful')
+        this.clipboardMessage(message)
+      }
+      document.body.removeChild(textArea)
+    },
+    activeClipboard(text) {
+      if (!navigator.clipboard) {
+        this.fallbackCopyTextToClipboard(text)
+        return
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          var message = this.$t('notifications.copySuccessful')
+          this.clipboardMessage(message)
+        })
+        .catch(() => {
+          var message = this.$t('notifications.copyUnsuccessful')
+          this.clipboardMessage(message)
+        })
+      navigator.clipboard.writeText(text)
+    },
+    clipboardMessage(message) {
+      this.$message({
+        message: message,
+        type: 'success',
+        duration: 1500
+      })
     }
   }
 }

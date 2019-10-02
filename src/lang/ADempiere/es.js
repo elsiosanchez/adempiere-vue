@@ -26,7 +26,9 @@ export default {
     Opened: 'Abierto',
     requestError: 'Error al ejecutar la petición',
     successChangeRole: 'El rol se ha cambiado',
-    errorChangeRole: 'El rol no se ha cambiado'
+    errorChangeRole: 'El rol no se ha cambiado',
+    copySuccessful: 'Copiado',
+    copyUnsuccessful: 'Error, no se puede copiar'
   },
   navbar: {
     badge: {
