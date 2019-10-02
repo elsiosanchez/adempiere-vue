@@ -76,7 +76,8 @@ export default {
     date: {
       Today: 'Today',
       Yesterday: 'Yesterday',
-      Week: 'A week ago'
+      Week: 'A week ago',
+      LastMonth: 'Last month'
     },
     documentation: 'Documentation',
     binaryButton: 'Upload file',
@@ -90,6 +91,7 @@ export default {
     RunProcessAs: 'Run As',
     ExportTo: 'Export to',
     contextMenuDownload: 'Download',
+    contextMenuShareLink: 'Share link',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
     timePlaceholder: 'Select time',

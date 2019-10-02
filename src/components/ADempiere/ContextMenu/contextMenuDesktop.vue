@@ -35,6 +35,9 @@
               {{ $t('components.contextMenuDownload') }}
             </a>
           </el-menu-item>
+          <el-menu-item v-show="isReport" index="5" @click="setShareLink">
+            {{ $t('components.contextMenuShareLink') }}
+          </el-menu-item>
         </el-submenu>
         <el-menu-item v-else disabled index="2">
           {{ $t('components.contextMenuActions') }}

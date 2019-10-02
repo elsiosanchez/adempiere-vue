@@ -76,7 +76,8 @@ export default {
     date: {
       Today: 'Hoy',
       Yesterday: 'Ayer',
-      Week: 'Hace una semana'
+      Week: 'Hace una semana atras',
+      LastMonth: 'El mes pasado'
     },
     documentation: 'Documentación',
     binaryButton: 'Subir archivo',
@@ -86,6 +87,7 @@ export default {
     contextMenuActions: 'Acciones',
     contextMenuReferences: 'Referencias',
     contextMenuDownload: 'Descargar',
+    contextMenuShareLink: 'Compartir link',
     RunProcess: 'Ejecutar',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',

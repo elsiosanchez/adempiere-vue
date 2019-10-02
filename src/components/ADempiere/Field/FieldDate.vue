@@ -12,6 +12,7 @@
     class="date-base"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
+    :picker-options="quickOption() ? pickerOptionsDateRange : pickerOptionsDate"
     @change="preHandleChange"
   />
 </template>
@@ -25,10 +26,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
+      pickerOptionsDate: {
         shortcuts: [{
           text: this.$t('components.date.Today'),
           onClick(picker) {
@@ -50,8 +48,38 @@ export default {
           }
         }]
       },
+      pickerOptionsDateRange: {
+        shortcuts: [{
+          text: this.$t('components.date.Yesterday'),
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: this.$t('components.date.Week'),
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        },
+        {
+          text: this.$t('components.date.LastMonth'),
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       formatView: undefined,
-      formatSend: undefined
+      formatSend: undefined,
+      dateOption: false
+
     }
   },
   computed: {
@@ -95,6 +123,12 @@ export default {
   },
   methods: {
     clientDateTime,
+    quickOption() {
+      if (this.typePicker === 'daterange') {
+        this.dateOption = true
+      }
+      return this.dateOption
+    },
     /**
      * Parse the date format to be compatible with element-ui
      */

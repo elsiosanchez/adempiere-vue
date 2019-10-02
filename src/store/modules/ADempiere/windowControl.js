@@ -191,18 +191,23 @@ const windowControl = {
           })
       })
     },
-    updateCurrentEntity({ commit, rootGetters }, parameters) {
+    updateCurrentEntity({ commit, rootGetters }, {
+      containerUuid,
+      recordUuid = null
+    }) {
       return new Promise((resolve, reject) => {
-        const panel = rootGetters.getPanel(parameters.containerUuid)
-        const recordUuid = rootGetters.getUuid(parameters.containerUuid)
+        const panel = rootGetters.getPanel(containerUuid)
+        if (!recordUuid) {
+          recordUuid = rootGetters.getUuid(containerUuid)
+        }
 
         // TODO: Add support to Binary columns (BinaryData)
         const columnsToDontSend = ['BinaryData', 'Account_Acct']
 
         // attributes or fields
         var finalAttributes = rootGetters.getColumnNamesAndValues({
-          containerUuid: parameters.containerUuid,
-          propertyName: 'value' // 'oldValue'
+          containerUuid: containerUuid,
+          isEvaluatedChangedValue: true
         })
 
         finalAttributes = finalAttributes.filter(itemAttribute => {
