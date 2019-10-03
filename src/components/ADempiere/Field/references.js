@@ -17,7 +17,7 @@ const REFERENCES = [
   },
   {
     id: 33,
-    type: 'FieldSelect',
+    type: 'FieldText',
     support: false,
     description: 'Resource Assignment',
     alias: ['Assignment']
@@ -38,14 +38,14 @@ const REFERENCES = [
   },
   {
     id: 53370,
-    type: 'FieldChart',
+    type: 'FieldText',
     support: false,
     description: 'Chart',
     alias: ['Chart']
   },
   {
     id: 27,
-    type: 'FieldColor',
+    type: 'FieldText',
     support: false,
     description: 'Color element',
     alias: ['Color']
@@ -122,7 +122,7 @@ const REFERENCES = [
   },
   {
     id: 21,
-    type: 'FieldSelect',
+    type: 'FieldText',
     support: false,
     description: 'Location/Address',
     alias: ['Location', 'Location (Address)', 'Location/Address']
@@ -157,7 +157,7 @@ const REFERENCES = [
   },
   {
     id: 35,
-    type: 'FieldSelect',
+    type: 'FieldText',
     support: false,
     description: 'Product Attribute',
     alias: ['ProductAttribute', 'Product Attribute']
