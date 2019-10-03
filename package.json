@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@adempiere/grpc-access-client": "^1.1.1",
-    "@adempiere/grpc-data-client": "^1.5.0",
+    "@adempiere/grpc-data-client": "^1.5.2",
     "@adempiere/grpc-dictionary-client": "^1.2.8",
     "autoprefixer": "^9.5.1",
     "axios": "0.18.0",
