@@ -386,6 +386,9 @@ export default {
         this.fieldList.forEach((fieldItem) => {
           if (this.$route.query[fieldItem.columnName]) {
             fieldItem.isShowedFromUser = true
+            if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
+              fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
+            }
             fieldItem.value = this.$route.query[fieldItem.columnName]
           }
         })
