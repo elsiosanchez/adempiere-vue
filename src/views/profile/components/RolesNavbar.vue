@@ -79,6 +79,7 @@ export default {
             })
           this.$store.dispatch('getRecentItemsFromServer')
         })
+      this.$router.push({ path: '/' })
     },
     changeLanguage(languageValue) {
       this.language = languageValue

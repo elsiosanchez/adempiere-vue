@@ -22,7 +22,7 @@
           panelType: panelType,
           inTable: inTable,
           isAvancedQuery: isAvancedQuery,
-          // other properties
+          // DOM properties
           required: isMandatory(),
           readonly: isReadOnly(),
           displayed: isDisplayed(),
@@ -107,10 +107,7 @@ export default {
   computed: {
     // load the component that is indicated in the attributes of received property
     afterLoader() {
-      if (this.field.isSupport) {
-        return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
-      }
-      return () => import(`@/components/ADempiere/Field/FieldText`)
+      return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
     },
     getWidth() {
       return this.$store.getters.getWidthLayout
