@@ -122,7 +122,8 @@ export default {
     this.options = this.getterLookupAll
 
     // enable to dataTable records
-    if (this.metadata.displayColumn !== undefined && this.metada.displayColumn === null) {
+    // TODO: Evlauate values with empty string or number in 0
+    if (this.metadata.displayColumn) {
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
         key = this.valueModel
@@ -164,7 +165,7 @@ export default {
       }
       return selected
     },
-    getDataLookupItem() {
+    async getDataLookupItem() {
       this.isLoading = true
       this.$store.dispatch('getLookup', {
         tableName: this.metadata.reference.tableName,
