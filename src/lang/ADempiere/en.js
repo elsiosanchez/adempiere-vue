@@ -29,7 +29,8 @@ export default {
     errorChangeRole: 'The role has not been changed',
     copySuccessful: 'Copied',
     copyUnsuccessful: 'Error, unable to copy',
-    mandatoryFieldMissing: 'Missing fill in the fields '
+    mandatoryFieldMissing: 'Missing fill in the fields ',
+    updateFields: 'The record is updated with the field '
   },
   navbar: {
     badge: {
@@ -96,6 +97,7 @@ export default {
     ExportTo: 'Export to',
     contextMenuDownload: 'Download',
     contextMenuShareLink: 'Share link',
+    contextMenuRefresh: 'Refresh',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
     timePlaceholder: 'Select time',
