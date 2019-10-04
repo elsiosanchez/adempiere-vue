@@ -455,7 +455,7 @@ export default {
   methods: {
     sortFields,
     handleChange(val) {
-      console.log(val)
+      val = !val
     },
     /**
      * @param {object} row, row data
@@ -810,6 +810,10 @@ export default {
     line-height: 23px;
     padding-left: 10px;
     padding-right: 10px;
+  }
+  .tr.current-row > td {
+    background-color: initial !important;
+    /* background-color: #e8f4ff; */
   }
   .hover-row > tr {
     background-color: initial !important;

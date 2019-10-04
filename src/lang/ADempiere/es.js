@@ -29,7 +29,8 @@ export default {
     errorChangeRole: 'El rol no se ha cambiado',
     copySuccessful: 'Copiado',
     copyUnsuccessful: 'Error, no se puede copiar',
-    mandatoryFieldMissing: 'Falta completar los campos '
+    mandatoryFieldMissing: 'Falta completar los campos ',
+    updateFields: 'Se actualiza el registro con el campo '
   },
   navbar: {
     badge: {
@@ -92,6 +93,7 @@ export default {
     contextMenuReferences: 'Referencias',
     contextMenuDownload: 'Descargar',
     contextMenuShareLink: 'Compartir link',
+    contextMenuRefresh: 'Actualizar',
     RunProcess: 'Ejecutar',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',

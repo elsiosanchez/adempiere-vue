@@ -379,6 +379,10 @@ const panel = {
               })
                 .then(response => {
                   // change old value so that it is not send in the next update
+                  showMessage({
+                    message: language.t('notifications.updateFields') + field.name,
+                    type: 'info'
+                  })
                   commit('changeFieldValue', {
                     field: field,
                     newValue: params.newValue,
@@ -402,7 +406,7 @@ const panel = {
         } else {
           showMessage({
             message: language.t('notifications.mandatoryFieldMissing') + getters.getisMandatoryfieldmissing(params.containerUuid),
-            type: 'warning'
+            type: 'error'
           })
         }
       } else if (!params.isDontSendToQuery) {

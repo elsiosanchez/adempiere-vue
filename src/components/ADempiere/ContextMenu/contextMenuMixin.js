@@ -119,6 +119,18 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
+    // refreshData() {
+    //   this.getData()
+    // },
+    refreshData() {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
+      })
+        .catch(error => {
+          console.warn(error)
+        })
+    },
     showNotification,
     getReferences() {
       if (this.isReferecesContent) {

@@ -36,6 +36,12 @@
                   {{ $t('components.contextMenuDownload') }}
                 </a>
               </el-menu-item>
+              <el-menu-item index="5" @click="setShareLink">
+                {{ $t('components.contextMenuShareLink') }}
+              </el-menu-item>
+              <el-menu-item index="6" @click="refreshData">
+                {{ $t('components.contextMenuRefresh') }}
+              </el-menu-item>
             </el-scrollbar>
           </el-menu-item-group>
         </el-submenu>
