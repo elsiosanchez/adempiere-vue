@@ -108,7 +108,7 @@ export default {
     showNotification,
     displayReport(reportResult) {
       if (!reportResult.isError) {
-        this.reportFormat = reportResult.output.reportExportType
+        this.reportFormat = reportResult.output.reportType
         this.reportContent = reportResult.output.output
         this.reportHeader = reportResult.output.name
         this.name = reportResult.output.fileName
