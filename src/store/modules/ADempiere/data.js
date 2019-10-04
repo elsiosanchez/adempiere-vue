@@ -238,7 +238,6 @@ const data = {
             } else {
               token = allData.nextPageToken
             }
-
             dispatch('setRecordSelection', {
               containerUuid: objectParams.containerUuid,
               record: record,

@@ -7,7 +7,8 @@ const windowControl = {
   state: {
     inCreate: [],
     references: [],
-    windowRoute: {}
+    windowRoute: {},
+    entitiesList: []
   },
   mutations: {
     addInCreate(state, payload) {
@@ -435,7 +436,7 @@ const windowControl = {
           containerUuid: parameters.containerUuid,
           tableName: tab.tableName,
           query: parsedQuery,
-          whereClause: parsedWhereClause,
+          whereClause: (isEmptyValue(parsedWhereClause) && !isEmptyValue(tab.customWhereClause)) ? tab.customWhereClause : parsedWhereClause,
           orderByClause: tab.orderByClause
         })
           .then(response => {
