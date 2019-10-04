@@ -269,15 +269,16 @@ export const contextMixin = {
             }
           })
         }
-      }
-      var totalQueryValues = this.routeQueryValues.length
-      if (this.routeQueryValues && this.routeQueryValues.length) {
-        this.routeQueryValues.forEach((element, index) => {
-          shareLink += `${element.columnName}=${element.value}`
-          if (index < totalQueryValues - 1) {
-            shareLink += '&'
-          }
-        })
+      } else {
+        var totalQueryValues = this.routeQueryValues.length
+        if (this.routeQueryValues && this.routeQueryValues.length) {
+          this.routeQueryValues.forEach((element, index) => {
+            shareLink += encodeURIComponent(`${element.columnName}=${element.value}`)
+            if (index < totalQueryValues - 1) {
+              shareLink += '&'
+            }
+          })
+        }
       }
       this.activeClipboard(shareLink)
     },
