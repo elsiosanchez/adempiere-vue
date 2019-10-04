@@ -186,7 +186,7 @@ const processControl = {
               outputStream: '',
               reportType: ''
             }
-            if (response.getOutput().getReporttype()) {
+            if (response.getOutput()) {
               const responseOutput = response.getOutput()
               output = {
                 uuid: responseOutput.getUuid(),
@@ -240,6 +240,7 @@ const processControl = {
           .catch(error => {
             Object.assign(processResult, {
               isError: true,
+              message: error.message,
               isProcessing: false
             })
             console.log('Error running the process', error)
@@ -358,10 +359,11 @@ const processControl = {
         logs: processOutput.logs,
         summary: processOutput.summary
       }
+      var errorMessage = processOutput.message
       // TODO: Add isReport to type always 'success'
       if (processOutput.isError) {
         processMessage.title = language.t('notifications.error')
-        processMessage.message = language.t('notifications.processError')
+        processMessage.message = errorMessage
         processMessage.type = 'error'
       }
 

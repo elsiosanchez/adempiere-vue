@@ -37,7 +37,10 @@
                 width="700"
                 trigger="hover"
               >
-                <div>
+                <div v-if="activity.isError === true">
+                  {{ activity.message }}
+                </div>
+                <div v-else>
                   <span v-if="activity.isReport === false">
                     <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
                     {{ activity.logs }}
