@@ -247,7 +247,7 @@ const panel = {
         if (typeof params.newValue === 'number') {
           params.newValue = new Date(params.newValue)
         }
-        if (typeof params.newValue === 'number') {
+        if (typeof params.valueTo === 'number') {
           params.valueTo = new Date(params.valueTo)
         }
       } else if (field.componentPath === 'FieldNumber') {
@@ -350,6 +350,15 @@ const panel = {
                 containerUuid: params.containerUuid
               })
                 .then(response => {
+                  // change old value so that it is not send in the next update
+                  commit('changeFieldValue', {
+                    field: field,
+                    newValue: params.newValue,
+                    valueTo: params.valueTo,
+                    displayColumn: params.displayColumn,
+                    isChangedOldValue: true
+                  })
+
                   var oldRoute = router.app._route
                   router.push({
                     name: oldRoute.name,
@@ -369,7 +378,7 @@ const panel = {
                 recordUuid: uuid
               })
                 .then(response => {
-                  // change old value so that it is not sent in the next update
+                  // change old value so that it is not send in the next update
                   commit('changeFieldValue', {
                     field: field,
                     newValue: params.newValue,
@@ -667,11 +676,35 @@ const panel = {
       }
       return attributesList
     },
+    getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
+      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var fieldsIsDisplayed = []
+      var fieldsNotDisplayed = []
+      if (fieldList.length) {
+        fieldsIsDisplayed = fieldList.filter(itemField => {
+          const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
+          if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {
+            return true
+          }
+          fieldsNotDisplayed.push(itemField)
+        })
+      }
+      return {
+        fieldIsDisplayed: fieldsIsDisplayed,
+        fieldsNotDisplayed: fieldsNotDisplayed,
+        totalField: fieldList.length,
+        isDisplayed: Boolean(fieldsIsDisplayed.length)
+      }
+    },
     /**
      * get field list visible and with values
      */
-    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = []) => {
-      const panel = getters.getPanel(containerUuid)
+    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = [], isAvancedQuery) => {
+      if (isAvancedQuery) {
+        var panel = getters.getPanel(containerUuid, isAvancedQuery)
+      } else {
+        panel = getters.getPanel(containerUuid)
+      }
       const fieldList = panel.fieldList
       const fields = fieldList.length
       var params = []
@@ -716,26 +749,6 @@ const panel = {
         fieldsMandatory: fieldsMandatory
       }
     },
-    getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
-      const fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var fieldsIsDisplayed = []
-      var fieldsNotDisplayed = []
-      if (fieldList.length) {
-        fieldsIsDisplayed = fieldList.filter(itemField => {
-          const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
-          if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {
-            return true
-          }
-          fieldsNotDisplayed.push(itemField)
-        })
-      }
-      return {
-        fieldIsDisplayed: fieldsIsDisplayed,
-        fieldsNotDisplayed: fieldsNotDisplayed,
-        totalField: fieldList.length,
-        isDisplayed: Boolean(fieldsIsDisplayed.length)
-      }
-    },
     /**
      * Getter converter selection params with value format
      * [
@@ -769,6 +782,71 @@ const panel = {
         fields: fieldList.fields,
         fieldsMandatory: fieldList.fieldsMandatory
       }
+    },
+    getParametersToServer: (state, getters) => ({
+      containerUuid,
+      withOutColumnNames = [],
+      isEvaluateDisplayed = true,
+      isConvertedDateToTimestamp = false
+    }) => {
+      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var parametersRange = []
+
+      // filter fields
+      var parametersList = fieldList
+        .filter(fieldItem => {
+          // columns to exclude
+          if (withOutColumnNames.includes(fieldItem.columnName)) {
+            return false
+          }
+
+          const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
+          // mandatory fields
+          if (isMandatory) {
+            return true
+          }
+
+          // evaluate displayed fields
+          if (isEvaluateDisplayed) {
+            const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+            if (isDisplayed && !isEmptyValue(fieldItem.value)) {
+              return true
+            }
+          }
+
+          return false
+        })
+
+      // conever parameters
+      parametersList = parametersList
+        .map(parameterItem => {
+          var value = parameterItem.value
+          var valueTo = parameterItem.valueTo
+
+          if (isConvertedDateToTimestamp) {
+            if (['FieldDate', 'FieldTime'].includes(parameterItem.componentPath)) {
+              value = parameterItem.value.getTime()
+              if (valueTo) {
+                valueTo = parameterItem.valueTo.getTime()
+              }
+            }
+          }
+          // TODO: Evaluate if is only to fields type Time Date, DateTime
+          if (parameterItem.isRange) {
+            parametersRange.push({
+              columnName: parameterItem.columnName + '_To',
+              value: valueTo
+            })
+          }
+
+          return {
+            columnName: parameterItem.columnName,
+            value: value
+          }
+        })
+
+      parametersList = parametersList.concat(parametersRange)
+      return parametersList
     }
   }
 }

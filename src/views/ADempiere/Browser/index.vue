@@ -140,7 +140,9 @@ export default {
     isLoading(value) {
       if (value) {
         this.browserMetadata = this.getterBrowser
-        this.defaultSearch()
+        if (this.getDataRecords.length <= 0 && this.getContainerIsReadyForSubmit) {
+          this.defaultSearch()
+        }
       }
     },
     'browserMetadata.isShowedCriteria'(value) {
@@ -180,15 +182,13 @@ export default {
           })
       }
     },
-    defaultSearch() {
-      if (this.getDataRecords.length <= 0 && this.getContainerIsReadyForSubmit) {
-        this.$store.dispatch('getBrowserSearch', {
-          containerUuid: this.browserUuid
+    async defaultSearch() {
+      this.$store.dispatch('getBrowserSearch', {
+        containerUuid: this.browserUuid
+      })
+        .catch(error => {
+          console.warn(error)
         })
-          .catch(error => {
-            console.warn(error)
-          })
-      }
     }
   }
 }

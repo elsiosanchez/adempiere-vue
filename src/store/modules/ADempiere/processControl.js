@@ -122,7 +122,7 @@ const processControl = {
         } else {
           reportType = params.action.reportExportType
         }
-        const finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
+        const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
 
         showNotification({
           title: language.t('notifications.processing'),
@@ -147,7 +147,7 @@ const processControl = {
           processUuid: processDefinition.uuid,
           processId: processDefinition.id,
           processName: processDefinition.processName,
-          parameters: finalParameters.params,
+          parameters: finalParameters,
           isError: false,
           isProcessing: true,
           isReport: processDefinition.isReport,
@@ -170,7 +170,7 @@ const processControl = {
           uuid: processDefinition.uuid,
           id: processDefinition.id,
           reportType: reportType,
-          parameters: finalParameters.params,
+          parameters: finalParameters,
           selection: selection,
           tableName: tableName,
           recordId: recordId

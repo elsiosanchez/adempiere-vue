@@ -10,7 +10,7 @@
         :name="String(key)"
         :lazy="true"
         :disabled="Boolean(key > 0 && isCreateNew)"
-        :style="isShowedDetail ? {height: '100%', overflow: 'hidden'} : { height: '75vh', overflow: 'auto'}"
+        :style="isShowedDetail ? { height: '100%', overflow: 'hidden' } : { height: '75vh', overflow: 'auto' }"
       >
         <main-panel
           :parent-uuid="windowUuid"
@@ -39,6 +39,9 @@ export default {
     // if tabs children is showed or closed
     isShowedDetail() {
       return this.$store.getters.getWindow(this.windowUuid).isShowedDetail
+    },
+    getterIsLoadField() {
+      return this.$store.getters.getTabIsLoadField(this.windowUuid, this.tabUuid)
     }
   },
   watch: {
@@ -56,10 +59,14 @@ export default {
           tabNumber: tabNumber
         }
       })
+    },
+    getterIsLoadField(value) {
+      if (value) {
+        if (this.$route.params && this.$route.params.type !== 'reference' && this.getterDataRecords.length <= 0) {
+          this.getData()
+        }
+      }
     }
-  },
-  created() {
-    this.getData()
   }
 }
 </script>
