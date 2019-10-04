@@ -1,4 +1,4 @@
-import { getBrowserSearch } from '@/api/ADempiere'
+import { getBrowserSearch } from '@/api/ADempiere/data'
 import { convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -9,7 +9,7 @@ const browserControl = {
      * @param {string}  parameters.containerUuid, browser to search record data
      * @param {boolean} parameters.clearSelection, clear selection after search
      */
-    getBrowserSearch({ commit, dispatch, rootGetters }, parameters) {
+    getBrowserSearch({ dispatch, rootGetters }, parameters) {
       var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
 
       return new Promise((resolve, reject) => {

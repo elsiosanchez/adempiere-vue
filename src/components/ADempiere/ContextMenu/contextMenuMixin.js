@@ -59,8 +59,7 @@ export const contextMixin = {
   },
   computed: {
     activeMenu() {
-      const route = this.$route
-      const { meta, path } = route
+      const { meta, path } = this.$route
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
         return meta.activeMenu
@@ -91,11 +90,11 @@ export const contextMixin = {
     permissionRoutes() {
       return this.$store.getters.permission_routes
     },
-    routeQueryValues() {
-      return this.$store.getters.getParametersProcessToServer(this.containerUuid).params
-    },
-    windowFields() {
-      return this.$store.getters.getPanelParameters(this.containerUuid).params
+    valuesPanelToShare() {
+      return this.$store.getters.getParametersToShare({
+        containerUuid: this.containerUuid,
+        isOnlyDisplayed: true
+      })
     }
   },
   watch: {
@@ -254,32 +253,15 @@ export const contextMixin = {
       }
     },
     setShareLink() {
-      var shareLink = (this.panelType === 'window') ? window.location.href : window.location.href + '?'
+      var shareLink = this.panelType === 'window' ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
         shareLink = this.$store.getters.getTempShareLink
-      }
-      if (this.panelType === 'window') {
-        shareLink += '&'
-        var totalWindowFields = this.windowFields.length
-        if (this.windowFields && this.windowFields.length) {
-          this.windowFields.forEach((element, index) => {
-            shareLink += `${element.columnName}=${encodeURIComponent(element.value)}`
-            if (index < totalWindowFields - 1) {
-              shareLink += '&'
-            }
-          })
-        }
       } else {
-        var totalQueryValues = this.routeQueryValues.length
-        if (this.routeQueryValues && this.routeQueryValues.length) {
-          this.routeQueryValues.forEach((element, index) => {
-            shareLink += `${element.columnName}=${encodeURIComponent(element.value)}`
-            if (index < totalQueryValues - 1) {
-              shareLink += '&'
-            }
-          })
+        if (String(this.valuesPanelToShare).length) {
+          shareLink += this.valuesPanelToShare
         }
       }
+
       this.activeClipboard(shareLink)
     },
     fallbackCopyTextToClipboard(text) {

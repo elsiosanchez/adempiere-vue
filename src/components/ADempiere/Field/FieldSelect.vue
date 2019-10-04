@@ -158,6 +158,12 @@ export default {
         return parseInt(value, 10)
       }
     },
+    validateBlanckOption() {
+      // TODO: Evaluate -1 when list is string key
+      if (this.options.length <= 0 || (this.options.length && this.isEmptyValue(this.options[0].key))) {
+        this.options.unshift(this.blanckOption)
+      }
+    },
     findLabel(value) {
       const selected = this.options.find(item => item.key === value)
       if (selected) {

@@ -629,6 +629,7 @@ const panel = {
         })
       }
 
+      // TODO: Evaluate valueTo
       if (isEvaluateValues) {
         attributesList = attributesList
           .filter(fieldItem => {
@@ -695,6 +696,57 @@ const panel = {
         totalField: fieldList.length,
         isDisplayed: Boolean(fieldsIsDisplayed.length)
       }
+    },
+    getParametersToShare: (state, getters) => ({
+      containerUuid,
+      withOut = [],
+      isOnlyDisplayed = false
+    }) => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var attributesListLink = ''
+      if (withOut.length) {
+        fieldList = fieldList.filter(fieldItem => {
+          // columns to exclude
+          if (withOut.includes(fieldItem.columnName)) {
+            return false
+          }
+          return true
+        })
+      }
+
+      if (isOnlyDisplayed) {
+        fieldList = fieldList.filter(fieldItem => {
+          const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
+          const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+
+          if (isDisplayed) {
+            return true
+          }
+          return false
+        })
+      }
+
+      fieldList.map(fieldItem => {
+        // assign values
+        var value = fieldItem.value
+        var valueTo = fieldItem.valueTo
+
+        if (!isEmptyValue(value)) {
+          if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
+            value = value.getTime()
+          }
+          attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(value)}&`
+        }
+
+        if (fieldItem.isRange && !isEmptyValue(valueTo)) {
+          if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
+            valueTo = valueTo.getTime()
+          }
+          attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(valueTo)}&`
+        }
+      })
+
+      return attributesListLink.slice(0, -1)
     },
     /**
      * get field list visible and with values
