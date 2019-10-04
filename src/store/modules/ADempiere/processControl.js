@@ -116,11 +116,11 @@ const processControl = {
         // get info metadata process
         const processDefinition = rootGetters.getProcess(params.action.uuid)
 
-        var reportExportType
-        if (params.action.reportExportType === undefined) {
-          reportExportType = params.reportFormat
+        var reportType = params.action.reportExportType
+        if (reportType === undefined) {
+          reportType = params.reportFormat
         } else {
-          reportExportType = params.action.reportExportType
+          reportType = params.action.reportExportType
         }
         const finalParameters = rootGetters.getParametersProcessToServer(params.action.uuid)
 
@@ -161,7 +161,7 @@ const processControl = {
             fileName: '',
             output: '',
             outputStream: '',
-            reportExportType: ''
+            reportType: ''
           }
         }
         commit('addInExecution', processResult)
@@ -169,7 +169,7 @@ const processControl = {
         runProcess({
           uuid: processDefinition.uuid,
           id: processDefinition.id,
-          reportExportType: reportExportType,
+          reportType: reportType,
           parameters: finalParameters.params,
           selection: selection,
           tableName: tableName,
@@ -184,10 +184,9 @@ const processControl = {
               mimeType: '',
               output: '',
               outputStream: '',
-              reportExportType: ''
+              reportType: ''
             }
-
-            if (response.getOutput()) {
+            if (response.getOutput().getReporttype()) {
               const responseOutput = response.getOutput()
               output = {
                 uuid: responseOutput.getUuid(),
@@ -197,7 +196,7 @@ const processControl = {
                 mimeType: responseOutput.getMimetype(),
                 output: responseOutput.getOutput(),
                 outputStream: responseOutput.getOutputstream(),
-                reportExportType: responseOutput.getReportexporttype()
+                reportType: responseOutput.getReporttype()
               }
             }
             var logList = []
@@ -219,7 +218,7 @@ const processControl = {
               link = document.createElement('a')
               link.href = window.URL.createObjectURL(blob)
               link.download = output.fileName
-              if (reportExportType !== 'pdf' && reportExportType !== 'html') {
+              if (reportType !== 'pdf' && reportType !== 'html') {
                 link.click()
               }
             }
@@ -289,7 +288,7 @@ const processControl = {
                   outputStream: responseOutput.getOutputstream(),
                   outputStream_asB64: responseOutput.getOutputstream_asB64(),
                   outputStream_asU8: responseOutput.getOutputstream_asU8(),
-                  reportExportType: responseOutput.getReportexporttype()
+                  reportType: responseOutput.getReporttype()
                 }
               }
               var logList = responseItem.getLogsList().map(log => {
