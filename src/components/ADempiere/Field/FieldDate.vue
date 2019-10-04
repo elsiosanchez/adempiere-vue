@@ -12,7 +12,7 @@
     class="date-base"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
-    :picker-options="quickOption() ? pickerOptionsDateRange : pickerOptionsDate"
+    :picker-options="typePicker === 'daterange' ? pickerOptionsDateRange : pickerOptionsDate"
     @change="preHandleChange"
   />
 </template>
@@ -26,6 +26,8 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
+      // value: this.metadata.isRange && !this.metadata.inTable ? [this.metadata.value, this.metadata.valueTo] : this.metadata.value,
+      value: this.metadata.value,
       pickerOptionsDate: {
         shortcuts: [{
           text: this.$t('components.date.Today'),
@@ -75,9 +77,7 @@ export default {
         }]
       },
       formatView: undefined,
-      formatSend: undefined,
-      dateOption: false
-
+      formatSend: undefined
     }
   },
   computed: {
@@ -93,40 +93,49 @@ export default {
       return 'date' + time + range
     }
   },
-  // watch: {
+  watch: {
   //   valueModel(value) {
   //     if (typeof value === 'number') {
   //       value = new Date(value)
   //     }
   //     this.value = value
   //   },
-  //   'metadata.value'(value) {
-  //     if (typeof value === 'number') {
-  //       value = new Date(value)
-  //     }
-  //     this.value = value
-  //   }
-  // },
+    'metadata.value'(value) {
+      if (typeof value === 'number') {
+        value = new Date(value)
+      }
+      if (value === null) {
+        value = undefined
+      }
+
+      this.value = value
+      if (this.metadata.isRange) {
+        var valueTo = this.metadata.valueTo
+        if (typeof valueTo === 'number') {
+          valueTo = new Date(valueTo)
+        }
+        if (valueTo === null) {
+          valueTo = undefined
+        }
+        this.value = [this.value, valueTo]
+      }
+    }
+  },
   created() {
     this.checkValueFormat()
-    if (this.metadata.isRange) {
+    // set value to, when field is type range
+    if (this.metadata.isRange && !this.metadata.inTable) {
       this.value = [this.metadata.value, this.metadata.valueTo]
     }
   },
   beforeMount() {
     // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined && this.value !== null) {
-      this.value = this.value
+    if (this.metadata.inTable && this.valueModel) {
+      this.value = this.valueModel
     }
   },
   methods: {
     clientDateTime,
-    quickOption() {
-      if (this.typePicker === 'daterange') {
-        this.dateOption = true
-      }
-      return this.dateOption
-    },
     /**
      * Parse the date format to be compatible with element-ui
      */
@@ -148,16 +157,6 @@ export default {
       //   .replace(/[h]/gi, 'H')
       //   .replace(/[aA]/gi, '')
     },
-    convertDateToTimestamp(value) {
-      return (new Date(value)).getTime()
-    },
-    convertTimestampToString(value) {
-      const newValue = Number(value)
-      if (isNaN(newValue)) {
-        return newValue
-      }
-      return value
-    },
     // validate values before send values to store or server
     preHandleChange(value) {
       var valueFirst, valueTo
@@ -167,11 +166,11 @@ export default {
         valueFirst = value[0]
         valueTo = value[1]
       }
-      if (valueFirst === undefined) {
-        valueFirst = null
-        valueTo = null
+      if (valueFirst === null) {
+        valueFirst = undefined
+        valueTo = undefined
       }
-      if (typeof valueFirst !== 'object') {
+      if (typeof valueFirst !== 'object' && valueFirst !== undefined) {
         valueFirst = new Date(valueFirst)
         valueTo = new Date(valueTo)
       }

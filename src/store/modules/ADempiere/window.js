@@ -27,6 +27,9 @@ const window = {
     },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
+    },
+    setTabIsLoadField(state, payload) {
+      payload.tab.isLoadFieldList = payload.isLoadFieldList
     }
   },
   actions: {
@@ -97,7 +100,8 @@ const window = {
                 orderByClause: tabItem.getOrderbyclause(),
                 isLoadRecord: false,
                 // app properties
-                isShowedRecordNavigation: !(tabItem.getIssinglerow())
+                isShowedRecordNavigation: !(tabItem.getIssinglerow()),
+                isLoadFieldList: false
               }
 
               //  Convert from gRPC process list
@@ -238,6 +242,10 @@ const window = {
             }
 
             dispatch('addPanel', panel)
+            dispatch('setTabIsLoadField', {
+              parentUuid: objectParams.parentUuid,
+              containerUuid: objectParams.containerUuid
+            })
             resolve(panel)
           })
           .catch(error => {
@@ -280,6 +288,13 @@ const window = {
         window: getters.getWindow(parameters.parentUuid),
         tabUuid: parameters.containerUuid
       })
+    },
+    setTabIsLoadField: ({ commit, getters }, { parentUuid, containerUuid }) => {
+      const tab = getters.getTab(parentUuid, containerUuid)
+      commit('setTabIsLoadField', {
+        tab: tab,
+        isLoadFieldList: true
+      })
     }
   },
   getters: {
@@ -313,6 +328,13 @@ const window = {
       const tab = getters.getTab(windowUuid, tabUuid)
       if (tab) {
         return tab.isLoadRecord
+      }
+      return tab
+    },
+    getTabIsLoadField: (state, getters) => (windowUuid, tabUuid) => {
+      const tab = getters.getTab(windowUuid, tabUuid)
+      if (tab) {
+        return tab.isLoadFieldList
       }
       return tab
     }

@@ -246,7 +246,7 @@ const panel = {
         if (typeof params.newValue === 'number') {
           params.newValue = new Date(params.newValue)
         }
-        if (typeof params.newValue === 'number') {
+        if (typeof params.valueTo === 'number') {
           params.valueTo = new Date(params.valueTo)
         }
       } else if (field.componentPath === 'FieldNumber') {
@@ -349,6 +349,15 @@ const panel = {
                 containerUuid: params.containerUuid
               })
                 .then(response => {
+                  // change old value so that it is not send in the next update
+                  commit('changeFieldValue', {
+                    field: field,
+                    newValue: params.newValue,
+                    valueTo: params.valueTo,
+                    displayColumn: params.displayColumn,
+                    isChangedOldValue: true
+                  })
+
                   var oldRoute = router.app._route
                   router.push({
                     name: oldRoute.name,
@@ -368,7 +377,7 @@ const panel = {
                 recordUuid: uuid
               })
                 .then(response => {
-                  // change old value so that it is not sent in the next update
+                  // change old value so that it is not send in the next update
                   commit('changeFieldValue', {
                     field: field,
                     newValue: params.newValue,
@@ -637,6 +646,26 @@ const panel = {
       }
       return attributesList
     },
+    getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
+      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var fieldsIsDisplayed = []
+      var fieldsNotDisplayed = []
+      if (fieldList.length) {
+        fieldsIsDisplayed = fieldList.filter(itemField => {
+          const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
+          if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {
+            return true
+          }
+          fieldsNotDisplayed.push(itemField)
+        })
+      }
+      return {
+        fieldIsDisplayed: fieldsIsDisplayed,
+        fieldsNotDisplayed: fieldsNotDisplayed,
+        totalField: fieldList.length,
+        isDisplayed: Boolean(fieldsIsDisplayed.length)
+      }
+    },
     /**
      * get field list visible and with values
      */
@@ -684,26 +713,6 @@ const panel = {
         fields: fields,
         params: params,
         fieldsMandatory: fieldsMandatory
-      }
-    },
-    getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
-      const fieldList = getters.getFieldsListFromPanel(containerUuid)
-      var fieldsIsDisplayed = []
-      var fieldsNotDisplayed = []
-      if (fieldList.length) {
-        fieldsIsDisplayed = fieldList.filter(itemField => {
-          const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
-          if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {
-            return true
-          }
-          fieldsNotDisplayed.push(itemField)
-        })
-      }
-      return {
-        fieldIsDisplayed: fieldsIsDisplayed,
-        fieldsNotDisplayed: fieldsNotDisplayed,
-        totalField: fieldList.length,
-        isDisplayed: Boolean(fieldsIsDisplayed.length)
       }
     },
     /**

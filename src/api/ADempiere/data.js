@@ -152,12 +152,21 @@ export function runProcess(process) {
   var processRequest = Instance.call(this).getProcessRequest()
   //  Fill Request process
   processRequest.setUuid(process.uuid)
+  // report export type
+  if (process.reportType) {
+    processRequest.setReporttype(process.reportType)
+  }
+  // process params
+  if (process.parameters && process.parameters.length) {
+    process.parameters.forEach(parameter => {
+      const convertedParameter = Instance.call(this).convertParameter(parameter)
+      processRequest.addParameters(convertedParameter)
+    })
+  }
 
   // record in window
   if (process.tableName) {
     processRequest.setTablename(process.tableName)
-  }
-  if (process.recordId) {
     processRequest.setRecordid(process.recordId)
   }
 
@@ -167,17 +176,6 @@ export function runProcess(process) {
       // selection format = { selectionId: integer, selectionValues: array }
       const convertedRecord = Instance.call(this).convertSelection(record)
       processRequest.addSelections(convertedRecord)
-    })
-  }
-
-  // report export type
-  processRequest.setReporttype(process.reportType)
-
-  // process params
-  if (process.parameters && process.parameters.length) {
-    process.parameters.forEach(parameter => {
-      const convertedParameter = Instance.call(this).convertParameter(parameter)
-      processRequest.addParameters(convertedParameter)
     })
   }
 
