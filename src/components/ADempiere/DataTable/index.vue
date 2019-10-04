@@ -438,13 +438,14 @@ export default {
   },
   beforeMount() {
     this.currentPage = this.getPageNumber
-    if (this.isParent && this.panelType === 'window') {
+    /* if (this.isParent && this.panelType === 'window') {
+      console.log('call from beforeMount datatable', this.containerUuid)
       this.$store.dispatch('setRecordSelection', {
         containerUuid: this.containerUuid,
         selection: [],
         record: []
       })
-    }
+    } */
   },
   mounted() {
     if (this.isTableSelection) {

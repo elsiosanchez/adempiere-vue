@@ -61,17 +61,6 @@ export const tabMixin = {
           tabNumber: tabHTML.name
         }
       })
-    },
-    async getData() {
-      if (this.$route.action === 'create-new' && this.$route.params && this.$route.params.type !== 'reference') {
-        this.$store.dispatch('getDataListTab', {
-          parentUuid: this.windowUuid,
-          containerUuid: this.tabUuid
-        })
-          .catch(error => {
-            console.warn(error)
-          })
-      }
     }
   }
 }

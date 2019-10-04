@@ -30,6 +30,11 @@ const window = {
     },
     setTabIsLoadField(state, payload) {
       payload.tab.isLoadFieldList = payload.isLoadFieldList
+    },
+    addCustomWhereClause(state, payload) {
+      const windowMetadata = state.window.find(windowItem => windowItem.uuid === payload.windowUuid)
+      const tabMetadata = windowMetadata.tabsList.find(tab => tab.uuid === payload.tabUuid)
+      tabMetadata.customWhereClause = payload.customWhereClause
     }
   },
   actions: {
@@ -99,6 +104,7 @@ const window = {
                 whereClause: tabItem.getWhereclause(),
                 orderByClause: tabItem.getOrderbyclause(),
                 isLoadRecord: false,
+                customWhereClause: '',
                 // app properties
                 isShowedRecordNavigation: !(tabItem.getIssinglerow()),
                 isLoadFieldList: false
@@ -295,6 +301,15 @@ const window = {
         tab: tab,
         isLoadFieldList: true
       })
+    },
+    addCustomWhereClauseFromRoute: ({ commit, getters }, parameters) => {
+      const tableName = getters.getTableNameFromTab(parameters.windowUuid, parameters.tabUuid)
+      const customWhereClause = `${tableName}.UUID = '${parameters.actionValue}'`
+      commit('addCustomWhereClause', {
+        customWhereClause: customWhereClause,
+        tabUuid: parameters.tabUuid,
+        windowUuid: parameters.windowUuid
+      })
     }
   },
   getters: {
@@ -337,6 +352,9 @@ const window = {
         return tab.isLoadFieldList
       }
       return tab
+    },
+    getTableNameFromTab: (state, getters) => (windowUuid, tabUuid) => {
+      return getters.getTab(windowUuid, tabUuid).tableName
     }
   }
 }

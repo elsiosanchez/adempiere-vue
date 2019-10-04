@@ -39,10 +39,10 @@ export default {
     // if tabs children is showed or closed
     isShowedDetail() {
       return this.$store.getters.getWindow(this.windowUuid).isShowedDetail
-    },
+    }/* ,
     getterIsLoadField() {
       return this.$store.getters.getTabIsLoadField(this.windowUuid, this.tabUuid)
-    }
+    } */
   },
   watch: {
     // TODO: Remove watchers of action, and pased as props from window
@@ -59,14 +59,21 @@ export default {
           tabNumber: tabNumber
         }
       })
-    },
+    }/* ,
     getterIsLoadField(value) {
       if (value) {
-        if (this.$route.params && this.$route.params.type !== 'reference' && this.getterDataRecords.length <= 0) {
+        if (this.$route.query.action && this.$route.query.action !== 'create-new') {
+          this.$store.dispatch('addCustomWhereClauseFromRoute', {
+            actionValue: this.$route.query.action,
+            tabUuid: this.tabUuid,
+            windowUuid: this.windowUuid
+          })
+          this.getData()
+        } else {
           this.getData()
         }
       }
-    }
+    } */
   }
 }
 </script>
