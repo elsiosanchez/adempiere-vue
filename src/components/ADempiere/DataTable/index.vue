@@ -177,16 +177,18 @@
     <el-collapse-transition>
       <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
       <!-- // TODO: Copy panell with getter and filter fields -->
-      <main-panel
-        v-if="isParent"
-        v-show="isAvancedQuery || $route.query.isAvancedQuery"
-        :container-uuid="containerUuid"
-        :parent-uuid="parentUuid"
-        :metadata="getterPanel"
-        :panel-type="'table'"
-        :is-avanced-query="true"
-        :window-query="windowQuery"
-      />
+      <el-collapse v-if="isParent" v-show="isAvancedQuery || $route.query.isAvancedQuery" v-model="activeNames" @change="handleChange">
+        <el-collapse-item :title="$t('table.dataTable.avancedQuery')" name="1">
+          <main-panel
+            :container-uuid="containerUuid"
+            :parent-uuid="parentUuid"
+            :metadata="getterPanel"
+            :panel-type="'table'"
+            :is-avanced-query="true"
+            :window-query="windowQuery"
+          />
+        </el-collapse-item>
+      </el-collapse>
     </el-collapse-transition>
     <el-table
       ref="multipleTable"
@@ -331,6 +333,7 @@ export default {
       searchTable: '', // text from search
       defaultMaxPagination: 100,
       menuTable: '1',
+      activeNames: ['1'],
       isOptional: false,
       isFixed: false,
       isLoadPanelFromServer: false,
@@ -383,7 +386,11 @@ export default {
       if (this.panelType === 'window') {
         // table record navigation
         if (this.isParent) {
-          return this.getterHeight - 180
+          if (this.isAvancedQuery) {
+            return this.getterHeight - 200
+          } else {
+            return this.getterHeight - 180
+          }
         }
         if (!this.isExpand) {
           return this.getHeightPanelBottom + 'vh'
@@ -446,6 +453,9 @@ export default {
   },
   methods: {
     sortFields,
+    handleChange(val) {
+      console.log(val)
+    },
     /**
      * @param {object} row, row data
      * @param {object} field, field with attributes
