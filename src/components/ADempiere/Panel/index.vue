@@ -272,6 +272,12 @@ export default {
         return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
       }
       return false
+    },
+    getterIsLoadField() {
+      if (this.panelType === 'window') {
+        return this.$store.getters.getTabIsLoadField(this.parentUuid, this.containerUuid)
+      }
+      return false
     }
   },
   watch: {
@@ -284,36 +290,24 @@ export default {
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
     },
-    '$route.query.action'(actionValue) {
-      this.uuidRecord = actionValue
-
-      if (this.panelType === 'window') {
-        // TODO: Validate UUID value
-        if (actionValue !== 'create-new' && !this.isEmptyValue(actionValue) && this.isReSearch && this.panelType === 'window' && !this.isAvancedQuery) {
-          this.getData(this.metadata.tableName, actionValue)
-        } else {
-          //   this.$store.dispatch('resetPanelToNew', {
-          //     containerUuid: this.containerUuid
-          //   })
-          this.$message({
-            message: this.$t('data.createNewRecord'),
-            showClose: true
-          })
-        }
-        this.setTagsViewTitle(actionValue)
-      }
-    },
     // used if the first load contains a uuid
     isLoadRecord(value) {
       // TODO: Validate UUID value
       if (value && this.panelType === 'window' && this.uuidRecord !== 'create-new' && !this.isEmptyValue(this.uuidRecord)) {
         this.setTagsViewTitle(this.uuidRecord)
       }
-    }
-  },
-  beforeMount() {
-    if (!this.isEmptyValue(this.$route.query)) {
-      this.getDataFromRoute(this.$route.query)
+    },
+    getterIsLoadField(value) {
+      if (value) {
+        if (this.$route.query.action && this.$route.query.action !== 'create-new') {
+          this.$store.dispatch('addCustomWhereClauseFromRoute', {
+            actionValue: this.$route.query.action,
+            tabUuid: this.containerUuid,
+            windowUuid: this.parentUuid
+          })
+        }
+        this.getDataList()
+      }
     }
   },
   created() {
@@ -373,16 +367,6 @@ export default {
             }
           }
         })
-        const totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid)
-        if (this.$route.query && this.$route.query.action !== 'create-new' && totalRecords.length) {
-          this.$router.push({
-            name: this.$route.name,
-            query: {
-              action: totalRecords[0].UUID,
-              tabNumber: this.$route.query.tabNumber
-            }
-          })
-        }
       } else {
         if (this.panelType === 'table' && this.$route.query.isAvancedQuery) {
           this.fieldList.forEach((fieldItem) => {
@@ -408,6 +392,29 @@ export default {
           })
         }
       }
+    },
+    getDataList() {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
+      })
+        .then(response => {
+          if (response.length) {
+            this.$router.push({ name: this.$route.name, query: { action: response[0].UUID, tabNumber: 0 }})
+            this.$store.dispatch('notifyPanelChange', {
+              parentUuid: this.parentUuid,
+              containerUuid: this.containerUuid,
+              newValues: response[0],
+              isDontSendToEdit: true,
+              fieldList: this.fieldList
+            })
+            this.setTagsViewTitle(this.$route.query.action)
+            this.isLoadRecord = true
+          }
+        })
+        .catch(error => {
+          console.warn(error)
+        })
     },
     /**
      * @param  {string} table Table name in BD
@@ -575,11 +582,6 @@ export default {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '')
-    },
-    getDataFromRoute(route) {
-      if (route.action && route.action !== 'create-new' && !this.isAvancedQuery) {
-        this.getData(this.metadata.tableName, route.action)
-      }
     }
   }
 }
