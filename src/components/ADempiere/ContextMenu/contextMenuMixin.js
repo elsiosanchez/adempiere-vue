@@ -93,6 +93,9 @@ export const contextMixin = {
     },
     routeQueryValues() {
       return this.$store.getters.getParametersProcessToServer(this.containerUuid).params
+    },
+    windowFields() {
+      return this.$store.getters.getPanelParameters(this.containerUuid).params
     }
   },
   watch: {
@@ -255,14 +258,27 @@ export const contextMixin = {
       if (this.$route.name === 'Report Viewer') {
         shareLink = this.$store.getters.getTempShareLink
       }
-      var totalQueryValues = this.routeQueryValues.length
-      if (this.routeQueryValues && this.routeQueryValues.length) {
-        this.routeQueryValues.forEach((element, index) => {
-          shareLink += `${element.columnName}=${element.value}`
-          if (index < totalQueryValues - 1) {
-            shareLink += '&'
-          }
-        })
+      if (this.panelType === 'window') {
+        shareLink += '&'
+        var totalWindowFields = this.windowFields.length
+        if (this.windowFields && this.windowFields.length) {
+          this.windowFields.forEach((element, index) => {
+            shareLink += encodeURIComponent(`${element.columnName}=${element.value}`)
+            if (index < totalWindowFields - 1) {
+              shareLink += '&'
+            }
+          })
+        }
+      } else {
+        var totalQueryValues = this.routeQueryValues.length
+        if (this.routeQueryValues && this.routeQueryValues.length) {
+          this.routeQueryValues.forEach((element, index) => {
+            shareLink += encodeURIComponent(`${element.columnName}=${element.value}`)
+            if (index < totalQueryValues - 1) {
+              shareLink += '&'
+            }
+          })
+        }
       }
       this.activeClipboard(shareLink)
     },

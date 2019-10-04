@@ -268,7 +268,10 @@ export default {
       })
     },
     getterRowData() {
-      return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+      if (this.panelType === 'window' && !this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
+        return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+      }
+      return false
     }
   },
   watch: {
@@ -286,7 +289,7 @@ export default {
 
       if (this.panelType === 'window') {
         // TODO: Validate UUID value
-        if (actionValue !== 'create-new' && this.isReSearch && this.panelType === 'window') {
+        if (actionValue !== 'create-new' && !this.isEmptyValue(actionValue) && this.isReSearch && this.panelType === 'window' && !this.isAvancedQuery) {
           this.getData(this.metadata.tableName, actionValue)
         } else {
           //   this.$store.dispatch('resetPanelToNew', {
@@ -309,7 +312,9 @@ export default {
     }
   },
   beforeMount() {
-    this.verifyReferenced(this.$route)
+    if (!this.isEmptyValue(this.$route.query)) {
+      this.getDataFromRoute(this.$route.query)
+    }
   },
   created() {
     // get tab with uuid
@@ -357,8 +362,19 @@ export default {
       this.isLoadPanel = true
 
       if (this.panelType === 'window') {
+        this.fieldList.forEach((fieldItem) => {
+          if (this.$route.query[fieldItem.columnName] && !fieldItem.isAvancedQuery) {
+            fieldItem.isShowedFromUser = true
+            if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
+              fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
+            }
+            if (String(this.$route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
+              fieldItem.value = this.$route.query[fieldItem.columnName]
+            }
+          }
+        })
         const totalRecords = this.$store.getters.getDataRecordsList(this.containerUuid)
-        if (totalRecords.length) {
+        if (this.$route.query && this.$route.query.action !== 'create-new' && totalRecords.length) {
           this.$router.push({
             name: this.$route.name,
             query: {
@@ -367,31 +383,29 @@ export default {
             }
           })
         }
-        // TODO: Verify used, its is evaluate in watcher
-        if (this.uuidRecord && this.uuidRecord !== 'create-new') {
-          if (this.isReSearch || Object.entries(this.getterData).length === 0 && this.panelType === 'window') {
-            this.getData(this.metadata.tableName, this.uuidRecord)
-          } else {
-            this.dataRecords = this.getterData.data
-            this.$store.dispatch('notifyPanelChange', {
-              parentUuid: this.parentUuid,
-              containerUuid: this.containerUuid,
-              newValues: this.dataRecords,
-              isDontSendToEdit: true,
-              fieldList: this.fieldList
-            })
-          }
-        }
       } else {
-        this.fieldList.forEach((fieldItem) => {
-          if (this.$route.query[fieldItem.columnName]) {
-            fieldItem.isShowedFromUser = true
-            if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
-              fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
+        if (this.panelType === 'table' && this.$route.query.isAvancedQuery) {
+          this.fieldList.forEach((fieldItem) => {
+            if (this.$route.query[fieldItem.columnName] && fieldItem.isAvancedQuery) {
+              fieldItem.isShowedFromUser = true
+              if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
+                fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
+              }
+              if (String(this.$route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
+                fieldItem.value = this.$route.query[fieldItem.columnName]
+              }
             }
-            fieldItem.value = this.$route.query[fieldItem.columnName]
-          }
-        })
+          })
+        } else if (this.panelType === 'process' || this.panelType === 'browser') {
+          this.fieldList.forEach((fieldItem) => {
+            if (this.$route.query[fieldItem.columnName]) {
+              fieldItem.isShowedFromUser = true
+              if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
+                fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
+              }
+            }
+          })
+        }
       }
     },
     /**
@@ -401,6 +415,15 @@ export default {
     getData(table = null, uuidRecord = null) {
       // break get data, this record is the same
       if (!this.isEmptyValue(uuidRecord) && uuidRecord === this.getterRecordUuid) {
+        return
+      }
+      if (!table) {
+        this.$message({
+          message: this.$t('data.emtpyTableName'),
+          type: 'error',
+          showClose: true
+        })
+        console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }
       // this data row exists in vuex store
@@ -417,18 +440,6 @@ export default {
         })
         this.setTagsViewTitle(this.$route.query.action)
         this.isLoadRecord = true
-        return
-      }
-      if (!table) {
-        this.$message({
-          message: this.$t('data.emtpyTableName'),
-          type: 'error',
-          showClose: true
-        })
-          .catch(error => {
-            console.log(error)
-          })
-        console.warn('DataRecord Panel - Error: Table Name is not defined ')
         return
       }
 
@@ -564,14 +575,9 @@ export default {
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '')
     },
-    verifyReferenced(route) {
-      if (route.params && route.params.whereClause && route.params.type === 'reference') {
-        this.$store.dispatch('getObjectListFromCriteria', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          tableName: this.metadata.tableName,
-          whereClause: route.params.whereClause
-        })
+    getDataFromRoute(route) {
+      if (route.action && route.action !== 'create-new' && !this.isAvancedQuery) {
+        this.getData(this.metadata.tableName, route.action)
       }
     }
   }

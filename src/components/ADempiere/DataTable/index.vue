@@ -38,6 +38,14 @@
               >
                 {{ $t('table.dataTable.avancedQuery') }}
               </el-menu-item>
+              <el-menu-item
+                v-if="panelType === 'window'"
+                :disabled="!isAvancedQuery"
+                index="share"
+                @click="setShareLink"
+              >
+                {{ $t('components.contextMenuShareLink') }}
+              </el-menu-item>
             </el-submenu>
           </el-menu>
           <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
@@ -171,7 +179,7 @@
       <!-- // TODO: Copy panell with getter and filter fields -->
       <main-panel
         v-if="isParent"
-        v-show="isAvancedQuery"
+        v-show="isAvancedQuery || $route.query.isAvancedQuery"
         :container-uuid="containerUuid"
         :parent-uuid="parentUuid"
         :metadata="getterPanel"
@@ -408,6 +416,12 @@ export default {
         return true
       }
       return false
+    },
+    windowFields() {
+      if (this.isAvancedQuery) {
+        return this.$store.getters.getPanelParameters(this.containerUuid, false, [], this.isAvancedQuery).params
+      }
+      return undefined
     }
   },
   created() {
@@ -696,6 +710,66 @@ export default {
       if (this.showTableSearch) {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
+    },
+    setShareLink() {
+      var shareLink = (this.panelType === 'window') ? window.location.href : window.location.href + '?'
+      if (this.$route.name === 'Report Viewer') {
+        shareLink = this.$store.getters.getTempShareLink
+      }
+      if (this.windowFields) {
+        shareLink += '&isAvancedQuery=true&'
+        var totalWindowFields = this.windowFields.length
+        if (this.windowFields && this.windowFields.length) {
+          this.windowFields.forEach((element, index) => {
+            shareLink += `${element.columnName}=${encodeURIComponent(element.value)}`
+            if (index < totalWindowFields - 1) {
+              shareLink += '&'
+            }
+          })
+        }
+      }
+      this.activeClipboard(shareLink)
+    },
+    fallbackCopyTextToClipboard(text) {
+      var textArea = document.createElement('textarea')
+      textArea.value = text
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        var successful = document.execCommand('copy')
+        if (successful) {
+          var message = this.$t('notifications.copySuccessful')
+          this.clipboardMessage(message)
+        }
+      } catch (err) {
+        message = this.$t('notifications.copyUnsuccessful')
+        this.clipboardMessage(message)
+      }
+      document.body.removeChild(textArea)
+    },
+    activeClipboard(text) {
+      if (!navigator.clipboard) {
+        this.fallbackCopyTextToClipboard(text)
+        return
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          var message = this.$t('notifications.copySuccessful')
+          this.clipboardMessage(message)
+        })
+        .catch(() => {
+          var message = this.$t('notifications.copyUnsuccessful')
+          this.clipboardMessage(message)
+        })
+      navigator.clipboard.writeText(text)
+    },
+    clipboardMessage(message) {
+      this.$message({
+        message: message,
+        type: 'success',
+        duration: 1500
+      })
     }
   }
 }

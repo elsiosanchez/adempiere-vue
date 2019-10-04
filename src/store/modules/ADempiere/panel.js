@@ -669,8 +669,12 @@ const panel = {
     /**
      * get field list visible and with values
      */
-    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = []) => {
-      const panel = getters.getPanel(containerUuid)
+    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = [], isAvancedQuery) => {
+      if (isAvancedQuery) {
+        var panel = getters.getPanel(containerUuid, isAvancedQuery)
+      } else {
+        panel = getters.getPanel(containerUuid)
+      }
       const fieldList = panel.fieldList
       const fields = fieldList.length
       var params = []
@@ -748,6 +752,59 @@ const panel = {
         fields: fieldList.fields,
         fieldsMandatory: fieldList.fieldsMandatory
       }
+    },
+    getParametersToServer: (state, getters) => ({
+      containerUuid,
+      withOutColumnNames = [],
+      isEvaluateDisplayed = true
+    }) => {
+      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var parametersRange = []
+
+      // filter fields
+      var parametersList = fieldList
+        .filter(fieldItem => {
+          // columns to exclude
+          if (withOutColumnNames.includes(fieldItem.columnName)) {
+            return false
+          }
+
+          const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
+          // mandatory fields
+          if (isMandatory) {
+            return true
+          }
+
+          // evaluate displayed fields
+          if (isEvaluateDisplayed) {
+            const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+            if (isDisplayed && !isEmptyValue(fieldItem.value)) {
+              return true
+            }
+          }
+
+          return false
+        })
+
+      // conever parameters
+      parametersList = parametersList
+        .map(parameterItem => {
+          // TODO: Evaluate if is only to fields type Time Date, DateTime
+          if (parameterItem.isRange) {
+            parametersRange.push({
+              columnName: parameterItem.columnName + '_To',
+              value: parameterItem.valueTo
+            })
+          }
+
+          return {
+            columnName: parameterItem.columnName,
+            value: parameterItem.value
+          }
+        })
+
+      parametersList = parametersList.concat(parametersRange)
+      return parametersList
     }
   }
 }

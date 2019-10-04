@@ -62,7 +62,9 @@ export default {
     },
     getterIsLoadField(value) {
       if (value) {
-        this.getData()
+        if (this.$route.params && this.$route.params.type !== 'reference' && this.getterDataRecords.length <= 0) {
+          this.getData()
+        }
       }
     }
   }
