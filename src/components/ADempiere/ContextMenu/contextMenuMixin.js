@@ -263,7 +263,7 @@ export const contextMixin = {
         var totalWindowFields = this.windowFields.length
         if (this.windowFields && this.windowFields.length) {
           this.windowFields.forEach((element, index) => {
-            shareLink += encodeURIComponent(`${element.columnName}=${element.value}`)
+            shareLink += `${element.columnName}=${encodeURIComponent(element.value)}`
             if (index < totalWindowFields - 1) {
               shareLink += '&'
             }
@@ -273,7 +273,7 @@ export const contextMixin = {
         var totalQueryValues = this.routeQueryValues.length
         if (this.routeQueryValues && this.routeQueryValues.length) {
           this.routeQueryValues.forEach((element, index) => {
-            shareLink += encodeURIComponent(`${element.columnName}=${element.value}`)
+            shareLink += `${element.columnName}=${encodeURIComponent(element.value)}`
             if (index < totalQueryValues - 1) {
               shareLink += '&'
             }
