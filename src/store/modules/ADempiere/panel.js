@@ -246,7 +246,7 @@ const panel = {
         if (typeof params.newValue === 'number') {
           params.newValue = new Date(params.newValue)
         }
-        if (typeof params.newValue === 'number') {
+        if (typeof params.valueTo === 'number') {
           params.valueTo = new Date(params.valueTo)
         }
       } else if (field.componentPath === 'FieldNumber') {

@@ -31,23 +31,29 @@ export function convertValue(initialValue) {
   }
   var returnValue
   switch (initialValue.getValuetype()) {
+    // data type Number (integer)
     case 0:
       returnValue = initialValue.getIntvalue()
       break
+    // data type Number (integer)
     case 1:
       returnValue = initialValue.getLongvalue()
       break
+    // data type Number (float)
     case 2:
       returnValue = initialValue.getDoublevalue()
       break
+    // data type Boolean
     case 3:
       returnValue = initialValue.getBooleanvalue()
       break
+    // data type String
     case 4:
       returnValue = initialValue.getStringvalue()
       break
+    // data type Date
     case 5:
-      returnValue = initialValue.getLongvalue()
+      returnValue = new Date(initialValue.getLongvalue())
       break
   }
   return returnValue
