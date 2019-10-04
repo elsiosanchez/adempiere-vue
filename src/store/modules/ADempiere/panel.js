@@ -756,7 +756,8 @@ const panel = {
     getParametersToServer: (state, getters) => ({
       containerUuid,
       withOutColumnNames = [],
-      isEvaluateDisplayed = true
+      isEvaluateDisplayed = true,
+      isConvertedDateToTimestamp = false
     }) => {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
       var parametersRange = []
@@ -789,17 +790,28 @@ const panel = {
       // conever parameters
       parametersList = parametersList
         .map(parameterItem => {
+          var value = parameterItem.value
+          var valueTo = parameterItem.valueTo
+
+          if (isConvertedDateToTimestamp) {
+            if (['FieldDate', 'FieldTime'].includes(parameterItem.componentPath)) {
+              value = parameterItem.value.getTime()
+              if (valueTo) {
+                valueTo = parameterItem.valueTo.getTime()
+              }
+            }
+          }
           // TODO: Evaluate if is only to fields type Time Date, DateTime
           if (parameterItem.isRange) {
             parametersRange.push({
               columnName: parameterItem.columnName + '_To',
-              value: parameterItem.valueTo
+              value: valueTo
             })
           }
 
           return {
             columnName: parameterItem.columnName,
-            value: parameterItem.value
+            value: value
           }
         })
 
