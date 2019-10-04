@@ -28,7 +28,8 @@ export default {
     successChangeRole: 'The role has been changed',
     errorChangeRole: 'The role has not been changed',
     copySuccessful: 'Copied',
-    copyUnsuccessful: 'Error, unable to copy'
+    copyUnsuccessful: 'Error, unable to copy',
+    mandatoryFieldMissing: 'Missing fill in the fields '
   },
   navbar: {
     badge: {

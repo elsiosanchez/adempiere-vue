@@ -122,7 +122,7 @@ const processControl = {
         } else {
           reportType = params.action.reportExportType
         }
-        const finalParameters = rootGetters.getParametersToServer(params.action.uuid)
+        const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
 
         showNotification({
           title: language.t('notifications.processing'),

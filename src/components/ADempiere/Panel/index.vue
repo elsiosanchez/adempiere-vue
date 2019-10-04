@@ -403,6 +403,7 @@ export default {
               if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
                 fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
               }
+              fieldItem.value = this.$route.query[fieldItem.columnName]
             }
           })
         }
