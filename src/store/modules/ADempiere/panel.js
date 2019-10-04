@@ -669,8 +669,12 @@ const panel = {
     /**
      * get field list visible and with values
      */
-    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = []) => {
-      const panel = getters.getPanel(containerUuid)
+    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = [], isAvancedQuery) => {
+      if (isAvancedQuery) {
+        var panel = getters.getPanel(containerUuid, isAvancedQuery)
+      } else {
+        panel = getters.getPanel(containerUuid)
+      }
       const fieldList = panel.fieldList
       const fields = fieldList.length
       var params = []
