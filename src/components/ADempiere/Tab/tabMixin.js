@@ -21,6 +21,9 @@ export const tabMixin = {
   computed: {
     isCreateNew() {
       return Boolean(this.$route.query.action === 'create-new')
+    },
+    getterDataRecords() {
+      return this.$store.getters.getDataRecordsList(this.tabUuid)
     }
   },
   created() {
@@ -43,7 +46,7 @@ export const tabMixin = {
       }
       // this.setPemantLink(tabHTML)
       // this.currentTab = tabHTML.name
-      this.getData()
+      // this.getData()
     },
     /**
      * TODO: Verify use
@@ -59,16 +62,14 @@ export const tabMixin = {
         }
       })
     },
-    getData() {
-      if (this.$route.params && this.$route.params.type !== 'reference') {
-        this.$store.dispatch('getDataListTab', {
-          parentUuid: this.windowUuid,
-          containerUuid: this.tabUuid
+    async getData() {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.windowUuid,
+        containerUuid: this.tabUuid
+      })
+        .catch(error => {
+          console.warn(error)
         })
-          .catch(error => {
-            console.warn(error)
-          })
-      }
     }
   }
 }

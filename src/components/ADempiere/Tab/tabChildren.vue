@@ -47,7 +47,9 @@ export default {
   watch: {
     getterIsLoadRecordParent(value) {
       if (value) {
-        this.getData()
+        if (this.getterDataRecords.length <= 0) {
+          this.getData()
+        }
       }
     }
   }

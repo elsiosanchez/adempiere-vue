@@ -268,7 +268,10 @@ export default {
       })
     },
     getterRowData() {
-      return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+      if (this.panelType === 'window' && !this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
+        return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+      }
+      return false
     }
   },
   watch: {
@@ -286,7 +289,7 @@ export default {
 
       if (this.panelType === 'window') {
         // TODO: Validate UUID value
-        if (actionValue !== 'create-new' && this.isReSearch && this.panelType === 'window') {
+        if (actionValue !== 'create-new' && !this.isEmptyValue(actionValue) && this.isReSearch && this.panelType === 'window') {
           this.getData(this.metadata.tableName, actionValue)
         } else {
           //   this.$store.dispatch('resetPanelToNew', {
