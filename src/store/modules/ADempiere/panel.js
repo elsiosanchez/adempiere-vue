@@ -5,8 +5,9 @@
 // - Window: Just need storage tab and fields
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
-import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue } from '@/utils/ADempiere'
+import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue, showMessage } from '@/utils/ADempiere'
 import router from '@/router'
+import language from '@/lang'
 
 const panel = {
   state: {
@@ -389,6 +390,11 @@ const panel = {
                 })
             }
           }
+        } else {
+          showMessage({
+            message: language.t('notifications.mandatoryFieldMissing') + getters.getisMandatoryfieldmissing(params.containerUuid),
+            type: 'warning'
+          })
         }
       } else if (!params.isDontSendToQuery) {
         if (params.panelType === 'table' && fieldIsDisplayed(field)) {
@@ -524,6 +530,31 @@ const panel = {
         }
       })
     },
+    //
+    getisMandatoryfieldmissing: (state, getters) => (containerUuid, evaluateShowed = true) => {
+      // all optionals (not mandatory) fields
+      var isMandatoryField = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
+        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        // const isValue = fieldItem.value
+        // console.log(fieldItem.value)
+        if (isMandatory) {
+          const isDisplayed = fieldIsDisplayed(fieldItem)
+          if (evaluateShowed) {
+            return isDisplayed
+          }
+          return isMandatory
+        }
+      })
+      var isMandatoryEmptyField = isMandatoryField.filter(fieldItem => {
+        const empty = fieldItem.value
+        if (empty === '') {
+          return fieldItem.name + fieldItem.value
+        }
+      })
+      return isMandatoryEmptyField.map(fieldItem => {
+        return fieldItem.name
+      })
+    },
     // all available fields not mandatory to show, used in components panel/filterFields.vue
     getFieldsListNotMandatory: (state, getters) => (containerUuid, evaluateShowed = true) => {
       // all optionals (not mandatory) fields
@@ -576,7 +607,6 @@ const panel = {
       var attributesObject = {}
       var displayColumnsList = []
       var rangeColumnsList = []
-
       if (withOut.length || isEvaluatedChangedValue) {
         attributesList = attributesList.filter(fieldItem => {
           // columns to exclude
