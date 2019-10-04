@@ -454,7 +454,7 @@ export default {
   methods: {
     sortFields,
     handleChange(val) {
-      console.log(val)
+      val = !val
     },
     /**
      * @param {object} row, row data
