@@ -119,9 +119,6 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
-    // refreshData() {
-    //   this.getData()
-    // },
     refreshData() {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
@@ -265,7 +262,7 @@ export const contextMixin = {
       }
     },
     setShareLink() {
-      var shareLink = this.panelType === 'window' ? `${window.location.href}&` : `${window.location.href}?`
+      var shareLink = this.panelType === 'window' || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
         shareLink = this.$store.getters.getTempShareLink
       } else {

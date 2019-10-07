@@ -191,34 +191,53 @@ const panel = {
     },
     /**
      * Changed panel when receive or reset panel to new record
-     * @param {string} parameters.parentUuid
-     * @param {string} parameters.containerUuid
-     * @param {object} parameters.fieldList, field list of panel
-     * @param {object} parameters.newValues, values to set in panel
-     * @param {object} parameters.isDontSendToEdit, indicate if changes not send to server
+     * @param {string} parentUuid
+     * @param {string} containerUuid
+     * @param {object} fieldList, field list of panel
+     * @param {object} newValues, values to set in panel
+     * @param {boolean} isDontSendToEdit, indicate if changes not send to server
      */
-    notifyPanelChange({ dispatch, getters }, parameters) {
-      var fieldList = []
-      if (parameters.fieldList && parameters.fieldList.length) {
-        fieldList = parameters.fieldList
-      } else {
-        fieldList = getters.getFieldsListFromPanel(parameters.containerUuid)
+    notifyPanelChange({ dispatch, getters }, {
+      parentUuid,
+      containerUuid,
+      fieldList = [],
+      newValues = {},
+      isDontSendToEdit = false, // TODO: change to isSendToServer with default value in true,
+      isShowedField = false
+    }) {
+      if (!fieldList.length) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid)
       }
+
       fieldList.forEach(actionField => {
-        if (parameters.newValues[actionField.columnName] !== actionField.value) {
+        // Evaluate with hasOwnProperty if exits this value
+        if (!newValues.hasOwnProperty(actionField.columnName)) {
+          return
+        }
+        if (newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
-            isDontSendToEdit: parameters.isDontSendToEdit,
-            parentUuid: parameters.parentUuid,
-            containerUuid: parameters.containerUuid,
+            isDontSendToEdit: isDontSendToEdit,
+            parentUuid: parentUuid,
+            containerUuid: containerUuid,
             columnName: actionField.columnName,
-            displayColumn: parameters.newValues['DisplayColumn_' + actionField.columnName],
-            newValue: parameters.newValues[actionField.columnName],
+            displayColumn: newValues['DisplayColumn_' + actionField.columnName],
+            newValue: newValues[actionField.columnName],
+            valueTo: newValues[actionField.columnName + '_To'],
             fieldList: fieldList,
             field: actionField,
             isChangedOldValue: true // defines if set oldValue with newValue instead of current value
           })
         }
       })
+      if (isShowedField) {
+        dispatch('changeFieldAttributesBoolean', {
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          attribute: 'isShowedFromUser',
+          valueAttribute: true,
+          fieldsIncludes: Object.keys(newValues)
+        })
+      }
     },
     /**
      * @param {string} params.parentUuid
@@ -238,14 +257,16 @@ const panel = {
       var fieldList = panel.fieldList
       var field = field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
 
-      // the field has not changed, then the action is broken
-      if (params.newValue === field.value) {
-        return
-      }
-
       if (field.componentPath === 'FieldDate') {
+        if (!isNaN(params.newValue)) {
+          params.newValue = Number(params.newValue)
+        }
         if (typeof params.newValue === 'number') {
           params.newValue = new Date(params.newValue)
+        }
+        // value to
+        if (!isNaN(params.valueTo)) {
+          params.valueTo = Number(params.valueTo)
         }
         if (typeof params.valueTo === 'number') {
           params.valueTo = new Date(params.valueTo)
@@ -262,6 +283,15 @@ const panel = {
         } else {
           params.newValue = String(params.newValue)
         }
+      } else if (field.componentPath === 'FieldYesNo') {
+        if (params.newValue === 'false') {
+          params.newValue = false
+        }
+      }
+
+      // the field has not changed, then the action is broken
+      if (params.newValue === field.value) {
+        return
       }
 
       if (!(params.panelType === 'table' || params.isAvancedQuery)) {

@@ -400,24 +400,10 @@ export default {
             }
           })
         } else if (this.panelType === 'process' || this.panelType === 'browser') {
-          this.fieldList.forEach(fieldItem => {
-            if (this.$route.query.hasOwnProperty(fieldItem.columnName)) {
-              fieldItem.isShowedFromUser = true
-
-              fieldItem.value = this.$route.query[fieldItem.columnName]
-              if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
-                fieldItem.value = new Date(fieldItem.value)
-              } else if (fieldItem.componentPath === 'FieldYesNo') {
-                fieldItem.value = Boolean(fieldItem.value)
-              }
-
-              if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
-                fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
-                if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
-                  fieldItem.valueTo = new Date(fieldItem.valueTo)
-                }
-              }
-            }
+          this.$store.dispatch('notifyPanelChange', {
+            containerUuid: this.containerUuid,
+            newValues: this.$route.query,
+            isShowedField: true
           })
         }
       }
