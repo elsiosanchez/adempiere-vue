@@ -257,7 +257,7 @@ export const contextMixin = {
         this.$store.dispatch('getWindowByUuid', { routes: this.permissionRoutes, windowUuid: action.windowUuid })
         if (action.windowUuid && action.recordUuid) {
           var windowRoute = this.$store.getters.getWindowRoute(action.windowUuid)
-          this.$router.push({ name: windowRoute.name, query: { tabNumber: 0 }, params: action })
+          this.$router.push({ name: windowRoute.name, query: { action: action.type, referenceUuid: action.uuid, tabNumber: 0 }})
         }
       }
     },

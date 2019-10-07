@@ -429,12 +429,17 @@ const windowControl = {
             value: tab.whereClause
           })
         }
+
+        if (parameters.isReference) {
+          // TODO: add support to getCriteria from reference uuid and assign value to whereClause
+          // tab.customWhereClause = parameters.referenceWhereClause
+        }
         dispatch('getObjectListFromCriteria', {
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
           tableName: tab.tableName,
           query: parsedQuery,
-          whereClause: (isEmptyValue(parsedWhereClause) && !isEmptyValue(tab.customWhereClause)) ? tab.customWhereClause : parsedWhereClause,
+          whereClause: parameters.isLoadAllRecords ? parsedWhereClause : tab.customWhereClause,
           orderByClause: tab.orderByClause
         })
           .then(response => {
@@ -463,6 +468,7 @@ const windowControl = {
           .then(response => {
             const referencesList = response.getReferencesList().map(item => {
               return {
+                uuid: item.getUuid(),
                 windowUuid: item.getWindowuuid(),
                 displayName: item.getDisplayname(),
                 tableName: item.getTablename(),

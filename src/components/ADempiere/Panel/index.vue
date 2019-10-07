@@ -299,14 +299,7 @@ export default {
     },
     getterIsLoadField(value) {
       if (value) {
-        if (this.$route.query.action && this.$route.query.action !== 'create-new') {
-          this.$store.dispatch('addCustomWhereClauseFromRoute', {
-            actionValue: this.$route.query.action,
-            tabUuid: this.containerUuid,
-            windowUuid: this.parentUuid
-          })
-        }
-        this.getDataList()
+        this.readParameters(this.$route)
       }
     }
   },
@@ -408,96 +401,57 @@ export default {
         }
       }
     },
-    getDataList() {
+    readParameters(route) {
+      var parameters = {
+        isLoadAllRecords: true,
+        isReference: false
+      }
+      if (route.query.action && route.query.action === 'reference') {
+        parameters['isLoadAllRecords'] = false
+        parameters['isReference'] = true
+        parameters['referenceUuid'] = route.query.referenceUuid
+        parameters['referenceWhereClause'] = route.query.whereClause
+      }
+      if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference') {
+        this.$store.dispatch('addCustomWhereClauseFromRoute', {
+          actionValue: route.query.action,
+          tabUuid: this.containerUuid,
+          windowUuid: this.parentUuid
+        })
+        parameters['isLoadAllRecords'] = false
+        parameters['uuidRecord'] = route.query.action
+        parameters['tableName'] = this.metadata.tableName
+      }
+      this.getData(parameters)
+    },
+    /**
+     * @param  {string} table Table name in BD
+     * @param  {string} uuidRecord Universal Unique Identifier Record
+     */
+    getData(parameters) {
       this.$store.dispatch('getDataListTab', {
+        ...parameters,
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid
       })
         .then(response => {
           if (response.length) {
-            this.$router.push({ name: this.$route.name, query: { action: response[0].UUID, tabNumber: 0 }})
+            var firstRecord = response[0]
+            if (this.$route.query.action === 'reference') {
+              this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
+            } else {
+              this.$router.push({ name: this.$route.name, query: { action: firstRecord.UUID, ...this.$route.query }})
+            }
             this.$store.dispatch('notifyPanelChange', {
               parentUuid: this.parentUuid,
               containerUuid: this.containerUuid,
-              newValues: response[0],
+              newValues: firstRecord,
               isDontSendToEdit: true,
               fieldList: this.fieldList
             })
             this.setTagsViewTitle(this.$route.query.action)
             this.isLoadRecord = true
           }
-        })
-        .catch(error => {
-          console.warn(error)
-        })
-    },
-    /**
-     * @param  {string} table Table name in BD
-     * @param  {string} uuidRecord Universal Unique Identifier Record
-     */
-    getData(table = null, uuidRecord = null) {
-      // break get data, this record is the same
-      if (!this.isEmptyValue(uuidRecord) && uuidRecord === this.getterRecordUuid) {
-        return
-      }
-      if (!table) {
-        this.$message({
-          message: this.$t('data.emtpyTableName'),
-          type: 'error',
-          showClose: true
-        })
-        console.warn('DataRecord Panel - Error: Table Name is not defined ')
-        return
-      }
-      // this data row exists in vuex store
-      if (this.getterRowData) {
-        this.dataRecords = this.getterRowData
-        this.$store.dispatch('notifyPanelChange', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          newValues: this.getterRowData,
-          isDontSendToEdit: true,
-          fieldList: this.fieldList
-        }).then(() => {
-          this.changeIsLoadRecord()
-        })
-        this.setTagsViewTitle(this.$route.query.action)
-        this.isLoadRecord = true
-        return
-      }
-
-      this.$store.dispatch('getEntity', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid,
-        tableName: table,
-        recordUuid: uuidRecord
-      })
-        .then(response => {
-          this.dataRecords = response
-          this.$router.push({
-            name: this.$route.name,
-            query: {
-              action: this.dataRecords.UUID,
-              tabNumber: 0
-            }
-          })
-          this.$store.dispatch('notifyPanelChange', {
-            parentUuid: this.parentUuid,
-            containerUuid: this.containerUuid,
-            newValues: response,
-            isDontSendToEdit: true,
-            fieldList: this.fieldList
-          })
-          this.setTagsViewTitle(this.$route.query.action)
-          this.isLoadRecord = true
-        })
-        .catch(error => {
-          this.$message({
-            message: this.$t('data.errorGetData'),
-            type: 'error',
-            showClose: true
-          })
-          console.warn('DataRecord Panel - Error ' + error.code + ': ' + error.message)
         })
     },
     changeIsLoadRecord() {

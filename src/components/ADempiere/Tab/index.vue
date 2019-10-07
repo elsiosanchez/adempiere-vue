@@ -39,10 +39,7 @@ export default {
     // if tabs children is showed or closed
     isShowedDetail() {
       return this.$store.getters.getWindow(this.windowUuid).isShowedDetail
-    }/* ,
-    getterIsLoadField() {
-      return this.$store.getters.getTabIsLoadField(this.windowUuid, this.tabUuid)
-    } */
+    }
   },
   watch: {
     // TODO: Remove watchers of action, and pased as props from window
@@ -51,29 +48,11 @@ export default {
         this.currentTab = '0'
       }
     },
-    currentTab(tabNumber) {
-      this.$router.push({
-        name: this.$route.name,
-        query: {
-          action: this.$route.query.action,
-          tabNumber: tabNumber
-        }
-      })
-    }/* ,
-    getterIsLoadField(value) {
-      if (value) {
-        if (this.$route.query.action && this.$route.query.action !== 'create-new') {
-          this.$store.dispatch('addCustomWhereClauseFromRoute', {
-            actionValue: this.$route.query.action,
-            tabUuid: this.tabUuid,
-            windowUuid: this.windowUuid
-          })
-          this.getData()
-        } else {
-          this.getData()
-        }
+    currentTab(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.$router.push({ query: { ...this.$route.query, tabNumber: newValue }})
       }
-    } */
+    }
   }
 }
 </script>

@@ -44,9 +44,6 @@ export const tabMixin = {
         this.tabUuid = tabHTML.$attrs.tabuuid
         this.setCurrentTab()
       }
-      // this.setPemantLink(tabHTML)
-      // this.currentTab = tabHTML.name
-      // this.getData()
     },
     /**
      * TODO: Verify use
