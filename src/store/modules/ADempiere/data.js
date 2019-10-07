@@ -92,7 +92,7 @@ const data = {
         if (!rootGetters.isNotReadyForSubmit(parameters.containerUuid)) {
           dispatch('getBrowserSearch', {
             containerUuid: parameters.containerUuid,
-            clearSelection: true
+            isClearSelection: true
           })
             .catch(error => {
               console.warn(error)

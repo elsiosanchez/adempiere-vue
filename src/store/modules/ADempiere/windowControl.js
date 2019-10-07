@@ -7,8 +7,7 @@ const windowControl = {
   state: {
     inCreate: [],
     references: [],
-    windowRoute: {},
-    entitiesList: []
+    windowRoute: {}
   },
   mutations: {
     addInCreate(state, payload) {
@@ -412,7 +411,6 @@ const windowControl = {
      * Get data to table in tab
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
-     * @param {boolean} parameters.clearSelection, clear selection after search
      */
     getDataListTab({ dispatch, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {

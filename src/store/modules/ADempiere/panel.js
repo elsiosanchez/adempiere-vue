@@ -150,7 +150,7 @@ const panel = {
       if (panel.panelType === 'browser' && (showsFieldsWithValue || hiddenFieldsWithValue)) {
         dispatch('getBrowserSearch', {
           containerUuid: panel.uuid,
-          clearSelection: true
+          isClearSelection: true
         })
           .catch(error => {
             console.warn(error)
@@ -367,7 +367,7 @@ const panel = {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
               containerUuid: params.containerUuid,
-              clearSelection: true
+              isClearSelection: true
             })
               .catch(error => {
                 console.warn(error)
@@ -837,38 +837,8 @@ const panel = {
     },
     /**
      * Getter converter selection params with value format
-     * [
-     *    { columname, value },
-     *    { columname, value },
-     *    { columname, value },
-     *    { columname, value }
-     * ]
+     * [{ columname: name key, value: value to send } ]
      */
-    getParametersProcessToServer: (state, getters) => (containerUuid, withOut = []) => {
-      const fieldList = getters.getPanelParameters(containerUuid, true, withOut)
-      var parameters = []
-      if (fieldList.fields > 0) {
-        var fieldListRange = []
-        parameters = fieldList.params.map(fieldItem => {
-          if (fieldItem.isRange) {
-            fieldListRange.push({
-              columnName: fieldItem.columnName + '_To',
-              value: fieldItem.valueTo
-            })
-          }
-          return {
-            columnName: fieldItem.columnName,
-            value: fieldItem.value
-          }
-        })
-        parameters = parameters.concat(fieldListRange)
-      }
-      return {
-        params: parameters,
-        fields: fieldList.fields,
-        fieldsMandatory: fieldList.fieldsMandatory
-      }
-    },
     getParametersToServer: (state, getters) => ({
       containerUuid,
       withOutColumnNames = [],

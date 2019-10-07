@@ -6,27 +6,31 @@ const browserControl = {
   actions: {
     /**
      * Search with query criteria
-     * @param {string}  parameters.containerUuid, browser to search record data
-     * @param {boolean} parameters.clearSelection, clear selection after search
+     * @param {string}  containerUuid, browser to search record data
+     * @param {boolean} isClearSelection, clear selection after search
      */
-    getBrowserSearch({ dispatch, rootGetters }, parameters) {
-      var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
+    getBrowserSearch({ dispatch, rootGetters }, {
+      containerUuid,
+      isClearSelection = false
+    }) {
+      var allData = rootGetters.getDataRecordAndSelection(containerUuid)
 
       return new Promise((resolve, reject) => {
         // parameters isQueryCriteria
-        const finalParameters = rootGetters.getParametersProcessToServer(parameters.containerUuid)
-        const browser = rootGetters.getBrowser(parameters.containerUuid)
+        const finalParameters = rootGetters.getParametersToServer({ containerUuid: containerUuid })
+
+        const browser = rootGetters.getBrowser(containerUuid)
         const parsedQuery = parseContext({
-          parentUuid: parameters.containerUuid,
-          containerUuid: parameters.containerUuid,
+          // parentUuid: containerUuid,
+          containerUuid: containerUuid,
           value: browser.query
         })
 
         var parsedWhereClause
         if (!isEmptyValue(browser.whereClause)) {
           parsedWhereClause = parseContext({
-            parentUuid: parameters.containerUuid,
-            containerUuid: parameters.containerUuid,
+            // parentUuid: containerUuid,
+            containerUuid: containerUuid,
             value: browser.whereClause
           })
         }
@@ -38,11 +42,11 @@ const browserControl = {
 
         // Add validation compare browserSearchQueryParameters
         getBrowserSearch({
-          uuid: parameters.containerUuid,
+          uuid: containerUuid,
           query: parsedQuery,
           whereClause: parsedWhereClause,
           orderByClause: browser.orderByClause,
-          parameters: finalParameters.params,
+          parameters: finalParameters,
           nextPageToken: nextPageToken
         })
           .then(response => {
@@ -56,9 +60,9 @@ const browserControl = {
               return values
             })
 
-            var selection = []
-            if (!parameters.clearSelection) {
-              selection = allData.selection
+            var selection = allData.selection
+            if (isClearSelection) {
+              selection = []
             }
 
             var token = response.getNextPageToken()
@@ -67,9 +71,9 @@ const browserControl = {
             }
 
             dispatch('setRecordSelection', {
-              containerUuid: parameters.containerUuid,
+              containerUuid: containerUuid,
               record: record,
-              pageNumber: rootGetters.getPageNumber(parameters.containerUuid),
+              pageNumber: rootGetters.getPageNumber(containerUuid),
               selection: selection,
               recordCount: response.getRecordcount(),
               nextPageToken: token
