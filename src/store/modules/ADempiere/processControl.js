@@ -87,7 +87,7 @@ const processControl = {
             message: `In this process (${samePocessInExecution.name}) there is already an execution in progress.`
           })
         }
-        if (params.panelType === 'browser' && params.reportFormat === 'xls') {
+        if (params.panelType === 'window' && params.reportFormat === 'xls') {
           console.log(params)
         }
         // additional attributes to send server, selection to browser, or table name and record id to window
