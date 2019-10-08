@@ -54,7 +54,8 @@ export const contextMixin = {
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
       recordUuid: this.$route.query.action,
-      isReferencesLoaded: false
+      isReferencesLoaded: false,
+      exportDefault: 'xls'
     }
   },
   computed: {
@@ -65,6 +66,9 @@ export const contextMixin = {
         return meta.activeMenu
       }
       return path
+    },
+    getDataSelection() {
+      return this.$store.getters.getDataRecordSelection(this.containerUuid)
     },
     relations() {
       if (this.$route.params.menuParentUuid !== undefined) {
@@ -119,6 +123,7 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
+    showNotification,
     refreshData() {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
@@ -128,7 +133,6 @@ export const contextMixin = {
           console.warn(error)
         })
     },
-    showNotification,
     getReferences() {
       if (this.isReferecesContent) {
         var references = this.getterReferences
@@ -152,6 +156,17 @@ export const contextMixin = {
       } else {
         this.references = []
       }
+    },
+    exporBrowser() {
+      this.$store.dispatch('startProcess', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid,
+        panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
+        reportFormat: this.exportDefault
+      })
+        .catch(error => {
+          console.warn(error)
+        })
     },
     generateContextMenu() {
       this.metadataMenu = this.getterContextMenu
