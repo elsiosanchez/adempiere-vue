@@ -54,7 +54,6 @@ export const contextMixin = {
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
       recordUuid: this.$route.query.action,
-      exportBrowser: 'export',
       isReferencesLoaded: false
     }
   },
@@ -123,21 +122,6 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
-    // focusMethod = function getFocus() {
-    //   document.getElementById('myTextField').focus()
-    // },
-    // refreshData() {
-    //   this.getData()
-    // },
-    refreshData() {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid
-      })
-        .catch(error => {
-          console.warn(error)
-        })
-    },
     showNotification,
     getReferences() {
       if (this.isReferecesContent) {
