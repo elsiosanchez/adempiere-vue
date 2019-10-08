@@ -1,5 +1,5 @@
 <template>
-  <el-container v-if="isLoading" key="browser-loaded" class="view-base" style="height: 86vh;">
+  <el-container v-if="isLoaded" key="browser-loaded" class="view-base" style="height: 86vh;">
     <modal-dialog
       :container-uuid="browserUuid"
       :panel-type="panelType"
@@ -55,7 +55,7 @@
         </el-collapse-item>
       </el-collapse>
       <data-table
-        v-if="isLoading"
+        v-if="isLoaded"
         :container-uuid="browserUuid"
         :panel-type="panelType"
         :metadata="browserMetadata"
@@ -65,7 +65,7 @@
   <div
     v-else
     key="browser-loading"
-    v-loading="!isLoading"
+    v-loading="!isLoaded"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
@@ -100,7 +100,7 @@ export default {
       browserMetadata: {},
       browserUuid: this.$route.meta.uuid,
       activeSearch: [],
-      isLoading: false,
+      isLoaded: false,
       panelType: 'browser'
     }
   },
@@ -137,7 +137,7 @@ export default {
     }
   },
   watch: {
-    isLoading(value) {
+    isLoaded(value) {
       if (value) {
         this.browserMetadata = this.getterBrowser
         if (this.getDataRecords.length <= 0 && this.getContainerIsReadyForSubmit) {
@@ -168,14 +168,14 @@ export default {
     },
     getBrowser() {
       if (this.getterBrowser) {
-        this.isLoading = true
+        this.isLoaded = true
       } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.browserUuid,
           type: this.panelType
         })
-          .then(response => {
-            this.isLoading = true
+          .then(() => {
+            this.isLoaded = true
           })
           .catch(error => {
             console.log('Dictionary browse - Error ' + error.code + ': ' + error.message)

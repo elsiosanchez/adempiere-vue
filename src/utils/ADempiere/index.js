@@ -81,6 +81,10 @@ export function convertValuesMapToObject(map) {
 export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) {
   var group = {}
   var isShowedFromUser = false
+  // verify if it no overwrite value with ...moreAttributes
+  if (moreAttributes.isShowedFromUser) {
+    isShowedFromUser = moreAttributes.isShowedFromUser
+  }
 
   try {
     group = {
@@ -92,11 +96,6 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
       name: '',
       fieldGroupType: ''
     }
-  }
-
-  // verify if it no overwrite value with ...moreAttributes
-  if (moreAttributes.isShowedFromUser) {
-    isShowedFromUser = moreAttributes.isShowedFromUser
   }
 
   var reference = fieldGRPC.getReference()
@@ -138,21 +137,30 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     }
   }
 
+  var componentReference = evalutateTypeField(fieldGRPC.getDisplaytype(), true)
+
   var parsedDefaultValue = parseContext({
     ...moreAttributes,
     columnName: fieldGRPC.getColumnname(),
     value: fieldGRPC.getDefaultvalue()
   })
+  parsedDefaultValue = parsedValueComponent({
+    fieldType: componentReference.type,
+    value: parsedDefaultValue
+  })
+
   var parsedDefaultValueTo
   if (fieldGRPC.getIsrange()) {
-    parseContext({
+    parsedDefaultValueTo = parseContext({
       ...moreAttributes,
       columnName: fieldGRPC.getColumnname(),
       value: fieldGRPC.getDefaultvalueto()
     })
   }
-
-  var componentReference = evalutateTypeField(fieldGRPC.getDisplaytype(), true)
+  parsedDefaultValueTo = parsedValueComponent({
+    fieldType: componentReference.type,
+    value: parsedDefaultValueTo
+  })
 
   var field = {
     ...moreAttributes,
@@ -182,7 +190,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     value: String(parsedDefaultValue).trim() === '' ? undefined : parsedDefaultValue,
     defaultValue: fieldGRPC.getDefaultvalue(),
     oldValue: parsedDefaultValue,
-    valueTo: parsedDefaultValue,
+    valueTo: parsedDefaultValueTo,
     parsedDefaultValue: parsedDefaultValue,
     defaultValueTo: fieldGRPC.getDefaultvalueto(),
     parsedDefaultValueTo: parsedDefaultValueTo,
@@ -572,6 +580,58 @@ export function sortFields(arr, orderBy = 'sequence', type = 'asc', panelType = 
     return arr.reverse()
   }
   return arr
+}
+
+export function parsedValueComponent({ fieldType, value }) {
+  if (value === undefined || value === null) {
+    return undefined
+  }
+  var returnValue
+
+  switch (fieldType) {
+    // data type Number
+    case 'FieldNumber':
+      if (String(value).trim() === '') {
+        returnValue = undefined
+      } else {
+        returnValue = Number(value)
+      }
+      break
+
+    // data type Boolean
+    case 'FieldYesNo':
+      if (value === 'false') {
+        value = false
+      }
+      returnValue = value
+      break
+
+    // data type String
+    case 'FieldText':
+    case 'FieldTextArea':
+      returnValue = String(value)
+      break
+
+    // data type Date
+    case 'FieldDate':
+    case 'FieldTime ':
+      if (String(value).trim() === '') {
+        value = undefined
+      }
+      if (!isNaN(value)) {
+        value = Number(value)
+      }
+      if (typeof value === 'number') {
+        value = new Date(value)
+      }
+      returnValue = value
+      break
+
+    default:
+      returnValue = value
+      break
+  }
+  return returnValue
 }
 
 export default evaluator // from '@/utils/ADempiere/evaluator.js'

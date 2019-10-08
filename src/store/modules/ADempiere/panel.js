@@ -5,7 +5,7 @@
 // - Window: Just need storage tab and fields
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
-import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue, showMessage } from '@/utils/ADempiere'
+import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue, parsedValueComponent, showMessage } from '@/utils/ADempiere'
 import router from '@/router'
 import language from '@/lang'
 
@@ -256,37 +256,16 @@ const panel = {
       }
       var fieldList = panel.fieldList
       var field = field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
+      params.newValue = parsedValueComponent({
+        fieldType: field.componentPath,
+        value: params.newValue
+      })
 
-      if (field.componentPath === 'FieldDate') {
-        if (!isNaN(params.newValue)) {
-          params.newValue = Number(params.newValue)
-        }
-        if (typeof params.newValue === 'number') {
-          params.newValue = new Date(params.newValue)
-        }
-        // value to
-        if (!isNaN(params.valueTo)) {
-          params.valueTo = Number(params.valueTo)
-        }
-        if (typeof params.valueTo === 'number') {
-          params.valueTo = new Date(params.valueTo)
-        }
-      } else if (field.componentPath === 'FieldNumber') {
-        if (params.newValue === undefined || params.newValue === '') {
-          params.newValue = null
-        } else {
-          params.newValue = Number(params.newValue)
-        }
-      } else if (field.componentPath === 'FieldText' || field.componentPath === 'FieldTextArea') {
-        if (params.newValue === undefined || params.newValue === null) {
-          params.newValue = null
-        } else {
-          params.newValue = String(params.newValue)
-        }
-      } else if (field.componentPath === 'FieldYesNo') {
-        if (params.newValue === 'false') {
-          params.newValue = false
-        }
+      if (field.isRange) {
+        params.valueTo = parsedValueComponent({
+          fieldType: field.componentPath,
+          value: params.valueTo
+        })
       }
 
       // the field has not changed, then the action is broken

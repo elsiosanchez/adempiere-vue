@@ -51,22 +51,23 @@ const context = {
      *  - containerUuid
      *  - columnName
      */
-    getContext: (state) => (findedContext) => {
+    getContext: (state) => ({ parentUuid, containerUuid, columnName }) => {
       var key = ''
-      if (findedContext.parentUuid) {
-        key += findedContext.parentUuid + '|'
+
+      if (parentUuid) {
+        key += parentUuid + '|'
 
         // context for window
-        const keyParent = key + findedContext.columnName
+        const keyParent = key + columnName
         const valueParent = state.context[keyParent]
         if (!isEmptyValue(valueParent)) {
           return valueParent
         }
       }
-      if (findedContext.containerUuid) {
-        key += findedContext.containerUuid + '|'
+      if (containerUuid) {
+        key += containerUuid + '|'
       }
-      key += findedContext.columnName
+      key += columnName
 
       return state.context[key]
     },

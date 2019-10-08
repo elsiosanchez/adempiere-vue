@@ -27,7 +27,6 @@ const process = {
             const additionalAttributes = {
               processUuid: response.getUuid(),
               processId: response.getId(),
-              parentUuid: response.getUuid(),
               containerUuid: response.getUuid(),
               panelType: panelType
             }
@@ -146,7 +145,6 @@ const process = {
               uuid: response.getUuid(),
               name: response.getName(),
               description: response.getDescription(),
-              parentUuid: response.getUuid(),
               help: response.getHelp(),
               isReport: response.getIsreport(),
               accessLevel: response.getAccesslevel(),

@@ -13,7 +13,7 @@ const browser = {
       state.browser = payload
     },
     changeShowedCriteriaBrowser(state, payload) {
-      payload.browser.isShowedCriteria = payload.changeShowedCriteria
+      payload.browser.isShowedCriteria = payload.isShowedCriteria
     }
   },
   actions: {
@@ -28,7 +28,6 @@ const browser = {
             const additionalAttributes = {
               browserUuid: response.getUuid(),
               browserId: response.getId(),
-              parentUuid: response.getUuid(), // TODO: Evaluate if is required
               containerUuid: response.getUuid(),
               panelType: panelType
             }
@@ -47,17 +46,17 @@ const browser = {
                 )
               }
               var field = convertField(fieldItem, someAttributes)
-              if ((query.includes('@' + field.columnName + '@') ||
-                query.includes('@' + field.columnName + '_To@') ||
-                whereClause.includes('@' + field.columnName + '@') ||
-                whereClause.includes('@' + field.columnName + '_To@')) &&
+              if ((query.includes(`@${field.columnName}@`) ||
+                query.includes(`@${field.columnName}_To@`) ||
+                whereClause.includes(`@${field.columnName}@`) ||
+                whereClause.includes(`@${field.columnName}_To@`)) &&
                 field.isQueryCriteria) {
                 field.isMandatory = true
                 field.isMandatoryFromLogic = true
                 field.isShowedFromUser = true
               }
 
-              if (!isEmptyValue(field.parsedDefaultValue) && String(field.parsedDefaultValue) !== '-1') {
+              if (!isEmptyValue(field.value) && String(field.value) !== '-1') {
                 field.isShowedFromUser = true
               }
 
@@ -86,7 +85,6 @@ const browser = {
               id: response.getId(),
               uuid: response.getUuid(),
               containerUuid: response.getUuid(),
-              parentUuid: response.getUuid(),
               value: response.getValue(),
               name: response.getName(),
               description: response.getDescription(),
@@ -152,10 +150,10 @@ const browser = {
           })
       })
     },
-    changeShowedCriteriaBrowser: ({ commit, state, getters }, parameters) => {
+    changeShowedCriteriaBrowser: ({ commit, getters }, { containerUuid, isShowedCriteria }) => {
       commit('changeShowedCriteriaBrowser', {
-        browser: getters.getBrowser(parameters.containerUuid),
-        changeShowedCriteria: parameters.isShowedCriteria
+        browser: getters.getBrowser(containerUuid),
+        isShowedCriteria: isShowedCriteria
       })
     }
   },

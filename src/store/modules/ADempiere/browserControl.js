@@ -21,7 +21,6 @@ const browserControl = {
 
         const browser = rootGetters.getBrowser(containerUuid)
         const parsedQuery = parseContext({
-          // parentUuid: containerUuid,
           containerUuid: containerUuid,
           value: browser.query
         })
@@ -29,7 +28,6 @@ const browserControl = {
         var parsedWhereClause
         if (!isEmptyValue(browser.whereClause)) {
           parsedWhereClause = parseContext({
-            // parentUuid: containerUuid,
             containerUuid: containerUuid,
             value: browser.whereClause
           })
