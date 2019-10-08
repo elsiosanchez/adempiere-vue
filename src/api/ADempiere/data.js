@@ -103,6 +103,15 @@ export function getObjectListFromCriteria(object) {
   if (object.orderByClause) {
     criteriaForList.setOrderbyclause(object.orderByClause)
   }
+
+  // add conditions
+  if (object.conditions && object.conditions.length) {
+    object.conditions.forEach(itemCondition => {
+      const convertCondition = Instance.call(this).convertCondition(itemCondition)
+      criteriaForList.addConditions(convertCondition)
+    })
+  }
+
   var nextPageToken
   if (object.nextPageToken) {
     nextPageToken = object.nextPageToken

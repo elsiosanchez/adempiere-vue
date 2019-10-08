@@ -243,8 +243,7 @@ const window = {
               linkColumnName: response.getLinkcolumnname(),
               parentColumnName: response.getParentcolumnname(),
               panelType: panelType,
-              isAvancedQuery: objectParams.isAvancedQuery,
-              windowQuery: objectParams.windowQuery
+              isAvancedQuery: objectParams.isAvancedQuery
             }
 
             dispatch('addPanel', panel)

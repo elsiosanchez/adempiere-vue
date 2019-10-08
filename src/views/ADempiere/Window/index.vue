@@ -22,7 +22,6 @@
                   :table-name="windowMetadata.currentTab.tableName"
                   :is-showed-panel-record="true"
                   :is-parent="true"
-                  :window-query="windowMetadata.currentTab.query"
                 />
               </el-aside>
             </div>

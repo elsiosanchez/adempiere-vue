@@ -245,7 +245,8 @@ const panel = {
      * @param {string} params.columnName
      * @param {string} params.newValue
      * @param {string} params.panelType
-     * @param {string} params.isAvancedQuery
+     * @param {string} isDontSendToEdit // TODO: change to isSendToServer with default value in true,
+     * @param {string} params.isAvancedQuery // TODO: Rename to isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
       var panel
@@ -258,12 +259,14 @@ const panel = {
       var field = field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
       params.newValue = parsedValueComponent({
         fieldType: field.componentPath,
+        referenceType: field.referenceType,
         value: params.newValue
       })
 
       if (field.isRange) {
         params.valueTo = parsedValueComponent({
           fieldType: field.componentPath,
+          referenceType: field.referenceType,
           value: params.valueTo
         })
       }
@@ -420,20 +423,17 @@ const panel = {
         }
       } else if (!params.isDontSendToQuery) {
         if (params.panelType === 'table' && fieldIsDisplayed(field)) {
-          var value = field.value
-          if (typeof value === 'boolean') {
-            value = value ? 'Y' : 'N'
-          }
-          var avancedQueryParameters = { tableName: '', whereClause: '', query: '' }
-          avancedQueryParameters.tableName = panel.tableName
-          avancedQueryParameters.whereClause = `${panel.tableName}.${field.columnName} LIKE '%${value}%'`
-          avancedQueryParameters.query = panel.windowQuery
           if (panel.isAvancedQuery) {
             dispatch('getObjectListFromCriteria', {
               containerUuid: panel.uuid,
-              tableName: avancedQueryParameters.tableName,
-              query: avancedQueryParameters.query,
-              whereClause: avancedQueryParameters.whereClause
+              tableName: panel.tableName,
+              query: panel.query,
+              whereClause: panel.whereClause,
+              conditions: getters.getParametersToServer({
+                containerUuid: params.containerUuid,
+                isAdvancedQuery: true,
+                isEvaluateMandatory: false
+              })
             })
           }
         }
@@ -479,8 +479,7 @@ const panel = {
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
           isAvancedQuery: parameters.isAvancedQuery,
-          panelType: parameters.type,
-          windowQuery: parameters.windowQuery
+          panelType: parameters.type
         }).then(response => {
           return response
         }).catch(error => {
@@ -823,9 +822,11 @@ const panel = {
       containerUuid,
       withOutColumnNames = [],
       isEvaluateDisplayed = true,
-      isConvertedDateToTimestamp = false
+      isEvaluateMandatory = true,
+      isConvertedDateToTimestamp = false,
+      isAdvancedQuery = false
     }) => {
-      const fieldList = getters.getFieldsListFromPanel(containerUuid)
+      const fieldList = getters.getFieldsListFromPanel(containerUuid, isAdvancedQuery)
       var parametersRange = []
 
       // filter fields
@@ -838,7 +839,7 @@ const panel = {
 
           const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
           // mandatory fields
-          if (isMandatory) {
+          if (isEvaluateMandatory && isMandatory) {
             return true
           }
 

@@ -218,10 +218,6 @@ export default {
     isAvancedQuery: {
       type: Boolean,
       default: false
-    },
-    windowQuery: {
-      type: String,
-      default: ''
     }
   },
   data() {
@@ -331,10 +327,9 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          type: (isAvancedQuery) ? 'table' : this.panelType,
-          isAvancedQuery: isAvancedQuery,
-          windowQuery: (this.metadata.query !== undefined) ? this.metadata.query : this.windowQuery
-        }).then(response => {
+          type: isAvancedQuery ? 'table' : this.panelType,
+          isAvancedQuery: isAvancedQuery
+        }).then(() => {
           this.isLoadFromServer = true
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)

@@ -218,6 +218,7 @@ const data = {
           tableName: objectParams.tableName,
           query: objectParams.query,
           whereClause: objectParams.whereClause,
+          conditions: objectParams.conditions,
           orderByClause: objectParams.orderByClause,
           nextPageToken: nextPageToken
         })

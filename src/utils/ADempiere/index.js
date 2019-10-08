@@ -582,7 +582,7 @@ export function sortFields(arr, orderBy = 'sequence', type = 'asc', panelType = 
   return arr
 }
 
-export function parsedValueComponent({ fieldType, value }) {
+export function parsedValueComponent({ fieldType, value, referenceType }) {
   if (value === undefined || value === null) {
     return undefined
   }
@@ -624,6 +624,22 @@ export function parsedValueComponent({ fieldType, value }) {
       if (typeof value === 'number') {
         value = new Date(value)
       }
+      returnValue = value
+      break
+
+    case 'FieldSelect':
+      if (String(value).trim() === '') {
+        value = undefined
+      }
+      if (referenceType === 'TableDirect' || referenceType === 'Table') {
+        if (!isNaN(value)) {
+          value = Number(value)
+        }
+      } else {
+        if (!isNaN(value)) {
+          value = Number(value)
+        }
+      } // Search or List
       returnValue = value
       break
 

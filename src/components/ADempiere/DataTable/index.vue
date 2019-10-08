@@ -185,7 +185,6 @@
             :metadata="getterPanel"
             :panel-type="'table'"
             :is-avanced-query="true"
-            :window-query="windowQuery"
           />
         </el-collapse-item>
       </el-collapse>
@@ -322,10 +321,6 @@ export default {
     isShowedPanelRecord: {
       type: Boolean,
       default: false
-    },
-    windowQuery: {
-      type: String,
-      default: ''
     }
   },
   data() {
