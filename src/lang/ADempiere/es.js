@@ -94,6 +94,7 @@ export default {
     contextMenuDownload: 'Descargar',
     contextMenuShareLink: 'Compartir link',
     contextMenuRefresh: 'Actualizar',
+    contextMennuExport: 'Exportar Smart Browser',
     RunProcess: 'Ejecutar',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',

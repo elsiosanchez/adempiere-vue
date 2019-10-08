@@ -98,6 +98,7 @@ export default {
     contextMenuDownload: 'Download',
     contextMenuShareLink: 'Share link',
     contextMenuRefresh: 'Refresh',
+    contextMennuExport: 'Export Smart Browser',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
     timePlaceholder: 'Select time',

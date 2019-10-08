@@ -54,6 +54,7 @@ export const contextMixin = {
       downloads: this.$store.getters.getProcessResult.url,
       metadataMenu: {},
       recordUuid: this.$route.query.action,
+      exportBrowser: 'export',
       isReferencesLoaded: false
     }
   },
@@ -65,6 +66,9 @@ export const contextMixin = {
         return meta.activeMenu
       }
       return path
+    },
+    getDataSelection() {
+      return this.$store.getters.getDataRecordSelection(this.containerUuid)
     },
     relations() {
       if (this.$route.params.menuParentUuid !== undefined) {
@@ -119,6 +123,12 @@ export const contextMixin = {
     this.getReferences()
   },
   methods: {
+    // focusMethod = function getFocus() {
+    //   document.getElementById('myTextField').focus()
+    // },
+    // refreshData() {
+    //   this.getData()
+    // },
     refreshData() {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
