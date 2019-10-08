@@ -429,6 +429,13 @@ export default {
         return this.$store.getters.getPanelParameters(this.containerUuid, false, [], this.isAvancedQuery).params
       }
       return undefined
+    },
+    valuesPanelToShare() {
+      return this.$store.getters.getParametersToShare({
+        containerUuid: this.containerUuid,
+        isOnlyDisplayed: true,
+        isAvancedQuery: true
+      })
     }
   },
   created() {
@@ -723,23 +730,14 @@ export default {
       }
     },
     setShareLink() {
-      var shareLink = (this.panelType === 'window') ? window.location.href : window.location.href + '?'
-      if (this.$route.name === 'Report Viewer') {
-        shareLink = this.$store.getters.getTempShareLink
-      }
-      if (this.windowFields) {
+      var shareLink = window.location.href
+      if (String(this.valuesPanelToShare).length) {
         shareLink += '&isAvancedQuery=true&'
-        var totalWindowFields = this.windowFields.length
-        if (this.windowFields && this.windowFields.length) {
-          this.windowFields.forEach((element, index) => {
-            shareLink += `${element.columnName}=${encodeURIComponent(element.value)}`
-            if (index < totalWindowFields - 1) {
-              shareLink += '&'
-            }
-          })
-        }
+        shareLink += this.valuesPanelToShare
       }
-      this.activeClipboard(shareLink)
+      if (shareLink !== this.$route.fullPath) {
+        this.activeClipboard(shareLink)
+      }
     },
     fallbackCopyTextToClipboard(text) {
       var textArea = document.createElement('textarea')

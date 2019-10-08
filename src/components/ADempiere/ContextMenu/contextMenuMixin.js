@@ -269,9 +269,13 @@ export const contextMixin = {
         if (String(this.valuesPanelToShare).length) {
           shareLink += this.valuesPanelToShare
         }
+        if (this.$route.query.action && this.$route.query.action !== 'create-new' && this.$route.query.action !== 'reference') {
+          shareLink = window.location.href
+        }
       }
-
-      this.activeClipboard(shareLink)
+      if (shareLink !== this.$route.fullPath) {
+        this.activeClipboard(shareLink)
+      }
     },
     fallbackCopyTextToClipboard(text) {
       var textArea = document.createElement('textarea')

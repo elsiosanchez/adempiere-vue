@@ -178,6 +178,7 @@
 import FieldDefinition from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
+import { parsedValueComponent } from '@/utils/ADempiere'
 
 export default {
   name: 'PanelFields',
@@ -301,6 +302,11 @@ export default {
       if (value) {
         this.readParameters(this.$route)
       }
+    },
+    isLoadPanel(value) {
+      if (value && this.panelType !== 'window') {
+        this.readParameters(this.$route)
+      }
     }
   },
   created() {
@@ -347,64 +353,63 @@ export default {
       this.firstGroup = firstGroup
 
       this.isLoadPanel = true
-
+    },
+    readParameters(route) {
+      var parameters = {
+        isLoadAllRecords: true,
+        isReference: false,
+        isNewRecord: false,
+        isProcess: false
+      }
       if (this.panelType === 'window') {
-        this.fieldList.forEach(fieldItem => {
-          if (this.$route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAvancedQuery) {
+        this.getterFieldList.forEach(fieldItem => {
+          if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAvancedQuery) {
             fieldItem.isShowedFromUser = true
-
-            if (String(this.$route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
-              fieldItem.value = this.$route.query[fieldItem.columnName]
-              if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
-                fieldItem.value = new Date(fieldItem.value)
-              } else if (fieldItem.componentPath === 'FieldYesNo') {
-                fieldItem.value = Boolean(fieldItem.value)
-              }
-            }
-
-            if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
-              fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
-              if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
-                fieldItem.valueTo = new Date(fieldItem.valueTo)
+            if (String(route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
+              fieldItem.value = parsedValueComponent({
+                fieldType: fieldItem.componentPath,
+                value: route.query[fieldItem.columnName]
+              })
+              if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
+                fieldItem.valueTo = parsedValueComponent({
+                  fieldType: fieldItem.componentPath,
+                  value: route.query[fieldItem.columnName + '_To']
+                })
               }
             }
           }
         })
       } else {
-        if (this.panelType === 'table' && this.$route.query.isAvancedQuery) {
+        if (this.panelType === 'table' && route.query.isAvancedQuery) {
           this.fieldList.forEach(fieldItem => {
             if (this.$route.query.hasOwnProperty(fieldItem.columnName) && fieldItem.isAvancedQuery) {
               fieldItem.isShowedFromUser = true
 
-              if (String(this.$route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
-                fieldItem.value = this.$route.query[fieldItem.columnName]
-                if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
-                  fieldItem.value = new Date(fieldItem.value)
-                } else if (fieldItem.componentPath === 'FieldYesNo') {
-                  fieldItem.value = Boolean(fieldItem.value)
-                }
+              if (String(route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
+                fieldItem.value = parsedValueComponent({
+                  fieldType: fieldItem.componentPath,
+                  value: route.query[fieldItem.columnName]
+                })
               }
               if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
-                fieldItem.valueTo = this.$route.query[fieldItem.columnName + '_To']
-                if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
-                  fieldItem.valueTo = new Date(fieldItem.valueTo)
-                }
+                fieldItem.valueTo = parsedValueComponent({
+                  fieldType: fieldItem.componentPath,
+                  value: route.query[fieldItem.columnName + '_To']
+                })
               }
             }
           })
         } else if (this.panelType === 'process' || this.panelType === 'browser') {
           this.$store.dispatch('notifyPanelChange', {
             containerUuid: this.containerUuid,
-            newValues: this.$route.query,
+            newValues: route.query,
             isShowedField: true
           })
+          parameters['isProcess'] = true
         }
       }
-    },
-    readParameters(route) {
-      var parameters = {
-        isLoadAllRecords: true,
-        isReference: false
+      if (route.query.action && route.query.action === 'create-new') {
+        parameters['isNewRecord'] = true
       }
       if (route.query.action && route.query.action === 'reference') {
         parameters['isLoadAllRecords'] = false
@@ -425,34 +430,44 @@ export default {
       this.getData(parameters)
     },
     /**
-     * @param  {string} table Table name in BD
-     * @param  {string} uuidRecord Universal Unique Identifier Record
+     * @param  {Objecy} parameters parameters to condition the data query
      */
     getData(parameters) {
-      this.$store.dispatch('getDataListTab', {
-        ...parameters,
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid
-      })
-        .then(response => {
-          if (response.length) {
-            var firstRecord = response[0]
-            if (this.$route.query.action === 'reference') {
-              this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
-            } else {
-              this.$router.push({ name: this.$route.name, query: { action: firstRecord.UUID, ...this.$route.query }})
-            }
-            this.$store.dispatch('notifyPanelChange', {
-              parentUuid: this.parentUuid,
-              containerUuid: this.containerUuid,
-              newValues: firstRecord,
-              isDontSendToEdit: true,
-              fieldList: this.fieldList
-            })
-            this.setTagsViewTitle(this.$route.query.action)
-            this.isLoadRecord = true
-          }
+      if (!parameters.isProcess) {
+        this.$store.dispatch('getDataListTab', {
+          ...parameters,
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid
         })
+          .then(response => {
+            if (response.length) {
+              var firstRecord = response[0]
+              if (this.$route.query.action === 'create-new') {
+                this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
+              } else if (this.$route.query.action === 'reference') {
+                this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
+                this.$store.dispatch('notifyPanelChange', {
+                  parentUuid: this.parentUuid,
+                  containerUuid: this.containerUuid,
+                  newValues: firstRecord,
+                  isDontSendToEdit: true,
+                  fieldList: this.fieldList
+                })
+              } else {
+                this.$router.push({ name: this.$route.name, query: { action: firstRecord.UUID, ...this.$route.query }})
+                this.$store.dispatch('notifyPanelChange', {
+                  parentUuid: this.parentUuid,
+                  containerUuid: this.containerUuid,
+                  newValues: firstRecord,
+                  isDontSendToEdit: true,
+                  fieldList: this.fieldList
+                })
+              }
+              this.setTagsViewTitle(this.$route.query.action)
+              this.isLoadRecord = true
+            }
+          })
+      }
     },
     changeIsLoadRecord() {
       // notify record is load

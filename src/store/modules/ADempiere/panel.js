@@ -713,9 +713,10 @@ const panel = {
     getParametersToShare: (state, getters) => ({
       containerUuid,
       withOut = [],
-      isOnlyDisplayed = false
+      isOnlyDisplayed = false,
+      isAvancedQuery = false
     }) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid)
+      var fieldList = getters.getFieldsListFromPanel(containerUuid, isAvancedQuery)
       var attributesListLink = ''
       if (withOut.length) {
         fieldList = fieldList.filter(fieldItem => {
