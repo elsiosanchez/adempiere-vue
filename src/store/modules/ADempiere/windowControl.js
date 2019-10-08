@@ -7,7 +7,8 @@ const windowControl = {
   state: {
     inCreate: [],
     references: [],
-    windowRoute: {}
+    windowRoute: {},
+    dataListRecords: []
   },
   mutations: {
     addInCreate(state, payload) {
@@ -30,6 +31,9 @@ const windowControl = {
     },
     addWindowRoute(state, payload) {
       state.windowRoute = payload
+    },
+    setDataListRecords(state, payload) {
+      state.dataListRecords = payload
     }
   },
   actions: {
@@ -412,7 +416,7 @@ const windowControl = {
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
      */
-    getDataListTab({ dispatch, rootGetters }, parameters) {
+    getDataListTab({ dispatch, commit, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
         const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
         const parsedQuery = parseContext({
@@ -443,6 +447,7 @@ const windowControl = {
           orderByClause: tab.orderByClause
         })
           .then(response => {
+            commit('setDataListRecords', response)
             resolve(response)
           })
           .catch(error => {
@@ -514,6 +519,9 @@ const windowControl = {
       if (state.windowRoute && state.windowRoute.meta && state.windowRoute.meta.uuid === windowUuid) {
         return state.windowRoute
       }
+    },
+    getDataListRecords: (state) => {
+      return state.dataListRecords
     }
   }
 }

@@ -299,6 +299,11 @@ export default {
         this.readParameters(this.$route)
       }
     },
+    '$route.query.action'(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.changePanelRecord(newValue)
+      }
+    },
     isLoadPanel(value) {
       if (value && this.panelType !== 'window') {
         this.readParameters(this.$route)
@@ -561,6 +566,18 @@ export default {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '')
+    },
+    changePanelRecord(uuidRecord) {
+      if (uuidRecord !== 'create-new' && uuidRecord !== 'reference') {
+        var newPanelValues = this.$store.getters.getDataListRecords.find(record => record.UUID === uuidRecord)
+        this.$store.dispatch('notifyPanelChange', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          newValues: newPanelValues,
+          isDontSendToEdit: true,
+          fieldList: this.fieldList
+        })
+      }
     }
   }
 }

@@ -605,20 +605,10 @@ export default {
       if (this.isShowedPanelRecord && this.isParent) {
         if (this.uuidCurrentRecordSelected !== row.UUID) {
           this.uuidCurrentRecordSelected = row.UUID
-          // this.$store.dispatch('notifyPanelChange', {
-          //   parentUuid: this.parentUuid,
-          //   containerUuid: this.containerUuid,
-          //   newValues: row,
-          //   isDontSendToEdit: true,
-          //   fieldList: this.fieldList
-          // })
-          this.$router.push({
-            name: this.$route.name,
-            query: {
-              action: this.uuidCurrentRecordSelected,
-              tabNumber: this.$route.query.tabNumber
-            }
-          })
+          this.$router.push({ query: {
+            ...this.$route.query,
+            action: this.uuidCurrentRecordSelected
+          }})
         }
       } else {
         if (!row.isEdit) {
