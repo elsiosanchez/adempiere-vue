@@ -11,9 +11,6 @@
         :color="checkStatus(activity.isError, activity.isProcessing, activity.isReport).color"
       >
         <el-card>
-          <!-- {{ activity.output.length }} -->
-          {{ activity.logs }}
-          <!-- {{ getRunProcessAll }} -->
           <div slot="header" class="clearfix">
             <span><b>{{ activity.name }}</b></span>
             <div class="actions">
