@@ -603,7 +603,7 @@ export function parsedValueComponent({ fieldType, value, referenceType }) {
       if (value === 'false') {
         value = false
       }
-      returnValue = value
+      returnValue = Boolean(value)
       break
 
     // data type String
