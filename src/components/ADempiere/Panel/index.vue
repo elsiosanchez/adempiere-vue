@@ -359,7 +359,7 @@ export default {
         isLoadAllRecords: true,
         isReference: false,
         isNewRecord: false,
-        isProcess: false
+        isWindow: true
       }
       if (this.panelType === 'window') {
         this.getterFieldList.forEach(fieldItem => {
@@ -380,32 +380,33 @@ export default {
           }
         })
       } else {
-        if (this.panelType === 'table' && route.query.isAvancedQuery) {
+        if (this.panelType === 'table' && route.query.action === 'avancedQuery') {
           this.fieldList.forEach(fieldItem => {
-            if (this.$route.query.hasOwnProperty(fieldItem.columnName) && fieldItem.isAvancedQuery) {
+            if (route.query.hasOwnProperty(fieldItem.columnName) && fieldItem.isAvancedQuery) {
               fieldItem.isShowedFromUser = true
 
-              if (String(route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
+              if (route.query.action === 'avancedQuery' === fieldItem.isAvancedQuery) {
                 fieldItem.value = parsedValueComponent({
                   fieldType: fieldItem.componentPath,
                   value: route.query[fieldItem.columnName]
                 })
-              }
-              if (fieldItem.isRange && this.$route.query[fieldItem.columnName + '_To']) {
-                fieldItem.valueTo = parsedValueComponent({
-                  fieldType: fieldItem.componentPath,
-                  value: route.query[fieldItem.columnName + '_To']
-                })
+                if (fieldItem.isRange && route.query[fieldItem.columnName + '_To']) {
+                  fieldItem.valueTo = parsedValueComponent({
+                    fieldType: fieldItem.componentPath,
+                    value: route.query[fieldItem.columnName + '_To']
+                  })
+                }
               }
             }
           })
+          parameters['isWindow'] = false
         } else if (this.panelType === 'process' || this.panelType === 'browser') {
           this.$store.dispatch('notifyPanelChange', {
             containerUuid: this.containerUuid,
             newValues: route.query,
             isShowedField: true
           })
-          parameters['isProcess'] = true
+          parameters['isWindow'] = false
         }
       }
       if (route.query.action && route.query.action === 'create-new') {
@@ -417,7 +418,7 @@ export default {
         parameters['referenceUuid'] = route.query.referenceUuid
         parameters['referenceWhereClause'] = route.query.whereClause
       }
-      if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference') {
+      if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference' && this.panelType === 'window') {
         this.$store.dispatch('addCustomWhereClauseFromRoute', {
           actionValue: route.query.action,
           tabUuid: this.containerUuid,
@@ -433,7 +434,7 @@ export default {
      * @param  {Objecy} parameters parameters to condition the data query
      */
     getData(parameters) {
-      if (!parameters.isProcess) {
+      if (parameters.isWindow && this.panelType === 'window') {
         this.$store.dispatch('getDataListTab', {
           ...parameters,
           parentUuid: this.parentUuid,

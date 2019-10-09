@@ -119,6 +119,9 @@ export default {
       return ''
     },
     getterIsShowedRecordNavigation() {
+      if (this.$route.query.action === 'avancedQuery') {
+        return true
+      }
       if (this.panelType === 'window') {
         return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
       }

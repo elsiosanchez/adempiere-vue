@@ -97,7 +97,8 @@ export const contextMixin = {
     valuesPanelToShare() {
       return this.$store.getters.getParametersToShare({
         containerUuid: this.containerUuid,
-        isOnlyDisplayed: true
+        isOnlyDisplayed: true,
+        isAvancedQuery: this.$route.query.action === 'avancedQuery'
       })
     },
     getterDataLog() {
@@ -302,7 +303,7 @@ export const contextMixin = {
         if (String(this.valuesPanelToShare).length) {
           shareLink += this.valuesPanelToShare
         }
-        if (this.$route.query.action && this.$route.query.action !== 'create-new' && this.$route.query.action !== 'reference') {
+        if (this.$route.query.action && this.$route.query.action !== 'create-new' && this.$route.query.action !== 'reference' && this.$route.query.action !== 'avancedQuery') {
           shareLink = window.location.href
         }
       }

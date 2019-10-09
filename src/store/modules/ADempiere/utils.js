@@ -6,7 +6,8 @@ const utils = {
     splitHeight: 50,
     splitHeightTop: 0,
     widthLayout: 0,
-    tempShareLink: ''
+    tempShareLink: '',
+    oldAction: undefined
   },
   mutations: {
     setWidth(state, width) {
@@ -26,6 +27,9 @@ const utils = {
     },
     setTempShareLink(state, payload) {
       state.tempShareLink = payload
+    },
+    setOldAction(state, payload) {
+      state.oldAction = payload
     }
   },
   actions: {
@@ -55,6 +59,9 @@ const utils = {
       if (!parameters.href.includes(String(parameters.processId))) {
         commit('setTempShareLink', parameters.href)
       }
+    },
+    setOldAction({ commit }, value) {
+      commit('setOldAction', value)
     }
   },
   getters: {
@@ -85,8 +92,10 @@ const utils = {
     },
     getTempShareLink: (state) => {
       return state.tempShareLink
+    },
+    getOldAction: (state) => {
+      return state.oldAction
     }
   }
 }
-// heigth window
 export default utils

@@ -34,17 +34,9 @@
                 v-if="panelType === 'window'"
                 :disabled="Boolean(getterTotalDataRecordCount <= 0)"
                 index="avancedQuery"
-                @click="isAvancedQuery = !isAvancedQuery"
+                @click="activeAvancedQuery(!isAvancedQuery)"
               >
                 {{ $t('table.dataTable.avancedQuery') }}
-              </el-menu-item>
-              <el-menu-item
-                v-if="panelType === 'window'"
-                :disabled="!isAvancedQuery"
-                index="share"
-                @click="setShareLink"
-              >
-                {{ $t('components.contextMenuShareLink') }}
               </el-menu-item>
             </el-submenu>
           </el-menu>
@@ -106,7 +98,7 @@
                   v-if="panelType === 'window'"
                   :disabled="Boolean(getterTotalDataRecordCount <= 0)"
                   index="avancedQuery"
-                  @click="isAvancedQuery = !isAvancedQuery"
+                  @click="activeAvancedQuery(!isAvancedQuery)"
                 >
                   {{ $t('table.dataTable.avancedQuery') }}
                 </el-menu-item>
@@ -163,13 +155,6 @@
                 class="header-search-input-mobile"
               />
             </icon-element>
-            <el-button
-              v-if="getterTotalDataRecordCount > 0"
-              type="text"
-              icon="el-icon-edit"
-              style="color: black;font-size: 17px;font-weight: 605!important;"
-              @click="isAvancedQuery = !isAvancedQuery"
-            />
           </div>
         </div>
       </div>
@@ -177,7 +162,7 @@
     <el-collapse-transition>
       <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
       <!-- // TODO: Copy panell with getter and filter fields -->
-      <el-collapse v-if="isParent" v-show="isAvancedQuery || $route.query.isAvancedQuery" v-model="activeNames" @change="handleChange">
+      <el-collapse v-if="isParent" v-show="isAvancedQuery || $route.query.action === 'avancedQuery'" v-model="activeNames" @change="handleChange">
         <el-collapse-item :title="$t('table.dataTable.avancedQuery')" name="1">
           <main-panel
             :container-uuid="containerUuid"
@@ -424,30 +409,13 @@ export default {
         return this.$store.getters.getPanelParameters(this.containerUuid, false, [], this.isAvancedQuery).params
       }
       return undefined
-    },
-    valuesPanelToShare() {
-      return this.$store.getters.getParametersToShare({
-        containerUuid: this.containerUuid,
-        isOnlyDisplayed: true,
-        isAvancedQuery: true
-      })
     }
   },
   created() {
-    // get tab with uuid
     this.getPanel()
-    // this.getList()
   },
   beforeMount() {
     this.currentPage = this.getPageNumber
-    /* if (this.isParent && this.panelType === 'window') {
-      console.log('call from beforeMount datatable', this.containerUuid)
-      this.$store.dispatch('setRecordSelection', {
-        containerUuid: this.containerUuid,
-        selection: [],
-        record: []
-      })
-    } */
   },
   mounted() {
     if (this.isTableSelection) {
@@ -717,14 +685,15 @@ export default {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
     },
-    setShareLink() {
-      var shareLink = window.location.href
-      if (String(this.valuesPanelToShare).length) {
-        shareLink += '&isAvancedQuery=true&'
-        shareLink += this.valuesPanelToShare
+    activeAvancedQuery(value) {
+      this.isAvancedQuery = value
+      if (value) {
+        this.$store.dispatch('setOldAction', this.$route.query.action)
+        this.$router.push({ query: { ...this.$route.query, action: 'avancedQuery' }})
       }
-      if (shareLink !== this.$route.fullPath) {
-        this.activeClipboard(shareLink)
+      if (!value) {
+        var oldAction = this.$store.getters.getOldAction
+        this.$router.push({ query: { ...this.$route.query, action: oldAction }})
       }
     },
     fallbackCopyTextToClipboard(text) {
