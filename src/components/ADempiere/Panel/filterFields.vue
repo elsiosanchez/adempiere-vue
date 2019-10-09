@@ -70,6 +70,12 @@ export default {
         .map(itemField => itemField.columnName)
     }
   },
+  watch: {
+    // TODO: Verify peformance with computed set (dispatch) and get (state)
+    getFieldSelected(value) {
+      this.selectedFields = value
+    }
+  },
   created() {
     this.selectedFields = this.getFieldSelected
   },

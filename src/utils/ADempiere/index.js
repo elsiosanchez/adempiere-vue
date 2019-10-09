@@ -378,19 +378,31 @@ export function getParentFields(fieldGRPC) {
   var parentFields = []
   //  For Display logic
   if (fieldGRPC.getDisplaylogic()) {
-    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getDisplaylogic()))
+    parentFields = Array.from(new Set([
+      ...parentFields,
+      ...evaluator.parseDepends(fieldGRPC.getDisplaylogic())
+    ]))
   }
   //  For Mandatory Logic
   if (fieldGRPC.getMandatorylogic()) {
-    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getMandatorylogic()))
+    parentFields = Array.from(new Set([
+      ...parentFields,
+      ...evaluator.parseDepends(fieldGRPC.getMandatorylogic())
+    ]))
   }
   //  For Read Only Logic
   if (fieldGRPC.getReadonlylogic()) {
-    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getReadonlylogic()))
+    parentFields = Array.from(new Set([
+      ...parentFields,
+      ...evaluator.parseDepends(fieldGRPC.getReadonlylogic())
+    ]))
   }
   //  For Default Value
   if (fieldGRPC.getDefaultvalue()) {
-    Array.prototype.push.apply(parentFields, evaluator.parseDepends(fieldGRPC.getDefaultvalue()))
+    parentFields = Array.from(new Set([
+      ...parentFields,
+      ...evaluator.parseDepends(fieldGRPC.getDefaultvalue())
+    ]))
   }
   return parentFields
 }

@@ -159,33 +159,31 @@ const panel = {
     },
     /**
      * Change some attribute boolean from fields in panel
-     * @param {string}  params.containerUuid
-     * @param {string}  params.attribute
-     * @param {boolean} params.valueAttribute
-     * @param {array}   params.fieldsIncludes
-     * @param {array}   params.fieldsExcludes
+     * @param {string}  containerUuid
+     * @param {string}  attribute
+     * @param {boolean} valueAttribute
+     * @param {array}   fieldsIncludes fields to set valueAttribute
+     * @param {array}   fieldsExcludes fields to dont change
      */
-    changeFieldAttributesBoolean({ commit, getters }, params) {
-      var panel = getters.getPanel(params.containerUuid)
+    changeFieldAttributesBoolean({ commit, getters }, parameters) {
+      var panel = getters.getPanel(parameters.containerUuid)
       var newFields = panel.fieldList.map(itemField => {
-        // var oldValue = itemField[params.attribute]
-
         // not change exlude field
-        if (params.fieldsExcludes && params.fieldsExcludes.length && params.fieldsExcludes.includes(itemField.columnName)) {
+        if (parameters.fieldsExcludes && parameters.fieldsExcludes.length && parameters.fieldsExcludes.includes(itemField.columnName)) {
           return itemField
         }
         // if it field is included to change value
-        if (params.fieldsIncludes.length && params.fieldsIncludes.includes(itemField.columnName)) {
-          itemField[params.attribute] = params.valueAttribute
+        if (parameters.fieldsIncludes && parameters.fieldsIncludes.length && parameters.fieldsIncludes.includes(itemField.columnName)) {
+          itemField[parameters.attribute] = parameters.valueAttribute
           return itemField
         }
         // changed current value by opposite set value
-        itemField[params.attribute] = !params.valueAttribute
+        itemField[parameters.attribute] = !parameters.valueAttribute
         return itemField
       })
       panel.fieldList = newFields
       commit('changePanel', {
-        containerUuid: params.containerUuid,
+        containerUuid: parameters.containerUuid,
         newPanel: panel
       })
     },
@@ -208,8 +206,13 @@ const panel = {
       if (!fieldList.length) {
         fieldList = getters.getFieldsListFromPanel(containerUuid)
       }
+      var fieldsShowed = []
 
       fieldList.forEach(actionField => {
+        if (actionField.isShowedFromUser) {
+          fieldsShowed.push(actionField.columnName)
+        }
+
         // Evaluate with hasOwnProperty if exits this value
         if (!newValues.hasOwnProperty(actionField.columnName)) {
           return
@@ -229,13 +232,19 @@ const panel = {
           })
         }
       })
-      if (isShowedField) {
+      if (isShowedField && Object.keys(newValues).length) {
+        // join column names without duplicating it
+        fieldsShowed = Array.from(new Set([
+          ...fieldsShowed,
+          ...Object.keys(newValues)
+        ]))
+
         dispatch('changeFieldAttributesBoolean', {
           parentUuid: parentUuid,
           containerUuid: containerUuid,
           attribute: 'isShowedFromUser',
           valueAttribute: true,
-          fieldsIncludes: Object.keys(newValues)
+          fieldsIncludes: fieldsShowed
         })
       }
     },
