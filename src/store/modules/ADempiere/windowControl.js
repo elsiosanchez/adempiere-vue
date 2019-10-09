@@ -58,6 +58,10 @@ const windowControl = {
           tabNumber: oldRoute.query.tabNumber
         }
       })
+      showMessage({
+        message: language.t('data.createNewRecord'),
+        type: 'info'
+      })
 
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,

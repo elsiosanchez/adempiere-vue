@@ -391,6 +391,10 @@ const panel = {
                   dispatch('tagsView/delView', oldRoute, true)
                 })
                 .catch(error => {
+                  showMessage({
+                    message: error.message,
+                    type: 'error'
+                  })
                   console.warn('Create Entity Error ' + error.code + ': ' + error.message)
                 })
             } else {
@@ -420,6 +424,10 @@ const panel = {
                   })
                 })
                 .catch(error => {
+                  showMessage({
+                    message: error.message,
+                    type: 'error'
+                  })
                   console.warn('Update Entity Error ' + error.code + ': ' + error.message)
                 })
             }
