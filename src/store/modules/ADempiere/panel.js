@@ -344,7 +344,7 @@ const panel = {
         })
       })
       if (!params.isDontSendToEdit) {
-        // TODO: refactory for it and change for a standard method
+        // TODO: refactory for it and change for a standard metho
         if (!getters.isNotReadyForSubmit(params.containerUuid)) {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
@@ -393,7 +393,7 @@ const panel = {
                   // change old value so that it is not send in the next update
                   showMessage({
                     message: language.t('notifications.updateFields') + field.name,
-                    type: 'info'
+                    type: 'success'
                   })
                   commit('changeFieldValue', {
                     field: field,
@@ -418,7 +418,7 @@ const panel = {
         } else {
           showMessage({
             message: language.t('notifications.mandatoryFieldMissing') + getters.getisMandatoryfieldmissing(params.containerUuid),
-            type: 'error'
+            type: 'info'
           })
         }
       } else if (!params.isDontSendToQuery) {
@@ -563,13 +563,22 @@ const panel = {
           if (evaluateShowed) {
             return isDisplayed
           }
+          console.log(isMandatory)
           return isMandatory
         }
       })
+      // var qlq
+      // qlq = isMandatoryField.filter(fieldItem => {
+      //   if (isEmptyValue(fieldItem.value)) {
+      //     return true
+      //   }
+      //   return false
+      // })
+      // console.log(qlq)
       var isMandatoryEmptyField = isMandatoryField.filter(fieldItem => {
-        const empty = fieldItem.value
-        if (empty === '') {
-          return fieldItem.name + fieldItem.value
+        if (isEmptyValue(fieldItem.value)) {
+        // if (empty === undefined || empty === null) {
+          return fieldItem.name
         }
       })
       return isMandatoryEmptyField.map(fieldItem => {
