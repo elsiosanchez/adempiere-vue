@@ -218,6 +218,7 @@ export default {
     createRecordError: 'Error creating new record',
     deleteRecordSuccessful: 'Record deleted successfully',
     deleteRecordError: 'Error deleting record',
-    selectionRequired: 'You must select a record'
+    selectionRequired: 'You must select a record',
+    undo: 'Undo'
   }
 }

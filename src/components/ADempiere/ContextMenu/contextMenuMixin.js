@@ -99,6 +99,12 @@ export const contextMixin = {
         containerUuid: this.containerUuid,
         isOnlyDisplayed: true
       })
+    },
+    getterDataLog() {
+      if (this.panelType === 'window') {
+        return this.$store.getters.getDataLog(this.containerUuid, this.recordUuid)
+      }
+      return undefined
     }
   },
   watch: {
@@ -111,6 +117,11 @@ export const contextMixin = {
       }
     },
     isInsertRecord(newValue, oldValue) {
+      if (this.panelType === 'window' && newValue !== oldValue) {
+        this.generateContextMenu()
+      }
+    },
+    getterDataLog(newValue, oldValue) {
       if (this.panelType === 'window' && newValue !== oldValue) {
         this.generateContextMenu()
       }
@@ -196,6 +207,9 @@ export const contextMixin = {
                 itemAction.disabled = true
               }
             }
+            if (itemAction.action === 'undoModifyData') {
+              itemAction.disabled = Boolean(!this.getterDataLog)
+            }
           }
         })
       }
@@ -266,7 +280,8 @@ export const contextMixin = {
       } else if (action.type === 'dataAction') {
         this.$store.dispatch(action.action, {
           containerUuid: this.containerUuid,
-          parentUuid: this.parentUuid
+          parentUuid: this.parentUuid,
+          recordUuid: this.recordUuid
         })
       } else if (action.type === 'reference') {
         this.$store.dispatch('getWindowByUuid', { routes: this.permissionRoutes, windowUuid: action.windowUuid })

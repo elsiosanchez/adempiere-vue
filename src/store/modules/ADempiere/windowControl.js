@@ -1,4 +1,4 @@
-import { createEntity, updateEntity, deleteEntity, getReferencesList } from '@/api/ADempiere/data'
+import { createEntity, updateEntity, deleteEntity, getReferencesList, rollbackEntity } from '@/api/ADempiere/data'
 import { convertObjectToArrayPairs, convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
@@ -8,7 +8,8 @@ const windowControl = {
     inCreate: [],
     references: [],
     windowRoute: {},
-    dataListRecords: []
+    dataListRecords: [],
+    dataLog: {} // { containerUuid, recordId, tableName, eventType }
   },
   mutations: {
     addInCreate(state, payload) {
@@ -34,6 +35,9 @@ const windowControl = {
     },
     setDataListRecords(state, payload) {
       state.dataListRecords = payload
+    },
+    setDataLog(state, payload) {
+      state.dataLog = payload
     }
   },
   actions: {
@@ -125,6 +129,17 @@ const windowControl = {
               isPanelValues: true,
               isEdit: false
             })
+
+            // set data log to undo action
+            const fieldId = panel.fieldList.find(itemField => itemField.isKey)
+            dispatch('setDataLog', {
+              containerUuid: parameters.containerUuid,
+              tableName: panel.tableName,
+              recordId: fieldId.value, // TODO: Verify performance with tableName_ID
+              recordUuid: newValues.UUID,
+              eventType: 'INSERT'
+            })
+
             resolve({
               data: newValues,
               recordUuid: response.getUuid(),
@@ -195,7 +210,7 @@ const windowControl = {
           })
       })
     },
-    updateCurrentEntity({ commit, rootGetters }, {
+    updateCurrentEntity({ commit, dispatch, rootGetters }, {
       containerUuid,
       recordUuid = null
     }) {
@@ -238,6 +253,16 @@ const windowControl = {
               uuid: recordUuid,
               tableName: panel.tableName
             }
+
+            // set data log to undo action
+            const fieldId = panel.fieldList.find(itemField => itemField.isKey)
+            dispatch('setDataLog', {
+              containerUuid: containerUuid,
+              tableName: panel.tableName,
+              recordId: fieldId.value, // TODO: Verify performance with tableName_ID
+              recordUuid: newValues.UUID,
+              eventType: 'UPDATE'
+            })
 
             commit('setRecordDetail', responseConvert)
             resolve(newValues)
@@ -344,6 +369,16 @@ const windowControl = {
               type: 'success'
             })
 
+            // set data log to undo action
+            const fieldId = panel.fieldList.find(itemField => itemField.isKey)
+            dispatch('setDataLog', {
+              containerUuid: parameters.containerUuid,
+              tableName: panel.tableName,
+              recordId: fieldId.value, // TODO: Verify performance with tableName_ID
+              recordUuid: parameters.recordUuid,
+              eventType: 'DELETE'
+            })
+
             resolve(response)
           })
           .catch(error => {
@@ -409,6 +444,28 @@ const windowControl = {
               })
             }
           })
+      })
+    },
+    undoModifyData({ getters }, {
+      containerUuid,
+      recordId,
+      recordUuid
+    }) {
+      rollbackEntity(getters.getDataLog(containerUuid, recordUuid))
+        .then(response => {
+          return response
+        })
+        .catch(error => {
+          return error
+        })
+    },
+    setDataLog({ commit }, parameters) {
+      commit('setDataLog', {
+        containerUuid: parameters.containerUuid,
+        tableName: parameters.tableName,
+        recordId: parameters.recordId,
+        recordUuid: parameters.recordUuid,
+        eventType: parameters.eventType
       })
     },
     /**
@@ -519,6 +576,15 @@ const windowControl = {
       if (state.windowRoute && state.windowRoute.meta && state.windowRoute.meta.uuid === windowUuid) {
         return state.windowRoute
       }
+    },
+    getDataLog: (state) => (containerUuid, recordUuid) => {
+      const current = state.dataLog
+      if (current.containerUuid === containerUuid &&
+        ((current.recordUuid === recordUuid) ||
+        (current.eventType === 'DELETE' && recordUuid === 'create-new'))) {
+        return current
+      }
+      return undefined
     },
     getDataListRecords: (state) => {
       return state.dataListRecords

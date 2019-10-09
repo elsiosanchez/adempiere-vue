@@ -193,6 +193,7 @@ export default {
     createRecordError: 'Error al crear nuevo registro',
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
     deleteRecordError: 'Error al eliminar el regitro',
-    selectionRequired: 'Debe seleccionar un registro'
+    selectionRequired: 'Debe seleccionar un registro',
+    undo: 'Deshacer'
   }
 }

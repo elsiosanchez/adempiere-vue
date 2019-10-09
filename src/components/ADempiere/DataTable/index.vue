@@ -609,6 +609,9 @@ export default {
             ...this.$route.query,
             action: this.uuidCurrentRecordSelected
           }})
+
+          // disabled rollback when change route
+          this.$store.dispatch('setDataLog', {})
         }
       } else {
         if (!row.isEdit) {

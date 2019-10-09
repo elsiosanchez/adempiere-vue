@@ -120,6 +120,25 @@ export function getObjectListFromCriteria(object) {
 }
 
 /**
+ * Rollback entity (Create, Update, Delete)
+ * @param {string} parametersRollback.tableName
+ * @param {integer} parametersRollback.recordId
+ * @param {string} parametersRollback.eventType
+ */
+export function rollbackEntity(parametersRollback) {
+  var rollbackRequest = Instance.call(this).getRollbackEntityRequest()
+  rollbackRequest.setTablename(parametersRollback.tableName)
+  rollbackRequest.setRecordid(parametersRollback.recordId)
+
+  // set event type
+  var eventType = Instance.call(this).getEventType()
+  eventType = eventType[parametersRollback.eventType]
+  rollbackRequest.setEventtype(eventType)
+
+  return Instance.call(this).rollbackEntityRequest(rollbackRequest)
+}
+
+/**
  * Request a Lookup list data from Reference
  * The main attributes that function hope are:
  * @param {string} reference.tableName

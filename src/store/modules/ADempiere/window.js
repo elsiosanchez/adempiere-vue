@@ -104,28 +104,40 @@ const window = {
                 whereClause: tabItem.getWhereclause(),
                 orderByClause: tabItem.getOrderbyclause(),
                 isLoadRecord: false,
+                isChangeLog: tabItem.getIschangelog(),
                 customWhereClause: '',
                 // app properties
                 isShowedRecordNavigation: !(tabItem.getIssinglerow()),
                 isLoadFieldList: false
               }
 
-              //  Convert from gRPC process list
+              // Convert from gRPC process list
+              // action is dispatch used in vuex
               var actions = []
               actions.push({
+                // action to set default values and enable fields not isUpdateable
                 name: language.t('window.newRecord'),
                 processName: language.t('window.newRecord'),
                 type: 'dataAction',
                 action: 'resetPanelToNew',
                 uuidParent: newWindow.uuid,
-                disabled: tab.isInsertRecord || tab.isReadOnly
+                disabled: !tab.isInsertRecord || tab.isReadOnly
               }, {
+                // action to delete record selected
                 name: language.t('window.deleteRecord'),
                 processName: language.t('window.deleteRecord'),
                 type: 'dataAction',
                 action: 'deleteEntity',
                 uuidParent: newWindow.uuid,
                 disabled: tab.isReadOnly
+              }, {
+                // action to undo create, update, delete record
+                name: language.t('data.undo'),
+                processName: language.t('data.undo'),
+                type: 'dataAction',
+                action: 'undoModifyData',
+                uuidParent: newWindow.uuid,
+                disabled: false
               })
               const processList = tabItem.getProcessesList().map(processItem => {
                 return {
