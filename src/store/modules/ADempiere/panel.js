@@ -382,6 +382,10 @@ const panel = {
                   dispatch('tagsView/delView', oldRoute, true)
                 })
                 .catch(error => {
+                  showMessage({
+                    message: error.code + ': ' + error.message,
+                    type: 'error'
+                  })
                   console.warn('Create Entity Error ' + error.code + ': ' + error.message)
                 })
             } else {
@@ -411,6 +415,10 @@ const panel = {
                   })
                 })
                 .catch(error => {
+                  showMessage({
+                    message: error.code + ': ' + error.message,
+                    type: 'error'
+                  })
                   console.warn('Update Entity Error ' + error.code + ': ' + error.message)
                 })
             }
@@ -475,6 +483,10 @@ const panel = {
             }
           })
       } else if (parameters.type === 'window' || parameters.type === 'table') {
+        console.log('parentUuid:', parameters.parentUuid,
+          'containerUuid:', parameters.containerUuid,
+          'isAvancedQuery:', parameters.isAvancedQuery,
+          'panelType:', parameters.type)
         return dispatch('getTabAndFieldFromServer', {
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
