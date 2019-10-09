@@ -51,8 +51,10 @@ const utils = {
         dispatch('changeShowedCriteriaBrowser', params)
       }
     },
-    setTempShareLink({ commit }, text) {
-      commit('setTempShareLink', text)
+    setTempShareLink({ commit }, parameters) {
+      if (!parameters.href.includes(String(parameters.processId))) {
+        commit('setTempShareLink', parameters.href)
+      }
     }
   },
   getters: {

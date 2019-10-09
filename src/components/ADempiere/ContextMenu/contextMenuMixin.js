@@ -249,7 +249,7 @@ export const contextMixin = {
               console.warn(error)
             })
           if (this.panelType !== 'window') {
-            this.$store.dispatch('setTempShareLink', window.location.href)
+            this.$store.dispatch('setTempShareLink', { processId: this.$route.params.processId, href: window.location.href })
             this.$store.dispatch('tagsView/delView', this.$route)
           }
         } else {
@@ -280,6 +280,9 @@ export const contextMixin = {
       var shareLink = this.panelType === 'window' || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
         shareLink = this.$store.getters.getTempShareLink
+        if (String(this.valuesPanelToShare).length) {
+          shareLink += '?' + this.valuesPanelToShare
+        }
       } else {
         if (String(this.valuesPanelToShare).length) {
           shareLink += this.valuesPanelToShare
