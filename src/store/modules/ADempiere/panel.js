@@ -483,10 +483,6 @@ const panel = {
             }
           })
       } else if (parameters.type === 'window' || parameters.type === 'table') {
-        console.log('parentUuid:', parameters.parentUuid,
-          'containerUuid:', parameters.containerUuid,
-          'isAvancedQuery:', parameters.isAvancedQuery,
-          'panelType:', parameters.type)
         return dispatch('getTabAndFieldFromServer', {
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
