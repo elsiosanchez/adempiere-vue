@@ -556,8 +556,6 @@ const panel = {
       // all optionals (not mandatory) fields
       var isMandatoryField = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        // const isValue = fieldItem.value
-        // console.log(fieldItem.value)
         if (isMandatory) {
           const isDisplayed = fieldIsDisplayed(fieldItem)
           if (evaluateShowed) {
@@ -567,17 +565,8 @@ const panel = {
           return isMandatory
         }
       })
-      // var qlq
-      // qlq = isMandatoryField.filter(fieldItem => {
-      //   if (isEmptyValue(fieldItem.value)) {
-      //     return true
-      //   }
-      //   return false
-      // })
-      // console.log(qlq)
       var isMandatoryEmptyField = isMandatoryField.filter(fieldItem => {
         if (isEmptyValue(fieldItem.value)) {
-        // if (empty === undefined || empty === null) {
           return fieldItem.name
         }
       })
