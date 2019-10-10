@@ -178,8 +178,6 @@ const processControl = {
           recordId: recordId
         })
           .then(response => {
-            // Here you can notice that it brings it empty when it brings the response from the server
-            console.log(response.getResulttablename())
             var output = {
               uuid: '',
               name: '',
