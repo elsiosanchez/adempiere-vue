@@ -32,31 +32,58 @@
               <span v-else> {{ activity.summary }} </span>
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
+              <!-- show only when it is error -->
               <el-popover
+                v-if="activity.isError"
                 placement="right"
                 width="700"
                 trigger="hover"
               >
-                <div v-if="activity.isError === true">
+                <div>
                   {{ activity.message }}
-                </div>
-                <div v-else>
-                  <span v-if="activity.isReport === false">
-                    <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
-                    {{ activity.logs }}
-                  </span>
-                  <div v-else-if="activity.output">
-                    <span><b>output</b></span><br>
-                    <span><b>{{ $t('table.ProcessActivity.Name') }}:</b>{{ activity.output.name }}</span><br>
-                    <span><b>{{ $t('table.ProcessActivity.Description') }}:</b>{{ activity.output.description }}</span><br>
-                    <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br>
-                    <!-- <span>{{ activity.url }}</span><br> -->
-                  </div>
                 </div>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
                   {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
                 </el-tag>
               </el-popover>
+              <!-- show only when bring logs -->
+              <el-popover
+                v-else-if="activity.logs.length > 0"
+                placement="right"
+                width="700"
+                trigger="hover"
+              >
+                <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
+                <ul>
+                  <li v-for="(item, key) in activity.logs" :key="key">
+                    log: {{ item.log }} recordId: {{ item.recordId }}
+                  </li>
+                </ul>
+                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
+                  {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
+                </el-tag>
+              </el-popover>
+              <!-- show only when bring output -->
+              <el-popover
+                v-else-if="activity.output"
+                placement="right"
+                width="700"
+                trigger="hover"
+              >
+                <div>
+                  <span><b>output</b></span><br>
+                  <span><b>{{ $t('table.ProcessActivity.Name') }}:</b>{{ activity.output.name }}</span><br>
+                  <span><b>{{ $t('table.ProcessActivity.Description') }}:</b>{{ activity.output.description }}</span><br>
+                  <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br>
+                  <!-- <span>{{ activity.url }}</span><br> -->
+                </div>
+                <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
+                  {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
+                </el-tag>
+              </el-popover>
+              <el-tag v-else :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
+                {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
+              </el-tag>
             </el-form-item>
           </el-form>
         </el-card>
@@ -115,7 +142,6 @@ export default {
         // add new process to show
         processAllReturned.push(processMetadataReturned)
       })
-
       return processAllReturned
     }
   },

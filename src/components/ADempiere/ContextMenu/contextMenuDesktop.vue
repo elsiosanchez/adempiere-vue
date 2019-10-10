@@ -55,10 +55,12 @@
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}
           </template>
-          <template v-for="(reference, index) in references.referencesList">
-            <el-menu-item :key="index" :index="reference.displayName" @click="runAction(reference)">
-              {{ reference.displayName }}
-            </el-menu-item>
+          <template v-if="references.referencesList">
+            <template v-for="(reference, index) in references.referencesList">
+              <el-menu-item :key="index" :index="reference.displayName" @click="runAction(reference)">
+                {{ reference.displayName }}
+              </el-menu-item>
+            </template>
           </template>
         </el-submenu>
       </template>
