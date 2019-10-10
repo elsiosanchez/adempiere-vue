@@ -139,7 +139,8 @@ export const contextMixin = {
     refreshData() {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid
+        containerUuid: this.containerUuid,
+        refrest: true
       })
         .catch(error => {
           console.warn(error)

@@ -473,7 +473,7 @@ const windowControl = {
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
      */
-    getDataListTab({ dispatch, commit, rootGetters }, parameters) {
+    getDataListTab({ state, dispatch, commit, rootGetters }, parameters) {
       return new Promise((resolve, reject) => {
         const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
         const parsedQuery = parseContext({
@@ -481,14 +481,15 @@ const windowControl = {
           containerUuid: parameters.containerUuid,
           value: tab.query
         })
-
         var parsedWhereClause
-        if (!isEmptyValue(tab.whereClause)) {
-          parsedWhereClause = parseContext({
-            parentUuid: parameters.parentUuid,
-            containerUuid: parameters.containerUuid,
-            value: tab.whereClause
-          })
+        if (!parameters.value) {
+          if (!isEmptyValue(tab.whereClause)) {
+            parsedWhereClause = parseContext({
+              parentUuid: parameters.parentUuid,
+              containerUuid: parameters.containerUuid,
+              value: tab.whereClause
+            })
+          }
         }
 
         if (parameters.isReference) {
@@ -513,6 +514,22 @@ const windowControl = {
           .catch(error => {
             reject(error)
           })
+        if (parameters.refrest) {
+          dispatch('getObjectListFromCriteria', {
+            parentUuid: parameters.parentUuid,
+            containerUuid: parameters.containerUuid,
+            tableName: tab.tableName,
+            query: parsedQuery,
+            orderByClause: tab.orderByClause
+          })
+            .then(response => {
+              commit('setDataListRecords', response)
+              resolve(response)
+            })
+            .catch(error => {
+              reject(error)
+            })
+        }
       })
     },
     /**
