@@ -541,6 +541,12 @@ export function assignedGroup(fieldList, assignedGroup) {
   let typeGroup = ''
 
   fieldList.forEach(fieldElement => {
+    if (fieldElement.panelType !== 'window') {
+      fieldElement.groupAssigned = ''
+      fieldElement.typeGroupAssigned = ''
+      return
+    }
+
     // change the first field group, change the band
     if (!firstChangeGroup) {
       if (!valueUtil.isEmptyValue(fieldElement.fieldGroup.name) &&

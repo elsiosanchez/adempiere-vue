@@ -12,8 +12,8 @@
       >
         <div v-show="firstGroup.activeFields" class="cards-not-group">
           <div
-            v-if="(group.groupType == 'T' && group.groupName == firstGroup.groupFinal)
-              || (group.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
+            v-if="(groupTab.groupType == 'T' && groupTab.groupName == firstGroup.groupFinal)
+              || (groupTab.groupType !== 'T' && firstGroup.typeGroup !== 'T')"
             class="card"
           >
             <div class="select-filter">
@@ -64,8 +64,8 @@
               <el-col :key="key" :span="24">
                 <div
                   v-if="item.groupFinal !== ''
-                    && (group.groupType == 'T' && group.groupName == item.groupFinal)
-                    || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                    && (groupTab.groupType == 'T' && groupTab.groupName == item.groupFinal)
+                    || (groupTab.groupType !== 'T' && item.typeGroup !== 'T')"
                   :key="key"
                   class="card"
                 >
@@ -116,8 +116,8 @@
               <el-col :key="key" :span="24">
                 <div
                   v-if="item.groupFinal !== ''
-                    && (group.groupType == 'T' && group.groupName == item.groupFinal)
-                    || (group.groupType !== 'T' && item.typeGroup !== 'T')"
+                    && (groupTab.groupType == 'T' && groupTab.groupName == item.groupFinal)
+                    || (groupTab.groupType !== 'T' && item.typeGroup !== 'T')"
                   :key="key"
                   class="card"
                 >
@@ -200,7 +200,8 @@ export default {
       type: Object,
       default: () => {}
     },
-    group: {
+    // tab type group
+    groupTab: {
       type: Object,
       default: () => ({
         groupType: '',
@@ -490,23 +491,29 @@ export default {
       if (arr === undefined) {
         return
       }
+      var res = [{
+        groupFinal: '',
+        metadataFields: arr
+      }]
 
       // reduce, create array with number groupAssigned element comun
-      var res = arr
-        .reduce((res, currentValue) => {
-          if (res.indexOf(currentValue.groupAssigned) === -1) {
-            res.push(currentValue.groupAssigned)
-          }
-          return res
-        }, [])
-        .map(itemGroup => {
-          return {
-            groupFinal: itemGroup,
-            metadataFields: arr.filter(itemField => {
-              return itemField.groupAssigned === itemGroup
-            })
-          }
-        })
+      if (this.panelType === 'window') {
+        res = arr
+          .reduce((res, currentValue) => {
+            if (!res.includes(currentValue.groupAssigned)) {
+              res.push(currentValue.groupAssigned)
+            }
+            return res
+          }, [])
+          .map(itemGroup => {
+            return {
+              groupFinal: itemGroup,
+              metadataFields: arr.filter(itemField => {
+                return itemField.groupAssigned === itemGroup
+              })
+            }
+          })
+      }
 
       // count and add the field numbers according to your group
       Object.keys(res).forEach(key => {
@@ -531,8 +538,8 @@ export default {
           }
         })
 
-        if ((this.group.groupType === 'T' && this.group.groupName === res[key].groupFinal) ||
-          (this.group.groupType !== 'T' && res[key].typeGroup !== 'T')) {
+        if ((this.groupTab.groupType === 'T' && this.groupTab.groupName === res[key].groupFinal) ||
+          (this.groupTab.groupType !== 'T' && res[key].typeGroup !== 'T')) {
           this.groupsView = this.groupsView + 1
         }
         res[key].activeFields = count

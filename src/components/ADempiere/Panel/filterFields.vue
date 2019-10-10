@@ -50,14 +50,16 @@ export default {
     },
     getterFieldListOptional() {
       if (this.panelType === 'table') {
-        return this.$store.getters.getFieldsListFromPanel(this.containerUuid, this.isAvancedQuery).filter(
-          fieldItem => {
-            return fieldItem.groupAssigned === this.groupField
-          })
+        // fields to search without taking into account the mandatory
+        return this.$store.getters.getFieldsListFromPanel(this.containerUuid, this.isAvancedQuery)
+      } else if (this.panelType === 'window') {
+        // compare group fields to window
+        return this.$store.getters.getFieldsListNotMandatory(this.containerUuid).filter(fieldItem => {
+          return fieldItem.groupAssigned === this.groupField
+        })
       }
-      return this.$store.getters.getFieldsListNotMandatory(this.containerUuid).filter(fieldItem => {
-        return fieldItem.groupAssigned === this.groupField
-      })
+      // get fields not mandatory
+      return this.$store.getters.getFieldsListNotMandatory(this.containerUuid)
     },
     getFieldSelected() {
       if (this.panelType === 'table') {

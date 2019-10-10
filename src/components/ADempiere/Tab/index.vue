@@ -16,7 +16,7 @@
           :parent-uuid="windowUuid"
           :container-uuid="item.uuid"
           :metadata="item"
-          :group="item.tabGroup"
+          :group-tab="item.tabGroup"
           :panel-type="panelType"
           :is-re-search="Boolean(key == 0 || (key > 0 && firstTableName != item.tableName))"
         />
