@@ -431,7 +431,7 @@ export default {
       this.getData(parameters)
     },
     /**
-     * @param  {Objecy} parameters parameters to condition the data query
+     * @param  {Object} parameters parameters to condition the data query
      */
     getData(parameters) {
       if (parameters.isWindow && this.panelType === 'window') {
@@ -442,7 +442,7 @@ export default {
         })
           .then(response => {
             if (response.length) {
-              var firstRecord = response[0]
+              this.dataRecords = response[0]
               if (this.$route.query.action === 'create-new') {
                 this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
               } else if (this.$route.query.action === 'reference') {
@@ -450,16 +450,16 @@ export default {
                 this.$store.dispatch('notifyPanelChange', {
                   parentUuid: this.parentUuid,
                   containerUuid: this.containerUuid,
-                  newValues: firstRecord,
+                  newValues: this.dataRecords,
                   isDontSendToEdit: true,
                   fieldList: this.fieldList
                 })
               } else {
-                this.$router.push({ name: this.$route.name, query: { action: firstRecord.UUID, ...this.$route.query }})
+                this.$router.push({ name: this.$route.name, query: { action: this.dataRecords.UUID, ...this.$route.query }})
                 this.$store.dispatch('notifyPanelChange', {
                   parentUuid: this.parentUuid,
                   containerUuid: this.containerUuid,
-                  newValues: firstRecord,
+                  newValues: this.dataRecords,
                   isDontSendToEdit: true,
                   fieldList: this.fieldList
                 })
@@ -549,8 +549,8 @@ export default {
           fieldItem => fieldItem.isIdentifier === true
         )
         if (field !== undefined) {
-          if (this.dataRecords[field.name]) {
-            this.tagTitle.action = this.dataRecords[field.name]
+          if (this.dataRecords[field.columnName]) {
+            this.tagTitle.action = this.dataRecords[field.columnName]
           } else {
             this.tagTitle.action = field.value
           }
@@ -558,7 +558,7 @@ export default {
           this.tagTitle.action = this.$t('tagsView.seeRecord')
         }
       }
-      if (this.$route.meta && this.$route.meta.type === 'window') {
+      if (this.panelType === 'window'/* this.$route.meta && this.$route.meta.type === 'window' */) {
         var route = Object.assign({}, tempRoute, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
         this.$store.dispatch('tagsView/updateVisitedView', route)
       }
@@ -570,14 +570,15 @@ export default {
     },
     changePanelRecord(uuidRecord) {
       if (uuidRecord !== 'create-new' && uuidRecord !== 'reference') {
-        var newPanelValues = this.$store.getters.getDataListRecords.find(record => record.UUID === uuidRecord)
+        this.dataRecords = this.$store.getters.getDataRecordsList(this.containerUuid).find(record => record.UUID === uuidRecord)
         this.$store.dispatch('notifyPanelChange', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          newValues: newPanelValues,
+          newValues: this.dataRecords,
           isDontSendToEdit: true,
           fieldList: this.fieldList
         })
+        this.setTagsViewTitle(uuidRecord)
       }
     }
   }

@@ -8,7 +8,6 @@ const windowControl = {
     inCreate: [],
     references: [],
     windowRoute: {},
-    dataListRecords: [],
     dataLog: {} // { containerUuid, recordId, tableName, eventType }
   },
   mutations: {
@@ -32,9 +31,6 @@ const windowControl = {
     },
     addWindowRoute(state, payload) {
       state.windowRoute = payload
-    },
-    setDataListRecords(state, payload) {
-      state.dataListRecords = payload
     },
     setDataLog(state, payload) {
       state.dataLog = payload
@@ -508,7 +504,6 @@ const windowControl = {
           orderByClause: tab.orderByClause
         })
           .then(response => {
-            commit('setDataListRecords', response)
             resolve(response)
           })
           .catch(error => {
@@ -589,9 +584,6 @@ const windowControl = {
         return current
       }
       return undefined
-    },
-    getDataListRecords: (state) => {
-      return state.dataListRecords
     }
   }
 }
