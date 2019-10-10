@@ -154,7 +154,7 @@ const processControl = {
           isProcessing: true,
           isReport: processDefinition.isReport,
           summary: '',
-          resultTableId: '',
+          ResultTableName: '',
           logs: [],
           output: {
             uuid: '',
@@ -233,7 +233,7 @@ const processControl = {
               isError: response.getIserror(),
               isProcessing: response.getIsprocessing(),
               summary: response.getSummary(),
-              resultTableId: response.getResulttableid(),
+              ResultTableName: response.getResulttablename(),
               logs: logList,
               output: output
             })
@@ -319,7 +319,7 @@ const processControl = {
                 logs: logList,
                 output: output,
                 parametersMap: responseItem.getParametersMap(),
-                resultTableId: responseItem.getResulttableid(),
+                ResultTableName: responseItem.getResulttablename(),
                 summary: responseItem.getSummary()
               }
               return process
