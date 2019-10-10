@@ -50,13 +50,13 @@
               <el-popover
                 v-else-if="activity.logs.length > 0"
                 placement="right"
-                width="700"
+                width="500"
                 trigger="hover"
               >
                 <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
                 <ul>
                   <li v-for="(item, key) in activity.logs" :key="key">
-                    log: {{ item.log }} recordId: {{ item.recordId }}
+                    log: {{ item.log }}
                   </li>
                 </ul>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
