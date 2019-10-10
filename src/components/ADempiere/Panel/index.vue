@@ -428,6 +428,7 @@ export default {
         parameters['isLoadAllRecords'] = false
         parameters['uuidRecord'] = route.query.action
         parameters['tableName'] = this.metadata.tableName
+        parameters['columnName'] = 'UUID'
       }
       this.getData(parameters)
     },

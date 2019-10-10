@@ -501,7 +501,11 @@ const windowControl = {
           tableName: tab.tableName,
           query: parsedQuery,
           whereClause: parameters.isLoadAllRecords ? parsedWhereClause : tab.customWhereClause,
-          orderByClause: tab.orderByClause
+          orderByClause: tab.orderByClause,
+          conditions: [{
+            columnName: parameters.columnName,
+            value: parameters.uuidRecord
+          }]
         })
           .then(response => {
             resolve(response)
