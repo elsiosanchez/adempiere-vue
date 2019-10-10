@@ -2,7 +2,6 @@ import { login, logout, getInfo, changeRole } from '@/api/user'
 import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import { clientDateTime } from '@/utils/ADempiere/valueUtil.js'
 
 const state = {
   token: getToken(),
@@ -93,7 +92,7 @@ const actions = {
           { columnName: '#AD_Role_Name', value: rol.name },
           { columnName: '#AD_Client_ID', value: rol.clientId },
           { columnName: '#AD_Client_Name', value: rol.clientName },
-          { columnName: '#Date', value: clientDateTime() },
+          { columnName: '#Date', value: new Date() },
           // TODO: Support in request
           // { columnName: '#AD_User_ID', value: response.id },
           { columnName: '#SysAdmin', value: 'Y' },

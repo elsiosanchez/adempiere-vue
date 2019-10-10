@@ -456,14 +456,19 @@ export function parseContext(context) {
     if (ctxInfo === undefined || ctxInfo.length === 0) {
       console.info('No Context for: ' + token)
     } else {
-      outStr = outStr + ctxInfo // replace context with Context
+      if (typeof ctxInfo === 'object') {
+        outStr = ctxInfo
+      } else {
+        outStr = outStr + ctxInfo // replace context with Context
+      }
     }
 
     inStr = inStr.substring(j + 1, inStr.length)	// from second @
     i = inStr.indexOf('@')
   }
-  outStr = outStr + inStr	// add the rest of the string
-
+  if (typeof ctxInfo !== 'object') {
+    outStr = outStr + inStr	// add the rest of the string
+  }
   return outStr
 }	//	parseContext
 
