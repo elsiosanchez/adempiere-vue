@@ -238,10 +238,13 @@ const window = {
 
             if (!fieldsList.find(field => field.columnName === 'UUID')) {
               var attributesOverwrite = {
-                sequence: (fieldUuidsequence + 10)
+                panelType: panelType,
+                sequence: (fieldUuidsequence + 10),
+                name: 'UUID',
+                columnName: 'UUID',
+                componentPath: 'FieldText'
               }
               var field = getFieldTemplate(attributesOverwrite)
-              field.columnName = 'UUID'
               fieldsList.push(field)
             }
             //  Panel for save on store

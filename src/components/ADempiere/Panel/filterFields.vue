@@ -34,7 +34,7 @@ export default {
       type: String,
       default: 'window'
     },
-    isAvancedQuery: {
+    isAdvancedQuery: {
       type: Boolean,
       default: false
     }
@@ -51,20 +51,18 @@ export default {
     getterFieldListOptional() {
       if (this.panelType === 'table') {
         // fields to search without taking into account the mandatory
-        return this.$store.getters.getFieldsListFromPanel(this.containerUuid, this.isAvancedQuery)
+        return this.$store.getters.getFieldsListFromPanel(this.containerUuid, this.isAdvancedQuery)
       } else if (this.panelType === 'window') {
         // compare group fields to window
-        return this.$store.getters.getFieldsListNotMandatory(this.containerUuid).filter(fieldItem => {
-          return fieldItem.groupAssigned === this.groupField
-        })
+        return this.$store.getters.getFieldsListNotMandatory(this.containerUuid)
+          .filter(fieldItem => {
+            return fieldItem.groupAssigned === this.groupField
+          })
       }
       // get fields not mandatory
       return this.$store.getters.getFieldsListNotMandatory(this.containerUuid)
     },
     getFieldSelected() {
-      if (this.panelType === 'table') {
-        return new Array(this.getterFieldListOptional[0].columnName)
-      }
       return this.getterFieldListOptional
         .filter(fieldItem => {
           return fieldItem.isShowedFromUser
@@ -91,7 +89,7 @@ export default {
         fieldsUser: selectedValues,
         show: true,
         groupField: this.groupField,
-        isAvancedQuery: this.isAvancedQuery
+        isAvancedQuery: this.isAdvancedQuery
       })
     }
   }

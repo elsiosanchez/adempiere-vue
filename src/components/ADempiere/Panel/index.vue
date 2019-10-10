@@ -24,7 +24,7 @@
                 :container-uuid="containerUuid"
                 :panel-type="panelType"
                 :group-field="firstGroup.groupFinal"
-                :is-avanced-query="isAvancedQuery"
+                :is-advanced-query="isAvancedQuery"
               />
             </div>
             <el-card
@@ -83,7 +83,7 @@
                           :panel-type="panelType"
                           :group-field="item.groupFinal"
                           :is-first-group="false"
-                          :is-avanced-query="isAvancedQuery"
+                          :is-advanced-query="isAvancedQuery"
                         />
                       </div>
                     </div>

@@ -77,11 +77,7 @@ const panel = {
       params.keyColumn = keyColumn
       params.selectionColumn = selectionColumn
       params.recordUuid = null
-      if (params.isAvancedQuery) {
-        params.fieldList = assignedGroup(params.fieldList.filter(field => params.selectionColumn.includes(field.columnName)))
-      } else {
-        params.fieldList = assignedGroup(params.fieldList)
-      }
+      params.fieldList = assignedGroup(params.fieldList)
 
       commit('addPanel', params)
     },

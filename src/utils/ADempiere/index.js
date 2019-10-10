@@ -13,6 +13,10 @@ import * as valueUtil from '@/utils/ADempiere/valueUtil.js'
  * @returns {boolean}
  */
 export function fieldIsDisplayed(field) {
+  // if is Advanced Query
+  if (field.panelType === 'table') {
+    return true
+  }
   const isBrowserDisplayed = field.isQueryCriteria // browser query criteria
   const isWindowDisplayed = field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result
   const isDisplayedView = (field.panelType === 'browser' && isBrowserDisplayed) || (field.panelType !== 'browser' && isWindowDisplayed)
@@ -618,7 +622,7 @@ export function parsedValueComponent({ fieldType, value, referenceType }) {
 
     // data type Boolean
     case 'FieldYesNo':
-      if (value === 'false') {
+      if (value === 'false' || value === 'N') {
         value = false
       }
       returnValue = Boolean(value)
