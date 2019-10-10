@@ -154,7 +154,7 @@ const processControl = {
           isProcessing: true,
           isReport: processDefinition.isReport,
           summary: '',
-          resultTableId: '',
+          ResultTableName: '',
           logs: [],
           output: {
             uuid: '',
@@ -178,6 +178,8 @@ const processControl = {
           recordId: recordId
         })
           .then(response => {
+            // Here you can notice that it brings it empty when it brings the response from the server
+            console.log(response.getResulttablename())
             var output = {
               uuid: '',
               name: '',
@@ -233,7 +235,7 @@ const processControl = {
               isError: response.getIserror(),
               isProcessing: response.getIsprocessing(),
               summary: response.getSummary(),
-              resultTableId: response.getResulttableid(),
+              ResultTableName: response.getResulttablename(),
               logs: logList,
               output: output
             })
@@ -319,7 +321,7 @@ const processControl = {
                 logs: logList,
                 output: output,
                 parametersMap: responseItem.getParametersMap(),
-                resultTableId: responseItem.getResulttableid(),
+                ResultTableName: responseItem.getResulttablename(),
                 summary: responseItem.getSummary()
               }
               return process

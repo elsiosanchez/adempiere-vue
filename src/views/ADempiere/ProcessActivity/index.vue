@@ -56,7 +56,7 @@
                 <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
                 <ul>
                   <li v-for="(item, key) in activity.logs" :key="key">
-                    log: {{ item.log }}
+                    {{ item.log }}
                   </li>
                 </ul>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
