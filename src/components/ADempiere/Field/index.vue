@@ -233,7 +233,7 @@ export default {
       return this.field.name
     },
     /**
-     * Evaluate the current field with the only fields contained in the
+     * TODO: Evaluate the current field with the only fields contained in the
      * constant FIELD_ONLY
      * @param  {integer} id [identifier of the type of isDisplayed]
      * @return {boolean}

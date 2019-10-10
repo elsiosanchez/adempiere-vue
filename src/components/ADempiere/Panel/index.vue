@@ -212,10 +212,6 @@ export default {
       type: String,
       default: 'window'
     },
-    isReSearch: {
-      type: Boolean,
-      default: true
-    },
     isAvancedQuery: {
       type: Boolean,
       default: false
@@ -301,6 +297,9 @@ export default {
       }
     },
     '$route.query.action'(newValue, oldValue) {
+      // used in field, if uuid record or different create-new, field is read only
+      this.uuidRecord = newValue
+
       if (newValue !== oldValue) {
         this.changePanelRecord(newValue)
       }
@@ -355,6 +354,9 @@ export default {
 
       this.isLoadPanel = true
     },
+    /**
+     * TODO: Delete route parameters after reading them
+     */
     readParameters(route) {
       var parameters = {
         isLoadAllRecords: true,
@@ -363,6 +365,7 @@ export default {
         isWindow: true
       }
       if (this.panelType === 'window') {
+        // TODO: use action notifyPanelChange with isShowedField in true
         this.getterFieldList.forEach(fieldItem => {
           if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAvancedQuery) {
             fieldItem.isShowedFromUser = true
@@ -380,8 +383,30 @@ export default {
             }
           }
         })
+
+        if (route.query.action && route.query.action === 'reference') {
+          parameters.isLoadAllRecords = false
+          parameters.isReference = true
+          parameters.referenceUuid = route.query.referenceUuid
+          parameters.referenceWhereClause = route.query.whereClause
+        } else if (route.query.action && route.query.action === 'create-new') {
+          parameters.isNewRecord = true
+        } else if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference') {
+          this.$store.dispatch('addCustomWhereClauseFromRoute', {
+            actionValue: route.query.action,
+            tabUuid: this.containerUuid,
+            windowUuid: this.parentUuid
+          })
+          parameters.isLoadAllRecords = false
+          parameters.uuidRecord = route.query.action
+          parameters.tableName = this.metadata.tableName
+          parameters.columnName = 'UUID'
+        }
+        // Only call get data if panel type is window
+        this.getData(parameters)
       } else {
         if (this.panelType === 'table' && route.query.action === 'avancedQuery') {
+          // TODO: use action notifyPanelChange with isShowedField in true
           this.fieldList.forEach(fieldItem => {
             if (route.query.hasOwnProperty(fieldItem.columnName) && fieldItem.isAvancedQuery) {
               fieldItem.isShowedFromUser = true
@@ -400,40 +425,19 @@ export default {
               }
             }
           })
-          parameters['isWindow'] = false
+          parameters.isWindow = false
         } else if (this.panelType === 'process' || this.panelType === 'browser') {
           this.$store.dispatch('notifyPanelChange', {
             containerUuid: this.containerUuid,
             newValues: route.query,
             isShowedField: true
           })
-          parameters['isWindow'] = false
+          parameters.isWindow = false
         }
       }
-      if (route.query.action && route.query.action === 'create-new') {
-        parameters['isNewRecord'] = true
-      }
-      if (route.query.action && route.query.action === 'reference') {
-        parameters['isLoadAllRecords'] = false
-        parameters['isReference'] = true
-        parameters['referenceUuid'] = route.query.referenceUuid
-        parameters['referenceWhereClause'] = route.query.whereClause
-      }
-      if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference' && this.panelType === 'window') {
-        this.$store.dispatch('addCustomWhereClauseFromRoute', {
-          actionValue: route.query.action,
-          tabUuid: this.containerUuid,
-          windowUuid: this.parentUuid
-        })
-        parameters['isLoadAllRecords'] = false
-        parameters['uuidRecord'] = route.query.action
-        parameters['tableName'] = this.metadata.tableName
-        parameters['columnName'] = 'UUID'
-      }
-      this.getData(parameters)
     },
     /**
-     * @param  {Object} parameters parameters to condition the data query
+     * @param  {object} parameters parameters to condition the data query
      */
     getData(parameters) {
       if (parameters.isWindow && this.panelType === 'window') {

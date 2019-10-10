@@ -578,7 +578,6 @@ const panel = {
           if (evaluateShowed) {
             return isDisplayed
           }
-          console.log(isMandatory)
           return isMandatory
         }
       })
