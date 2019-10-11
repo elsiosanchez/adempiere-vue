@@ -260,14 +260,14 @@ export const contextMixin = {
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
             reportFormat: this.reportFormat,
-            menuParentUuid: parentMenu // to load relations in context menu (report view)
+            menuParentUuid: parentMenu, // to load relations in context menu (report view)
+            routeToDelete: this.$route
           })
             .catch(error => {
               console.warn(error)
             })
-          if (this.panelType !== 'window') {
+          if (this.panelType === 'process') {
             this.$store.dispatch('setTempShareLink', { processId: this.$route.params.processId, href: window.location.href })
-            this.$store.dispatch('tagsView/delView', this.$route)
           }
         } else {
           this.showNotification({

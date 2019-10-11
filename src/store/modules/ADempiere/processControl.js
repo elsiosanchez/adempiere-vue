@@ -125,7 +125,9 @@ const processControl = {
           reportType = params.action.reportExportType
         }
         const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
-
+        if (params.panelType === 'process') {
+          router.push({ path: '/dashboard' })
+        }
         showNotification({
           title: language.t('notifications.processing'),
           message: processDefinition.name,
@@ -154,7 +156,7 @@ const processControl = {
           isProcessing: true,
           isReport: processDefinition.isReport,
           summary: '',
-          ResultTableName: '',
+          resultTableName: '',
           logs: [],
           output: {
             uuid: '',
@@ -259,7 +261,7 @@ const processControl = {
             }
 
             commit('addNotificationProcess', processResult)
-            dispatch('finishProcess', processResult)
+            dispatch('finishProcess', { processOutput: processResult, routeToDelete: params.routeToDelete })
 
             commit('deleteInExecution', {
               containerUuid: params.containerUuid
@@ -352,45 +354,43 @@ const processControl = {
         }
       }
     },
-    finishProcess({ commit, dispatch }, processOutput) {
+    finishProcess({ commit, dispatch }, parameters) {
       var processMessage = {
-        name: processOutput.processName,
+        name: parameters.processOutput.processName,
         title: language.t('notifications.succesful'),
         message: language.t('notifications.processExecuted'),
         type: 'success',
-        logs: processOutput.logs,
-        summary: processOutput.summary
+        logs: parameters.processOutput.logs,
+        summary: parameters.processOutput.summary
       }
-      var errorMessage = processOutput.message
+      var errorMessage = parameters.processOutput.message
       // TODO: Add isReport to type always 'success'
-      if (processOutput.isError) {
+      if (parameters.processOutput.isError) {
         processMessage.title = language.t('notifications.error')
         processMessage.message = errorMessage
         processMessage.type = 'error'
       }
+      // close view if is process, report or browser.
+      if (parameters.processOutput.panelType !== 'window' && parameters.processOutput.panelType !== 'browser') {
+        dispatch('tagsView/delView', parameters.routeToDelete)
+      }
 
-      const oldRoute = router.app._route
-      if (processOutput.isReport) {
+      if (parameters.processOutput.isReport) {
         // open report viewer with report response
         router.push({
           name: 'Report Viewer',
           params: {
-            processId: processOutput.processId,
-            instanceUuid: processOutput.instanceUuid,
-            fileName: processOutput.output.fileName,
-            menuParentUuid: processOutput.menuParentUuid
+            processId: parameters.processOutput.processId,
+            instanceUuid: parameters.processOutput.instanceUuid,
+            fileName: parameters.processOutput.output.fileName,
+            menuParentUuid: parameters.processOutput.menuParentUuid
           }
         })
       }
 
-      // close view if is process, report or browser.
-      if (processOutput.panelType !== 'window') {
-        dispatch('tagsView/delView', oldRoute, true)
-      }
-
       showNotification(processMessage)
-      commit('addStartedProcess', processOutput)
-      commit('setReportValues', processOutput)
+      commit('addStartedProcess', parameters.processOutput)
+      commit('setReportValues', parameters.processOutput)
     },
     changeFormatReport({ commit }, reportFormat) {
       if (reportFormat !== undefined) {
