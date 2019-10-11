@@ -50,9 +50,9 @@ export const fieldMixin = {
           newValue: value === 'NotSend' ? this.value : value,
           valueTo: valueTo,
           displayColumn: label,
-          isDontSendToEdit: Boolean(value === 'NotSend') || this.metadata.isAvancedQuery,
+          isDontSendToEdit: Boolean(value === 'NotSend') || this.metadata.isAdvancedQuery,
           isDontSendToQuery: Boolean(value === 'NotSend'),
-          isAvancedQuery: this.metadata.isAvancedQuery,
+          isAdvancedQuery: this.metadata.isAdvancedQuery,
           isChangedOldValue: this.metadata.componentPath === 'FieldYesNo' && Boolean(value === 'NotSend')
         })
       }

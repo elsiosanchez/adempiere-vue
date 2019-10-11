@@ -33,10 +33,10 @@
               <el-menu-item
                 v-if="panelType === 'window'"
                 :disabled="Boolean(getterTotalDataRecordCount <= 0)"
-                index="avancedQuery"
-                @click="activeAvancedQuery(!isAvancedQuery)"
+                index="advancedQuery"
+                @click="activeAdvancedQuery(!isAdvancedQuery)"
               >
-                {{ $t('table.dataTable.avancedQuery') }}
+                {{ $t('table.dataTable.advancedQuery') }}
               </el-menu-item>
             </el-submenu>
           </el-menu>
@@ -97,10 +97,10 @@
                 <el-menu-item
                   v-if="panelType === 'window'"
                   :disabled="Boolean(getterTotalDataRecordCount <= 0)"
-                  index="avancedQuery"
-                  @click="activeAvancedQuery(!isAvancedQuery)"
+                  index="advancedQuery"
+                  @click="activeAdvancedQuery(!isAdvancedQuery)"
                 >
-                  {{ $t('table.dataTable.avancedQuery') }}
+                  {{ $t('table.dataTable.advancedQuery') }}
                 </el-menu-item>
               </el-submenu>
             </el-menu>
@@ -162,14 +162,14 @@
     <el-collapse-transition>
       <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
       <!-- // TODO: Copy panell with getter and filter fields -->
-      <el-collapse v-if="isParent" v-show="isAvancedQuery || $route.query.action === 'avancedQuery'" v-model="activeNames" @change="handleChange">
-        <el-collapse-item :title="$t('table.dataTable.avancedQuery')" name="1">
+      <el-collapse v-if="isParent" v-show="isAdvancedQuery || $route.query.action === 'advancedQuery'" v-model="activeNames" @change="handleChange">
+        <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
           <main-panel
             :container-uuid="containerUuid"
             :parent-uuid="parentUuid"
             :metadata="getterPanel"
             :panel-type="'table'"
-            :is-avanced-query="true"
+            :is-advanced-query="true"
           />
         </el-collapse-item>
       </el-collapse>
@@ -324,7 +324,7 @@ export default {
       inEdited: [],
       uuidCurrentRecordSelected: '',
       showTableSearch: false,
-      isAvancedQuery: false
+      isAdvancedQuery: false
     }
   },
   computed: {
@@ -366,7 +366,7 @@ export default {
       if (this.panelType === 'window') {
         // table record navigation
         if (this.isParent) {
-          if (this.isAvancedQuery) {
+          if (this.isAdvancedQuery) {
             return this.getterHeight - 200
           } else {
             return this.getterHeight - 180
@@ -405,8 +405,8 @@ export default {
       return false
     },
     windowFields() {
-      if (this.isAvancedQuery) {
-        return this.$store.getters.getPanelParameters(this.containerUuid, false, [], this.isAvancedQuery).params
+      if (this.isAdvancedQuery) {
+        return this.$store.getters.getPanelParameters(this.containerUuid, false, [], this.isAdvancedQuery).params
       }
       return undefined
     }
@@ -669,7 +669,7 @@ export default {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
           type: this.panelType,
-          isAvancedQuery: this.isAvancedQuery
+          isAdvancedQuery: this.isAdvancedQuery
         }).then(response => {
           this.isLoadPanelFromServer = true
         }).catch(error => {
@@ -692,11 +692,11 @@ export default {
         this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
       }
     },
-    activeAvancedQuery(value) {
-      this.isAvancedQuery = value
+    activeAdvancedQuery(value) {
+      this.isAdvancedQuery = value
       if (value) {
         this.$store.dispatch('setOldAction', this.$route.query.action)
-        this.$router.push({ query: { ...this.$route.query, action: 'avancedQuery' }})
+        this.$router.push({ query: { ...this.$route.query, action: 'advancedQuery' }})
       }
       if (!value) {
         var oldAction = this.$store.getters.getOldAction

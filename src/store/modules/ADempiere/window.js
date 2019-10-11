@@ -206,7 +206,7 @@ const window = {
               panelType: panelType,
               //
               isReadOnlyFromForm: false,
-              isAvancedQuery: objectParams.isAvancedQuery
+              isAdvancedQuery: objectParams.isAdvancedQuery
             }
 
             var fieldUuidsequence = 0
@@ -258,7 +258,7 @@ const window = {
               linkColumnName: response.getLinkcolumnname(),
               parentColumnName: response.getParentcolumnname(),
               panelType: panelType,
-              isAvancedQuery: objectParams.isAvancedQuery
+              isAdvancedQuery: objectParams.isAdvancedQuery
             }
 
             dispatch('addPanel', panel)

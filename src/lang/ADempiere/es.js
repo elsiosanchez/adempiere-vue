@@ -144,7 +144,7 @@ export default {
       records: 'Registros',
       selected: 'Seleccionados',
       deleteSelection: 'Eliminar registros seleccionados',
-      avancedQuery: 'Consulta avanzada'
+      advancedQuery: 'Consulta avanzada'
     },
     recentItems: {
       search: 'Filtrar por nombre, descripción o fecha',
@@ -159,7 +159,8 @@ export default {
     closeOthers: 'Cerrar otros',
     closeAll: 'Cerrar todos',
     newRecord: 'Nuevo Registro',
-    seeRecord: 'Ver Registro'
+    seeRecord: 'Ver Registro',
+    advancedQuery: 'Consulta Avanzada'
   },
   settings: {
     title: 'Configuración de estilo de página',

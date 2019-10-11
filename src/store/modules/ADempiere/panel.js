@@ -63,7 +63,7 @@ const panel = {
           selectionColumn.push(itemField.columnName)
         }
 
-        if (!(params.panelType === 'table' || params.isAvancedQuery)) {
+        if (!(params.panelType === 'table' || params.isAdvancedQuery)) {
           // TODO: Evaluate if send context when is children tab
           dispatch('setContext', {
             parentUuid: params.parentUuid,
@@ -83,7 +83,7 @@ const panel = {
     },
     // used by components/fields/filterFields
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
-      var panel = getters.getPanel(params.containerUuid, params.isAvancedQuery)
+      var panel = getters.getPanel(params.containerUuid, params.isAdvancedQuery)
       var showsFieldsWithValue = false
       var hiddenFieldsWithValue = false
       var newFields = panel.fieldList.map(itemField => {
@@ -96,7 +96,7 @@ const panel = {
               if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
                 showsFieldsWithValue = true
               }
-              if (params.isAvancedQuery) {
+              if (params.isAdvancedQuery) {
                 itemField.isShowedFromUser = false
               }
               itemField.isShowedFromUser = true
@@ -107,7 +107,7 @@ const panel = {
             if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
               hiddenFieldsWithValue = true
             }
-            if (params.isAvancedQuery) {
+            if (params.isAdvancedQuery) {
               itemField.isShowedFromUser = false
             }
             itemField.isShowedFromUser = false
@@ -120,7 +120,7 @@ const panel = {
               if (!isEmptyValue(itemField.value) && !itemField.isShowedFromUser) {
                 showsFieldsWithValue = true
               }
-              if (params.isAvancedQuery) {
+              if (params.isAdvancedQuery) {
                 itemField.isShowedFromUser = false
               }
               itemField.isShowedFromUser = true
@@ -129,7 +129,7 @@ const panel = {
             if (!isEmptyValue(itemField.value) && itemField.isShowedFromUser) {
               hiddenFieldsWithValue = true
             }
-            if (params.isAvancedQuery) {
+            if (params.isAdvancedQuery) {
               itemField.isShowedFromUser = false
             }
             itemField.isShowedFromUser = false
@@ -251,12 +251,12 @@ const panel = {
      * @param {string} params.newValue
      * @param {string} params.panelType
      * @param {string} isDontSendToEdit // TODO: change to isSendToServer with default value in true,
-     * @param {string} params.isAvancedQuery // TODO: Rename to isAdvancedQuery
+     * @param {string} params.isAdvancedQuery // TODO: Rename to isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
       var panel
-      if (params.isAvancedQuery) {
-        panel = getters.getPanel(params.containerUuid, params.isAvancedQuery)
+      if (params.isAdvancedQuery) {
+        panel = getters.getPanel(params.containerUuid, params.isAdvancedQuery)
       } else {
         panel = getters.getPanel(params.containerUuid)
       }
@@ -281,7 +281,7 @@ const panel = {
         return
       }
 
-      if (!(params.panelType === 'table' || params.isAvancedQuery)) {
+      if (!(params.panelType === 'table' || params.isAdvancedQuery)) {
         //  Call context management
         dispatch('setContext', {
           parentUuid: params.parentUuid,
@@ -436,7 +436,7 @@ const panel = {
         }
       } else if (!params.isDontSendToQuery) {
         if (params.panelType === 'table' && fieldIsDisplayed(field)) {
-          if (panel.isAvancedQuery) {
+          if (panel.isAdvancedQuery) {
             dispatch('getObjectListFromCriteria', {
               containerUuid: panel.uuid,
               tableName: panel.tableName,
@@ -491,7 +491,7 @@ const panel = {
         return dispatch('getTabAndFieldFromServer', {
           parentUuid: parameters.parentUuid,
           containerUuid: parameters.containerUuid,
-          isAvancedQuery: parameters.isAvancedQuery,
+          isAdvancedQuery: parameters.isAdvancedQuery,
           panelType: parameters.type
         }).then(response => {
           return response
@@ -514,7 +514,7 @@ const panel = {
   getters: {
     getPanel: (state) => (containerUuid, isAdvancedQuery = false) => {
       return state.panel.find(item => {
-        return item.uuid === containerUuid && (!isAdvancedQuery || (isAdvancedQuery && item.isAvancedQuery))
+        return item.uuid === containerUuid && (!isAdvancedQuery || (isAdvancedQuery && item.isAdvancedQuery))
       })
     },
     getFieldsListFromPanel: (state, getters) => (containerUuid, isAdvancedQuery = false) => {
@@ -722,9 +722,9 @@ const panel = {
       containerUuid,
       withOut = [],
       isOnlyDisplayed = false,
-      isAvancedQuery = false
+      isAdvancedQuery = false
     }) => {
-      var fieldList = getters.getFieldsListFromPanel(containerUuid, isAvancedQuery)
+      var fieldList = getters.getFieldsListFromPanel(containerUuid, isAdvancedQuery)
       var attributesListLink = ''
       if (withOut.length) {
         fieldList = fieldList.filter(fieldItem => {
@@ -773,9 +773,9 @@ const panel = {
     /**
      * get field list visible and with values
      */
-    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = [], isAvancedQuery) => {
-      if (isAvancedQuery) {
-        var panel = getters.getPanel(containerUuid, isAvancedQuery)
+    getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = [], isAdvancedQuery) => {
+      if (isAdvancedQuery) {
+        var panel = getters.getPanel(containerUuid, isAdvancedQuery)
       } else {
         panel = getters.getPanel(containerUuid)
       }

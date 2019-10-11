@@ -24,7 +24,7 @@
                 :container-uuid="containerUuid"
                 :panel-type="panelType"
                 :group-field="firstGroup.groupFinal"
-                :is-advanced-query="isAvancedQuery"
+                :is-advanced-query="isAdvancedQuery"
               />
             </div>
             <el-card
@@ -44,7 +44,7 @@
                     :record-data-fields="dataRecords[subItem.columnName]"
                     :panel-type="panelType"
                     :in-group="!getterIsShowedRecordNavigation"
-                    :is-avanced-query="isAvancedQuery"
+                    :is-advanced-query="isAdvancedQuery"
                   />
                 </template>
               </el-row>
@@ -83,7 +83,7 @@
                           :panel-type="panelType"
                           :group-field="item.groupFinal"
                           :is-first-group="false"
-                          :is-advanced-query="isAvancedQuery"
+                          :is-advanced-query="isAdvancedQuery"
                         />
                       </div>
                     </div>
@@ -100,7 +100,7 @@
                           :record-data-fields="dataRecords[subItem.columnName]"
                           :panel-type="panelType"
                           :in-group="isMutipleGroups && fieldGroups.length > 1"
-                          :is-avanced-query="isAvancedQuery"
+                          :is-advanced-query="isAdvancedQuery"
                         />
                       </template>
                     </el-row>
@@ -129,7 +129,7 @@
                       <span>
                         {{ item.groupFinal }}
                       </span>
-                      <div v-if="!isAvancedQuery" class="select-filter-header">
+                      <div v-if="!isAdvancedQuery" class="select-filter-header">
                         <filter-fields
                           :container-uuid="containerUuid"
                           :panel-type="panelType"
@@ -212,7 +212,7 @@ export default {
       type: String,
       default: 'window'
     },
-    isAvancedQuery: {
+    isAdvancedQuery: {
       type: Boolean,
       default: false
     }
@@ -243,7 +243,7 @@ export default {
       return false
     },
     getterFieldList() {
-      var panel = this.$store.getters.getPanel(this.containerUuid, this.isAvancedQuery)
+      var panel = this.$store.getters.getPanel(this.containerUuid, this.isAdvancedQuery)
       if (panel) {
         return panel.fieldList
       }
@@ -313,7 +313,7 @@ export default {
   },
   created() {
     // get tab with uuid
-    this.getPanel(this.isAvancedQuery)
+    this.getPanel(this.isAdvancedQuery)
   },
   methods: {
     cards() {
@@ -325,7 +325,7 @@ export default {
     /**
      * Get the tab object with all its attributes as well as the fields it contains
      */
-    getPanel(isAvancedQuery) {
+    getPanel(isAdvancedQuery) {
       var fieldList = this.getterFieldList
       if (fieldList && Array.isArray(fieldList)) {
         this.generatePanel(fieldList)
@@ -333,8 +333,8 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          type: isAvancedQuery ? 'table' : this.panelType,
-          isAvancedQuery: isAvancedQuery
+          type: isAdvancedQuery ? 'table' : this.panelType,
+          isAdvancedQuery: isAdvancedQuery
         }).then(() => {
           this.isLoadFromServer = true
         }).catch(error => {
@@ -368,9 +368,9 @@ export default {
       if (this.panelType === 'window') {
         // TODO: use action notifyPanelChange with isShowedField in true
         this.getterFieldList.forEach(fieldItem => {
-          if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAvancedQuery) {
+          if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAdvancedQuery) {
             fieldItem.isShowedFromUser = true
-            if (String(route.query.isAvancedQuery) === String(fieldItem.isAvancedQuery)) {
+            if (String(route.query.isAdvancedQuery) === String(fieldItem.isAdvancedQuery)) {
               fieldItem.value = parsedValueComponent({
                 fieldType: fieldItem.componentPath,
                 value: route.query[fieldItem.columnName]
@@ -406,13 +406,13 @@ export default {
         // Only call get data if panel type is window
         this.getData(parameters)
       } else {
-        if (this.panelType === 'table' && route.query.action === 'avancedQuery') {
+        if (this.panelType === 'table' && route.query.action === 'advancedQuery') {
           // TODO: use action notifyPanelChange with isShowedField in true
           this.fieldList.forEach(fieldItem => {
-            if (route.query.hasOwnProperty(fieldItem.columnName) && fieldItem.isAvancedQuery) {
+            if (route.query.hasOwnProperty(fieldItem.columnName) && fieldItem.isAdvancedQuery) {
               fieldItem.isShowedFromUser = true
 
-              if (route.query.action === 'avancedQuery' === fieldItem.isAvancedQuery) {
+              if (route.query.action === 'advancedQuery' === fieldItem.isAdvancedQuery) {
                 fieldItem.value = parsedValueComponent({
                   fieldType: fieldItem.componentPath,
                   value: route.query[fieldItem.columnName]
@@ -531,7 +531,7 @@ export default {
         res[key].numberFields = res[key].metadataFields.length
 
         res[key].metadataFields.forEach((element, index) => {
-          if (element.isAvancedQuery) {
+          if (element.isAdvancedQuery) {
             element.isDisplayed = true
             element.isDisplayedFromLogic = true
             element.isShowedFromUser = true
@@ -557,6 +557,8 @@ export default {
       var tempRoute = this.$route
       if (actionValue === 'create-new' || actionValue === '') {
         this.tagTitle.action = this.$t('tagsView.newRecord')
+      } else if (actionValue === 'advancedQuery') {
+        this.tagTitle.action = this.$t('tagsView.advancedQuery')
       } else {
         var field = this.fieldList.find(
           fieldItem => fieldItem.isIdentifier === true
@@ -582,7 +584,7 @@ export default {
       dataTransfer.setData('Text', '')
     },
     changePanelRecord(uuidRecord) {
-      if (uuidRecord !== 'create-new' && uuidRecord !== 'reference') {
+      if (uuidRecord !== 'create-new' && uuidRecord !== 'reference' && uuidRecord !== 'advancedQuery') {
         this.dataRecords = this.$store.getters.getDataRecordsList(this.containerUuid).find(record => record.UUID === uuidRecord)
         this.$store.dispatch('notifyPanelChange', {
           parentUuid: this.parentUuid,
@@ -591,8 +593,8 @@ export default {
           isDontSendToEdit: true,
           fieldList: this.fieldList
         })
-        this.setTagsViewTitle(uuidRecord)
       }
+      this.setTagsViewTitle(uuidRecord)
     }
   }
 }

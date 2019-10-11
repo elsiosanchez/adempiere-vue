@@ -89,7 +89,7 @@ export default {
         fieldsUser: selectedValues,
         show: true,
         groupField: this.groupField,
-        isAvancedQuery: this.isAdvancedQuery
+        isAdvancedQuery: this.isAdvancedQuery
       })
     }
   }

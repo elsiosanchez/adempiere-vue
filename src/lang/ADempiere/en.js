@@ -144,7 +144,7 @@ export default {
       records: 'Records',
       selected: 'Selected',
       deleteSelection: 'Delete selected records',
-      avancedQuery: 'Avanced Query'
+      advancedQuery: 'Advanced Query'
     },
     recentItems: {
       search: 'Filter by name, description or date',
@@ -184,7 +184,8 @@ export default {
     closeOthers: 'Close Others',
     closeAll: 'Close All',
     newRecord: 'New Record',
-    seeRecord: 'See Record'
+    seeRecord: 'See Record',
+    advancedQuery: 'Advanced Query'
   },
   settings: {
     title: 'Page style setting',

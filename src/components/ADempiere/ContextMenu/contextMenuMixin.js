@@ -98,7 +98,7 @@ export const contextMixin = {
       return this.$store.getters.getParametersToShare({
         containerUuid: this.containerUuid,
         isOnlyDisplayed: true,
-        isAvancedQuery: this.$route.query.action === 'avancedQuery'
+        isAdvancedQuery: this.$route.query.action === 'advancedQuery'
       })
     },
     getterDataLog() {
@@ -305,7 +305,7 @@ export const contextMixin = {
         if (String(this.valuesPanelToShare).length) {
           shareLink += this.valuesPanelToShare
         }
-        if (this.$route.query.action && this.$route.query.action !== 'create-new' && this.$route.query.action !== 'reference' && this.$route.query.action !== 'avancedQuery') {
+        if (this.$route.query.action && this.$route.query.action !== 'create-new' && this.$route.query.action !== 'reference' && this.$route.query.action !== 'advancedQuery') {
           shareLink = window.location.href
         }
       }

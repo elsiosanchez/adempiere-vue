@@ -149,7 +149,7 @@ export default {
       isLoadingFromServer: false,
       listRecordNavigation: 0,
       isShowedTabChildren: true,
-      isShowedRecordNavigation: this.$route.query.action === 'avancedQuery'
+      isShowedRecordNavigation: this.$route.query.action === 'advancedQuery'
     }
   },
   computed: {

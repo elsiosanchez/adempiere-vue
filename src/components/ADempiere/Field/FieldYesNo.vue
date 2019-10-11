@@ -49,7 +49,7 @@ export default {
   methods: {
     preHandleChange(value) {
       this.handleChange(value)
-      if (!this.metadata.inTable && !this.metadata.isAvancedQuery) {
+      if (!this.metadata.inTable && !this.metadata.isAdvancedQuery) {
         this.isReadOnlyForm(this.value)
       }
     },

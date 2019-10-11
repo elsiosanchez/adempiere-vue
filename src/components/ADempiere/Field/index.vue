@@ -21,7 +21,7 @@
           ...field,
           panelType: panelType,
           inTable: inTable,
-          isAvancedQuery: isAvancedQuery,
+          isAdvancedQuery: isAdvancedQuery,
           // DOM properties
           required: isMandatory(),
           readonly: isReadOnly(),
@@ -94,7 +94,7 @@ export default {
       type: Boolean,
       default: false
     },
-    isAvancedQuery: {
+    isAdvancedQuery: {
       type: Boolean,
       default: false
     }
@@ -119,7 +119,7 @@ export default {
       return ''
     },
     getterIsShowedRecordNavigation() {
-      if (this.$route.query.action === 'avancedQuery') {
+      if (this.$route.query.action === 'advancedQuery') {
         return true
       }
       if (this.panelType === 'window') {
@@ -144,7 +144,7 @@ export default {
         newSizes.xl = 24
         return newSizes
       }
-      if (this.isAvancedQuery) {
+      if (this.isAdvancedQuery) {
         newSizes.xs = 24
         newSizes.sm = 24
         newSizes.md = 12
@@ -198,7 +198,7 @@ export default {
       return fieldIsDisplayed(this.field) && (this.isMandatory() || this.field.isShowedFromUser || this.inTable)
     },
     isReadOnly() {
-      if (this.isAvancedQuery) {
+      if (this.isAdvancedQuery) {
         return false
       }
 
@@ -221,7 +221,7 @@ export default {
       return isUpdateableAllFields
     },
     isMandatory() {
-      if (this.isAvancedQuery) {
+      if (this.isAdvancedQuery) {
         return false
       }
       return this.field.isMandatory || this.field.isMandatoryFromLogic
