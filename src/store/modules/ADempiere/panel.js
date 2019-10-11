@@ -512,13 +512,13 @@ const panel = {
     }
   },
   getters: {
-    getPanel: (state) => (containerUuid, isAvancedQuery = false) => {
+    getPanel: (state) => (containerUuid, isAdvancedQuery = false) => {
       return state.panel.find(item => {
-        return item.uuid === containerUuid && (!isAvancedQuery || (isAvancedQuery && item.isAvancedQuery))
+        return item.uuid === containerUuid && (!isAdvancedQuery || (isAdvancedQuery && item.isAvancedQuery))
       })
     },
-    getFieldsListFromPanel: (state, getters) => (containerUuid, isAvancedQuery = false) => {
-      var panel = getters.getPanel(containerUuid, isAvancedQuery)
+    getFieldsListFromPanel: (state, getters) => (containerUuid, isAdvancedQuery = false) => {
+      const panel = getters.getPanel(containerUuid, isAdvancedQuery)
       if (panel === undefined) {
         return []
       }
@@ -603,7 +603,6 @@ const panel = {
     getUuid: (state, getters) => (containerUuid) => {
       const fieldUuid = getters.getColumnNamesAndValues({
         containerUuid: containerUuid,
-        propertyName: 'value',
         isObjectReturn: true,
         isAddDisplayColumn: true
       })

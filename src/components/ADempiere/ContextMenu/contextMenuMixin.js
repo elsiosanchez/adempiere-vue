@@ -140,7 +140,8 @@ export const contextMixin = {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        refrest: true
+        isRefreshPanel: true,
+        recordUuid: this.recordUuid
       })
         .catch(error => {
           console.warn(error)

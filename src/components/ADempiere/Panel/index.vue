@@ -249,12 +249,10 @@ export default {
       }
       return panel
     },
-    getterRecordUuid() {
-      return this.$store.getters.getUuid(this.containerUuid)
-    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
+    // TODO: Verify used
     getterData() {
       return this.$store.getters.getRecordDetail({
         tableName: this.metadata.tableName,
@@ -267,7 +265,10 @@ export default {
       }
       return false
     },
-    getterIsLoadField() {
+    /**
+     * Load dictionary fields in panel
+     */
+    getterIsLoadedField() {
       if (this.panelType === 'window') {
         return this.$store.getters.getTabIsLoadField(this.parentUuid, this.containerUuid)
       }
@@ -291,7 +292,7 @@ export default {
         this.setTagsViewTitle(this.uuidRecord)
       }
     },
-    getterIsLoadField(value) {
+    getterIsLoadedField(value) {
       if (value) {
         this.readParameters(this.$route)
       }

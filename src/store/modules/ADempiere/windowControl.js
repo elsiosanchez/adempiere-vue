@@ -472,65 +472,62 @@ const windowControl = {
      * Get data to table in tab
      * @param {string}  parameters.parentUuid, window to search record data
      * @param {string}  parameters.containerUuid, tab to search record data
+     * @param {string}  parameters.recordUuid, uuid to search
+     * @param {boolean}  parameters.isRefreshPanel,
      */
-    getDataListTab({ state, dispatch, commit, rootGetters }, parameters) {
-      return new Promise((resolve, reject) => {
-        const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
-        const parsedQuery = parseContext({
-          parentUuid: parameters.parentUuid,
-          containerUuid: parameters.containerUuid,
-          value: tab.query
-        })
-        var parsedWhereClause
-        if (!parameters.value) {
-          if (!isEmptyValue(tab.whereClause)) {
-            parsedWhereClause = parseContext({
-              parentUuid: parameters.parentUuid,
-              containerUuid: parameters.containerUuid,
-              value: tab.whereClause
-            })
-          }
-        }
-
-        if (parameters.isReference) {
-          // TODO: add support to getCriteria from reference uuid and assign value to whereClause
-          // tab.customWhereClause = parameters.referenceWhereClause
-        }
-        dispatch('getObjectListFromCriteria', {
-          parentUuid: parameters.parentUuid,
-          containerUuid: parameters.containerUuid,
-          tableName: tab.tableName,
-          query: parsedQuery,
-          whereClause: parameters.isLoadAllRecords ? parsedWhereClause : tab.customWhereClause,
-          orderByClause: tab.orderByClause,
-          conditions: [{
-            columnName: parameters.columnName,
-            value: parameters.uuidRecord
-          }]
-        })
-          .then(response => {
-            resolve(response)
-          })
-          .catch(error => {
-            reject(error)
-          })
-        if (parameters.refrest) {
-          dispatch('getObjectListFromCriteria', {
+    getDataListTab({ dispatch, rootGetters }, parameters) {
+      const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      const parsedQuery = parseContext({
+        parentUuid: parameters.parentUuid,
+        containerUuid: parameters.containerUuid,
+        value: tab.query
+      })
+      var parsedWhereClause
+      if (!parameters.value) {
+        if (!isEmptyValue(tab.whereClause)) {
+          parsedWhereClause = parseContext({
             parentUuid: parameters.parentUuid,
             containerUuid: parameters.containerUuid,
-            tableName: tab.tableName,
-            query: parsedQuery,
-            orderByClause: tab.orderByClause
+            value: tab.whereClause
           })
-            .then(response => {
-              commit('setDataListRecords', response)
-              resolve(response)
-            })
-            .catch(error => {
-              reject(error)
-            })
         }
+      }
+
+      return dispatch('getObjectListFromCriteria', {
+        parentUuid: parameters.parentUuid,
+        containerUuid: parameters.containerUuid,
+        tableName: tab.tableName,
+        query: parsedQuery,
+        whereClause: parameters.isLoadAllRecords ? parsedWhereClause : tab.customWhereClause,
+        orderByClause: tab.orderByClause,
+        conditions: [{
+          columnName: parameters.columnName,
+          value: parameters.uuidRecord
+        }]
       })
+        .then(response => {
+          if (parameters.isRefreshPanel && parameters.recordUuid && parameters.recordUuid !== 'create-new') {
+            const newValues = response.find(itemData => itemData.UUID === parameters.recordUuid)
+            if (newValues) {
+              // update fields with values obtained from the server
+              dispatch('notifyPanelChange', {
+                containerUuid: parameters.containerUuid,
+                newValues: newValues,
+                isDontSendToEdit: true
+              })
+            } else {
+              // this record is missing (Deleted or the query does not include it)
+              dispatch('resetPanelToNew', {
+                containerUuid: parameters.containerUuid
+              })
+            }
+          }
+
+          return response
+        })
+        .catch(error => {
+          return error
+        })
     },
     /**
      * Get references asociate to record
