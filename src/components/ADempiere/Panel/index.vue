@@ -41,7 +41,7 @@
                       ...subItem,
                       optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                     }"
-                    :record-data-fields="dataRecords[subItem.columnName]"
+                    :record-data-fields="isAdvancedQuery ? undefined : dataRecords[subItem.columnName]"
                     :panel-type="panelType"
                     :in-group="!getterIsShowedRecordNavigation"
                     :is-advanced-query="isAdvancedQuery"
@@ -97,7 +97,7 @@
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                           }"
-                          :record-data-fields="dataRecords[subItem.columnName]"
+                          :record-data-fields="isAdvancedQuery ? undefined : dataRecords[subItem.columnName]"
                           :panel-type="panelType"
                           :in-group="isMutipleGroups && fieldGroups.length > 1"
                           :is-advanced-query="isAdvancedQuery"
@@ -148,7 +148,7 @@
                             ...subItem,
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                           }"
-                          :record-data-fields="dataRecords[subItem.columnName]"
+                          :record-data-fields="isAdvancedQuery ? undefined : dataRecords[subItem.columnName]"
                           :panel-type="panelType"
                           :in-group="isMutipleGroups && fieldGroups.length > 1"
                         />
