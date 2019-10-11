@@ -142,15 +142,29 @@ const panel = {
         containerUuid: params.containerUuid,
         newPanel: panel
       })
-      // Updated record result
-      if (panel.panelType === 'browser' && (showsFieldsWithValue || hiddenFieldsWithValue)) {
-        dispatch('getBrowserSearch', {
-          containerUuid: panel.uuid,
-          isClearSelection: true
-        })
-          .catch(error => {
-            console.warn(error)
+      if (showsFieldsWithValue || hiddenFieldsWithValue) {
+        // Updated record result
+        if (panel.panelType === 'browser') {
+          dispatch('getBrowserSearch', {
+            containerUuid: panel.uuid,
+            isClearSelection: true
           })
+            .catch(error => {
+              console.warn(error)
+            })
+        } else if (panel.panelType === 'table' && panel.isAdvancedQuery) {
+          dispatch('getObjectListFromCriteria', {
+            containerUuid: panel.uuid,
+            tableName: panel.tableName,
+            query: panel.query,
+            whereClause: panel.whereClause,
+            conditions: getters.getParametersToServer({
+              containerUuid: params.containerUuid,
+              isAdvancedQuery: true,
+              isEvaluateMandatory: false
+            })
+          })
+        }
       }
     },
     /**
@@ -435,7 +449,7 @@ const panel = {
           })
         }
       } else if (!params.isDontSendToQuery) {
-        if (params.panelType === 'table' && fieldIsDisplayed(field)) {
+        if (params.panelType === 'table' && fieldIsDisplayed(field) && field.isShowedFromUser) {
           if (panel.isAdvancedQuery) {
             dispatch('getObjectListFromCriteria', {
               containerUuid: panel.uuid,
@@ -848,13 +862,16 @@ const panel = {
 
           const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
           // mandatory fields
-          if (isEvaluateMandatory && isMandatory) {
+          if (isEvaluateMandatory && isMandatory && !isAdvancedQuery) {
             return true
           }
 
           // evaluate displayed fields
           if (isEvaluateDisplayed) {
-            const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+            var isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+            if (isAdvancedQuery) {
+              isDisplayed = fieldItem.isShowedFromUser
+            }
             if (isDisplayed && !isEmptyValue(fieldItem.value)) {
               return true
             }
