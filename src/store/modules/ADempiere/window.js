@@ -242,6 +242,7 @@ const window = {
                 sequence: (fieldUuidsequence + 10),
                 name: 'UUID',
                 columnName: 'UUID',
+                isAdvancedQuery: objectParams.isAdvancedQuery,
                 componentPath: 'FieldText'
               }
               var field = getFieldTemplate(attributesOverwrite)
