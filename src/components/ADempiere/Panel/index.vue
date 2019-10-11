@@ -345,7 +345,9 @@ export default {
     generatePanel(fieldList) {
       // order and assign groups
       this.fieldList = fieldList
-      this.fieldGroups = this.sortAndGroup(fieldList)
+      if (fieldList.length) {
+        this.fieldGroups = this.sortAndGroup(fieldList)
+      }
       var firstGroup
       if (this.fieldGroups[0] && this.fieldGroups[0].groupFinal === '') {
         firstGroup = this.fieldGroups[0]
@@ -525,7 +527,6 @@ export default {
       Object.keys(res).forEach(key => {
         let count = 0
         const typeG = res[key].metadataFields[0].typeGroupAssigned
-
         res[key].numberFields = res[key].metadataFields.length
         res[key].typeGroup = typeG
         res[key].numberFields = res[key].metadataFields.length
@@ -550,7 +551,6 @@ export default {
         }
         res[key].activeFields = count
       })
-
       return res
     },
     setTagsViewTitle(actionValue) {
