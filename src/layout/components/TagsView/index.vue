@@ -192,6 +192,12 @@ export default {
     closeSelectedTag(view) {
       if (this.$route.meta.uuid) {
         this.$store.dispatch('deleteRecordContainer', this.$route.meta.uuid)
+        if (view.meta.type === 'process' || view.meta.type === 'browser' || view.meta.type === 'report') {
+          this.$store.dispatch('resetPanelToNew', {
+            containerUuid: view.meta.uuid,
+            panelType: view.meta.type
+          })
+        }
       }
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
         if (this.isActive(view)) {
