@@ -51,6 +51,11 @@ export default {
       return this.$store.getters.permission_routes
     }
   },
+  watch: {
+    'getRol.uuid'(uuidRol) {
+      this.value = uuidRol
+    }
+  },
   created() {
     this.value = this.getRol.uuid
     this.getLanguageData()

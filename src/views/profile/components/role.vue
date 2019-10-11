@@ -14,7 +14,7 @@
 
     <el-form-item :label="$t('profile.changeRole')">
       <el-select
-        v-model="value"
+        v-model="valueRol"
         :filterable="!isMobile"
         value-key="key"
         @change="handleChange"
@@ -56,7 +56,7 @@ export default {
   name: 'ProfileRole',
   data() {
     return {
-      value: '',
+      valueRol: '',
       options: [],
       languageList: [],
       language: ''
@@ -82,8 +82,13 @@ export default {
       return this.$store.getters.permission_routes
     }
   },
+  watch: {
+    'getRol.uuid'(uuidRol) {
+      this.valueRol = uuidRol
+    }
+  },
   created() {
-    this.value = this.getRol.uuid
+    this.valueRol = this.getRol.uuid
     this.getLanguageData()
   },
   methods: {
