@@ -71,10 +71,11 @@
                 trigger="hover"
               >
                 <div>
-                  <span><b>output</b></span><br>
-                  <span><b>{{ $t('table.ProcessActivity.Name') }}:</b>{{ activity.output.name }}</span><br>
-                  <span><b>{{ $t('table.ProcessActivity.Description') }}:</b>{{ activity.output.description }}</span><br>
-                  <span><b>{{ $t('table.ProcessActivity.FileName') }}:</b>{{ activity.output.fileName }}</span><br>
+                  <span> {{ $t('table.ProcessActivity.Output') }} </span><br>
+                  <span>{{ $t('table.ProcessActivity.Name') }}: {{ activity.output.name }}</span><br>
+                  <span>{{ $t('table.ProcessActivity.Description') }}: {{ activity.output.description }}</span><br>
+                  <span>{{ $t('table.ProcessActivity.FileName') }}: {{ activity.output.fileName }}</span><br>
+                  <el-button type="text" @click="qlq(activity)">process</el-button>
                   <!-- <span>{{ activity.url }}</span><br> -->
                 </div>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">

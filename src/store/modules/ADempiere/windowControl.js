@@ -46,23 +46,25 @@ const windowControl = {
         containerUuid: parameters.containerUuid,
         propertyName: 'parsedDefaultValue',
         isObjectReturn: true,
+        panelType: parameters.panelType,
         isAddDisplayColumn: true
       })
 
-      // redirect to create new record
-      const oldRoute = router.app._route
-      router.push({
-        name: oldRoute.name,
-        query: {
-          action: 'create-new',
-          tabNumber: oldRoute.query.tabNumber
-        }
-      })
-      showMessage({
-        message: language.t('data.createNewRecord'),
-        type: 'info'
-      })
-
+      if (parameters.panelType !== 'process' || parameters.panelType !== 'browser' || parameters.panelType !== 'report') {
+        // redirect to create new record
+        const oldRoute = router.app._route
+        router.push({
+          name: oldRoute.name,
+          query: {
+            action: 'create-new',
+            tabNumber: oldRoute.query.tabNumber
+          }
+        })
+        // showMessage({
+        //   message: language.t('data.createNewRecord'),
+        //   type: 'info'
+        // })
+      }
       dispatch('notifyPanelChange', {
         containerUuid: parameters.containerUuid,
         newValues: defaultAttributes,

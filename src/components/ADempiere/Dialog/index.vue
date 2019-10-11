@@ -96,10 +96,12 @@ export default {
             action: this.windowRecordSelected.UUID
           }
         })
+        this.$router.push({ path: '/' })
         this.closeDialog()
       } else if (action !== undefined) {
         const fieldNotReady = this.$store.getters.isNotReadyForSubmit(action.uuid)
         if (!fieldNotReady) {
+          this.$router.push({ path: '/' })
           this.closeDialog()
           this.$store.dispatch('startProcess', {
             action: action, // process metadata

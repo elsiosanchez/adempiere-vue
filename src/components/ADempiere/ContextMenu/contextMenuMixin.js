@@ -265,9 +265,16 @@ export const contextMixin = {
             .catch(error => {
               console.warn(error)
             })
+          this.$store.dispatch('deleteRecordContainer', this.$route)
           if (this.panelType !== 'window') {
             this.$store.dispatch('setTempShareLink', { processId: this.$route.params.processId, href: window.location.href })
             this.$store.dispatch('tagsView/delView', this.$route)
+          }
+          if (this.panelType === 'process' || this.panelType === 'browser' || this.panelType === 'report') {
+            this.$store.dispatch('resetPanelToNew', {
+              containerUuid: this.containerUuid,
+              panelType: this.panelType
+            })
           }
         } else {
           this.showNotification({
@@ -280,6 +287,12 @@ export const contextMixin = {
       } else if (action.type === 'process') {
         // run process associate with view (window or browser)
         this.showModal(action)
+        if (this.panelType === 'process' || this.panelType === 'browser' || this.panelType === 'report') {
+          this.$store.dispatch('resetPanelToNew', {
+            containerUuid: this.containerUuid,
+            panelType: this.panelType
+          })
+        }
       } else if (action.type === 'dataAction') {
         this.$store.dispatch(action.action, {
           containerUuid: this.containerUuid,
