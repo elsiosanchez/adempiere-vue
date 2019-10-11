@@ -56,17 +56,13 @@ const window = {
             var parentTabs = []
 
             tabs = tabs.map(tabItem => {
-              var group = {}
-              try {
-                group = {
-                  groupName: tabItem.getFieldgroup().getName(),
-                  groupType: tabItem.getFieldgroup().getFieldgrouptype()
-                }
-              } catch (e) {
-                group = {
-                  groupName: '',
-                  groupType: ''
-                }
+              var group = {
+                groupName: '',
+                groupType: ''
+              }
+              if (tabItem.getFieldgroup()) {
+                group.groupName = tabItem.getFieldgroup().getName()
+                group.groupType = tabItem.getFieldgroup().getFieldgrouptype()
               }
 
               var tab = {
@@ -77,14 +73,20 @@ const window = {
                 windowUuid: windowUuid,
                 name: tabItem.getName(),
                 tabGroup: group,
-                sequence: tabItem.getSequence(),
-                tabLevel: tabItem.getTablevel(),
+                //
                 displayLogic: tabItem.getDisplaylogic(),
                 isView: tabItem.getIsview(),
                 isDocument: tabItem.getIsdocument(),
                 isInsertRecord: tabItem.getIsinsertrecord(),
                 isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
+                // relations
                 isParentTab: Boolean(firstTab === tabItem.getTablename()),
+                sequence: tabItem.getSequence(),
+                tabLevel: tabItem.getTablevel(),
+                parentTabUuid: tabItem.getParenttabuuid(),
+                linkColumnName: tabItem.getLinkcolumnname(),
+                parentColumnName: tabItem.getParentcolumnname(),
+                //
                 contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
                 isAdvancedTab: tabItem.getIsadvancedtab(),
                 isHasTree: tabItem.getIshastree(),
@@ -95,8 +97,6 @@ const window = {
                 accessLevel: tabItem.getAccesslevel(),
                 isSingleRow: tabItem.getIssinglerow(),
                 // conditionals
-                linkColumnName: tabItem.getLinkcolumnname(),
-                parentColumnName: tabItem.getParentcolumnname(),
                 commitWarning: tabItem.getCommitwarning(),
                 // query db
                 tableName: tabItem.getTablename(),

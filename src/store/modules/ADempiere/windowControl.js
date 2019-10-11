@@ -8,7 +8,8 @@ const windowControl = {
     inCreate: [],
     references: [],
     windowRoute: {},
-    dataLog: {} // { containerUuid, recordId, tableName, eventType }
+    dataLog: {}, // { containerUuid, recordId, tableName, eventType }
+    dataIsLoadWindow: [] // { parentUuid, recordUuid, tableName, tabs }
   },
   mutations: {
     addInCreate(state, payload) {
@@ -34,6 +35,9 @@ const windowControl = {
     },
     setDataLog(state, payload) {
       state.dataLog = payload
+    },
+    setIsLoadDataTab(state, payload) {
+      state.dataIsLoadWindow = payload
     }
   },
   actions: {
@@ -272,7 +276,7 @@ const windowControl = {
           })
       })
     },
-    updateCurrentEntityFromTable({ dispatch, rootGetters }, parameters) {
+    updateCurrentEntityFromTable({ rootGetters }, parameters) {
       const panel = rootGetters.getPanel(parameters.containerUuid)
 
       // TODO: Add support to Binary columns (BinaryData)
@@ -580,6 +584,17 @@ const windowControl = {
           dispatch('getWindowByUuid', { routes: routeItem.meta.childs, windowUuid: parameters.windowUuid })
         }
       })
+    },
+    setIsLoadDataTab({ state, commit }, { parentUuid, containerUuid, recordUuid }) {
+      var window = state.dataIsLoadWindow.find(item => item.parentUuid === parentUuid)
+      if (window.recordUuid !== recordUuid) {
+        window.recordUuid = recordUuid
+      }
+      commit('setIsLoadDataTab', {
+        window: window,
+        isLoad: true,
+        recordUuid: recordUuid
+      })
     }
   },
   getters: {
@@ -602,6 +617,16 @@ const windowControl = {
         return current
       }
       return undefined
+    },
+    getIsLoadDataTab: (state) => ({ parentUuid, containerUuid, recordUuid }) => {
+      const window = state.dataIsLoadWindow.find(item => item.parentUuid === parentUuid && item.recordUuid === recordUuid)
+      if (window) {
+        const tab = window.tabs.find(item => item.containerUuid === containerUuid)
+        if (tab) {
+          return tab.isLoadData
+        }
+      }
+      return window
     }
   }
 }

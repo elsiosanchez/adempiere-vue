@@ -580,6 +580,13 @@ export default {
 
           // disabled rollback when change route
           this.$store.dispatch('setDataLog', {})
+          // verify load data in tabs children
+          this.$store.dispatch('setIsLoadDataTab', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid,
+            tableName: this.getterPanel.tableName,
+            recordUuid: this.recordUuid
+          })
         }
       } else {
         if (!row.isEdit) {
