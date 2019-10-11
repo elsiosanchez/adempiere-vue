@@ -7,7 +7,8 @@ const utils = {
     splitHeightTop: 0,
     widthLayout: 0,
     tempShareLink: '',
-    oldAction: undefined
+    oldAction: undefined,
+    reportType: ''
   },
   mutations: {
     setWidth(state, width) {
@@ -30,6 +31,9 @@ const utils = {
     },
     setOldAction(state, payload) {
       state.oldAction = payload
+    },
+    setReportTypeToShareLink(state, payload) {
+      state.reportType = payload
     }
   },
   actions: {
@@ -62,6 +66,9 @@ const utils = {
     },
     setOldAction({ commit }, value) {
       commit('setOldAction', value)
+    },
+    setReportTypeToShareLink({ commit }, value) {
+      commit('setReportTypeToShareLink', value)
     }
   },
   getters: {
@@ -95,6 +102,9 @@ const utils = {
     },
     getOldAction: (state) => {
       return state.oldAction
+    },
+    getReportType: (state) => {
+      return state.reportType
     }
   }
 }

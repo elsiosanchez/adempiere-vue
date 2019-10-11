@@ -118,12 +118,7 @@ const processControl = {
         // get info metadata process
         const processDefinition = rootGetters.getProcess(params.action.uuid)
 
-        var reportType = params.action.reportExportType
-        if (reportType === undefined) {
-          reportType = params.reportFormat
-        } else {
-          reportType = params.action.reportExportType
-        }
+        var reportType = params.reportFormat === undefined ? params.action.reportExportType : params.reportFormat
         const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
         if (params.panelType === 'process') {
           router.push({ path: '/dashboard' })
@@ -240,6 +235,7 @@ const processControl = {
               output: output
             })
             resolve(processResult)
+            dispatch('setReportTypeToShareLink', processResult.output.reportType)
           })
           .catch(error => {
             Object.assign(processResult, {

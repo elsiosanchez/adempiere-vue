@@ -259,8 +259,8 @@ export const contextMixin = {
             parentUuid: this.containerUuid,
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
-            reportFormat: this.reportFormat,
-            menuParentUuid: parentMenu, // to load relations in context menu (report view)
+            reportFormat: this.$route.query.reportType ? this.$route.query.reportType : this.reportFormat,
+            menuParentUuid: parentMenu // to load relations in context menu (report view)
             routeToDelete: this.$route
           })
             .catch(error => {
@@ -310,9 +310,11 @@ export const contextMixin = {
     setShareLink() {
       var shareLink = this.panelType === 'window' || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
+        var reportFormat = this.$store.getters.getReportType
         shareLink = this.$store.getters.getTempShareLink
         if (String(this.valuesPanelToShare).length) {
           shareLink += '?' + this.valuesPanelToShare
+          shareLink += `&reportType=${reportFormat}`
         }
       } else {
         if (String(this.valuesPanelToShare).length) {
