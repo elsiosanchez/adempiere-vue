@@ -592,6 +592,12 @@ export default {
           newValues: this.dataRecords,
           isDontSendToEdit: true,
           fieldList: this.fieldList
+        }).then(() => {
+          // delete records tabs children when change record uuid
+          this.$store.dispatch('deleteRecordContainer', {
+            viewUuid: this.parentUuid,
+            withOut: [this.containerUuid]
+          })
         })
       }
       this.setTagsViewTitle(uuidRecord)

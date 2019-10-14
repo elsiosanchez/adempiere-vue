@@ -277,7 +277,10 @@ export const contextMixin = {
               console.warn(error)
             })
           if (this.panelType === 'process') {
-            this.$store.dispatch('deleteRecordContainer', this.$route)
+            // TODO: Verify use
+            this.$store.dispatch('deleteRecordContainer', {
+              viewUuid: this.$route
+            })
             this.$store.dispatch('setTempShareLink', { processId: this.$route.params.processId, href: window.location.href })
           }
           if (this.panelType === 'process' || this.panelType === 'browser' || this.panelType === 'report') {

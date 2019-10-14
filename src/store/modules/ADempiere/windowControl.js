@@ -500,7 +500,7 @@ const windowControl = {
       }
 
       return dispatch('getObjectListFromCriteria', {
-        parentUuid: parameters.parentUuid,
+        parentUuid: tab.parentUuid,
         containerUuid: parameters.containerUuid,
         tableName: tab.tableName,
         query: parsedQuery,

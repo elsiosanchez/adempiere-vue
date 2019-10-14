@@ -16,10 +16,13 @@ const browserControl = {
       var allData = rootGetters.getDataRecordAndSelection(containerUuid)
 
       return new Promise((resolve, reject) => {
-        // parameters isQueryCriteria
-        const finalParameters = rootGetters.getParametersToServer({ containerUuid: containerUuid })
-
         const browser = rootGetters.getBrowser(containerUuid)
+        // parameters isQueryCriteria
+        const finalParameters = rootGetters.getParametersToServer({
+          containerUuid: containerUuid,
+          fieldList: browser.fieldList
+        })
+
         const parsedQuery = parseContext({
           containerUuid: containerUuid,
           value: browser.query

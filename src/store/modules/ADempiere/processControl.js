@@ -266,7 +266,9 @@ const processControl = {
             commit('deleteInExecution', {
               containerUuid: params.containerUuid
             })
-            dispatch('deleteRecordContainer', processDefinition.uuid)
+            dispatch('deleteRecordContainer', {
+              viewUuid: processDefinition.uuid
+            })
           })
       })
     },

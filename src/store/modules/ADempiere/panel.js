@@ -154,6 +154,7 @@ const panel = {
             })
         } else if (panel.panelType === 'table' && panel.isAdvancedQuery) {
           dispatch('getObjectListFromCriteria', {
+            parentUuid: panel.parentUuid,
             containerUuid: panel.uuid,
             tableName: panel.tableName,
             query: panel.query,
@@ -452,6 +453,7 @@ const panel = {
         if (params.panelType === 'table' && fieldIsDisplayed(field) && field.isShowedFromUser) {
           if (panel.isAdvancedQuery) {
             dispatch('getObjectListFromCriteria', {
+              parentUuid: panel.parentUuid,
               containerUuid: panel.uuid,
               tableName: panel.tableName,
               query: panel.query,
@@ -843,13 +845,16 @@ const panel = {
      */
     getParametersToServer: (state, getters) => ({
       containerUuid,
+      fieldList = [],
       withOutColumnNames = [],
       isEvaluateDisplayed = true,
       isEvaluateMandatory = true,
       isConvertedDateToTimestamp = false,
       isAdvancedQuery = false
     }) => {
-      const fieldList = getters.getFieldsListFromPanel(containerUuid, isAdvancedQuery)
+      if (fieldList.length <= 0) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid, isAdvancedQuery)
+      }
       var parametersRange = []
 
       // filter fields

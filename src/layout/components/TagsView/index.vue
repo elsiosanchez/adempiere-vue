@@ -184,9 +184,13 @@ export default {
       })
     },
     closeSelectedTag(view) {
-      if (this.$route.meta.uuid) {
-        this.$store.dispatch('deleteRecordContainer', this.$route.meta.uuid)
-        if (view.meta && view.meta.type && view.meta.type !== 'window') {
+      if (view.meta) {
+        if (view.meta.uuid && (view.meta.type === 'window' || view.meta.type === 'browser')) {
+          this.$store.dispatch('deleteRecordContainer', {
+            viewUuid: view.meta.uuid
+          })
+        }
+        if (view.meta.type && view.meta.type !== 'window') {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: view.meta.uuid,
             panelType: view.meta.type

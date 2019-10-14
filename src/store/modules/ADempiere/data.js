@@ -140,7 +140,7 @@ const data = {
      * @param {integer} parameters.pageNumber
      * @param {string}  parameters.nextPageToken
      */
-    setRecordSelection({ commit, state, getters }, parameters) {
+    setRecordSelection({ commit, state }, parameters) {
       var index = state.recordSelection.findIndex(recordItem => {
         return recordItem.containerUuid === parameters.containerUuid
       })
@@ -163,13 +163,24 @@ const data = {
     },
     /**
      * Delete record result in container
-     * TODO: Add parent uuid, to delete all data result in tabs children before
-     * close some window view.
-     * @param {string} containerUuid
+     * @param {string} viewUuid // As parentUuid in window
+     * @param {array} withOut
      */
-    deleteRecordContainer({ commit, state }, containerUuid) {
+    deleteRecordContainer({ commit, state }, {
+      viewUuid,
+      withOut = []
+    }) {
       const record = state.recordSelection.filter(itemRecord => {
-        return itemRecord.containerUuid !== containerUuid
+        // ignore this uuid
+        if (withOut.includes(itemRecord.containerUuid)) {
+          return true
+        }
+        // remove window and tabs data
+        if (itemRecord.parentUuid) {
+          return itemRecord.parentUuid !== viewUuid
+        }
+        // remove browser data
+        return itemRecord.containerUuid !== viewUuid
       })
       commit('deleteRecordContainer', record)
     },
@@ -177,7 +188,7 @@ const data = {
      * @param {string} tableName
      * @param {string} recordUuid
      */
-    getEntity: ({ commit }, parameters) => {
+    getEntity({ commit }, parameters) {
       return new Promise((resolve, reject) => {
         getObject(parameters.tableName, parameters.recordUuid)
           .then(response => {
@@ -240,6 +251,7 @@ const data = {
               token = allData.nextPageToken
             }
             dispatch('setRecordSelection', {
+              parentUuid: objectParams.parentUuid,
               containerUuid: objectParams.containerUuid,
               record: record,
               selection: allData.selection,
@@ -254,7 +266,7 @@ const data = {
           })
       })
     },
-    getRecentItemsFromServer: ({ commit }) => {
+    getRecentItemsFromServer({ commit }) {
       return new Promise((resolve, reject) => {
         getRecentItems()
           .then(response => {
@@ -287,7 +299,7 @@ const data = {
      * @param {objec}  objectParams.isEdit, if the row displayed to edit mode
      * @param {objec}  objectParams.isNew, if insert data to new row
      */
-    notifyRowTableChange: ({ commit, state, getters, rootGetters }, objectParams) => {
+    notifyRowTableChange({ commit, state, getters, rootGetters }, objectParams) {
       var currentValues = rootGetters.getColumnNamesAndValues({
         containerUuid: objectParams.containerUuid,
         propertyName: 'value',
@@ -312,7 +324,7 @@ const data = {
         row: row
       })
     },
-    notifyCellTableChange: ({ commit, state, dispatch, rootGetters }, objectParams) => {
+    notifyCellTableChange({ commit, state, dispatch, rootGetters }, objectParams) {
       const recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === objectParams.containerUuid
       })
