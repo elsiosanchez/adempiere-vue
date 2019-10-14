@@ -23,13 +23,7 @@
           <div v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
         </router-link>
       </draggable>
-      <div
-        v-else
-        :list="visitedViews"
-        v-bind="$attrs"
-        :set-data="setData"
-        style="display: flex;"
-      >
+      <template v-else>
         <router-link
           v-for="tag in visitedViews"
           ref="tag"
@@ -44,7 +38,7 @@
           <div class="tag-title">{{ generateTitle(tag.title) }}</div>
           <div v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
         </router-link>
-      </div>
+      </template>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">
@@ -192,7 +186,7 @@ export default {
     closeSelectedTag(view) {
       if (this.$route.meta.uuid) {
         this.$store.dispatch('deleteRecordContainer', this.$route.meta.uuid)
-        if (view.meta.type === 'process' || view.meta.type === 'browser' || view.meta.type === 'report') {
+        if (view.meta && view.meta.type && view.meta.type !== 'window') {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: view.meta.uuid,
             panelType: view.meta.type
