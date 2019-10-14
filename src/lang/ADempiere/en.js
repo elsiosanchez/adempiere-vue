@@ -130,7 +130,7 @@ export default {
   table: {
     ProcessActivity: {
       name: 'Name',
-      zoomIn: 'Zoomn in',
+      zoomIn: 'Zoom in',
       description: 'Description',
       actions: 'Action',
       status: 'Status',
