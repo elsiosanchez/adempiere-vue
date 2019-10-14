@@ -14,12 +14,13 @@
           <div slot="header" class="clearfix">
             <span><b>{{ activity.name }}</b></span>
             <div class="actions">
-              <el-dropdown v-if="activity.isReport" @command="handleCommand(activity)">
+              <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   {{ $t('components.contextMenuActions') }}<i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-if="activity.isReport">{{ $t('views.seeReport') }}</el-dropdown-item>
+                  <el-dropdown-item v-if="activity.isReport" :command="{...activity,command:'seeReport'}"> {{ $t('views.seeReport') }} </el-dropdown-item>
+                  <el-dropdown-item :command="{...activity,command:'zoonIn'}"> {{ $t('table.ProcessActivity.zoonIn') }} </el-dropdown-item>
                   <!-- TODO: add more actions -->
                 </el-dropdown-menu>
               </el-dropdown>
@@ -65,7 +66,7 @@
               </el-popover>
               <!-- show only when bring output -->
               <el-popover
-                v-else-if="activity.isisReport"
+                v-else-if="activity.isReport"
                 placement="right"
                 width="700"
                 trigger="hover"
@@ -149,11 +150,14 @@ export default {
     this.$store.dispatch('getSessionProcessFromServer')
   },
   methods: {
+    zoonIn(activity) {
+      this.$router.push({ path: activity.processIdPath })
+    },
     getProcessMetadata(uuid) {
       return this.$store.getters.getProcess(uuid)
     },
     handleCommand(activity) {
-      if (activity.isReport) {
+      if (activity.command === 'seeReport') {
         this.$router.push({
           name: 'Report Viewer',
           params: {
@@ -162,6 +166,8 @@ export default {
             fileName: activity.output.fileName
           }
         })
+      } else {
+        this.$router.push({ path: activity.processIdPath })
       }
     },
     checkStatus(isError, isProcessing, isReport) {

@@ -130,6 +130,7 @@ export default {
   table: {
     ProcessActivity: {
       Name: 'Nombre',
+      zoonIn: 'Acercar',
       Description: 'Descripción',
       FileName: 'Nombre de Archivo',
       Output: 'Salida',

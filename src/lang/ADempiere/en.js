@@ -130,6 +130,7 @@ export default {
   table: {
     ProcessActivity: {
       name: 'Name',
+      zoonIn: 'Zoon in',
       description: 'Description',
       actions: 'Action',
       status: 'Status',
