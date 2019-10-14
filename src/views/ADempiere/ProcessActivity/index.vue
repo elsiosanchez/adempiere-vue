@@ -14,12 +14,13 @@
           <div slot="header" class="clearfix">
             <span><b>{{ activity.name }}</b></span>
             <div class="actions">
-              <el-dropdown v-if="activity.isReport" @command="handleCommand(activity)">
+              <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   {{ $t('components.contextMenuActions') }}<i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-if="activity.isReport">{{ $t('views.seeReport') }}</el-dropdown-item>
+                  <el-dropdown-item v-if="activity.isReport" :command="{...activity,command:'seeReport'}"> {{ $t('views.seeReport') }} </el-dropdown-item>
+                  <el-dropdown-item :command="{...activity,command:'zoomIn'}"> {{ $t('table.ProcessActivity.zoomIn') }} </el-dropdown-item>
                   <!-- TODO: add more actions -->
                 </el-dropdown-menu>
               </el-dropdown>
@@ -65,7 +66,7 @@
               </el-popover>
               <!-- show only when bring output -->
               <el-popover
-                v-else-if="activity.isisReport"
+                v-else-if="activity.isReport"
                 placement="right"
                 width="700"
                 trigger="hover"
@@ -96,6 +97,7 @@
 </template>
 
 <script>
+import { convertArrayPairsToObject } from '@/utils/ADempiere'
 export default {
   name: 'ProcessActivity',
   data() {
@@ -116,6 +118,13 @@ export default {
     // session process from server
     getterAllSessionProcess() {
       return this.$store.getters.getAllSessionProcess
+    },
+    valuesPanelToShare() {
+      return this.$store.getters.getParametersToShare({
+        containerUuid: this.containerUuid,
+        isOnlyDisplayed: true,
+        isAdvancedQuery: this.$route.query.action === 'advancedQuery'
+      })
     },
     // all process
     getRunProcessAll() {
@@ -149,11 +158,14 @@ export default {
     this.$store.dispatch('getSessionProcessFromServer')
   },
   methods: {
+    zoomIn(activity) {
+      this.$router.push({ path: activity.processIdPath })
+    },
     getProcessMetadata(uuid) {
       return this.$store.getters.getProcess(uuid)
     },
     handleCommand(activity) {
-      if (activity.isReport) {
+      if (activity.command === 'seeReport') {
         this.$router.push({
           name: 'Report Viewer',
           params: {
@@ -161,6 +173,13 @@ export default {
             instanceUuid: activity.instanceUuid,
             fileName: activity.output.fileName
           }
+        })
+      } else {
+        var finalAttributes = convertArrayPairsToObject(activity.parameters)
+        this.$router.push({ path: activity.processIdPath })
+        this.$store.dispatch('notifyPanelChange', {
+          containerUuid: activity.containerUuid,
+          newValues: finalAttributes
         })
       }
     },

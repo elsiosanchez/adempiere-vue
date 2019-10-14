@@ -101,14 +101,14 @@ export default {
       } else if (action !== undefined) {
         const fieldNotReady = this.$store.getters.isNotReadyForSubmit(action.uuid)
         if (!fieldNotReady) {
-          this.$router.push({ path: '/' })
           this.closeDialog()
           this.$store.dispatch('startProcess', {
             action: action, // process metadata
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
-            reportFormat: this.reportExportType
+            reportFormat: this.reportExportType,
+            routeToDelete: this.$route
           })
             .catch(error => {
               console.warn(error)

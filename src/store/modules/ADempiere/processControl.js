@@ -137,6 +137,7 @@ const processControl = {
           containerUuid: params.containerUuid,
           panelType: params.panelType,
           menuParentUuid: params.menuParentUuid,
+          processIdPath: params.routeToDelete.path,
           // process attributes
           timeInitialized: timeInitialized,
           action: processDefinition.name,
