@@ -97,6 +97,7 @@
 </template>
 
 <script>
+import { convertArrayPairsToObject } from '@/utils/ADempiere'
 export default {
   name: 'ProcessActivity',
   data() {
@@ -117,6 +118,13 @@ export default {
     // session process from server
     getterAllSessionProcess() {
       return this.$store.getters.getAllSessionProcess
+    },
+    valuesPanelToShare() {
+      return this.$store.getters.getParametersToShare({
+        containerUuid: this.containerUuid,
+        isOnlyDisplayed: true,
+        isAdvancedQuery: this.$route.query.action === 'advancedQuery'
+      })
     },
     // all process
     getRunProcessAll() {
@@ -167,7 +175,12 @@ export default {
           }
         })
       } else {
+        var finalAttributes = convertArrayPairsToObject(activity.parameters)
         this.$router.push({ path: activity.processIdPath })
+        this.$store.dispatch('notifyPanelChange', {
+          containerUuid: activity.containerUuid,
+          newValues: finalAttributes
+        })
       }
     },
     checkStatus(isError, isProcessing, isReport) {
