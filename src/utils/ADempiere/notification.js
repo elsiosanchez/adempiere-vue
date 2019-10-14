@@ -1,5 +1,6 @@
 import { Message, Notification } from 'element-ui'
 import language from '@/lang'
+import router from '@/router'
 
 export function hasTranslation(text) {
   const hasKey = language.te('notifications.' + text)
@@ -50,7 +51,10 @@ export function showNotification(parameters) {
     message: `<div style="max-height: 100px; overflow-y: auto;">` + message + `</div>`,
     type: parameters.type,
     position: 'bottom-right',
-    dangerouslyUseHTMLString: true
+    dangerouslyUseHTMLString: true,
+    onClick() {
+      router.push({ name: 'ProcessActivity' })
+    }
   })
 }
 

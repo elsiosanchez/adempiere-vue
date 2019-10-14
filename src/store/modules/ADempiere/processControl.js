@@ -120,7 +120,7 @@ const processControl = {
 
         var reportType = params.reportFormat === undefined ? params.action.reportExportType : params.reportFormat
         const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
-        if (params.panelType === 'process') {
+        if (params.panelType !== 'window') {
           router.push({ path: '/dashboard' })
         }
         showNotification({
@@ -165,7 +165,10 @@ const processControl = {
           }
         }
         commit('addInExecution', processResult)
-
+        // close view if is process, report or browser.
+        if (params.panelType !== 'window') {
+          dispatch('tagsView/delView', params.routeToDelete)
+        }
         runProcess({
           uuid: processDefinition.uuid,
           id: processDefinition.id,
@@ -366,10 +369,6 @@ const processControl = {
         processMessage.title = language.t('notifications.error')
         processMessage.message = errorMessage
         processMessage.type = 'error'
-      }
-      // close view if is process, report or browser.
-      if (parameters.processOutput.panelType !== 'window' && parameters.processOutput.panelType !== 'browser') {
-        dispatch('tagsView/delView', parameters.routeToDelete)
       }
 
       if (parameters.processOutput.isReport) {

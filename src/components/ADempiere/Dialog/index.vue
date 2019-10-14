@@ -96,7 +96,6 @@ export default {
             action: this.windowRecordSelected.UUID
           }
         })
-        this.$router.push({ path: '/' })
         this.closeDialog()
       } else if (action !== undefined) {
         const fieldNotReady = this.$store.getters.isNotReadyForSubmit(action.uuid)
