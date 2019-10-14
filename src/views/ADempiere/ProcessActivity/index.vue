@@ -20,7 +20,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item v-if="activity.isReport" :command="{...activity,command:'seeReport'}"> {{ $t('views.seeReport') }} </el-dropdown-item>
-                  <el-dropdown-item :command="{...activity,command:'zoonIn'}"> {{ $t('table.ProcessActivity.zoonIn') }} </el-dropdown-item>
+                  <el-dropdown-item :command="{...activity,command:'zoomIn'}"> {{ $t('table.ProcessActivity.zoomIn') }} </el-dropdown-item>
                   <!-- TODO: add more actions -->
                 </el-dropdown-menu>
               </el-dropdown>
@@ -158,7 +158,7 @@ export default {
     this.$store.dispatch('getSessionProcessFromServer')
   },
   methods: {
-    zoonIn(activity) {
+    zoomIn(activity) {
       this.$router.push({ path: activity.processIdPath })
     },
     getProcessMetadata(uuid) {
