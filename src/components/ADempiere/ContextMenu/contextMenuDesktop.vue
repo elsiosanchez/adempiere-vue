@@ -55,7 +55,7 @@
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}
           </template>
-          <template v-if="references.referencesList">
+          <template v-if="references && references.referencesList">
             <template v-for="(reference, index) in references.referencesList">
               <el-menu-item :key="index" :index="reference.displayName" @click="runAction(reference)">
                 {{ reference.displayName }}

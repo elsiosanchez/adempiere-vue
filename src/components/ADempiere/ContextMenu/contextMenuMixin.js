@@ -260,7 +260,7 @@ export const contextMixin = {
             containerUuid: containerParams, // EVALUATE IF IS action.uuid
             panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
             reportFormat: this.$route.query.reportType ? this.$route.query.reportType : this.reportFormat,
-            menuParentUuid: parentMenu // to load relations in context menu (report view)
+            menuParentUuid: parentMenu, // to load relations in context menu (report view)
             routeToDelete: this.$route
           })
             .catch(error => {
