@@ -137,15 +137,25 @@ export const contextMixin = {
   methods: {
     showNotification,
     refreshData() {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid,
-        isRefreshPanel: true,
-        recordUuid: this.recordUuid
-      })
-        .catch(error => {
-          console.warn(error)
+      if (this.panelType === 'window') {
+        this.$store.dispatch('getDataListTab', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          isRefreshPanel: true,
+          recordUuid: this.recordUuid
         })
+          .catch(error => {
+            console.warn(error)
+          })
+      } else if (this.panelType === 'browser') {
+        this.$store.dispatch('getBrowserSearch', {
+          containerUuid: this.containerUuid,
+          isClearSelection: true
+        })
+          .catch(error => {
+            console.warn(error)
+          })
+      }
     },
     getReferences() {
       if (this.isReferecesContent) {
