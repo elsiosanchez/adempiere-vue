@@ -45,9 +45,18 @@
             </el-scrollbar>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="3" disabled>
-          <i class="el-icon-document" />{{ $t('components.contextMenuReferences') }}
-        </el-menu-item>
+        <el-submenu :disabled="!isReferecesContent && !isReferencesLoaded" class="el-menu-item" index="3">
+          <template slot="title">
+            {{ $t('components.contextMenuReferences') }}
+          </template>
+          <template v-if="references && references.referencesList">
+            <template v-for="(reference, index) in references.referencesList">
+              <el-menu-item :key="index" :index="reference.displayName" @click="runAction(reference)">
+                {{ reference.displayName }}
+              </el-menu-item>
+            </template>
+          </template>
+        </el-submenu>
       </el-menu>
     </right-menu>
   </div>
