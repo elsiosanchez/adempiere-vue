@@ -506,13 +506,13 @@ const windowControl = {
         parentUuid: tab.parentUuid,
         containerUuid: containerUuid,
         tableName: tab.tableName,
-        query: parsedQuery,
-        whereClause: isLoadAllRecords || !tab.isParentTab ? parsedWhereClause : tab.customWhereClause,
+        query: isLoadAllRecords ? parsedQuery : undefined,
+        whereClause: parsedWhereClause,
         orderByClause: tab.orderByClause,
         // TODO: evaluate if overwrite values to conditions
         conditions: [{
-          columnName: columnName,
-          value: recordUuid
+          columnName: isLoadAllRecords ? undefined : `${tab.tableName}.${columnName}`,
+          value: value
         }]
       })
         .then(response => {
