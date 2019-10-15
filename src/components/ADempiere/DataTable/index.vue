@@ -31,7 +31,7 @@
                 {{ $t('window.newRecord') }}
               </el-menu-item>
               <el-menu-item
-                v-if="panelType === 'window'"
+                v-if="isParent && panelType === 'window'"
                 :disabled="Boolean(getterTotalDataRecordCount <= 0)"
                 index="advancedQuery"
                 @click="activeAdvancedQuery(!isAdvancedQuery)"
@@ -95,7 +95,7 @@
                   {{ $t('window.newRecord') }}
                 </el-menu-item>
                 <el-menu-item
-                  v-if="panelType === 'window'"
+                  v-if="isParent && panelType === 'window'"
                   :disabled="Boolean(getterTotalDataRecordCount <= 0)"
                   index="advancedQuery"
                   @click="activeAdvancedQuery(!isAdvancedQuery)"
