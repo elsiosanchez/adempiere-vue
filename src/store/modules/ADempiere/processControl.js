@@ -117,8 +117,7 @@ const processControl = {
 
         // get info metadata process
         const processDefinition = rootGetters.getProcess(params.action.uuid)
-
-        var reportType = params.reportFormat === undefined ? params.action.reportExportType : params.reportFormat
+        var reportType = params.reportFormat
         const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
         if (params.panelType !== 'window') {
           router.push({ path: '/dashboard' })

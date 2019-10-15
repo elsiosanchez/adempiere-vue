@@ -39,6 +39,7 @@ export const fieldMixin = {
           keyColumn: this.metadata.keyColumn,
           tableIndex: this.metadata.tableIndex,
           rowKey: this.metadata.rowKey,
+          isDontSendToEdit: Boolean(value === 'NotSend'),
           panelType: this.metadata.panelType
         })
       } else {

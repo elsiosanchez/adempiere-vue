@@ -1,7 +1,9 @@
 <template>
   <el-tabs v-model="currentTab" type="border-card" @tab-click="handleClick">
     <template v-for="(item, key) in tabsList">
+      <!-- TODO: Add support to tabs isSortTab (sequence) -->
       <el-tab-pane
+        v-if="!item.isSortTab && !item.isTranslationTab"
         :key="key"
         :label="item.name"
         :windowuuid="windowUuid"
