@@ -18,11 +18,11 @@
 
 <script>
 import { getLanguage } from '@/lang'
-import { showMessage } from '@/utils/ADempiere'
+import { showMessage } from '@/utils/ADempiere/notification'
 import { resetRouter } from '@/router'
 
 export default {
-  name: 'RolesNavar',
+  name: 'RolesNavbar',
   data() {
     return {
       value: '',
