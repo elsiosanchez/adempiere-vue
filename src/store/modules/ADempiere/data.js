@@ -289,7 +289,7 @@ const data = {
           .catch(error => {
             reject(error)
           })
-          .finaly(() => {
+          .finally(() => {
             commit('deleteInGetting', {
               containerUuid: containerUuid,
               tableName: tableName
