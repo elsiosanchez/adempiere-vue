@@ -22,9 +22,6 @@ const window = {
     changeShowedRecordWindow(state, payload) {
       payload.window.isShowedRecordNavigation = payload.isShowedRecordNavigation
     },
-    changeTabIsLoadRecord(state, payload) {
-      payload.tab.isLoadRecord = payload.isLoadRecord
-    },
     setCurrentTab(state, payload) {
       payload.window.currentTabUuid = payload.tabUuid
     },
@@ -48,7 +45,8 @@ const window = {
               name: response.getName(),
               contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
               windowType: response.getWindowtype(),
-              isShowedRecordNavigation: undefined
+              isShowedRecordNavigation: undefined,
+              firstTabUuid: response.getTabsList()[0].getUuid()
             }
             var tabs = response.getTabsList()
             const firstTab = tabs[0].getTablename()
@@ -73,6 +71,7 @@ const window = {
                 windowUuid: windowUuid,
                 name: tabItem.getName(),
                 tabGroup: group,
+                firstTabUuid: newWindow.firstTabUuid,
                 //
                 displayLogic: tabItem.getDisplaylogic(),
                 isView: tabItem.getIsview(),
@@ -103,7 +102,6 @@ const window = {
                 query: tabItem.getQuery(),
                 whereClause: tabItem.getWhereclause(),
                 orderByClause: tabItem.getOrderbyclause(),
-                isLoadRecord: false,
                 isChangeLog: tabItem.getIschangelog(),
                 customWhereClause: '',
                 // app properties
@@ -293,13 +291,6 @@ const window = {
         isShowedRecordNavigation: params.isShowedRecordNavigation
       })
     },
-    changeTabIsLoadRecord: ({ commit, getters }, parameters) => {
-      const tab = getters.getTab(parameters.parentUuid, parameters.containerUuid)
-      commit('changeTabIsLoadRecord', {
-        tab: tab,
-        isLoadRecord: parameters.isLoadRecord
-      })
-    },
     /**
      * @param {string} parameters.parentUuid
      * @param {string} parameters.containerUuid
@@ -353,13 +344,6 @@ const window = {
         })
       }
       return window
-    },
-    getTabIsLoadRecord: (state, getters) => (windowUuid, tabUuid) => {
-      const tab = getters.getTab(windowUuid, tabUuid)
-      if (tab) {
-        return tab.isLoadRecord
-      }
-      return tab
     },
     getTabIsLoadField: (state, getters) => (windowUuid, tabUuid) => {
       const tab = getters.getTab(windowUuid, tabUuid)

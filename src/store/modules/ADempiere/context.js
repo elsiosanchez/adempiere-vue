@@ -10,7 +10,7 @@ const context = {
   mutations: {
     setContext(state, payload) {
       var key = ''
-      if (payload.parentUuid) {
+      if (payload.parentUuid && !isEmptyValue(payload.value)) {
         key += payload.parentUuid + '|'
 
         // set context for window

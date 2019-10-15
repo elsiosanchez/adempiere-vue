@@ -97,7 +97,7 @@
                     <tab-children
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListChildren"
-                      :first-tab="windowMetadata.tabsListParent[0].uuid"
+                      :first-tab-uuid="windowMetadata.firstTabUuid"
                       :style="{ 'height': getHeightPanelBottom + 'vh' }"
                     />
                   </el-header>

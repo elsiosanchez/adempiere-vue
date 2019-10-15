@@ -34,22 +34,23 @@ export default {
   },
   mixins: [tabMixin],
   props: {
-    firstTab: {
+    firstTabUuid: {
       type: String,
       default: undefined
     }
   },
   computed: {
     getterIsLoadRecordParent() {
-      return this.$store.getters.getTabIsLoadRecord(this.windowUuid, this.firstTab)
+      return this.$store.getters.getDataRecordAndSelection(this.firstTabUuid).isLoaded
+    },
+    getDataSelection() {
+      return this.$store.getters.getDataRecordAndSelection(this.tabUuid)
     }
   },
   watch: {
-    getterIsLoadRecordParent(value) {
-      if (value) {
-        if (this.getterDataRecords.length <= 0) {
-          this.getData()
-        }
+    getDataSelection(value) {
+      if (this.getterIsLoadRecordParent && !value.isLoaded) {
+        this.getData()
       }
     }
   }

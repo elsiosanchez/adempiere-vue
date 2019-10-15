@@ -445,9 +445,12 @@ export default {
     getData(parameters) {
       if (parameters.isWindow && this.panelType === 'window') {
         this.$store.dispatch('getDataListTab', {
-          ...parameters,
           parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid
+          containerUuid: this.containerUuid,
+          isLoadAllRecords: parameters.isLoadAllRecords,
+          recordUuid: parameters.uuidRecord,
+          columnName: parameters.columnName,
+          value: parameters.value
         })
           .then(response => {
             if (response.length) {
@@ -477,16 +480,6 @@ export default {
               this.isLoadRecord = true
             }
           })
-      }
-    },
-    changeIsLoadRecord() {
-      // notify record is load
-      if (!this.metadata.isLoadRecord) {
-        this.$store.dispatch('changeTabIsLoadRecord', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          isLoadRecord: true
-        })
       }
     },
     /**

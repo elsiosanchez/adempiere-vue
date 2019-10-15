@@ -8,8 +8,7 @@ const windowControl = {
     inCreate: [],
     references: [],
     windowRoute: {},
-    dataLog: {}, // { containerUuid, recordId, tableName, eventType }
-    dataIsLoadWindow: [] // { parentUuid, recordUuid, tableName, tabs }
+    dataLog: {} // { containerUuid, recordId, tableName, eventType }
   },
   mutations: {
     addInCreate(state, payload) {
@@ -35,9 +34,6 @@ const windowControl = {
     },
     setDataLog(state, payload) {
       state.dataLog = payload
-    },
-    setIsLoadDataTab(state, payload) {
-      state.dataIsLoadWindow = payload
     }
   },
   actions: {
@@ -476,55 +472,64 @@ const windowControl = {
     },
     /**
      * Get data to table in tab
-     * @param {string}  parameters.parentUuid, window to search record data
-     * @param {string}  parameters.containerUuid, tab to search record data
-     * @param {string}  parameters.recordUuid, uuid to search
-     * @param {boolean}  parameters.isRefreshPanel,
+     * @param {string}  parentUuid, window to search record data
+     * @param {string}  containerUuid, tab to search record data
+     * @param {string}  recordUuid, uuid to search
+     * @param {boolean} isRefreshPanel, if main panel is updated with new response data
+     * @param {boolean} isLoadAllRecords, if main panel is updated with new response data
      */
-    getDataListTab({ dispatch, rootGetters }, parameters) {
-      const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+    getDataListTab({ dispatch, rootGetters }, {
+      parentUuid,
+      containerUuid,
+      recordUuid,
+      isRefreshPanel = false,
+      isLoadAllRecords = false,
+      columnName,
+      value
+    }) {
+      const tab = rootGetters.getTab(parentUuid, containerUuid)
       const parsedQuery = parseContext({
-        parentUuid: parameters.parentUuid,
-        containerUuid: parameters.containerUuid,
+        parentUuid: parentUuid,
+        containerUuid: containerUuid,
         value: tab.query
       })
       var parsedWhereClause
-      if (!parameters.value) {
-        if (!isEmptyValue(tab.whereClause)) {
-          parsedWhereClause = parseContext({
-            parentUuid: parameters.parentUuid,
-            containerUuid: parameters.containerUuid,
-            value: tab.whereClause
-          })
-        }
+      if (!isEmptyValue(tab.whereClause)) {
+        parsedWhereClause = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: tab.whereClause
+        })
       }
 
       return dispatch('getObjectListFromCriteria', {
         parentUuid: tab.parentUuid,
-        containerUuid: parameters.containerUuid,
+        containerUuid: containerUuid,
         tableName: tab.tableName,
         query: parsedQuery,
-        whereClause: parameters.isLoadAllRecords ? parsedWhereClause : tab.customWhereClause,
+        whereClause: isLoadAllRecords || !tab.isParentTab ? parsedWhereClause : tab.customWhereClause,
         orderByClause: tab.orderByClause,
+        // TODO: evaluate if overwrite values to conditions
         conditions: [{
-          columnName: parameters.columnName,
-          value: parameters.uuidRecord
+          columnName: columnName,
+          value: recordUuid
         }]
       })
         .then(response => {
-          if (parameters.isRefreshPanel && parameters.recordUuid && parameters.recordUuid !== 'create-new') {
-            const newValues = response.find(itemData => itemData.UUID === parameters.recordUuid)
+          if (isRefreshPanel && !isEmptyValue(recordUuid) && recordUuid !== 'create-new') {
+            const newValues = response.find(itemData => itemData.UUID === recordUuid)
             if (newValues) {
               // update fields with values obtained from the server
               dispatch('notifyPanelChange', {
-                containerUuid: parameters.containerUuid,
+                parentUuid: tab.parentUuid,
+                containerUuid: containerUuid,
                 newValues: newValues,
                 isDontSendToEdit: true
               })
             } else {
               // this record is missing (Deleted or the query does not include it)
               dispatch('resetPanelToNew', {
-                containerUuid: parameters.containerUuid
+                containerUuid: containerUuid
               })
             }
           }
@@ -586,17 +591,6 @@ const windowControl = {
           dispatch('getWindowByUuid', { routes: routeItem.meta.childs, windowUuid: parameters.windowUuid })
         }
       })
-    },
-    setIsLoadDataTab({ state, commit }, { parentUuid, containerUuid, recordUuid }) {
-      var window = state.dataIsLoadWindow.find(item => item.parentUuid === parentUuid)
-      if (window.recordUuid !== recordUuid) {
-        window.recordUuid = recordUuid
-      }
-      commit('setIsLoadDataTab', {
-        window: window,
-        isLoad: true,
-        recordUuid: recordUuid
-      })
     }
   },
   getters: {
@@ -619,16 +613,6 @@ const windowControl = {
         return current
       }
       return undefined
-    },
-    getIsLoadDataTab: (state) => ({ parentUuid, containerUuid, recordUuid }) => {
-      const window = state.dataIsLoadWindow.find(item => item.parentUuid === parentUuid && item.recordUuid === recordUuid)
-      if (window) {
-        const tab = window.tabs.find(item => item.containerUuid === containerUuid)
-        if (tab) {
-          return tab.isLoadData
-        }
-      }
-      return window
     }
   }
 }

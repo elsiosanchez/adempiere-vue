@@ -291,11 +291,6 @@ const panel = {
         })
       }
 
-      // the field has not changed, then the action is broken
-      if (params.newValue === field.value) {
-        return
-      }
-
       if (!(params.panelType === 'table' || params.isAdvancedQuery)) {
         //  Call context management
         dispatch('setContext', {
@@ -304,6 +299,11 @@ const panel = {
           columnName: params.columnName,
           value: params.newValue
         })
+      }
+
+      // the field has not changed, then the action is broken
+      if (params.newValue === field.value) {
+        return
       }
 
       commit('changeFieldValue', {

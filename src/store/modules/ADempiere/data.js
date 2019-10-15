@@ -5,9 +5,16 @@ const data = {
   state: {
     recordSelection: [], // record data and selection
     recordDetail: [],
-    recentItems: []
+    recentItems: [],
+    inGetting: []
   },
   mutations: {
+    addInGetting(state, payload) {
+      state.inGetting.push(payload)
+    },
+    deleteInGetting(state, payload) {
+      state.inGetting = state.inGetting.filter(item => item.containerUuid !== payload.containerUuid)
+    },
     setRecordSelection(state, payload) {
       if (payload.index > -1 && payload.index !== undefined) {
         state.recordSelection.splice(payload.index, 1, payload)
@@ -146,6 +153,7 @@ const data = {
       })
       commit('setRecordSelection', {
         ...parameters,
+        isLoaded: true,
         index: index
       })
     },
@@ -211,26 +219,43 @@ const data = {
     },
     /**
      * Request list to view in table
-     * @param {string} params.tableName, table name to search record data
-     * @param {string} params.query, criteria to search record data
-     * @param {string} params.whereClause, criteria to search record data
-     * @param {string} params.orderByClause, criteria to search record data
+     * TODO: Join with getDataListTab action
+     * @param {string} parentUuid, uuid from window
+     * @param {string} containerUuid, uuid from tab
+     * @param {string} tableName, table name to search record data
+     * @param {string} query, criteria to search record data
+     * @param {string} whereClause, criteria to search record data
+     * @param {string} orderByClause, criteria to search record data
+     * @param {array}  conditions, conditions to criteria
      */
-    getObjectListFromCriteria: ({ dispatch, rootGetters }, objectParams) => {
-      var allData = rootGetters.getDataRecordAndSelection(objectParams.containerUuid)
+    getObjectListFromCriteria({ commit, dispatch, getters }, {
+      parentUuid,
+      containerUuid,
+      tableName,
+      query,
+      whereClause,
+      orderByClause,
+      conditions = []
+    }) {
+      var allData = getters.getDataRecordAndSelection(containerUuid)
 
       var nextPageToken
       if (!isEmptyValue(allData.nextPageToken)) {
         nextPageToken = allData.nextPageToken + '-' + allData.pageNumber
       }
 
+      commit('addInGetting', {
+        containerUuid: containerUuid,
+        tableName: tableName,
+        conditions: conditions
+      })
       return new Promise((resolve, reject) => {
         getObjectListFromCriteria({
-          tableName: objectParams.tableName,
-          query: objectParams.query,
-          whereClause: objectParams.whereClause,
-          conditions: objectParams.conditions,
-          orderByClause: objectParams.orderByClause,
+          tableName: tableName,
+          query: query,
+          whereClause: whereClause,
+          conditions: conditions,
+          orderByClause: orderByClause,
           nextPageToken: nextPageToken
         })
           .then(response => {
@@ -251,8 +276,8 @@ const data = {
               token = allData.nextPageToken
             }
             dispatch('setRecordSelection', {
-              parentUuid: objectParams.parentUuid,
-              containerUuid: objectParams.containerUuid,
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
               record: record,
               selection: allData.selection,
               recordCount: response.getRecordcount(),
@@ -263,6 +288,12 @@ const data = {
           })
           .catch(error => {
             reject(error)
+          })
+          .finaly(() => {
+            commit('deleteInGetting', {
+              containerUuid: containerUuid,
+              tableName: tableName
+            })
           })
       })
     },
@@ -379,11 +410,14 @@ const data = {
     }
   },
   getters: {
+    getInGetting: (state) => (containerUuid) => {
+      return state.inGetting.find(item => item.containerUuid === containerUuid)
+    },
     /**
      * Used by datatables in tab children, record navigation in window, result in browser
      * @param {string} containerUuid
      */
-    getDataRecordAndSelection: (state) => (containerUuid) => {
+    getDataRecordAndSelection: (state, getters) => (containerUuid) => {
       return state.recordSelection.find(itemRecord => {
         return itemRecord.containerUuid === containerUuid
       }) || {
@@ -392,7 +426,8 @@ const data = {
         recordCount: 0,
         selection: [],
         pageNumber: 1,
-        nextPageToken: undefined
+        nextPageToken: undefined,
+        isLoaded: false // Boolean(false || getters.getInGetting(containerUuid))
       }
     },
     getDataRecordsList: (state, getters) => (containerUuid) => {
