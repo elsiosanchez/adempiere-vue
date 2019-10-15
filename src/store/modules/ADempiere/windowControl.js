@@ -488,11 +488,16 @@ const windowControl = {
       value
     }) {
       const tab = rootGetters.getTab(parentUuid, containerUuid)
-      const parsedQuery = parseContext({
-        parentUuid: parentUuid,
-        containerUuid: containerUuid,
-        value: tab.query
-      })
+
+      var parsedQuery
+      if (!tab.isParentTab || (tab.isParentTab && !isLoadAllRecords)) {
+        parsedQuery = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: tab.query
+        })
+      }
+
       var parsedWhereClause
       if (!isEmptyValue(tab.whereClause)) {
         parsedWhereClause = parseContext({
@@ -501,19 +506,23 @@ const windowControl = {
           value: tab.whereClause
         })
       }
+      var conditions = []
+      if (!tab.isParentTab && !isEmptyValue(tab.tableName) && !isEmptyValue(value)) {
+        conditions.push({
+          columnName: `${tab.tableName}.${columnName}`,
+          value: value
+        })
+      }
 
       return dispatch('getObjectListFromCriteria', {
         parentUuid: tab.parentUuid,
         containerUuid: containerUuid,
         tableName: tab.tableName,
-        query: isLoadAllRecords ? parsedQuery : undefined,
+        query: parsedQuery,
         whereClause: parsedWhereClause,
         orderByClause: tab.orderByClause,
         // TODO: evaluate if overwrite values to conditions
-        conditions: [{
-          columnName: isLoadAllRecords ? undefined : `${tab.tableName}.${columnName}`,
-          value: value
-        }]
+        conditions: isLoadAllRecords ? [] : conditions
       })
         .then(response => {
           if (isRefreshPanel && !isEmptyValue(recordUuid) && recordUuid !== 'create-new') {
