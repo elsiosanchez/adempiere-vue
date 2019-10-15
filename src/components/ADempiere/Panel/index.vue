@@ -394,14 +394,9 @@ export default {
           parameters.referenceWhereClause = route.query.whereClause
         } else if (route.query.action && route.query.action === 'create-new') {
           parameters.isNewRecord = true
-        } else if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference') {
-          this.$store.dispatch('addCustomWhereClauseFromRoute', {
-            actionValue: route.query.action,
-            tabUuid: this.containerUuid,
-            windowUuid: this.parentUuid
-          })
+        } else if (route.query.action && route.query.action !== 'create-new' && route.query.action !== 'reference' && route.query.action !== 'advancedQuery') {
           parameters.isLoadAllRecords = false
-          parameters.uuidRecord = route.query.action
+          parameters.value = route.query.action
           parameters.tableName = this.metadata.tableName
           parameters.columnName = 'UUID'
         }
@@ -448,7 +443,6 @@ export default {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
           isLoadAllRecords: parameters.isLoadAllRecords,
-          recordUuid: parameters.uuidRecord,
           columnName: parameters.columnName,
           value: parameters.value
         })

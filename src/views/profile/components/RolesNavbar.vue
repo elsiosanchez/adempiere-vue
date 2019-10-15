@@ -103,8 +103,10 @@ export default {
       this.$store.dispatch('getObjectListFromCriteria', {
         containerUuid: this.getRol.uuid,
         tableName: tableLanguage,
-        query: `SELECT * FROM ${tableLanguage}`,
-        whereClause: `LanguageIso = '${this.languageCookie}' AND IsActive = 'Y'`
+        conditions: [{
+          columnName: 'LanguageIso',
+          value: this.languageCookie
+        }]
       })
         .then(response => {
           this.languageList = response.map(language => {
