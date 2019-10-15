@@ -6,7 +6,7 @@
     <div v-show="isMenuMobile && isMobile" style="display: inline-flex; float: right;">
       <search id="header-search" class="right-menu-item" style="padding-top: 10px;" />
       <badge style="padding-top: 6px;" />
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
+      <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -34,7 +34,7 @@
             <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown> -->
     </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
