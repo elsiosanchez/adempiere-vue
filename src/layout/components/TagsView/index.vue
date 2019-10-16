@@ -190,7 +190,7 @@ export default {
             viewUuid: view.meta.uuid
           })
         }
-        if (view.meta.type && view.meta.type !== 'window') {
+        if (view.meta.type !== 'window') {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: view.meta.uuid,
             panelType: view.meta.type

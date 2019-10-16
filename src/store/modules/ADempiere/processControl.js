@@ -250,13 +250,21 @@ const processControl = {
             reject(error)
           })
           .finally(() => {
-            // TODO: Add conditional to indicate when update record
-            if (params.panelType === 'window' && !processResult.isError) {
-              dispatch('updateRecordAfterRunProcess', {
-                parentUuid: params.parentUuid,
-                containerUuid: params.containerUuid,
-                tab: tab
-              })
+            if (!processResult.isError) {
+              if (params.panelType === 'window') {
+                // TODO: Add conditional to indicate when update record
+                dispatch('updateRecordAfterRunProcess', {
+                  parentUuid: params.parentUuid,
+                  containerUuid: params.containerUuid,
+                  tab: tab
+                })
+              }
+              if (params.panelType === 'browser') {
+                dispatch('getBrowserSearch', {
+                  containerUuid: params.containerUuid,
+                  isClearSelection: true
+                })
+              }
             }
 
             commit('addNotificationProcess', processResult)
