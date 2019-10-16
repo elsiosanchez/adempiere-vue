@@ -136,7 +136,7 @@ const REFERENCES = [
   },
   {
     id: 34,
-    type: 'FieldTextArea',
+    type: 'FieldText',
     support: true,
     description: 'Reference List',
     alias: ['Memo']
@@ -199,14 +199,14 @@ const REFERENCES = [
   },
   {
     id: 14,
-    type: 'FieldTextArea',
+    type: 'FieldText',
     support: true,
     description: 'Character String up to 2000 characters',
     alias: ['Text']
   },
   {
     id: 36,
-    type: 'FieldTextArea',
+    type: 'FieldText',
     support: true,
     description: 'Text (Long) - Text > 2000 characters',
     alias: ['TextLong', 'Text Long']

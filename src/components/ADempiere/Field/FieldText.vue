@@ -3,7 +3,7 @@
     v-model="value"
     :pattern="pattern"
     :rows="rows"
-    :type="typeInput"
+    :type="typeTextBox"
     :placeholder="metadata.help"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
@@ -23,35 +23,37 @@ export default {
       type: String,
       default: undefined
     },
-    typeInput: {
-      type: String,
-      default: 'text'
-    },
     validateInput: {
       type: Function,
       default: () => undefined
-    },
-    // Only used when prop type='TextArea'
-    rows: {
-      type: Number,
-      default: 5
     }
   },
   data() {
     return {
+      rows: 5, // Only used when input type='TextArea'
       patternFileName: '[A-Za-zñÑ0-9-_]{1,}',
       patternFilePath: '[A-Za-zñÑ0-9-_/.]{1,}'
     }
   },
+  computed: {
+    typeTextBox() {
+      // String, Url, FileName...
+      var typeInput = 'text'
+      if (['Memo', 'Text', 'TextLong'].includes(this.metadata.referenceType)) {
+        typeInput = 'textarea'
+      }
+      return typeInput
+    }
+  },
   watch: {
     valueModel(value) {
-      if (!value) {
+      if (this.isEmptyValue(value)) {
         value = ''
       }
       this.value = value
     },
     'metadata.value'(value) {
-      if (!value) {
+      if (this.isEmptyValue(value)) {
         value = ''
       }
       this.value = value
@@ -59,8 +61,13 @@ export default {
   },
   beforeMount() {
     // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = String(this.valueModel)
+    if (this.metadata.inTable) {
+      // avoid drastically changing the style of the table
+      // this.typeInput = 'text'
+      this.rows = 1
+      if (!this.isEmptyValue(this.valueModel)) {
+        this.value = String(this.valueModel)
+      }
     }
   },
   methods: {
