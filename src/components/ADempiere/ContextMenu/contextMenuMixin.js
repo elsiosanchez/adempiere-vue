@@ -129,9 +129,6 @@ export const contextMixin = {
     }
   },
   created() {
-    // if (this.panelType === 'window') {
-    //   this.refreshData()
-    // }
     this.generateContextMenu()
   },
   mounted() {
