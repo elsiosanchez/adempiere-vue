@@ -165,6 +165,9 @@ const panel = {
               isEvaluateMandatory: false
             })
           })
+            .catch(error => {
+              console.warn('Error getting Advanced Query (changeFieldShowedFromUser):', error.message + '. Code: ', error.code)
+            })
         }
       }
     },
@@ -473,6 +476,9 @@ const panel = {
                 isEvaluateMandatory: false
               })
             })
+              .catch(error => {
+                console.warn('Error getting Advanced Query (notifyFieldChange):', error.message + '. Code: ', error.code)
+              })
           }
         }
       }

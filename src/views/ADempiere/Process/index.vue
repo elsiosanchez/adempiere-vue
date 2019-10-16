@@ -1,5 +1,5 @@
 <template>
-  <el-container v-if="isLoading" key="process-loaded" class="view-base" style="height: 84vh;">
+  <el-container v-if="isLoadedMetadata" key="process-loaded" class="view-base" style="height: 84vh;">
     <el-header style="height: 39px;">
       <context-menu
         :menu-parent-uuid="$route.meta.parentUuid"
@@ -44,7 +44,7 @@
   <div
     v-else
     key="process-loading"
-    v-loading="!isLoading"
+    v-loading="!isLoadedMetadata"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
@@ -74,7 +74,7 @@ export default {
     return {
       processMetadata: {},
       processUuid: this.$route.meta.uuid,
-      isLoading: false,
+      isLoadedMetadata: false,
       panelType: 'process'
     }
   },
@@ -87,7 +87,7 @@ export default {
     }
   },
   watch: {
-    isLoading(value) {
+    isLoadedMetadata(value) {
       if (value) {
         this.processMetadata = this.getterProcess
       }
@@ -99,13 +99,13 @@ export default {
   methods: {
     getProcess() {
       if (this.getterProcess) {
-        this.isLoading = true
+        this.isLoadedMetadata = true
       } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.processUuid,
           type: this.panelType
         }).then(response => {
-          this.isLoading = true
+          this.isLoadedMetadata = true
         }).catch(error => {
           console.log('Dictionary Process - Error ' + error.code + ': ' + error.message)
         })

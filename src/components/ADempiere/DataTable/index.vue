@@ -679,8 +679,7 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
-          type: this.panelType,
-          isAdvancedQuery: this.isAdvancedQuery
+          type: this.panelType
         }).then(response => {
           this.isLoadPanelFromServer = true
         }).catch(error => {
@@ -758,6 +757,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
   .el-table-row {
     .hover-row {
@@ -766,11 +766,10 @@ export default {
     .current-row {
       .hover-row {
         background-color: initial !important;
-  }
+      }
     }
   }
 </style>
-
 <style>
   .el-table > .cell {
     -webkit-box-sizing: border-box;

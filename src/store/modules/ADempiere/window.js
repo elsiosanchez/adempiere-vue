@@ -30,7 +30,7 @@ const window = {
     }
   },
   actions: {
-    getWindowFromServer: ({ commit, dispatch }, windowUuid) => {
+    getWindowFromServer({ commit, dispatch }, windowUuid) {
       return new Promise((resolve, reject) => {
         getWindowMetadata(windowUuid)
           .then(response => {
@@ -185,87 +185,84 @@ const window = {
           })
       })
     },
-    getTabAndFieldFromServer: ({ dispatch }, objectParams) => {
-      return new Promise((resolve, reject) => {
-        getTabMetadata(objectParams.containerUuid)
-          .then(response => {
-            const panelType = objectParams.panelType
-            var fieldsList = response.getFieldsList()
-            var additionalAttributes = {
-              parentUuid: objectParams.parentUuid,
-              containerUuid: objectParams.containerUuid,
-              isShowedFromUser: true,
-              panelType: panelType,
-              //
-              isReadOnlyFromForm: false,
-              isAdvancedQuery: objectParams.isAdvancedQuery
-            }
+    getTabAndFieldFromServer({ dispatch, getters }, {
+      parentUuid,
+      containerUuid,
+      panelType = 'window',
+      isAdvancedQuery = false
+    }) {
+      return getTabMetadata(containerUuid)
+        .then(response => {
+          var fieldsList = response.getFieldsList()
+          const additionalAttributes = {
+            parentUuid: parentUuid,
+            containerUuid: containerUuid,
+            isShowedFromUser: true,
+            panelType: panelType,
+            //
+            isReadOnlyFromForm: false,
+            isAdvancedQuery: isAdvancedQuery
+          }
 
-            var fieldUuidsequence = 0
-            //  Convert from gRPC
-            fieldsList = fieldsList.map((item, index) => {
-              item = convertField(item, {
-                ...additionalAttributes,
-                fieldListIndex: index
-              })
-              if (item.sequence > fieldUuidsequence) {
-                fieldUuidsequence = item.sequence
-              }
-              return item
+          var fieldUuidsequence = 0
+          //  Convert from gRPC
+          fieldsList = fieldsList.map((item, index) => {
+            item = convertField(item, {
+              ...additionalAttributes,
+              fieldListIndex: index
             })
+            if (item.sequence > fieldUuidsequence) {
+              fieldUuidsequence = item.sequence
+            }
+            return item
+          })
 
-            //  Get dependent fields
-            fieldsList
-              .filter(field => field.parentFieldsList && field.isActive)
-              .forEach((field, index, list) => {
-                field.parentFieldsList.forEach(parentColumnName => {
-                  var parentField = list.find(parentField => {
-                    return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
-                  })
-                  if (parentField) {
-                    parentField.dependentFieldsList.push(field.columnName)
-                  }
+          //  Get dependent fields
+          fieldsList
+            .filter(field => field.parentFieldsList && field.isActive)
+            .forEach((field, index, list) => {
+              field.parentFieldsList.forEach(parentColumnName => {
+                var parentField = list.find(parentField => {
+                  return parentField.columnName === parentColumnName && parentColumnName !== field.columnName
                 })
+                if (parentField) {
+                  parentField.dependentFieldsList.push(field.columnName)
+                }
               })
-
-            if (!fieldsList.find(field => field.columnName === 'UUID')) {
-              var attributesOverwrite = {
-                panelType: panelType,
-                sequence: (fieldUuidsequence + 10),
-                name: 'UUID',
-                columnName: 'UUID',
-                isAdvancedQuery: objectParams.isAdvancedQuery,
-                componentPath: 'FieldText'
-              }
-              var field = getFieldTemplate(attributesOverwrite)
-              fieldsList.push(field)
-            }
-            //  Panel for save on store
-            var panel = {
-              id: response.getId(),
-              uuid: objectParams.containerUuid,
-              name: response.getName(),
-              parentUuid: objectParams.parentUuid,
-              fieldList: fieldsList,
-              tableName: response.getTablename(),
-              linkColumnName: response.getLinkcolumnname(),
-              parentColumnName: response.getParentcolumnname(),
-              panelType: panelType,
-              isAdvancedQuery: objectParams.isAdvancedQuery
-            }
-
-            dispatch('addPanel', panel)
-            dispatch('setTabIsLoadField', {
-              parentUuid: objectParams.parentUuid,
-              containerUuid: objectParams.containerUuid
             })
-            resolve(panel)
+
+          if (!fieldsList.find(field => field.columnName === 'UUID')) {
+            var attributesOverwrite = {
+              panelType: panelType,
+              sequence: (fieldUuidsequence + 10),
+              name: 'UUID',
+              columnName: 'UUID',
+              isAdvancedQuery: isAdvancedQuery,
+              componentPath: 'FieldText'
+            }
+            var field = getFieldTemplate(attributesOverwrite)
+            fieldsList.push(field)
+          }
+
+          //  Panel for save on store
+          const panel = {
+            ...getters.getTab(parentUuid, containerUuid),
+            isAdvancedQuery: isAdvancedQuery,
+            fieldList: fieldsList,
+            panelType: panelType
+          }
+
+          dispatch('addPanel', panel)
+          dispatch('setTabIsLoadField', {
+            parentUuid: parentUuid,
+            containerUuid: containerUuid
           })
-          .catch(error => {
-            console.warn('Dictionary Tab (State Window) - Error ' + error.code + ': ' + error.message)
-            reject(error)
-          })
-      })
+          return panel
+        })
+        .catch(error => {
+          console.warn('Dictionary Tab (State Window) - Error ' + error.code + ': ' + error.message)
+          return error
+        })
     },
     changeShowedDetailWindow: ({ commit, state }, params) => {
       var window = state.window.find(itemWindow => {
