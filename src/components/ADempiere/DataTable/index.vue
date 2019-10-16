@@ -592,14 +592,13 @@ export default {
       if (this.isShowedPanelRecord && this.isParent) {
         if (this.uuidCurrentRecordSelected !== row.UUID) {
           this.uuidCurrentRecordSelected = row.UUID
-          this.$router.push({ query: {
-            ...this.$route.query,
-            action: this.uuidCurrentRecordSelected
-          }})
-
           // disabled rollback when change route
           this.$store.dispatch('setDataLog', {})
         }
+        this.$router.push({ query: {
+          ...this.$route.query,
+          action: row.UUID
+        }})
       } else {
         if (!row.isEdit) {
           row.isEdit = true

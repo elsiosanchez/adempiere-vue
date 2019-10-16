@@ -452,6 +452,15 @@ const panel = {
       } else if (!params.isDontSendToQuery) {
         if (params.panelType === 'table' && fieldIsDisplayed(field) && field.isShowedFromUser) {
           if (panel.isAdvancedQuery) {
+            // change action to advanced query on field value is changed in this panel
+            if (router.currentRoute.query.action !== 'advancedQuery') {
+              router.push({
+                query: {
+                  ...router.currentRoute.query,
+                  action: 'advancedQuery'
+                }
+              })
+            }
             dispatch('getObjectListFromCriteria', {
               parentUuid: panel.parentUuid,
               containerUuid: panel.uuid,
