@@ -45,7 +45,6 @@ const windowControl = {
         panelType: parameters.panelType,
         isAddDisplayColumn: true
       })
-
       if (parameters.panelType === 'window') {
         // redirect to create new record
         const oldRoute = router.app._route
