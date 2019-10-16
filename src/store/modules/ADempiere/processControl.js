@@ -268,6 +268,10 @@ const processControl = {
             dispatch('deleteRecordContainer', {
               viewUuid: processDefinition.uuid
             })
+            dispatch('getBrowserSearch', {
+              containerUuid: params.containerUuid,
+              isClearSelection: true
+            })
           })
       })
     },

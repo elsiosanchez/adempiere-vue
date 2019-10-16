@@ -129,8 +129,7 @@ export const contextMixin = {
     }
   },
   created() {
-    if (this.panelType === 'window' || this.panelType === 'browser') {
-      console.log(this.panelType)
+    if (this.panelType === 'window') {
       this.refreshData()
     }
     this.generateContextMenu()
