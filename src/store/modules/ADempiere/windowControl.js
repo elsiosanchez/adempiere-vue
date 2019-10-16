@@ -489,14 +489,11 @@ const windowControl = {
     }) {
       const tab = rootGetters.getTab(parentUuid, containerUuid)
 
-      var parsedQuery
-      if (!tab.isParentTab || (tab.isParentTab && !isLoadAllRecords)) {
-        parsedQuery = parseContext({
-          parentUuid: parentUuid,
-          containerUuid: containerUuid,
-          value: tab.query
-        })
-      }
+      var parsedQuery = parseContext({
+        parentUuid: parentUuid,
+        containerUuid: containerUuid,
+        value: tab.query
+      })
 
       var parsedWhereClause
       if (!isEmptyValue(tab.whereClause)) {

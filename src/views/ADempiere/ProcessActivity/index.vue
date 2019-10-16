@@ -35,7 +35,7 @@
             <el-form-item :label="generateTitle('Status')">
               <!-- show only when it is error -->
               <el-popover
-                v-if="activity.isError"
+                v-if="activity.isError && !activity.summary && !activity.isReport"
                 placement="right"
                 width="700"
                 trigger="hover"
@@ -76,6 +76,10 @@
                   <span>{{ $t('table.ProcessActivity.Name') }}: {{ activity.output.name }}</span><br>
                   <span>{{ $t('table.ProcessActivity.Description') }}: {{ activity.output.description }}</span><br>
                   <span>{{ $t('table.ProcessActivity.FileName') }}: {{ activity.output.fileName }}</span><br>
+                  <a type="text" :href="activity.url" :download="activity.download">
+                    {{ $t('components.contextMenuDownload') }} <i class="el-icon-download" />
+                  </a>
+                  <!-- file: {{ activity.download }} <br> download: {{ activity.url }} -->
                   <!-- <span>{{ activity.url }}</span><br> -->
                 </div>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
@@ -222,6 +226,12 @@ export default {
 </script>
 
 <style scoped>
+a, a:focus, a:hover {
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+    color: #409EFF;
+}
   .el-popover {
     position: absolute;
     background: #FFFFFF;
