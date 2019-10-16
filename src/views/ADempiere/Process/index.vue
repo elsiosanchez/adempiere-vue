@@ -114,8 +114,17 @@ export default {
   }
 }
 </script>
+<style>
+.el-card__body {
+  padding-top: 0px !important;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+}
+</style>
 
 <style scoped >
+
   .view-base {
     height: 100%;
     min-height: calc(100vh - 84px);
@@ -134,7 +143,7 @@ export default {
   }
   .warn-content {
     margin: 0px 0px !important;
-    padding-top: 39px !important;
+    padding-top: 0px !important;
   }
   .content-help {
     width: 100%;

@@ -48,6 +48,13 @@ export default {
             date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', date)
           }
+        }, {
+          text: this.$t('components.date.Week'),
+          onClick(picker) {
+            const date = new Date()
+            var monthEndDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+            picker.$emit('pick', monthEndDay)
+          }
         }]
       },
       pickerOptionsDateRange: {
@@ -57,6 +64,14 @@ export default {
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24)
             picker.$emit('pick', [start, start])
+          }
+        }, {
+          text: this.$t('components.date.Week'),
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
           }
         }, {
           text: this.$t('components.date.LastMonth'),
