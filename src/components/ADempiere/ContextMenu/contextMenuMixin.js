@@ -129,6 +129,10 @@ export const contextMixin = {
     }
   },
   created() {
+    if (this.panelType === 'window' || this.panelType === 'browser') {
+      console.log(this.panelType)
+      this.refreshData()
+    }
     this.generateContextMenu()
   },
   mounted() {
