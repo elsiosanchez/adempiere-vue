@@ -258,7 +258,8 @@ const processControl = {
                   containerUuid: params.containerUuid,
                   tab: tab
                 })
-              } else {
+              }
+              if (params.panelType === 'browser') {
                 dispatch('getBrowserSearch', {
                   containerUuid: params.containerUuid,
                   isClearSelection: true
