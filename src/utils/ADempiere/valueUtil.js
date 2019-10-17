@@ -146,14 +146,14 @@ export function convertFieldListToShareLink(fieldList) {
     var valueTo = fieldItem.valueTo
 
     if (!isEmptyValue(value)) {
-      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath) || typeof value === 'object') {
         value = value.getTime()
       }
       attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(value)}&`
     }
 
     if (fieldItem.isRange && !isEmptyValue(valueTo)) {
-      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath) || typeof value === 'object') {
         valueTo = valueTo.getTime()
       }
       attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(valueTo)}&`
