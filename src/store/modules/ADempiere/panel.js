@@ -204,6 +204,43 @@ const panel = {
       })
     },
     /**
+     * Set default values to panel
+     * @param {string} containerUuid
+     * @param {string} panelType
+     * TODO: Evaluate if it is necessary to parse the default values
+     */
+    resetPanelToNew({ dispatch, getters }, parameters) {
+      const { containerUuid, panelType } = parameters
+
+      const defaultAttributes = getters.getColumnNamesAndValues({
+        containerUuid: containerUuid,
+        propertyName: 'parsedDefaultValue',
+        isObjectReturn: true,
+        panelType: parameters.panelType,
+        isAddDisplayColumn: true
+      })
+      if (panelType === 'window') {
+        // redirect to create new record
+        const oldRoute = router.app._route
+        router.push({
+          name: oldRoute.name,
+          query: {
+            action: 'create-new',
+            tabNumber: oldRoute.query.tabNumber
+          }
+        })
+        showMessage({
+          message: language.t('data.createNewRecord'),
+          type: 'info'
+        })
+      }
+      dispatch('notifyPanelChange', {
+        containerUuid: containerUuid,
+        newValues: defaultAttributes,
+        isDontSendToEdit: true
+      })
+    },
+    /**
      * Changed panel when receive or reset panel to new record
      * @param {string} parentUuid
      * @param {string} containerUuid
@@ -450,8 +487,11 @@ const panel = {
             }
           }
         } else {
+          const fieldsEmpty = getters.getFieldListEmptyMandatory({
+            containerUuid: params.containerUuid
+          })
           showMessage({
-            message: language.t('notifications.mandatoryFieldMissing') + getters.getFieldListEmptyMandatory(params.containerUuid),
+            message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
             type: 'info'
           })
         }
@@ -564,27 +604,17 @@ const panel = {
     /**
      * Determinate if panel is ready fron send, all fiedls mandatory and displayed with values
      * @param {string}  containerUuid
-     * @returns {boolean}
+     * @param {object}  row, data to compare if is table
+     * @returns {object}
      */
-    isNotReadyForSubmit: (state, getters) => (containerUuid) => {
+    isNotReadyForSubmit: (state, getters) => (containerUuid, row) => {
       const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(fieldItem.value)) {
-          return true
+        var value = fieldItem.value
+        // used when evaluate data in table
+        if (row) {
+          value = row[fieldItem.columnName]
         }
-      })
-
-      return field
-    },
-    /**
-     * @param {string}  containerUuid
-     * @param {object} dataRow, values
-     * TODO: Join with isNotReadyForSubmit getter
-     */
-    isNotReadyForSubmitTable: (state, getters) => (containerUuid, dataRow) => {
-      const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
-        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        const value = dataRow[fieldItem.columnName]
         if (fieldIsDisplayed(fieldItem) && isMandatory && isEmptyValue(value)) {
           return true
         }
@@ -600,9 +630,10 @@ const panel = {
       })
     },
     // Obtain empty obligatory fields
-    getFieldListEmptyMandatory: (state, getters) => (containerUuid, evaluateShowed = true) => {
+    getFieldListEmptyMandatory: (state, getters) => (parameters) => {
+      const { containerUuid, evaluateShowed = true, row } = parameters
       // all optionals (not mandatory) fields
-      var isMandatoryField = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
+      var fieldList = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (isMandatory) {
           const isDisplayed = fieldIsDisplayed(fieldItem)
@@ -612,12 +643,17 @@ const panel = {
           return isMandatory
         }
       })
-      var isMandatoryEmptyField = isMandatoryField.filter(fieldItem => {
-        if (isEmptyValue(fieldItem.value)) {
+      fieldList = fieldList.filter(fieldItem => {
+        var value = fieldItem.value
+        // used when evaluate data in table
+        if (row) {
+          value = row[fieldItem.columnName]
+        }
+        if (isEmptyValue(value)) {
           return fieldItem.name
         }
       })
-      return isMandatoryEmptyField.map(fieldItem => {
+      return fieldList.map(fieldItem => {
         return fieldItem.name
       })
     },

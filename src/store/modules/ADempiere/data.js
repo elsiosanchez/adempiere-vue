@@ -402,7 +402,7 @@ const data = {
       }
       if (!isDontSendToEdit) {
         if (panelType === 'window') {
-          const fieldNotReady = rootGetters.isNotReadyForSubmitTable(containerUuid, row)
+          const fieldNotReady = rootGetters.isNotReadyForSubmit(containerUuid, row)
           if (!fieldNotReady) {
             if (!isEmptyValue(row.UUID)) {
               dispatch('updateCurrentEntityFromTable', {
@@ -425,8 +425,12 @@ const data = {
                 })
             }
           } else {
+            const fieldsEmpty = rootGetters.getFieldListEmptyMandatory({
+              containerUuid: containerUuid,
+              row: row
+            })
             showMessage({
-              message: language.t('notifications.mandatoryFieldMissing') + rootGetters.getFieldListEmptyMandatory(containerUuid),
+              message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
               type: 'info'
             })
           }

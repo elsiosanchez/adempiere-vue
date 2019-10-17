@@ -37,35 +37,6 @@ const windowControl = {
     }
   },
   actions: {
-    resetPanelToNew({ dispatch, rootGetters }, parameters) {
-      const defaultAttributes = rootGetters.getColumnNamesAndValues({
-        containerUuid: parameters.containerUuid,
-        propertyName: 'parsedDefaultValue',
-        isObjectReturn: true,
-        panelType: parameters.panelType,
-        isAddDisplayColumn: true
-      })
-      if (parameters.panelType === 'window') {
-        // redirect to create new record
-        const oldRoute = router.app._route
-        router.push({
-          name: oldRoute.name,
-          query: {
-            action: 'create-new',
-            tabNumber: oldRoute.query.tabNumber
-          }
-        })
-        showMessage({
-          message: language.t('data.createNewRecord'),
-          type: 'info'
-        })
-      }
-      dispatch('notifyPanelChange', {
-        containerUuid: parameters.containerUuid,
-        newValues: defaultAttributes,
-        isDontSendToEdit: true
-      })
-    },
     undoPanelToNew({ dispatch, rootGetters }, parameters) {
       const oldAttributes = rootGetters.getColumnNamesAndValues({
         containerUuid: parameters.containerUuid,
