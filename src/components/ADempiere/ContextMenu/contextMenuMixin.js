@@ -1,5 +1,6 @@
 import { showNotification } from '@/utils/ADempiere/notification'
 import Item from './items'
+import { convertFieldListToShareLink } from '@/utils/ADempiere/valueUtil'
 
 export const contextMixin = {
   components: {
@@ -106,6 +107,9 @@ export const contextMixin = {
         return this.$store.getters.getDataLog(this.containerUuid, this.recordUuid)
       }
       return undefined
+    },
+    processParametersExecuted() {
+      return this.$store.getters.getCachedReport(this.$route.params.instanceUuid).parameters
     }
   },
   watch: {
@@ -264,6 +268,9 @@ export const contextMixin = {
               parentMenu = this.$route.params.menuParentUuid
             }
           }
+          if (this.panelType === 'process') {
+            this.$store.dispatch('setTempShareLink', { processId: this.$route.params.processId, href: window.location.href })
+          }
           this.$store.dispatch(action.action, {
             action: action,
             parentUuid: this.containerUuid,
@@ -280,13 +287,6 @@ export const contextMixin = {
             // TODO: Verify use
             this.$store.dispatch('deleteRecordContainer', {
               viewUuid: this.$route
-            })
-            this.$store.dispatch('setTempShareLink', { processId: this.$route.params.processId, href: window.location.href })
-          }
-          if (this.panelType === 'process' || this.panelType === 'browser' || this.panelType === 'report') {
-            this.$store.dispatch('resetPanelToNew', {
-              containerUuid: this.containerUuid,
-              panelType: this.panelType
             })
           }
         } else {
@@ -324,10 +324,11 @@ export const contextMixin = {
     setShareLink() {
       var shareLink = this.panelType === 'window' || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
+        var processParameters = convertFieldListToShareLink(this.processParametersExecuted)
         var reportFormat = this.$store.getters.getReportType
         shareLink = this.$store.getters.getTempShareLink
-        if (String(this.valuesPanelToShare).length) {
-          shareLink += '?' + this.valuesPanelToShare
+        if (String(processParameters).length) {
+          shareLink += '?' + processParameters
           shareLink += `&reportType=${reportFormat}`
         }
       } else {

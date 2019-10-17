@@ -425,12 +425,19 @@ export default {
           })
           parameters.isWindow = false
         } else if (this.panelType === 'process' || this.panelType === 'browser') {
-          this.$store.dispatch('notifyPanelChange', {
-            containerUuid: this.containerUuid,
-            newValues: route.query,
-            isShowedField: true
-          })
-          parameters.isWindow = false
+          if (!this.isEmptyValue(route.query)) {
+            this.$store.dispatch('notifyPanelChange', {
+              containerUuid: this.containerUuid,
+              newValues: route.query,
+              isShowedField: true
+            })
+            parameters.isWindow = false
+          } else {
+            this.$store.dispatch('resetPanelToNew', {
+              containerUuid: this.containerUuid,
+              panelType: this.panelType
+            })
+          }
         }
       }
     },

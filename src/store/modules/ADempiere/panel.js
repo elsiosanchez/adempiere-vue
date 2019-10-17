@@ -696,8 +696,8 @@ const panel = {
           const valueToReturn = fieldItem[propertyName]
           attributesObject[fieldItem.columnName] = valueToReturn
 
-          // Add display columns
-          if (fieldItem.displayColumn) {
+          // Add display columns if field has value
+          if (fieldItem[propertyName] && fieldItem.displayColumn) {
             attributesObject['DisplayColumn_' + fieldItem.columnName] = fieldItem.displayColumn
             displayColumnsList.push({
               columnName: 'DisplayColumn_' + fieldItem.columnName,

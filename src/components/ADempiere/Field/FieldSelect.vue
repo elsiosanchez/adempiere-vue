@@ -8,7 +8,7 @@
     class="select-base"
     clearable
     :disabled="isDisabled"
-    @change="handleChange"
+    @change="preHandleChange"
     @visible-change="getDataLookupList"
     @clear="clearLookup"
   >

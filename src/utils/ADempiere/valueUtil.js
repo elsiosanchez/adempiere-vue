@@ -137,3 +137,28 @@ export function convertArrayPairsToObject(arrayToConver, nameKey = 'columnName',
 
   return result
 }
+
+export function convertFieldListToShareLink(fieldList) {
+  var attributesListLink = ''
+  fieldList.map(fieldItem => {
+    // assign values
+    var value = fieldItem.value
+    var valueTo = fieldItem.valueTo
+
+    if (!isEmptyValue(value)) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
+        value = value.getTime()
+      }
+      attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(value)}&`
+    }
+
+    if (fieldItem.isRange && !isEmptyValue(valueTo)) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath)) {
+        valueTo = valueTo.getTime()
+      }
+      attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(valueTo)}&`
+    }
+  })
+
+  return attributesListLink.slice(0, -1)
+}
