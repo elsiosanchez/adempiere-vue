@@ -140,8 +140,10 @@ export default {
     isLoaded(value) {
       if (value) {
         this.browserMetadata = this.getterBrowser
-        if (this.getDataRecords.length <= 0 && this.getContainerIsReadyForSubmit) {
-          this.defaultSearch()
+        if (this.getDataRecords.length <= 0) {
+          if (this.getContainerIsReadyForSubmit) {
+            this.defaultSearch()
+          }
         }
       }
     },
@@ -178,7 +180,7 @@ export default {
             this.isLoaded = true
           })
           .catch(error => {
-            console.log('Dictionary browse - Error ' + error.code + ': ' + error.message)
+            console.warn('Dictionary Browser - Error ' + error.code + ': ' + error.message)
           })
       }
     },

@@ -56,7 +56,8 @@ const browser = {
                 field.isShowedFromUser = true
               }
 
-              if (!isEmptyValue(field.value) && String(field.value) !== '-1') {
+              // Only isQueryCriteria fields, displayed in main panel
+              if (field.isQueryCriteria && !isEmptyValue(field.value) && String(field.value) !== '-1') {
                 field.isShowedFromUser = true
               }
 
