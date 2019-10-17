@@ -1,20 +1,23 @@
 <template>
-  <el-date-picker
-    v-model="value"
-    :format="formatView"
-    :value-format="formatSend"
-    :type="typePicker"
-    range-separator="-"
-    :placeholder="metadata.help"
-    :start-placeholder="$t('components.dateStartPlaceholder')"
-    :end-placeholder="$t('components.dateEndPlaceholder')"
-    unlink-panels
-    class="date-base"
-    :readonly="Boolean(metadata.readonly)"
-    :disabled="isDisabled"
-    :picker-options="typePicker === 'daterange' ? pickerOptionsDateRange : pickerOptionsDate"
-    @change="preHandleChange"
-  />
+  <div>
+    value: {{ typeof value }}
+    <el-date-picker
+      v-model="value"
+      :format="formatView"
+      :value-format="formatSend"
+      :type="typePicker"
+      range-separator="-"
+      :placeholder="metadata.help"
+      :start-placeholder="$t('components.dateStartPlaceholder')"
+      :end-placeholder="$t('components.dateEndPlaceholder')"
+      unlink-panels
+      class="date-base"
+      :readonly="Boolean(metadata.readonly)"
+      :disabled="isDisabled"
+      :picker-options="typePicker === 'daterange' ? pickerOptionsDateRange : pickerOptionsDate"
+      @change="preHandleChange"
+    />
+  </div>
 </template>
 
 <script>
@@ -61,16 +64,16 @@ export default {
         }, {
           text: this.$t('components.date.Week'),
           onClick(picker) {
-            var start_date, end_date, date, currenDate
+            var start_date, end_date, date, currenDate, first, last
             start_date = new Date()
             start_date.setHours(0, 0, 0, 0)
             end_date = new Date()
             date = null
             currenDate = date ? new Date(date) : new Date()
-            var first = currenDate.getDate() - currenDate.getDay('monday')
-            var last = first - 7
-            start_date.setDate(first - 1)
-            end_date.setDate(last)
+            first = currenDate.getDate() - currenDate.getDay('monday')
+            last = first - 7
+            start_date.setDate(last)
+            end_date.setDate(first - 1)
             picker.$emit('pick', [start_date, end_date])
           }
         }, {
