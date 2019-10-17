@@ -483,13 +483,12 @@ const windowControl = {
         })
       }
       var conditions = []
-      if (!tab.isParentTab && !isEmptyValue(tab.tableName) && !isEmptyValue(value)) {
+      if (tab.isParentTab && !isEmptyValue(tab.tableName) && !isEmptyValue(value)) {
         conditions.push({
           columnName: `${tab.tableName}.${columnName}`,
           value: value
         })
       }
-
       return dispatch('getObjectListFromCriteria', {
         parentUuid: tab.parentUuid,
         containerUuid: containerUuid,

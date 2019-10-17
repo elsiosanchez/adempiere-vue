@@ -116,7 +116,7 @@ export default {
     Process: 'Proceso',
     Window: 'Ventana',
     noProcess: 'No hay procesos en ejecución',
-    logs: 'Bitacoras',
+    logs: 'Resumen',
     log: 'Bitacora',
     seeReport: 'Ver Reporte',
     summary: 'Resumen',
@@ -136,7 +136,7 @@ export default {
       Output: 'Salida',
       Action: 'Acción',
       Status: 'Estado',
-      Logs: 'Bitacora',
+      Logs: 'Resumen',
       Summary: 'Resumen',
       Help: 'Ayuda'
     },

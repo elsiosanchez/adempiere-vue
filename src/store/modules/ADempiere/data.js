@@ -140,7 +140,9 @@ const data = {
       if (isEmptyValue(linkColumnName)) {
         // get the link column name from field list
         const fieldLink = tab.fieldList.find(item => item.isParent)
-        linkColumnName = fieldLink.columnName
+        if (fieldLink) {
+          linkColumnName = fieldLink.columnName
+        }
       }
 
       // get context value if link column exists and does not exist in row
