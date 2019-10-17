@@ -80,7 +80,7 @@ export default {
     date: {
       Today: 'Today',
       Yesterday: 'Yesterday',
-      Week: 'A week ago',
+      Week: 'Last week',
       LastMonth: 'Last month',
       CurrentMonth: 'The current month'
     },

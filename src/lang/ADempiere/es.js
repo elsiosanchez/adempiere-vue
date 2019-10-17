@@ -80,7 +80,7 @@ export default {
     date: {
       Today: 'Hoy',
       Yesterday: 'Ayer',
-      Week: 'Hace una semana',
+      Week: 'La semana pasada',
       LastMonth: 'El mes pasado',
       CurrentMonth: 'El mes actual'
     },
