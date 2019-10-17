@@ -396,12 +396,13 @@ const windowControl = {
     },
     /**
      * Delete selection records in table
-     * @param {string} parameters.containerUuid
-     * @param {string} parameters.parentUuid
+     * @param {string} containerUuid
+     * @param {string} parentUuid
      */
     deleteSelectionDataList({ dispatch, rootGetters }, parameters) {
-      var allData = rootGetters.getDataRecordAndSelection(parameters.containerUuid)
-      const tab = rootGetters.getTab(parameters.parentUuid, parameters.containerUuid)
+      const { parentUuid, containerUuid } = parameters
+      const tab = rootGetters.getTab(parentUuid, containerUuid)
+      var allData = rootGetters.getDataRecordAndSelection(containerUuid)
       var selectionLength = allData.selection.length
 
       allData.selection.forEach((record, index) => {
@@ -411,8 +412,8 @@ const windowControl = {
           console.warn(`This row does not contain a record with UUID`, record)
           // refresh record list
           dispatch('getDataListTab', {
-            parentUuid: parameters.parentUuid,
-            containerUuid: parameters.containerUuid
+            parentUuid: parentUuid,
+            containerUuid: containerUuid
           })
           return
         }
@@ -421,29 +422,35 @@ const windowControl = {
           recordUuid: record.UUID
         })
           .then(() => {
-            // redirect to create new record
-            var oldRoute = router.app._route
-            if (record.UUID === oldRoute.query.action) {
-              router.push({
-                name: oldRoute.name,
-                query: {
-                  action: 'create-new',
-                  tabNumber: oldRoute.query.tabNumber
-                }
-              })
-              // clear fields with default values
-              dispatch('resetPanelToNew', {
-                containerUuid: parameters.containerUuid
-              })
-              // delete view with uuid record delete
-              dispatch('tagsView/delView', oldRoute, true)
+            if (tab.isParentTab) {
+              // redirect to create new record
+              const oldRoute = router.app._route
+              if (record.UUID === oldRoute.query.action) {
+                router.push({
+                  name: oldRoute.name,
+                  query: {
+                    action: 'create-new',
+                    tabNumber: oldRoute.query.tabNumber
+                  }
+                })
+                // clear fields with default values
+                dispatch('resetPanelToNew', {
+                  containerUuid: containerUuid
+                })
+                // delete view with uuid record delete
+                dispatch('tagsView/delView', oldRoute, true)
+              }
             }
 
             if ((index + 1) >= selectionLength) {
               // refresh record list
               dispatch('getDataListTab', {
-                parentUuid: parameters.parentUuid,
-                containerUuid: parameters.containerUuid
+                parentUuid: parentUuid,
+                containerUuid: containerUuid
+              })
+              showMessage({
+                message: language.t('data.deleteRecordSuccessful'),
+                type: 'success'
               })
             }
           })
