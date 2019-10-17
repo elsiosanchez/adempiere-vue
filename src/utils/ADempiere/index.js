@@ -15,7 +15,7 @@ import * as valueUtil from '@/utils/ADempiere/valueUtil.js'
 export function fieldIsDisplayed(field) {
   // if is Advanced Query
   if (field.panelType === 'table') {
-    return true
+    return field.isDisplayed && field.isDisplayedFromLogic
   }
   const isBrowserDisplayed = field.isQueryCriteria // browser query criteria
   const isWindowDisplayed = field.isDisplayed && field.isDisplayedFromLogic // window, process and report, browser result

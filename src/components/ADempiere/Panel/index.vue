@@ -530,7 +530,7 @@ export default {
             element.isDisplayed = true
             element.isDisplayedFromLogic = true
             element.isShowedFromUser = true
-            if (index > 0) {
+            if (element.isKey || !element.isSelectionColumn) {
               element.isShowedFromUser = false
             }
           }
