@@ -45,13 +45,6 @@ export default {
           text: this.$t('components.date.Week'),
           onClick(picker) {
             const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: this.$t('components.date.Week'),
-          onClick(picker) {
-            const date = new Date()
             var monthEndDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
             picker.$emit('pick', monthEndDay)
           }
@@ -68,10 +61,17 @@ export default {
         }, {
           text: this.$t('components.date.Week'),
           onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
+            var start_date, end_date, date, currenDate
+            start_date = new Date()
+            start_date.setHours(0, 0, 0, 0)
+            end_date = new Date()
+            date = null
+            currenDate = date ? new Date(date) : new Date()
+            var first = currenDate.getDate() - currenDate.getDay('monday')
+            var last = first - 7
+            start_date.setDate(first - 1)
+            end_date.setDate(last)
+            picker.$emit('pick', [start_date, end_date])
           }
         }, {
           text: this.$t('components.date.LastMonth'),
