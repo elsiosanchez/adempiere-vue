@@ -273,6 +273,9 @@ export default {
         return this.$store.getters.getTabIsLoadField(this.parentUuid, this.containerUuid)
       }
       return false
+    },
+    getterTotalDataRecordCount() {
+      return this.$store.getters.getDataRecordCount(this.containerUuid)
     }
   },
   watch: {
@@ -313,6 +316,12 @@ export default {
   },
   created() {
     // get tab with uuid
+    if (!this.getterTotalDataRecordCount) {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
+      })
+    }
     this.getPanel(this.isAdvancedQuery)
   },
   methods: {
@@ -399,8 +408,6 @@ export default {
           parameters.value = route.query.action
           parameters.tableName = this.metadata.tableName
           parameters.columnName = 'UUID'
-        } else {
-          parameters.isNewRecord = true
         }
         // Only call get data if panel type is window
         this.getData(parameters)
@@ -481,8 +488,6 @@ export default {
               }
               this.setTagsViewTitle(this.$route.query.action)
               this.isLoadRecord = true
-            } else {
-              this.$router.push({ query: { action: 'create-new', ...this.$route.query }})
             }
           })
       }
@@ -534,7 +539,7 @@ export default {
             element.isDisplayed = true
             element.isDisplayedFromLogic = true
             element.isShowedFromUser = true
-            if (element.isKey || !element.isSelectionColumn) {
+            if (index > 0) {
               element.isShowedFromUser = false
             }
           }

@@ -38,13 +38,6 @@
               >
                 {{ $t('table.dataTable.advancedQuery') }}
               </el-menu-item>
-              <el-menu-item
-                v-if="!isParent && panelType === 'window'"
-                index="refresh"
-                @click="refreshData()"
-              >
-                {{ $t('components.contextMenuRefresh') }}
-              </el-menu-item>
 
             </el-submenu>
           </el-menu>
@@ -434,17 +427,6 @@ export default {
     sortFields,
     handleChange(val) {
       val = !val
-    },
-    refreshData() {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid,
-        isRefreshPanel: true,
-        recordUuid: this.recordUuid
-      })
-        .catch(error => {
-          console.warn(error)
-        })
     },
     /**
      * @param {object} row, row data
