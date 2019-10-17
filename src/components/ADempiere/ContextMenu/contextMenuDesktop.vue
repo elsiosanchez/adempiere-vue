@@ -35,9 +35,6 @@
               {{ $t('components.contextMenuDownload') }}
             </a>
           </el-menu-item>
-          <el-menu-item index="5" @click="setShareLink">
-            {{ $t('components.contextMenuShareLink') }}
-          </el-menu-item>
           <el-menu-item v-if="getDataSelection.length > 0 && panelType === 'browser'" index="6" @click="exporBrowser">
             {{ $t('components.contextMennuExport') }}
           </el-menu-item>
@@ -46,6 +43,9 @@
           </el-menu-item>
           <el-menu-item v-if="panelType !== 'process'" index="8" @click="refreshData">
             {{ $t('components.contextMenuRefresh') }}
+          </el-menu-item>
+          <el-menu-item index="5" @click="setShareLink">
+            {{ $t('components.contextMenuShareLink') }}
           </el-menu-item>
         </el-submenu>
         <el-menu-item v-else disabled index="2">

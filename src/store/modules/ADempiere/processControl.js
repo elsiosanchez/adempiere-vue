@@ -379,8 +379,7 @@ const processControl = {
         processMessage.message = errorMessage
         processMessage.type = 'error'
       }
-
-      if (parameters.processOutput.isReport) {
+      if (parameters.processOutput.isReport && !parameters.processOutput.isError) {
         // open report viewer with report response
         router.push({
           name: 'Report Viewer',
