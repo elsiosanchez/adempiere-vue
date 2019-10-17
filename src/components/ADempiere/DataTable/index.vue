@@ -389,7 +389,7 @@ export default {
         if (this.getterIsShowedCriteria) {
           // showed some field query criteria
           if (this.getterFieldIsDisplayed.isDisplayed) {
-            return this.getterHeight - 530
+            return this.getterHeight - 495
           }
           return this.getterHeight - 415
         }
