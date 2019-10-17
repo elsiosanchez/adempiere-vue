@@ -399,6 +399,8 @@ export default {
           parameters.value = route.query.action
           parameters.tableName = this.metadata.tableName
           parameters.columnName = 'UUID'
+        } else {
+          parameters.isNewRecord = true
         }
         // Only call get data if panel type is window
         this.getData(parameters)
@@ -479,6 +481,8 @@ export default {
               }
               this.setTagsViewTitle(this.$route.query.action)
               this.isLoadRecord = true
+            } else {
+              this.$router.push({ query: { action: 'create-new', ...this.$route.query }})
             }
           })
       }
