@@ -132,6 +132,7 @@ const data = {
         isAddDisplayColumn: true
       })
       values.isEdit = isEdit
+      values.isSendServer = false
 
       var linkColumnName
       // get the link column name from the tab
@@ -183,7 +184,7 @@ const data = {
      * @param {string} parameters.containerUuid
      * @param {string} parameters.selection
      */
-    setSelection({ commit, state, getters }, parameters) {
+    setSelection({ commit, getters }, parameters) {
       const recordSelection = getters.getDataRecordAndSelection(parameters.containerUuid)
       commit('setSelection', {
         newSelection: parameters.selection,
@@ -195,10 +196,8 @@ const data = {
      * @param {string} viewUuid // As parentUuid in window
      * @param {array} withOut
      */
-    deleteRecordContainer({ commit, state }, {
-      viewUuid,
-      withOut = []
-    }) {
+    deleteRecordContainer({ commit, state }, parameters) {
+      const { viewUuid, withOut = [] } = parameters
       const record = state.recordSelection.filter(itemRecord => {
         // ignore this uuid
         if (withOut.includes(itemRecord.containerUuid)) {
@@ -376,8 +375,8 @@ const data = {
         row: row
       })
     },
-    notifyCellTableChange({ commit, state, dispatch, rootGetters, isDontSendToEdit = false }, objectParams) {
-      const { parentUuid, containerUuid, panelType = 'window', columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
+    notifyCellTableChange({ commit, state, dispatch, rootGetters }, objectParams) {
+      const { parentUuid, containerUuid, panelType = 'window', isDontSendToEdit = false, columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
       const recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === containerUuid
       })

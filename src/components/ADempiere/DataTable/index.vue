@@ -437,7 +437,7 @@ export default {
         // replace boolean true-false value for 'Yes' or 'Not'
         return row[field.columnName] ? this.$t('components.switchActiveText') : this.$t('components.switchInactiveText')
       } else if (field.componentPath === 'FieldDate' || field.componentPath === 'FieldTime') {
-        var cell = row[field.columnName]
+        let cell = row[field.columnName]
         if (Object.prototype.toString.call(cell) === '[object Date]') {
           cell = cell.getTime()
         }
@@ -483,7 +483,8 @@ export default {
       this.$store.dispatch('addNewRow', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        isEdit: true
+        isEdit: true,
+        isSendServer: false
       })
       // this.inEdited.push(undefined)
     },

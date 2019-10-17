@@ -132,8 +132,15 @@ const windowControl = {
           })
       })
     },
-    createEntityFromTable({ rootGetters }, parameters) {
+    createEntityFromTable({ commit, getters, rootGetters }, parameters) {
       const { containerUuid, row } = parameters
+      // exists some call to create new record with container uuid
+      if (getters.getInCreate(containerUuid)) {
+        return {
+          error: 0,
+          message: `In this panel (${containerUuid}) is a create new record in progress.`
+        }
+      }
       const panel = rootGetters.getPanel(containerUuid)
 
       // TODO: Add support to Binary columns (BinaryData)
@@ -149,6 +156,12 @@ const windowControl = {
           return false
         }
         return true
+      })
+
+      commit('addInCreate', {
+        containerUuid: parameters.containerUuid,
+        tableName: panel.tableName,
+        attributesList: finalAttributes
       })
       return createEntity({
         tableName: panel.tableName,
@@ -182,6 +195,13 @@ const windowControl = {
         })
         .catch(error => {
           return error
+        })
+        .finally(() => {
+          commit('deleteInCreate', {
+            containerUuid: containerUuid,
+            tableName: panel.tableName,
+            attributesList: finalAttributes
+          })
         })
     },
     updateCurrentEntity({ commit, dispatch, rootGetters }, {
