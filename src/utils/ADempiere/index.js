@@ -202,6 +202,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     valueMax: fieldGRPC.getValuemax(),
     //
     isIdentifier: fieldGRPC.getIsidentifier(),
+    isParent: fieldGRPC.getIsparent(),
     isKey: fieldGRPC.getIskey(),
     isSelectionColumn: fieldGRPC.getIsselectioncolumn(),
     isUpdateable: fieldGRPC.getIsupdateable(),

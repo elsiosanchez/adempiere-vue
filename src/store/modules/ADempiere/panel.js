@@ -81,7 +81,9 @@ const panel = {
 
       commit('addPanel', params)
     },
-    // used by components/fields/filterFields
+    /**
+     * Used by components/fields/filterFields
+     */
     changeFieldShowedFromUser({ commit, dispatch, getters }, params) {
       var panel = getters.getPanel(params.containerUuid, params.isAdvancedQuery)
       var showsFieldsWithValue = false
@@ -382,6 +384,7 @@ const panel = {
             var uuid = getters.getUuid(params.containerUuid)
             if (isEmptyValue(uuid)) {
               dispatch('createNewEntity', {
+                parentUuid: params.parentUuid,
                 containerUuid: params.containerUuid
               })
                 .then(response => {
@@ -448,7 +451,7 @@ const panel = {
           }
         } else {
           showMessage({
-            message: language.t('notifications.mandatoryFieldMissing') + getters.getisMandatoryfieldmissing(params.containerUuid),
+            message: language.t('notifications.mandatoryFieldMissing') + getters.getFieldListEmptyMandatory(params.containerUuid),
             type: 'info'
           })
         }
@@ -576,8 +579,9 @@ const panel = {
     /**
      * @param {string}  containerUuid
      * @param {object} dataRow, values
+     * TODO: Join with isNotReadyForSubmit getter
      */
-    isReadyForSubmitRowTable: (state, getters) => (containerUuid, dataRow) => {
+    isNotReadyForSubmitTable: (state, getters) => (containerUuid, dataRow) => {
       const field = getters.getFieldsListFromPanel(containerUuid).find(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         const value = dataRow[fieldItem.columnName]
@@ -586,7 +590,7 @@ const panel = {
         }
       })
 
-      return Boolean(!field)
+      return field
     },
     getEmptyMandatory: (state, getters) => (containerUuid) => {
       return getters.getFieldsListFromPanel(containerUuid).find(itemField => {
@@ -595,8 +599,8 @@ const panel = {
         }
       })
     },
-    //
-    getisMandatoryfieldmissing: (state, getters) => (containerUuid, evaluateShowed = true) => {
+    // Obtain empty obligatory fields
+    getFieldListEmptyMandatory: (state, getters) => (containerUuid, evaluateShowed = true) => {
       // all optionals (not mandatory) fields
       var isMandatoryField = getters.getFieldsListFromPanel(containerUuid).filter(fieldItem => {
         const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
@@ -803,6 +807,7 @@ const panel = {
     },
     /**
      * get field list visible and with values
+     * TODO: Deprecated, change by getColumnNamesAndValues
      */
     getPanelParameters: (state, getters) => (containerUuid, isEvaluateEmptyDisplayed = false, withOut = [], isAdvancedQuery) => {
       if (isAdvancedQuery) {

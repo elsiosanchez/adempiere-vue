@@ -126,6 +126,7 @@ const windowControl = {
               isDontSendToEdit: true
             })
             dispatch('addNewRow', {
+              parentUuid: parameters.parentUuid,
               containerUuid: parameters.containerUuid,
               isPanelValues: true,
               isEdit: false
@@ -161,40 +162,41 @@ const windowControl = {
       })
     },
     createEntityFromTable({ rootGetters }, parameters) {
-      return new Promise((resolve, reject) => {
-        var panel = rootGetters.getPanel(parameters.containerUuid)
+      const { containerUuid, row } = parameters
+      const panel = rootGetters.getPanel(containerUuid)
 
-        // TODO: Add support to Binary columns (BinaryData)
-        const columnsToDontSend = ['BinaryData']
+      // TODO: Add support to Binary columns (BinaryData)
+      const columnsToDontSend = ['BinaryData']
 
-        // attributes or fields
-        var finalAttributes = convertObjectToArrayPairs(parameters.row)
-        finalAttributes = finalAttributes.filter(itemAttribute => {
-          if (isEmptyValue(itemAttribute.value)) {
-            return false
+      // attributes or fields
+      var finalAttributes = convertObjectToArrayPairs(row)
+      finalAttributes = finalAttributes.filter(itemAttribute => {
+        if (isEmptyValue(itemAttribute.value)) {
+          return false
+        }
+        if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
+          return false
+        }
+        return true
+      })
+      return createEntity({
+        tableName: panel.tableName,
+        attributesList: finalAttributes
+      })
+        .then(response => {
+          const newValues = convertValuesMapToObject(response.getValuesMap())
+
+          const result = {
+            data: newValues,
+            recordUuid: response.getUuid(),
+            recordId: response.getId(),
+            tableName: response.getTablename()
           }
-          if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
-            return false
-          }
-          return true
-        })
-        createEntity({
-          tableName: panel.tableName,
-          attributesList: finalAttributes
-        })
-          .then(response => {
-            const newValues = convertValuesMapToObject(response.getValuesMap())
-
-            const result = {
-              data: newValues,
-              recordUuid: response.getUuid(),
-              recordId: response.getId(),
-              tableName: response.getTablename()
-            }
-            showMessage({
-              message: language.t('data.createRecordSuccessful'),
-              type: 'success'
-            })
+          showMessage({
+            message: language.t('data.createRecordSuccessful'),
+            type: 'success'
+          })
+          if (panel.isParentTab) {
             // redirect to create new record
             const oldRoute = router.app._route
             router.push({
@@ -204,12 +206,12 @@ const windowControl = {
                 tabNumber: oldRoute.query.tabNumber
               }
             })
-            resolve(result)
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
+          }
+          return result
+        })
+        .catch(error => {
+          return error
+        })
     },
     updateCurrentEntity({ commit, dispatch, rootGetters }, {
       containerUuid,

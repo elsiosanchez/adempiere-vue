@@ -1,5 +1,6 @@
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
-import { convertValuesMapToObject, isEmptyValue } from '@/utils/ADempiere'
+import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
+import language from '@/lang'
 
 const data = {
   state: {
@@ -109,28 +110,46 @@ const data = {
     },
     /**
      * Insert new row bottom list table, used only from window
+     * @param {string}  parentUuid
      * @param {string}  containerUuid
      * @param {boolean} isPanelValues, define if used values form panel
      * @param {boolean} isEdit, define if used values form panel
      */
     addNewRow({ commit, getters, rootGetters }, parameters) {
-      const data = getters.getDataRecordsList(parameters.containerUuid)
+      const { parentUuid, containerUuid, isPanelValues = false, isEdit = true } = parameters
+
+      const data = getters.getDataRecordsList(containerUuid)
       // add row with default values to create new record
       var propertyName = 'parsedDefaultValue'
-      if (parameters.isPanelValues) {
+      if (isPanelValues) {
         // add row with values used from record in panel
         propertyName = 'value'
       }
       var values = rootGetters.getColumnNamesAndValues({
-        containerUuid: parameters.containerUuid,
+        containerUuid: containerUuid,
         propertyName: propertyName,
         isObjectReturn: true,
         isAddDisplayColumn: true
       })
+      values.isEdit = isEdit
 
-      values.isEdit = true
-      if (parameters.hasOwnProperty('isEdit')) {
-        values.isEdit = parameters.isEdit
+      var linkColumnName
+      // get the link column name from the tab
+      const tab = rootGetters.getPanel(containerUuid)
+      linkColumnName = tab.linkColumnName
+      if (isEmptyValue(linkColumnName)) {
+        // get the link column name from field list
+        const fieldLink = tab.fieldList.find(item => item.isParent)
+        linkColumnName = fieldLink.columnName
+      }
+
+      // get context value if link column exists and does not exist in row
+      if (!isEmptyValue(linkColumnName) && isEmptyValue(values[linkColumnName])) {
+        values[linkColumnName] = rootGetters.getContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          columnName: linkColumnName
+        })
       }
 
       commit('addNewRow', {
@@ -355,15 +374,16 @@ const data = {
         row: row
       })
     },
-    notifyCellTableChange({ commit, state, dispatch, rootGetters }, objectParams) {
+    notifyCellTableChange({ commit, state, dispatch, rootGetters, isDontSendToEdit = false }, objectParams) {
+      const { parentUuid, containerUuid, panelType = 'window', columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
       const recordSelection = state.recordSelection.find(recordItem => {
-        return recordItem.containerUuid === objectParams.containerUuid
+        return recordItem.containerUuid === containerUuid
       })
       const row = recordSelection.record.find(itemRecord => {
-        return itemRecord[objectParams.keyColumn] === objectParams.rowKey
+        return itemRecord[keyColumn] === rowKey
       })
       const rowSelection = recordSelection.selection.find(itemRecord => {
-        return itemRecord[objectParams.keyColumn] === objectParams.rowKey
+        return itemRecord[keyColumn] === rowKey
       })
       commit('notifyCellTableChange', {
         row: row,
@@ -372,38 +392,43 @@ const data = {
         displayColumn: objectParams.displayColumn
       })
 
-      if (objectParams.panelType === 'browser') {
+      if (panelType === 'browser') {
         commit('notifyCellSelectionChange', {
           row: rowSelection,
-          value: objectParams.newValue,
-          columnName: objectParams.columnName,
-          displayColumn: objectParams.displayColumn
+          value: newValue,
+          columnName: columnName,
+          displayColumn: displayColumn
         })
       }
-      if (!objectParams.isDontSendToEdit) {
-        if (objectParams.panelType === 'window') {
-          const isReady = rootGetters.isReadyForSubmitRowTable(objectParams.containerUuid, row)
-          if (isReady) {
+      if (!isDontSendToEdit) {
+        if (panelType === 'window') {
+          const fieldNotReady = rootGetters.isNotReadyForSubmitTable(containerUuid, row)
+          if (!fieldNotReady) {
             if (!isEmptyValue(row.UUID)) {
               dispatch('updateCurrentEntityFromTable', {
-                parentUuid: objectParams.parentUuid,
-                containerUuid: objectParams.containerUuid,
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
                 row: row
               })
             } else {
               dispatch('createEntityFromTable', {
-                parentUuid: objectParams.parentUuid,
-                containerUuid: objectParams.containerUuid,
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
                 row: row
               })
                 .then(() => {
                   // refresh record list
                   dispatch('getDataListTab', {
-                    parentUuid: objectParams.parentUuid,
-                    containerUuid: objectParams.containerUuid
+                    parentUuid: parentUuid,
+                    containerUuid: containerUuid
                   })
                 })
             }
+          } else {
+            showMessage({
+              message: language.t('notifications.mandatoryFieldMissing') + rootGetters.getFieldListEmptyMandatory(containerUuid),
+              type: 'info'
+            })
           }
         }
       }

@@ -499,8 +499,9 @@ export default {
     },
     addNewRow() {
       this.$store.dispatch('addNewRow', {
+        parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        parentUuid: this.parentUuid
+        isEdit: true
       })
       // this.inEdited.push(undefined)
     },
