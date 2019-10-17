@@ -27,7 +27,7 @@
             </div>
           </div>
           <el-form label-position="top">
-            <el-form-item :label="generateTitle('Description')">
+            <el-form-item v-if="activity.description" :label="generateTitle('Description')">
               <span><b>{{ activity.description }}</b></span>
               <span v-if="activity.isReport">{{ activity.output.description }}</span>
             </el-form-item>
