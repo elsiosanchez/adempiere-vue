@@ -30,7 +30,6 @@
             <el-form-item :label="generateTitle('Description')">
               <span><b>{{ activity.description }}</b></span>
               <span v-if="activity.isReport">{{ activity.output.description }}</span>
-              <span v-else> {{ activity.summary }} </span>
             </el-form-item>
             <el-form-item :label="generateTitle('Status')">
               <!-- show only when it is error -->
@@ -56,6 +55,7 @@
               >
                 <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
                 <ul>
+                  <li> {{ activity.summary }} </li>
                   <li v-for="(item, key) in activity.logs" :key="key">
                     {{ item.log }}
                   </li>
