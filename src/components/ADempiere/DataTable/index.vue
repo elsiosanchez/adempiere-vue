@@ -784,7 +784,7 @@ export default {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     overflow: hidden;
-    max-height: 25px;
+    max-height: 40px;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-break: break-all;
