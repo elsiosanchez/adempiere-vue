@@ -1,23 +1,20 @@
 <template>
-  <div>
-    value: {{ typeof value }}
-    <el-date-picker
-      v-model="value"
-      :format="formatView"
-      :value-format="formatSend"
-      :type="typePicker"
-      range-separator="-"
-      :placeholder="metadata.help"
-      :start-placeholder="$t('components.dateStartPlaceholder')"
-      :end-placeholder="$t('components.dateEndPlaceholder')"
-      unlink-panels
-      class="date-base"
-      :readonly="Boolean(metadata.readonly)"
-      :disabled="isDisabled"
-      :picker-options="typePicker === 'daterange' ? pickerOptionsDateRange : pickerOptionsDate"
-      @change="preHandleChange"
-    />
-  </div>
+  <el-date-picker
+    v-model="value"
+    :format="formatView"
+    :value-format="formatSend"
+    :type="typePicker"
+    range-separator="-"
+    :placeholder="metadata.help"
+    :start-placeholder="$t('components.dateStartPlaceholder')"
+    :end-placeholder="$t('components.dateEndPlaceholder')"
+    unlink-panels
+    class="date-base"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="isDisabled"
+    :picker-options="typePicker === 'daterange' ? pickerOptionsDateRange : pickerOptionsDate"
+    @change="preHandleChange"
+  />
 </template>
 
 <script>
