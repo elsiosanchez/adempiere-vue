@@ -177,6 +177,7 @@
     </el-collapse-transition>
     <el-table
       ref="multipleTable"
+      v-loading="isLoading"
       :height="getHeigthTable"
       style="width: 100%"
       border
@@ -185,6 +186,8 @@
       :reserve-selection="true"
       :row-style="rowStyle"
       :data="showTableSearch ? filterResult() : getterDataRecords"
+      element-loading-text="Loading..."
+      element-loading-spinner="el-icon-loading"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDblClick"
@@ -343,6 +346,17 @@ export default {
     },
     getPageNumber() {
       return this.$store.getters.getPageNumber(this.containerUuid)
+    },
+    isLoading() {
+      console.log(this.getterDataRecords.length)
+      var loading, record
+      record = this.getterDataRecords.length
+      if (!record) {
+        loading = true
+      } else {
+        loading = false
+      }
+      return loading
     },
     getDataSelection() {
       return this.$store.getters.getDataRecordSelection(this.containerUuid)
