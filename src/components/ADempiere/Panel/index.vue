@@ -273,6 +273,9 @@ export default {
         return this.$store.getters.getTabIsLoadField(this.parentUuid, this.containerUuid)
       }
       return false
+    },
+    getterTotalDataRecordCount() {
+      return this.$store.getters.getDataRecordCount(this.containerUuid)
     }
   },
   watch: {
@@ -313,6 +316,12 @@ export default {
   },
   created() {
     // get tab with uuid
+    if (!this.getterTotalDataRecordCount) {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
+      })
+    }
     this.getPanel(this.isAdvancedQuery)
   },
   methods: {
