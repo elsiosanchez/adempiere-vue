@@ -154,12 +154,17 @@ const window = {
                 references: []
               })
 
-              if (tab.isParentTab) {
-                parentTabs.push(tab)
-              } else {
-                childrenTabs.push(tab)
+              // TODO: Add support to isSortTab and isTranslationTab
+              if (!(tab.isSortTab || tab.isTranslationTab)) {
+                if (tab.isParentTab) {
+                  parentTabs.push(tab)
+                } else {
+                  childrenTabs.push(tab)
+                }
               }
               return tab
+            }).filter(itemTab => {
+              return !(itemTab.isSortTab || itemTab.isTranslationTab)
             })
 
             var tabProperties = {
