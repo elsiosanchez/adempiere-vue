@@ -316,7 +316,7 @@ export default {
   },
   created() {
     // get tab with uuid
-    if (!this.getterTotalDataRecordCount) {
+    if (this.panelType === 'window' && !this.getterTotalDataRecordCount) {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid

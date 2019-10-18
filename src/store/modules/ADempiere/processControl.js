@@ -1,5 +1,6 @@
 import { runProcess, requestProcessActivity } from '@/api/ADempiere'
 import { showNotification } from '@/utils/ADempiere/notification'
+import { isEmptyValue } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
 
@@ -372,12 +373,18 @@ const processControl = {
         logs: parameters.processOutput.logs,
         summary: parameters.processOutput.summary
       }
-      var errorMessage = parameters.processOutput.message
+      var errorMessage = !isEmptyValue(parameters.processOutput.message) ? parameters.processOutput.message : language.t('login.unexpectedError')
       // TODO: Add isReport to type always 'success'
-      if (parameters.processOutput.isError) {
+      if (
+        parameters.processOutput.isError ||
+        isEmptyValue(parameters.processOutput.processId) ||
+        isEmptyValue(parameters.processOutput.instanceUuid) ||
+        isEmptyValue(parameters.processOutput.output.fileName)
+      ) {
         processMessage.title = language.t('notifications.error')
         processMessage.message = errorMessage
         processMessage.type = 'error'
+        parameters.processOutput.isError = true
       }
       if (parameters.processOutput.isReport && !parameters.processOutput.isError) {
         // open report viewer with report response
