@@ -151,9 +151,6 @@ const panel = {
             containerUuid: panel.uuid,
             isClearSelection: true
           })
-            .catch(error => {
-              console.warn(error)
-            })
         } else if (panel.panelType === 'table' && panel.isAdvancedQuery) {
           dispatch('getObjectListFromCriteria', {
             parentUuid: panel.parentUuid,
@@ -413,9 +410,6 @@ const panel = {
               containerUuid: params.containerUuid,
               isClearSelection: true
             })
-              .catch(error => {
-                console.warn(error)
-              })
           }
           if (field.panelType === 'window' && fieldIsDisplayed(field)) {
             var uuid = getters.getUuid(params.containerUuid)
@@ -476,13 +470,6 @@ const panel = {
                     row: response,
                     isEdit: false
                   })
-                })
-                .catch(error => {
-                  showMessage({
-                    message: error.message,
-                    type: 'error'
-                  })
-                  console.warn('Update Entity Error ' + error.code + ': ' + error.message)
                 })
             }
           }

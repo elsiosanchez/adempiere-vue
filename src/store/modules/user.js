@@ -2,6 +2,7 @@ import { login, logout, getInfo, changeRole } from '@/api/user'
 import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import { showMessage } from '@/utils/ADempiere'
 
 const state = {
   token: getToken(),
@@ -149,13 +150,13 @@ const actions = {
      * @param {string} attributes.organizationUuid
      * @param {string} attributes.warehouseUuid
      */
-    return new Promise((resolve, reject) => {
-      changeRole({
-        sessionUuid: getToken(),
-        roleUuid: roleUuid,
-        organizationUuid: null,
-        warehouseUuid: null
-      }).then(response => {
+    return changeRole({
+      sessionUuid: getToken(),
+      roleUuid: roleUuid,
+      organizationUuid: null,
+      warehouseUuid: null
+    })
+      .then(response => {
         var rol = convertRoleFromGRPC(response.getRole())
         commit('SET_ROL', rol)
         setCurrentRole(rol.uuid)
@@ -182,14 +183,18 @@ const actions = {
         dispatch('clearProcessControl', null, {
           root: true
         })
-        resolve({
+        return {
           ...rol,
           sessionUuid: response.getUuid()
-        })
-      }).catch(error => {
-        reject(error)
+        }
       })
-    })
+      .catch(error => {
+        showMessage({
+          message: error.message,
+          type: 'error'
+        })
+        console.warn('Error change role:' + error.message + '. Code: ' + error.code)
+      })
     //  return new Promise(async resolve => {
     //  const token = role
     //  commit('SET_TOKEN', token)

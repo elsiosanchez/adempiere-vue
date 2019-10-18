@@ -121,6 +121,11 @@ const windowControl = {
             })
           })
           .catch(error => {
+            showMessage({
+              message: error.message,
+              type: 'error'
+            })
+            console.warn('Create Entity error: ' + error.message)
             reject(error)
           })
           .finally(() => {
@@ -194,7 +199,11 @@ const windowControl = {
           return result
         })
         .catch(error => {
-          return error
+          showMessage({
+            message: error.message,
+            type: 'error'
+          })
+          console.warn('Create Entity Table Error ' + error.code + ': ' + error.message)
         })
         .finally(() => {
           commit('deleteInCreate', {
@@ -208,63 +217,65 @@ const windowControl = {
       containerUuid,
       recordUuid = null
     }) {
-      return new Promise((resolve, reject) => {
-        const panel = rootGetters.getPanel(containerUuid)
-        if (!recordUuid) {
-          recordUuid = rootGetters.getUuid(containerUuid)
-        }
+      const panel = rootGetters.getPanel(containerUuid)
+      if (!recordUuid) {
+        recordUuid = rootGetters.getUuid(containerUuid)
+      }
 
-        // TODO: Add support to Binary columns (BinaryData)
-        const columnsToDontSend = ['BinaryData', 'Account_Acct']
+      // TODO: Add support to Binary columns (BinaryData)
+      const columnsToDontSend = ['BinaryData', 'Account_Acct']
 
-        // attributes or fields
-        var finalAttributes = rootGetters.getColumnNamesAndValues({
-          containerUuid: containerUuid,
-          isEvaluatedChangedValue: true
-        })
-
-        finalAttributes = finalAttributes.filter(itemAttribute => {
-          if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
-            return false
-          }
-          const field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
-          if (!field || !field.isUpdateable || !field.isDisplayed) {
-            return false
-          }
-          return true
-        })
-
-        updateEntity({
-          tableName: panel.tableName,
-          recordUuid: recordUuid,
-          attributesList: finalAttributes
-        })
-          .then(response => {
-            const newValues = convertValuesMapToObject(response.getValuesMap())
-            const responseConvert = {
-              data: newValues,
-              id: response.getId(),
-              uuid: recordUuid,
-              tableName: panel.tableName
-            }
-
-            // set data log to undo action
-            const fieldId = panel.fieldList.find(itemField => itemField.isKey)
-            dispatch('setDataLog', {
-              containerUuid: containerUuid,
-              tableName: panel.tableName,
-              recordId: fieldId.value, // TODO: Verify performance with tableName_ID
-              recordUuid: newValues.UUID,
-              eventType: 'UPDATE'
-            })
-
-            commit('setRecordDetail', responseConvert)
-            resolve(newValues)
-          })
-          .catch(error => {
-            reject(error)
-          })
+      // attributes or fields
+      var finalAttributes = rootGetters.getColumnNamesAndValues({
+        containerUuid: containerUuid,
+        isEvaluatedChangedValue: true
       })
+
+      finalAttributes = finalAttributes.filter(itemAttribute => {
+        if (columnsToDontSend.includes(itemAttribute.columnName) || itemAttribute.columnName.includes('DisplayColumn')) {
+          return false
+        }
+        const field = panel.fieldList.find(itemField => itemField.columnName === itemAttribute.columnName)
+        if (!field || !field.isUpdateable || !field.isDisplayed) {
+          return false
+        }
+        return true
+      })
+
+      return updateEntity({
+        tableName: panel.tableName,
+        recordUuid: recordUuid,
+        attributesList: finalAttributes
+      })
+        .then(response => {
+          const newValues = convertValuesMapToObject(response.getValuesMap())
+          const responseConvert = {
+            data: newValues,
+            id: response.getId(),
+            uuid: recordUuid,
+            tableName: panel.tableName
+          }
+
+          // set data log to undo action
+          const fieldId = panel.fieldList.find(itemField => itemField.isKey)
+          dispatch('setDataLog', {
+            containerUuid: containerUuid,
+            tableName: panel.tableName,
+            recordId: fieldId.value, // TODO: Verify performance with tableName_ID
+            recordUuid: newValues.UUID,
+            eventType: 'UPDATE'
+          })
+
+          commit('setRecordDetail', responseConvert)
+          return newValues
+        })
+        .catch(error => {
+          showMessage({
+            message: error.message,
+            type: 'error'
+          })
+          console.warn('Update Entity Error ' + error.code + ': ' + error.message)
+        })
     },
     updateCurrentEntityFromTable({ rootGetters }, parameters) {
       const panel = rootGetters.getPanel(parameters.containerUuid)
@@ -285,16 +296,20 @@ const windowControl = {
         return true
       })
 
-      updateEntity({
+      return updateEntity({
         tableName: panel.tableName,
         recordUuid: parameters.row.UUID,
         attributesList: finalAttributes
       })
         .then(response => {
-          console.log('Successful edition', response)
+          return response
         })
         .catch(error => {
-          console.warn(error)
+          showMessage({
+            message: error.message,
+            type: 'error'
+          })
+          console.warn('Update Entity Table Error ' + error.code + ': ' + error.message)
         })
     },
     /**
@@ -447,17 +462,19 @@ const windowControl = {
           })
       })
     },
-    undoModifyData({ getters }, {
-      containerUuid,
-      recordId,
-      recordUuid
-    }) {
-      rollbackEntity(getters.getDataLog(containerUuid, recordUuid))
+    undoModifyData({ getters }, parameters) {
+      const { containerUuid, recordUuid } = parameters
+      return rollbackEntity(getters.getDataLog(containerUuid, recordUuid))
         .then(response => {
+          console.log('rollback successfull', response)
           return response
         })
         .catch(error => {
-          return error
+          showMessage({
+            message: error.message,
+            type: 'error'
+          })
+          console.warn('Rollback Entity error: ' + error.message)
         })
     },
     setDataLog({ commit }, parameters) {
@@ -477,15 +494,8 @@ const windowControl = {
      * @param {boolean} isRefreshPanel, if main panel is updated with new response data
      * @param {boolean} isLoadAllRecords, if main panel is updated with new response data
      */
-    getDataListTab({ dispatch, rootGetters }, {
-      parentUuid,
-      containerUuid,
-      recordUuid,
-      isRefreshPanel = false,
-      isLoadAllRecords = false,
-      columnName,
-      value
-    }) {
+    getDataListTab({ dispatch, rootGetters }, parameters) {
+      const { parentUuid, containerUuid, recordUuid, isRefreshPanel = false, isLoadAllRecords = false, columnName, value } = parameters
       const tab = rootGetters.getTab(parentUuid, containerUuid)
 
       var parsedQuery = parseContext({
