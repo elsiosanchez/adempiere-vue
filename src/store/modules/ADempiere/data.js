@@ -249,12 +249,14 @@ const data = {
      * @param {array}  conditions, conditions to criteria
      */
     getObjectListFromCriteria({ commit, dispatch, getters }, parameters) {
-      const { parentUuid, containerUuid, tableName, query, whereClause, orderByClause, conditions = [] } = parameters
-      showMessage({
-        title: language.t('notifications.loading'),
-        message: language.t('notifications.searching'),
-        type: 'info'
-      })
+      const { parentUuid, containerUuid, tableName, query, whereClause, orderByClause, conditions = [], isShowNotification = true } = parameters
+      if (isShowNotification) {
+        showMessage({
+          title: language.t('notifications.loading'),
+          message: language.t('notifications.searching'),
+          type: 'info'
+        })
+      }
       const allData = getters.getDataRecordAndSelection(containerUuid)
 
       var nextPageToken
@@ -293,16 +295,17 @@ const data = {
           } else {
             token = allData.nextPageToken
           }
-
-          let searchMessage = 'searchWithOutRecords'
-          if (record.length) {
-            searchMessage = 'succcessSearch'
+          if (isShowNotification) {
+            let searchMessage = 'searchWithOutRecords'
+            if (record.length) {
+              searchMessage = 'succcessSearch'
+            }
+            showMessage({
+              title: language.t('notifications.succesful'),
+              message: language.t(`notifications.${searchMessage}`),
+              type: 'success'
+            })
           }
-          showMessage({
-            title: language.t('notifications.succesful'),
-            message: language.t(`notifications.${searchMessage}`),
-            type: 'success'
-          })
           dispatch('setRecordSelection', {
             parentUuid: parentUuid,
             containerUuid: containerUuid,
@@ -315,11 +318,13 @@ const data = {
           return record
         })
         .catch(error => {
-          showMessage({
-            title: language.t('notifications.error'),
-            message: error.message,
-            type: 'error'
-          })
+          if (isShowNotification) {
+            showMessage({
+              title: language.t('notifications.error'),
+              message: error.message,
+              type: 'error'
+            })
+          }
           console.warn('Error Get Object List ' + error.message + '. Code: ' + error.code)
         })
         .finally(() => {

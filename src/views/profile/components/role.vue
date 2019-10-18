@@ -134,7 +134,8 @@ export default {
         containerUuid: this.getRol.uuid,
         tableName: tableLanguage,
         query: `SELECT * FROM ${tableLanguage}`,
-        whereClause: `LanguageIso = '${this.languageCookie}' AND IsActive = 'Y'`
+        whereClause: `LanguageIso = '${this.languageCookie}' AND IsActive = 'Y'`,
+        isShowNotification: false
       })
         .then(response => {
           this.languageList = response.map(language => {

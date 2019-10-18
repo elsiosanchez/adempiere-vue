@@ -106,7 +106,8 @@ export default {
         conditions: [{
           columnName: 'LanguageIso',
           value: this.languageCookie
-        }]
+        }],
+        isShowNotification: false
       })
         .then(response => {
           this.languageList = response.map(language => {
