@@ -13,6 +13,7 @@ export default {
   notifications: {
     completed: 'Completed',
     loading: 'Loading',
+    searchTable: 'Search completed',
     searching: 'Searching records on the server',
     succesful: 'Successful',
     error: 'Error',
