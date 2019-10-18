@@ -248,16 +248,14 @@ const data = {
      * @param {string} orderByClause, criteria to search record data
      * @param {array}  conditions, conditions to criteria
      */
-    getObjectListFromCriteria({ commit, dispatch, getters }, {
-      parentUuid,
-      containerUuid,
-      tableName,
-      query,
-      whereClause,
-      orderByClause,
-      conditions = []
-    }) {
-      var allData = getters.getDataRecordAndSelection(containerUuid)
+    getObjectListFromCriteria({ commit, dispatch, getters }, parameters) {
+      const { parentUuid, containerUuid, tableName, query, whereClause, orderByClause, conditions = [] } = parameters
+      showMessage({
+        title: language.t('notifications.loading'),
+        message: language.t('notifications.searching'),
+        type: 'info'
+      })
+      const allData = getters.getDataRecordAndSelection(containerUuid)
 
       var nextPageToken
       if (!isEmptyValue(allData.nextPageToken)) {
@@ -269,53 +267,67 @@ const data = {
         tableName: tableName,
         conditions: conditions
       })
-      return new Promise((resolve, reject) => {
-        getObjectListFromCriteria({
-          tableName: tableName,
-          query: query,
-          whereClause: whereClause,
-          conditions: conditions,
-          orderByClause: orderByClause,
-          nextPageToken: nextPageToken
-        })
-          .then(response => {
-            const recordList = response.getRecordsList()
-            var record = recordList.map(itemRecord => {
-              const map = itemRecord.getValuesMap()
-              var values = convertValuesMapToObject(map)
-              return values
-            })
 
-            var token = response.getNextPageToken()
-            if (!isEmptyValue(token)) {
-              token = token.slice(0, -2)
-              if (token.substr(-1, 1) === '-') {
-                token = token.slice(0, -1)
-              }
-            } else {
-              token = allData.nextPageToken
-            }
-            dispatch('setRecordSelection', {
-              parentUuid: parentUuid,
-              containerUuid: containerUuid,
-              record: record,
-              selection: allData.selection,
-              recordCount: response.getRecordcount(),
-              nextPageToken: token,
-              pageNumber: allData.pageNumber
-            })
-            resolve(record)
-          })
-          .catch(error => {
-            reject(error)
-          })
-          .finally(() => {
-            commit('deleteInGetting', {
-              containerUuid: containerUuid,
-              tableName: tableName
-            })
-          })
+      return getObjectListFromCriteria({
+        tableName: tableName,
+        query: query,
+        whereClause: whereClause,
+        conditions: conditions,
+        orderByClause: orderByClause,
+        nextPageToken: nextPageToken
       })
+        .then(response => {
+          const recordList = response.getRecordsList()
+          const record = recordList.map(itemRecord => {
+            const map = itemRecord.getValuesMap()
+            const values = convertValuesMapToObject(map)
+            return values
+          })
+
+          var token = response.getNextPageToken()
+          if (!isEmptyValue(token)) {
+            token = token.slice(0, -2)
+            if (token.substr(-1, 1) === '-') {
+              token = token.slice(0, -1)
+            }
+          } else {
+            token = allData.nextPageToken
+          }
+
+          let searchMessage = 'searchWithOutRecords'
+          if (record.length) {
+            searchMessage = 'succcessSearch'
+          }
+          showMessage({
+            title: language.t('notifications.succesful'),
+            message: language.t(`notifications.${searchMessage}`),
+            type: 'success'
+          })
+          dispatch('setRecordSelection', {
+            parentUuid: parentUuid,
+            containerUuid: containerUuid,
+            record: record,
+            selection: allData.selection,
+            recordCount: response.getRecordcount(),
+            nextPageToken: token,
+            pageNumber: allData.pageNumber
+          })
+          return record
+        })
+        .catch(error => {
+          showMessage({
+            title: language.t('notifications.error'),
+            message: error.message,
+            type: 'error'
+          })
+          console.warn('Error Get Object List ' + error.message + '. Code: ' + error.code)
+        })
+        .finally(() => {
+          commit('deleteInGetting', {
+            containerUuid: containerUuid,
+            tableName: tableName
+          })
+        })
     },
     getRecentItemsFromServer({ commit }) {
       return new Promise((resolve, reject) => {

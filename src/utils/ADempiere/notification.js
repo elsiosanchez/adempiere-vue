@@ -59,9 +59,17 @@ export function showNotification(parameters) {
 }
 
 export function showMessage(parameters) {
+  var delay = 3000
+  if (parameters.type === 'info') {
+    delay = 2000
+  }
+  if (parameters.duration) {
+    delay = parameters.duration
+  }
   Message({
     message: parameters.message,
     type: parameters.type,
-    showClose: true
+    showClose: true,
+    duration: delay
   })
 }

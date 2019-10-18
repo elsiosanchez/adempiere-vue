@@ -11,20 +11,24 @@ export default {
     ReportViewer: 'Visor de Reportes'
   },
   notifications: {
+    // simplex
     completed: 'Completado',
     loading: 'Cargando',
-    searchTable: 'Búsqueda finalizada',
-    searching: 'Buscando registros en el servidor',
     succesful: 'Exitoso',
     error: 'Error',
+    opened: 'Abierto',
+    // search
+    searching: 'Buscando registros en el servidor',
     succcessSearch: 'La búsqueda se ha realizado',
+    searchWithOutRecords: 'La búsqueda finalizo sin resultados',
     errorSearch: 'La búsqueda no se ha completado.',
+    // process
     processing: 'Procesando',
     processExecuted: 'Ejecutado, ver actividad de proceso',
     processError: 'No fue ejecutado',
+    //
     emptyValues: 'Parametro(s) con valores vacios',
     fieldMandatory: 'El campo es obligatorio',
-    Opened: 'Abierto',
     requestError: 'Error al ejecutar la petición',
     successChangeRole: 'El rol se ha cambiado',
     errorChangeRole: 'El rol no se ha cambiado',

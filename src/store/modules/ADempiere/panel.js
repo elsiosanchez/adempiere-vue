@@ -213,7 +213,7 @@ const panel = {
         containerUuid: containerUuid,
         propertyName: 'parsedDefaultValue',
         isObjectReturn: true,
-        panelType: parameters.panelType,
+        panelType: panelType,
         isAddDisplayColumn: true
       })
       if (panelType === 'window') {

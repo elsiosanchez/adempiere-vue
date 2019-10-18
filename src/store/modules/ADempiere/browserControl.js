@@ -9,11 +9,18 @@ const browserControl = {
      * @param {string}  containerUuid, browser to search record data
      * @param {boolean} isClearSelection, clear selection after search
      */
-    getBrowserSearch({ dispatch, rootGetters }, {
-      containerUuid,
-      isClearSelection = false
-    }) {
-      var allData = rootGetters.getDataRecordAndSelection(containerUuid)
+    getBrowserSearch({ dispatch, rootGetters }, parameters) {
+      const { containerUuid, isClearSelection = false } = parameters
+      showMessage({
+        title: language.t('notifications.loading'),
+        message: language.t('notifications.searching'),
+        type: 'info'
+      })
+      const allData = rootGetters.getDataRecordAndSelection(containerUuid)
+      // deletes the data from the container to replace it and to report the searches in the table
+      dispatch('deleteRecordContainer', {
+        viewUuid: containerUuid
+      })
 
       const browser = rootGetters.getBrowser(containerUuid)
       // parameters isQueryCriteria

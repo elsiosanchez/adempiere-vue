@@ -547,10 +547,6 @@ const windowControl = {
               })
             }
           }
-          showMessage({
-            message: language.t('notifications.searchTable'),
-            type: 'success'
-          })
           return response
         })
         .catch(error => {

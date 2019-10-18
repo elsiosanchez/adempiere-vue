@@ -11,20 +11,24 @@ export default {
     ReportViewer: 'Report Viewer'
   },
   notifications: {
+    // simplex
     completed: 'Completed',
     loading: 'Loading',
-    searchTable: 'Search completed',
-    searching: 'Searching records on the server',
     succesful: 'Successful',
     error: 'Error',
+    opened: 'Opened',
+    // search
+    searching: 'Searching records on the server',
     succcessSearch: 'The search has been made',
+    searchWithOutRecords: 'The search ended without results',
     errorSearch: 'The search has not been completed',
+    // process
     processing: 'Processing',
     processExecuted: 'Executed, see process activity',
     processError: 'Was not executed',
+    //
     emptyValues: 'Parameter(s) empty value',
     fieldMandatory: 'The field is mandatory',
-    Opened: 'Opened',
     requestError: 'Error executing the request',
     successChangeRole: 'The role has been changed',
     errorChangeRole: 'The role has not been changed',

@@ -32,13 +32,12 @@
               </el-menu-item>
               <el-menu-item
                 v-if="isParent && panelType === 'window'"
-                :disabled="Boolean(getterTotalDataRecordCount <= 0)"
+                :disabled="Boolean(getterDataRecords.length <= 0)"
                 index="advancedQuery"
                 @click="activeAdvancedQuery(!isAdvancedQuery)"
               >
                 {{ $t('table.dataTable.advancedQuery') }}
               </el-menu-item>
-
             </el-submenu>
           </el-menu>
           <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
@@ -97,7 +96,7 @@
                 </el-menu-item>
                 <el-menu-item
                   v-if="isParent && panelType === 'window'"
-                  :disabled="Boolean(getterTotalDataRecordCount <= 0)"
+                  :disabled="Boolean(getterDataRecords.length <= 0)"
                   index="advancedQuery"
                   @click="activeAdvancedQuery(!isAdvancedQuery)"
                 >
@@ -248,7 +247,7 @@
           layout="slot, total, prev, pager, next"
           :current-page="currentPage"
           :page-size="defaultMaxPagination"
-          :total="getterTotalDataRecordCount"
+          :total="getterDataRecords.length"
           @current-change="handleChangePage"
         >
           <template v-slot>
@@ -339,27 +338,20 @@ export default {
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
     },
-    getterDataRecords() {
-      return this.$store.getters.getDataRecordsList(this.containerUuid)
+    getterDataRecordsAndSelection() {
+      return this.$store.getters.getDataRecordAndSelection(this.containerUuid)
     },
-    getterTotalDataRecordCount() {
-      return this.$store.getters.getDataRecordCount(this.containerUuid)
+    getterDataRecords() {
+      return this.getterDataRecordsAndSelection.record
     },
     getPageNumber() {
-      return this.$store.getters.getPageNumber(this.containerUuid)
+      return this.getterDataRecordsAndSelection.pageNumber
     },
     isLoaded() {
-      var loading, record
-      record = this.getterDataRecords.length
-      if (!record) {
-        loading = true
-      } else {
-        loading = false
-      }
-      return loading
+      return !this.getterDataRecordsAndSelection.isLoaded
     },
     getDataSelection() {
-      return this.$store.getters.getDataRecordSelection(this.containerUuid)
+      return this.getterDataRecordsAndSelection.selection
     },
     getterFieldIsDisplayed() {
       return this.$store.getters.getFieldsIsDisplayed(this.containerUuid)

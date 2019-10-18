@@ -6,7 +6,7 @@
           <el-card>
             <h4>
               {{ item.displayName }}
-              <el-tag v-show="checkOpened(item.menuUuid)">{{ $t('notifications.Opened') }}</el-tag>
+              <el-tag v-show="checkOpened(item.menuUuid)">{{ $t('notifications.opened') }}</el-tag>
             </h4>
             <p>{{ item.description }}</p>
             <!-- <ul>
