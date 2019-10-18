@@ -5,11 +5,20 @@
   >
     <el-container style="height: 86vh;">
       <el-main>
-        <split-pane :min-percent="10" :default-percent="isMobile ? (isShowedRecordNavigation ? 100 : 0) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
+
+        <split-pane :min-percent="10" :default-percent="isShowedRecordPanel ? (isShowedRecordNavigation ? 100 : 50) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
           <template>
             <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
             <div slot="paneL" class="left-container">
               <el-aside v-show="isShowedRecordNavigation" width="100%">
+                <div style="top: 41%;position: relative;z-index: 3;">
+                  <el-button
+                    :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                    circle
+                    style="float: right;"
+                    @click="handleChangeShowedPanel()"
+                  />
+                </div>
                 <i
                   v-if="isMobile"
                   class="el-icon-close"
@@ -32,6 +41,7 @@
                 <SplitArea :size="isShowedTabChildren ? 50 : 100" :style="isShowedTabChildren ? { overflow: 'auto'} : { overflow: 'hidden'}">
                   <el-header style="height: 39px;">
                     <context-menu
+                      v-show="!isShowedRecordPanel"
                       :menu-parent-uuid="$route.meta.parentUuid"
                       :parent-uuid="windowUuid"
                       :container-uuid="windowMetadata.currentTabUuid"
@@ -149,6 +159,7 @@ export default {
       isLoadingFromServer: false,
       listRecordNavigation: 0,
       isShowedTabChildren: true,
+      isShowedRecordPanel: false,
       isShowedRecordNavigation: this.$route.query.action === 'advancedQuery'
     }
   },
@@ -230,6 +241,9 @@ export default {
     },
     handleChangeShowedRecordNavigation(value) {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
+    },
+    handleChangeShowedPanel(value) {
+      this.isShowedRecordPanel = !this.isShowedRecordPanel
     },
     changeShowedRecordNavigation() {
       this.$store.dispatch('changeShowedRecordWindow', {
@@ -334,12 +348,16 @@ export default {
     display: inline-block;
   }
   .open-detail {
-    width: 100%;height: 20px;
-    position: absolute;bottom: 5%;
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    bottom: 5%;
   }
   .open-left {
-    width: 4%;height: 95%;
-    position: absolute;top: 2%;
+    width: 4%;
+    height: 95%;
+    position: absolute;
+    top: 2%;
   }
   .el-button {
     cursor: pointer;
