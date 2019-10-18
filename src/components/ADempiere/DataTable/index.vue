@@ -206,7 +206,7 @@
         <el-table-column
           v-if="isDisplayed(item)"
           :key="key"
-          :label="item.name"
+          :label="headerLabel(item)"
           :column-key="item.columnName"
           :prop="item.columnName"
           sortable
@@ -441,6 +441,12 @@ export default {
     sortFields,
     handleChange(val) {
       val = !val
+    },
+    headerLabel(field) {
+      if (field.isMandatory || field.isMandatoryFromLogic) {
+        return '* ' + field.name
+      }
+      return field.name
     },
     /**
      * @param {object} row, row data
