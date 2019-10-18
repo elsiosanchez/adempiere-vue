@@ -177,7 +177,7 @@
     </el-collapse-transition>
     <el-table
       ref="multipleTable"
-      v-loading="isLoading"
+      v-loading="isLoaded"
       :height="getHeigthTable"
       style="width: 100%"
       border
@@ -186,7 +186,8 @@
       :reserve-selection="true"
       :row-style="rowStyle"
       :data="showTableSearch ? filterResult() : getterDataRecords"
-      element-loading-text="Loading..."
+      :element-loading-text="$t('notifications.loading')"
+      element-loading-background="rgba(255, 255, 255, 0.8)"
       element-loading-spinner="el-icon-loading"
       cell-class-name="datatable-max-cell-height"
       @row-click="handleRowClick"
@@ -347,8 +348,7 @@ export default {
     getPageNumber() {
       return this.$store.getters.getPageNumber(this.containerUuid)
     },
-    isLoading() {
-      console.log(this.getterDataRecords.length)
+    isLoaded() {
       var loading, record
       record = this.getterDataRecords.length
       if (!record) {
