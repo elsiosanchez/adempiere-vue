@@ -233,7 +233,6 @@ const processControl = {
                 link.click()
               }
             }
-
             // assign new attributes
             Object.assign(processResult, {
               instanceUuid: response.getInstanceuuid(),
@@ -243,6 +242,7 @@ const processControl = {
               isProcessing: response.getIsprocessing(),
               summary: response.getSummary(),
               ResultTableName: response.getResulttablename(),
+              lastRun: response.getLastrun(),
               logs: logList,
               output: output
             })

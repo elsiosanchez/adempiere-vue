@@ -4,7 +4,7 @@
       <el-timeline-item
         v-for="(activity, index) in getRunProcessAll"
         :key="index"
-        :timestamp="!isEmptyValue(activity.timeInitialized) ? String(new Date(activity.timeInitialized)) : String(new Date())"
+        :timestamp="String(activity.lastRun)"
         placement="top"
         type="primary"
         size="large"
