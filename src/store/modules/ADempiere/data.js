@@ -54,6 +54,9 @@ const data = {
     setPageNumber(state, payload) {
       payload.data.pageNumber = payload.pageNumber
     },
+    setIsloadContext(state, payload) {
+      payload.data.isLoadedContext = payload.isLoadedContext
+    },
     setRecordDetail(state, payload) {
       var isFinded = false
       state.recordDetail = state.recordDetail.map(itemData => {
@@ -161,6 +164,20 @@ const data = {
       })
     },
     /**
+     * Is load context in true when panel is set context
+     * @param {string}  parameters.containerUuid
+     */
+    setIsloadContext({ commit, state }, parameters) {
+      const { containerUuid } = parameters
+      const data = state.recordSelection.find(recordItem => {
+        return recordItem.containerUuid === containerUuid
+      })
+      commit('setIsloadContext', {
+        data: data,
+        isLoadedContext: true
+      })
+    },
+    /**
      * Set record, selection, page number, token, and record count, with container uuid
      * TODO: Refactor and optimize the mutation of state
      * @param {string}  parameters.containerUuid
@@ -176,6 +193,7 @@ const data = {
       commit('setRecordSelection', {
         ...parameters,
         isLoaded: true,
+        isLoadedContext: false,
         index: index
       })
     },
@@ -474,6 +492,7 @@ const data = {
         selection: [],
         pageNumber: 1,
         nextPageToken: undefined,
+        isLoadedContext: false,
         isLoaded: false // Boolean(false || getters.getInGetting(containerUuid))
       }
     },

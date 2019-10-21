@@ -297,6 +297,10 @@ const panel = {
           fieldsIncludes: fieldsShowed
         })
       }
+
+      dispatch('setIsloadContext', {
+        containerUuid: containerUuid
+      })
     },
     /**
      * @param {string} params.parentUuid

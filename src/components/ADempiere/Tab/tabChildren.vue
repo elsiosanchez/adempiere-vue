@@ -41,16 +41,29 @@ export default {
     }
   },
   computed: {
-    getterIsLoadRecordParent() {
-      return this.$store.getters.getDataRecordAndSelection(this.firstTabUuid).isLoaded
-    },
+    // data this current tab
     getDataSelection() {
       return this.$store.getters.getDataRecordAndSelection(this.tabUuid)
+    },
+    // data parent tab
+    getterDataParentTab() {
+      return this.$store.getters.getDataRecordAndSelection(this.firstTabUuid)
+    },
+    getterIsLoadRecordParent() {
+      return this.getterDataParentTab.isLoaded
+    },
+    getterIsLoadContextParent() {
+      return this.getterDataParentTab.isLoadedContext
     }
   },
   watch: {
     getDataSelection(value) {
-      if (this.getterIsLoadRecordParent && !value.isLoaded) {
+      if (this.getterIsLoadRecordParent && !value.isLoaded && this.getterIsLoadContextParent) {
+        this.getData()
+      }
+    },
+    getterIsLoadContextParent(value) {
+      if (this.getterIsLoadRecordParent && !this.getDataSelection.isLoaded && value) {
         this.getData()
       }
     }
