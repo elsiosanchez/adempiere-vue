@@ -408,8 +408,6 @@ export default {
           parameters.value = route.query.action
           parameters.tableName = this.metadata.tableName
           parameters.columnName = 'UUID'
-        } else {
-          parameters.isNewRecord = true
         }
         // Only call get data if panel type is window
         this.getData(parameters)
@@ -465,7 +463,7 @@ export default {
           value: parameters.value
         })
           .then(response => {
-            if (response.length) {
+            if (response.length && !parameters.isNewRecord) {
               this.dataRecords = response[0]
               if (this.$route.query.action === 'create-new') {
                 this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
