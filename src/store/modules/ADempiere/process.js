@@ -1,5 +1,5 @@
-import { getProcess as getProcessFromDictionary } from '@/api/ADempiere'
-import { convertField, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
+import { getProcess as getProcessMetadata } from '@/api/ADempiere'
+import { convertField, isEmptyValue } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const process = {
@@ -17,7 +17,7 @@ const process = {
   actions: {
     getProcessFromServer: ({ commit, dispatch }, processUuid) => {
       return new Promise((resolve, reject) => {
-        getProcessFromDictionary(processUuid)
+        getProcessMetadata(processUuid)
           .then(response => {
             var panelType = 'process'
             if (response.getIsreport()) {
@@ -38,16 +38,22 @@ const process = {
                 ...additionalAttributes,
                 fieldListIndex: index
               }
-
-              if (!isEmptyValue(fieldItem.parsedDefaultValue) && String(fieldItem.parsedDefaultValue) !== '-1') {
-                fieldItem.isShowedFromUser = true
+              var field = convertField(fieldItem, someAttributes)
+              // Add new field if is range number
+              if (field.isRange && field.componentPath === 'NumberBase') {
+                var fieldRange = convertField(fieldItem, someAttributes, true)
+                if (!isEmptyValue(fieldRange.value)) {
+                  fieldRange.isShowedFromUser = true
+                }
+                fieldsRangeList.push(fieldRange)
               }
 
-              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
-                fieldsRangeList.push(convertField(fieldItem, someAttributes, true))
+              // if field with value displayed in main panel
+              if (!isEmptyValue(field.value)) {
+                field.isShowedFromUser = true
               }
 
-              return convertField(fieldItem, someAttributes)
+              return field
             })
             fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
 
