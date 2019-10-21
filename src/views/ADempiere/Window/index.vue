@@ -252,7 +252,6 @@ export default {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
     },
     handleChangeShowedPanel(value) {
-      console.log(this.isShowedRecordPanel)
       this.isShowedRecordPanel = !this.isShowedRecordPanel
     },
     changeShowedRecordNavigation() {
