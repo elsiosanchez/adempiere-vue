@@ -175,7 +175,11 @@ export const contextMixin = {
           })
             .then(response => {
               this.references = this.$store.getters.getReferencesList(this.parentUuid, this.recordUuid)
-              this.isReferencesLoaded = true
+              if (this.references.referencesList.length) {
+                this.isReferencesLoaded = true
+              } else {
+                this.isReferencesLoaded = false
+              }
             })
             .catch(error => {
               console.warn('References Load Error ' + error.code + ': ' + error.message)
@@ -183,6 +187,7 @@ export const contextMixin = {
         }
       } else {
         this.references = []
+        this.isReferencesLoaded = false
       }
     },
     exporBrowser() {
