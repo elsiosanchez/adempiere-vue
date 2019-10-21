@@ -166,9 +166,10 @@ const processControl = {
         }
         commit('addInExecution', processResult)
         // close view if is process, report or browser.
-        if (params.panelType !== 'window') {
+        if (params.panelType === 'window') {
+          reportType = 'pdf'
+        } else {
           dispatch('tagsView/delView', params.routeToDelete)
-
           // delete data associate to browser
           if (params.panelType === 'browser') {
             dispatch('deleteRecordContainer', {
