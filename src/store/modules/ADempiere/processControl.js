@@ -168,6 +168,8 @@ const processControl = {
         // close view if is process, report or browser.
         if (params.panelType !== 'window') {
           dispatch('tagsView/delView', params.routeToDelete)
+        } else {
+          reportType = 'pdf'
         }
         runProcess({
           uuid: processDefinition.uuid,
