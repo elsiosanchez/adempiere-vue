@@ -150,7 +150,8 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   })
   parsedDefaultValue = parsedValueComponent({
     fieldType: componentReference.type,
-    value: parsedDefaultValue
+    value: parsedDefaultValue,
+    referenceType: componentReference.alias[0]
   })
 
   var parsedDefaultValueTo
@@ -163,7 +164,8 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   }
   parsedDefaultValueTo = parsedValueComponent({
     fieldType: componentReference.type,
-    value: parsedDefaultValueTo
+    value: parsedDefaultValueTo,
+    referenceType: componentReference.alias[0]
   })
 
   var field = {

@@ -1,5 +1,5 @@
 import { getBrowser as getBrowserMetadata } from '@/api/ADempiere/dictionary'
-import { convertField, evalutateTypeField, isEmptyValue } from '@/utils/ADempiere'
+import { convertField, isEmptyValue } from '@/utils/ADempiere'
 
 const browser = {
   state: {
@@ -40,12 +40,16 @@ const browser = {
                 ...additionalAttributes,
                 fieldListIndex: index
               }
-              if (fieldItem.getIsrange() && evalutateTypeField(fieldItem.getDisplaytype()) === 'NumberBase') {
-                fieldsRangeList.push(
-                  convertField(fieldItem, someAttributes, true)
-                )
-              }
               var field = convertField(fieldItem, someAttributes)
+              // Add new field if is range number
+              if (field.isRange && field.componentPath === 'NumberBase') {
+                var fieldRange = convertField(fieldItem, someAttributes, true)
+                if (!isEmptyValue(fieldRange.value)) {
+                  fieldRange.isShowedFromUser = true
+                }
+                fieldsRangeList.push(fieldRange)
+              }
+
               if ((query.includes(`@${field.columnName}@`) ||
                 query.includes(`@${field.columnName}_To@`) ||
                 whereClause.includes(`@${field.columnName}@`) ||
