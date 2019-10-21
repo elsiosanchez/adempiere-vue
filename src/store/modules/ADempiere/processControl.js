@@ -104,7 +104,7 @@ const processControl = {
               })
               return reject({
                 error: 0,
-                message: `Required selection data record to run this process (${samePocessInExecution.name})`
+                message: `Required selection data record to run this process (${params.action.name})`
               })
             }
           }
@@ -168,6 +168,13 @@ const processControl = {
         // close view if is process, report or browser.
         if (params.panelType !== 'window') {
           dispatch('tagsView/delView', params.routeToDelete)
+
+          // delete data associate to browser
+          if (params.panelType === 'browser') {
+            dispatch('deleteRecordContainer', {
+              viewUuid: params.containerUuid
+            })
+          }
         }
         runProcess({
           uuid: processDefinition.uuid,
@@ -260,12 +267,6 @@ const processControl = {
                   tab: tab
                 })
               }
-              if (params.panelType === 'browser') {
-                dispatch('getBrowserSearch', {
-                  containerUuid: params.containerUuid,
-                  isClearSelection: true
-                })
-              }
             }
 
             commit('addNotificationProcess', processResult)
@@ -273,9 +274,6 @@ const processControl = {
 
             commit('deleteInExecution', {
               containerUuid: params.containerUuid
-            })
-            dispatch('deleteRecordContainer', {
-              viewUuid: processDefinition.uuid
             })
           })
       })
