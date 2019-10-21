@@ -13,7 +13,8 @@
               <el-aside v-show="isShowedRecordNavigation" width="100%">
                 <div style="top: 41%;position: relative;z-index: 3;">
                   <el-button
-                    :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                    v-show="isShowedRecordNavigation && isShowedRecordPanel"
+                    icon="el-icon-caret-left"
                     circle
                     style="float: right;"
                     @click="handleChangeShowedPanel()"
@@ -85,6 +86,14 @@
                           class="open-navegation"
                           circle
                           @click="handleChangeShowedRecordNavigation()"
+                        />
+                        <el-button
+                          v-show="isShowedRecordNavigation"
+                          :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                          circle
+                          class="open-navegation"
+                          style="margin-top: 35px;margin-left: inherit;"
+                          @click="handleChangeShowedPanel()"
                         />
                       </div>
                     </div>
@@ -243,6 +252,7 @@ export default {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
     },
     handleChangeShowedPanel(value) {
+      console.log(this.isShowedRecordPanel)
       this.isShowedRecordPanel = !this.isShowedRecordPanel
     },
     changeShowedRecordNavigation() {
