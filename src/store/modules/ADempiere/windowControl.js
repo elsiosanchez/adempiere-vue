@@ -515,7 +515,7 @@ const windowControl = {
       var conditions = []
       if (tab.isParentTab && !isEmptyValue(tab.tableName) && !isEmptyValue(value)) {
         conditions.push({
-          columnName: `${tab.tableName}.${columnName}`,
+          columnName: columnName,
           value: value
         })
       }
