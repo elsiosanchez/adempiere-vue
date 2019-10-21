@@ -8,11 +8,13 @@
               <template slot="title">
                 <i class="el-icon-more" />
               </template>
-              <el-menu-item index="optional" @click="optionalPanel()">
-                {{ $t('components.filterableItems') }}
-              </el-menu-item>
-              <el-menu-item index="fixed" @click="fixedPanel()">
-                {{ $t('components.fixedleItems') }}
+              <el-menu-item
+                v-if="!isParent && panelType === 'window'"
+                :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                index="new"
+                @click="addNewRow()"
+              >
+                {{ $t('window.newRecord') }}
               </el-menu-item>
               <el-menu-item
                 v-if="panelType === 'window'"
@@ -23,14 +25,6 @@
                 {{ $t('table.dataTable.deleteSelection') }}
               </el-menu-item>
               <el-menu-item
-                v-if="!isParent && panelType === 'window'"
-                :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                index="new"
-                @click="addNewRow()"
-              >
-                {{ $t('window.newRecord') }}
-              </el-menu-item>
-              <el-menu-item
                 v-if="isParent && panelType === 'window'"
                 :disabled="Boolean(getterDataRecords.length <= 0)"
                 index="advancedQuery"
@@ -38,8 +32,22 @@
               >
                 {{ $t('table.dataTable.advancedQuery') }}
               </el-menu-item>
+              <el-menu-item index="optional" @click="optionalPanel()">
+                {{ $t('components.filterableItems') }}
+              </el-menu-item>
+              <el-menu-item index="fixed" @click="fixedPanel()">
+                {{ $t('components.fixedleItems') }}
+              </el-menu-item>
             </el-submenu>
           </el-menu>
+          <el-button
+            v-if="!isParent && panelType === 'window'"
+            type="text"
+            icon="el-icon-circle-plus"
+            style="float: right;padding-top: 10px;font-size: large;padding-left: 6px;"
+            :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+            @click="addNewRow()"
+          />
           <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
             <fixed-columns
               :container-uuid="containerUuid"
@@ -53,6 +61,7 @@
             :panel-type="panelType"
             class="field-optional"
           />
+          <!-- <i class="el-icon-circle-plus-outline" /> -->
           <div :class="{'show':showTableSearch}" class="table-search">
             <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
             <el-input
@@ -72,12 +81,6 @@
                 <template slot="title">
                   <i class="el-icon-more" />
                 </template>
-                <el-menu-item index="optional" @click="optionalPanel()">
-                  {{ $t('components.filterableItems') }}
-                </el-menu-item>
-                <el-menu-item index="fixed" @click="fixedPanel()">
-                  {{ $t('components.fixedleItems') }}
-                </el-menu-item>
                 <el-menu-item
                   v-if="panelType === 'window'"
                   :disabled="Boolean(getDataSelection.length < 1)"
@@ -87,20 +90,26 @@
                   {{ $t('table.dataTable.deleteSelection') }}
                 </el-menu-item>
                 <el-menu-item
-                  v-if="!isParent && panelType === 'window'"
-                  :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                  index="new"
-                  @click="addNewRow()"
-                >
-                  {{ $t('window.newRecord') }}
-                </el-menu-item>
-                <el-menu-item
                   v-if="isParent && panelType === 'window'"
                   :disabled="Boolean(getterDataRecords.length <= 0)"
                   index="advancedQuery"
                   @click="activeAdvancedQuery(!isAdvancedQuery)"
                 >
                   {{ $t('table.dataTable.advancedQuery') }}
+                </el-menu-item>
+                <el-menu-item index="optional" @click="optionalPanel()">
+                  {{ $t('components.filterableItems') }}
+                </el-menu-item>
+                <el-menu-item index="fixed" @click="fixedPanel()">
+                  {{ $t('components.fixedleItems') }}
+                </el-menu-item>
+                <el-menu-item
+                  v-if="!isParent && panelType === 'window'"
+                  :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                  index="new"
+                  @click="addNewRow()"
+                >
+                  {{ $t('window.newRecord') }}
                 </el-menu-item>
               </el-submenu>
             </el-menu>

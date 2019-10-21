@@ -796,9 +796,8 @@ const panel = {
 
       if (isOnlyDisplayed) {
         fieldList = fieldList.filter(fieldItem => {
-          const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
+          const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) && !isAdvancedQuery
           const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
-
           if (isDisplayed) {
             return true
           }
