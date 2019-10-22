@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { parseContext } from '@/utils/ADempiere'
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 
 export default {
@@ -58,21 +57,27 @@ export default {
     },
     getterLookupItem() {
       return this.$store.getters.getLookupItem({
-        parsedDirectQuery: this.parsedDirectQuery,
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        directQuery: this.metadata.reference.directQuery,
         tableName: this.metadata.reference.tableName,
         value: this.value
       })
     },
     getterLookupList() {
       return this.$store.getters.getLookupList({
-        parsedQuery: this.parsedQuery,
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        query: this.metadata.reference.query,
         tableName: this.metadata.reference.tableName
       })
     },
     getterLookupAll() {
       var allOptions = this.$store.getters.getLookupAll({
-        parsedQuery: this.parsedQuery,
-        parsedDirectQuery: this.parsedDirectQuery,
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
+        query: this.metadata.reference.query,
+        directQuery: this.metadata.reference.directQuery,
         tableName: this.metadata.reference.tableName,
         value: this.value
       })
@@ -81,20 +86,6 @@ export default {
         allOptions.unshift(this.blanckOption)
       }
       return allOptions
-    },
-    parsedQuery() {
-      return this.parseContext({
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        value: this.metadata.reference.query
-      })
-    },
-    parsedDirectQuery() {
-      return this.parseContext({
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        value: this.metadata.reference.directQuery
-      })
     }
   },
   watch: {
@@ -103,7 +94,7 @@ export default {
     },
     // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new') {
+      if (actionValue === 'create-new' && this.metadata.panelType === 'window') {
         this.value = this.validateValue(this.metadata.parsedDefaultValue)
       }
       if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
@@ -143,12 +134,14 @@ export default {
     }
   },
   methods: {
-    parseContext,
     preHandleChange(value) {
       const label = this.findLabel(this.value)
       this.handleChange(value, undefined, label)
     },
     validateValue(value) {
+      if (['Table', 'TableDirect'].includes(this.metadata.referenceType)) {
+        return this.isEmptyValue(value) ? undefined : parseInt(value, 10)
+      }
       // return this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value, 10)
       if (this.isEmptyValue(value)) {
         return undefined
@@ -173,9 +166,11 @@ export default {
     },
     async getDataLookupItem() {
       this.isLoading = true
-      this.$store.dispatch('getLookup', {
+      this.$store.dispatch('getLookupItemFromServer', {
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
         tableName: this.metadata.reference.tableName,
-        directQuery: this.parsedDirectQuery,
+        directQuery: this.metadata.reference.directQuery,
         value: this.value
       })
         .then(response => {
@@ -190,10 +185,9 @@ export default {
           if (this.options.length && !this.options[0].key) {
             this.options.unshift(this.blanckOption)
           }
-          this.isLoading = false
         })
-        .catch(error => {
-          console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
+        .finally(() => {
+          this.isLoading = false
         })
     },
     /**
@@ -208,24 +202,26 @@ export default {
     },
     remoteMethod() {
       this.isLoading = true
-      this.$store.dispatch('getLookupList', {
+      this.$store.dispatch('getLookupListFromServer', {
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
         tableName: this.metadata.reference.tableName,
-        query: this.parsedQuery
+        query: this.metadata.reference.query
       })
         .then(response => {
           this.options = this.getterLookupAll.concat(this.othersOptions)
-          this.isLoading = false
         })
-        .catch(error => {
+        .finally(() => {
           this.isLoading = false
-          console.warn('Get Lookup List, Select Base - Error ' + error.code + ': ' + error.message)
         })
     },
     clearLookup() {
       this.$store.dispatch('deleteLookupList', {
+        parentUuid: this.metadata.parentUuid,
+        containerUuid: this.metadata.containerUuid,
         tableName: this.metadata.reference.tableName,
-        parsedQuery: this.parsedQuery,
-        parsedDirectQuery: this.parsedDirectQuery,
+        query: this.metadata.reference.query,
+        directQuery: this.metadata.reference.directQuery,
         value: this.value
       })
       // TODO: Evaluate if is number -1 or string '' (or default value)

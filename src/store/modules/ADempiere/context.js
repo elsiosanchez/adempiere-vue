@@ -73,6 +73,9 @@ const context = {
     },
     getContextAll: (state) => {
       state.context
+    },
+    getContextClientId: (state) => {
+      return state.context['#AD_Client_ID']
     }
   }
 }

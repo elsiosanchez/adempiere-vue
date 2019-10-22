@@ -1,5 +1,5 @@
 import { getLookup, getLookupList } from '@/api/ADempiere'
-import { convertValue, isEmptyValue, getCurrentRole } from '@/utils/ADempiere'
+import { convertValue, isEmptyValue, getCurrentRole, parseContext } from '@/utils/ADempiere'
 
 const lookup = {
   state: {
@@ -19,85 +19,121 @@ const lookup = {
     }
   },
   actions: {
-    getLookup: ({ commit, rootGetters }, objectParams) => {
-      return new Promise((resolve, reject) => {
-        getLookup(objectParams, objectParams.value)
-          .then(response => {
-            const map = response.getValuesMap()
-            const label = convertValue(map.get('DisplayColumn'))
-            var option = {
-              label: isEmptyValue(label) ? ' ' : label,
-              // key: convertValue(map.get('KeyColumn'))
-              key: objectParams.value
-            }
+    getLookupItemFromServer({ commit, rootGetters }, parameters) {
+      const { parentUuid, containerUuid, value, tableName, directQuery } = parameters
+      var parsedDirectQuery = directQuery
+      if (parsedDirectQuery.includes('@')) {
+        parsedDirectQuery = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: directQuery
+        })
+      }
 
-            const clientId = rootGetters.getContext({
-              columnName: '#AD_Client_ID'
-            })
-
-            commit('addLoockupItem', {
-              option: option,
-              value: objectParams.value, // isNaN(objectParams.value) ? objectParams.value : parseInt(objectParams.value, 10),
-              parsedDirectQuery: objectParams.directQuery,
-              tableName: objectParams.tableName,
-              roleUuid: getCurrentRole(),
-              clientId: clientId
-            })
-            resolve(option)
-          })
-          .catch(error => {
-            reject(error)
-          })
+      return getLookup({
+        tableName: tableName,
+        directQuery: parsedDirectQuery,
+        value: value
       })
+        .then(response => {
+          const map = response.getValuesMap()
+          const label = convertValue(map.get('DisplayColumn'))
+          var option = {
+            label: isEmptyValue(label) ? ' ' : label,
+            // key: convertValue(map.get('KeyColumn'))
+            key: value
+          }
+
+          commit('addLoockupItem', {
+            option: option,
+            value: value, // isNaN(objectParams.value) ? objectParams.value : parseInt(objectParams.value, 10),
+            parsedDirectQuery: directQuery,
+            tableName: tableName,
+            roleUuid: getCurrentRole(),
+            clientId: rootGetters.getContextClientId
+          })
+          return option
+        })
+        .catch(error => {
+          console.warn('Get Lookup, Select Base - Error ' + error.code + ': ' + error.message)
+        })
     },
     /**
      * tableName,
      * query
      */
-    getLookupList: ({ commit, getters, rootGetters }, objectParams) => {
-      return new Promise((resolve, reject) => {
-        getLookupList(objectParams)
-          .then(response => {
-            const recordList = response.getRecordsList()
-            var options = []
-            recordList.forEach(element => {
-              const map = element.getValuesMap()
-              const name = convertValue(map.get('DisplayColumn'))
-              const key = convertValue(map.get('KeyColumn'))
-              options.push({
-                label: isEmptyValue(name) ? ' ' : name,
-                key: isEmptyValue(key) ? -1 : isNaN(key) ? key : parseInt(key)
-              })
-            })
+    getLookupListFromServer({ commit, rootGetters }, parameters) {
+      const { parentUuid, containerUuid, tableName, query } = parameters
+      var parsedQuery = query
+      if (parsedQuery.includes('@')) {
+        parsedQuery = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: query
+        })
+      }
+      console.log(parameters)
+      console.log('parsed', parsedQuery)
 
-            const clientId = rootGetters.getContext({
-              columnName: '#AD_Client_ID'
-            })
-
-            commit('addLoockupList', {
-              list: options,
-              tableName: objectParams.tableName,
-              parsedQuery: objectParams.query,
-              roleUuid: getCurrentRole(),
-              clientId: clientId
-            })
-            resolve(options)
-          })
-          .catch(error => {
-            reject(error)
-          })
+      return getLookupList({
+        tableName: tableName,
+        query: parsedQuery
       })
+        .then(response => {
+          const recordList = response.getRecordsList()
+          var options = []
+          recordList.forEach(element => {
+            const map = element.getValuesMap()
+            const name = convertValue(map.get('DisplayColumn'))
+            const key = convertValue(map.get('KeyColumn'))
+            options.push({
+              label: isEmptyValue(name) ? ' ' : name,
+              key: isEmptyValue(key) ? -1 : isNaN(key) ? key : parseInt(key)
+            })
+          })
+
+          commit('addLoockupList', {
+            list: options,
+            tableName: tableName,
+            parsedQuery: parsedQuery,
+            roleUuid: getCurrentRole(),
+            clientId: rootGetters.getContextClientId
+          })
+          return options
+        })
+        .catch(error => {
+          console.warn('Get Lookup List, Select Base - Error ' + error.code + ': ' + error.message)
+        })
     },
     deleteLookupList({ commit, state }, params) {
+      const { parentUuid, containerUuid, tableName, query, directQuery, value } = params
+
+      var parsedDirectQuery = directQuery
+      if (parsedDirectQuery.includes('@')) {
+        parsedDirectQuery = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: parsedDirectQuery
+        })
+      }
       const lookupItem = state.lookupItem.filter(itemLookup => {
         return itemLookup.parsedDirectQuery !== params.parsedDirectQuery &&
-        itemLookup.tableName !== params.tableName &&
-        itemLookup.roleUuid !== getCurrentRole() &&
-        itemLookup.value !== params.value
+        itemLookup.tableName !== tableName &&
+        itemLookup.value !== value &&
+        itemLookup.roleUuid !== getCurrentRole()
       })
+
+      var parsedQuery = query
+      if (parsedQuery.includes('@')) {
+        parsedQuery = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: parsedQuery
+        })
+      }
       const lookupList = state.lookupList.filter(itemLookup => {
-        return itemLookup.parsedQuery !== params.parsedQuery &&
-        itemLookup.tableName !== params.tableName &&
+        return itemLookup.parsedQuery !== parsedQuery &&
+        itemLookup.tableName !== tableName &&
         itemLookup.roleUuid !== getCurrentRole()
       })
       commit('deleteLookupList', {
@@ -108,14 +144,19 @@ const lookup = {
   },
   getters: {
     getLookupItem: (state, getters, rootState, rootGetters) => (params) => {
-      const clientId = rootGetters.getContext({
-        columnName: '#AD_Client_ID'
-      })
+      var parsedDirectQuery = params.directQuery
+      if (parsedDirectQuery.includes('@')) {
+        parsedDirectQuery = parseContext({
+          parentUuid: params.parentUuid,
+          containerUuid: params.containerUuid,
+          value: parsedDirectQuery
+        })
+      }
       const lookupItem = state.lookupItem.find(itemLookup => {
-        return itemLookup.parsedDirectQuery === params.parsedDirectQuery &&
+        return itemLookup.parsedDirectQuery === parsedDirectQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
-          itemLookup.clientId === clientId &&
+          itemLookup.clientId === rootGetters.getContextClientId &&
           itemLookup.value === params.value
       })
       if (lookupItem) {
@@ -124,14 +165,19 @@ const lookup = {
       return undefined
     },
     getLookupList: (state, getters, rootState, rootGetters) => (params) => {
-      const clientId = rootGetters.getContext({
-        columnName: '#AD_Client_ID'
-      })
+      var parsedQuery = params.query
+      if (parsedQuery.includes('@')) {
+        parsedQuery = parseContext({
+          parentUuid: params.parentUuid,
+          containerUuid: params.containerUuid,
+          value: parsedQuery
+        })
+      }
       const lookupList = state.lookupList.find(itemLookup => {
-        return itemLookup.parsedQuery === params.parsedQuery &&
+        return itemLookup.parsedQuery === parsedQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
-          itemLookup.clientId === clientId
+          itemLookup.clientId === rootGetters.getContextClientId
       })
       if (lookupList) {
         return lookupList.list

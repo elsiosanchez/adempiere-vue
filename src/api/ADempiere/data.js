@@ -142,7 +142,7 @@ export function rollbackEntity(parametersRollback) {
  * Request a Lookup list data from Reference
  * The main attributes that function hope are:
  * @param {string} reference.tableName
- * @param {string} reference.parsedQuery
+ * @param {string} reference.query
  */
 export function getLookupList(reference) {
   return Instance.call(this).requestLookupListFromReference(reference)
@@ -152,11 +152,14 @@ export function getLookupList(reference) {
  * Request a Lookup data from Reference
  * The main attributes that function hope are:
  * @param {string} reference.tableName
- * @param {string} reference.parsedQuery
+ * @param {string} reference.directQuery
  * @param {string|number} value
  */
-export function getLookup(reference, value) {
-  return Instance.call(this).requestLookupFromReference(reference, value)
+export function getLookup(reference) {
+  return Instance.call(this).requestLookupFromReference({
+    tableName: reference.tableName,
+    directQuery: reference.directQuery
+  }, reference.value)
 }
 
 /**
