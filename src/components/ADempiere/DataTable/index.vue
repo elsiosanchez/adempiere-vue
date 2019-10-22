@@ -2,7 +2,7 @@
   <el-container v-if="isLoadPanel" label-position="top" style="height: inherit;">
     <el-main style="padding: 0px!important; overflow: hidden;">
       <el-container style="height: 100%;">
-        <el-header :style="isAdvancedQuery ? this.activeName ? {height: '50%',overflow: 'auto'} :{height: '12%',overflow: 'hidden'} : { height: '5%' }">
+        <el-header :style="isAdvancedQuery ? activeName ? {height: '50%',overflow: 'auto'} :{height: '12%',overflow: 'hidden'} : { height: '5%' }">
           <div>
             <div v-if="!isMobile">
               <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
