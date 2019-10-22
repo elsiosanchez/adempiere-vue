@@ -183,7 +183,8 @@ export default {
         this.$router.push({ path: activity.processIdPath })
         this.$store.dispatch('notifyPanelChange', {
           containerUuid: activity.containerUuid,
-          newValues: finalAttributes
+          newValues: finalAttributes,
+          panelType: activity.panelType
         })
       }
     },

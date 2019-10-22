@@ -438,7 +438,8 @@ export default {
             this.$store.dispatch('notifyPanelChange', {
               containerUuid: this.containerUuid,
               newValues: route.query,
-              isShowedField: true
+              isShowedField: true,
+              panelType: this.panelType
             })
             parameters.isWindow = false
           } else {
@@ -473,8 +474,9 @@ export default {
                   parentUuid: this.parentUuid,
                   containerUuid: this.containerUuid,
                   newValues: this.dataRecords,
-                  isDontSendToEdit: true,
-                  fieldList: this.fieldList
+                  isSendToServer: false,
+                  fieldList: this.fieldList,
+                  panelType: this.panelType
                 })
               } else {
                 this.$router.push({ name: this.$route.name, query: { action: this.dataRecords.UUID, ...this.$route.query }})
@@ -482,8 +484,9 @@ export default {
                   parentUuid: this.parentUuid,
                   containerUuid: this.containerUuid,
                   newValues: this.dataRecords,
-                  isDontSendToEdit: true,
-                  fieldList: this.fieldList
+                  isSendToServer: false,
+                  fieldList: this.fieldList,
+                  panelType: this.panelType
                 })
               }
               this.setTagsViewTitle(this.$route.query.action)
@@ -595,8 +598,9 @@ export default {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
           newValues: this.dataRecords,
-          isDontSendToEdit: true,
-          fieldList: this.fieldList
+          isSendToServer: false,
+          fieldList: this.fieldList,
+          panelType: this.panelType
         }).then(() => {
           // delete records tabs children when change record uuid
           this.$store.dispatch('deleteRecordContainer', {

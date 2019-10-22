@@ -233,8 +233,9 @@ const panel = {
       }
       dispatch('notifyPanelChange', {
         containerUuid: containerUuid,
+        panelType: panelType,
         newValues: defaultAttributes,
-        isDontSendToEdit: true
+        isSendToServer: false
       })
     },
     /**
@@ -243,16 +244,19 @@ const panel = {
      * @param {string} containerUuid
      * @param {object} fieldList, field list of panel
      * @param {object} newValues, values to set in panel
-     * @param {boolean} isDontSendToEdit, indicate if changes not send to server
+     * @param {boolean} isSendToServer, indicate if changes send to server
      */
-    notifyPanelChange({ dispatch, getters }, {
-      parentUuid,
-      containerUuid,
-      fieldList = [],
-      newValues = {},
-      isDontSendToEdit = false, // TODO: change to isSendToServer with default value in true,
-      isShowedField = false
-    }) {
+    notifyPanelChange({ dispatch, getters }, parameters) {
+      const {
+        parentUuid,
+        containerUuid,
+        newValues = {},
+        isSendToServer = true,
+        isShowedField = false,
+        panelType = 'window'
+      } = parameters
+      var { fieldList = [] } = parameters
+
       if (!fieldList.length) {
         fieldList = getters.getFieldsListFromPanel(containerUuid)
       }
@@ -269,7 +273,7 @@ const panel = {
         }
         if (newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
-            isDontSendToEdit: isDontSendToEdit,
+            isSendToServer: isSendToServer,
             parentUuid: parentUuid,
             containerUuid: containerUuid,
             columnName: actionField.columnName,
@@ -297,10 +301,11 @@ const panel = {
           fieldsIncludes: fieldsShowed
         })
       }
-
-      dispatch('setIsloadContext', {
-        containerUuid: containerUuid
-      })
+      if (panelType === 'window') {
+        dispatch('setIsloadContext', {
+          containerUuid: containerUuid
+        })
+      }
     },
     /**
      * @param {string} params.parentUuid
@@ -308,8 +313,8 @@ const panel = {
      * @param {string} params.columnName
      * @param {string} params.newValue
      * @param {string} params.panelType
-     * @param {string} isDontSendToEdit // TODO: change to isSendToServer with default value in true,
-     * @param {string} params.isAdvancedQuery // TODO: Rename to isAdvancedQuery
+     * @param {string} params.isSendToServer
+     * @param {string} params.isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
       var panel
@@ -406,8 +411,8 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-      if (!params.isDontSendToEdit) {
-        // TODO: refactory for it and change for a standard metho
+      if (params.isSendToServer) {
+        // TODO: refactory for it and change for a standard method
         if (!getters.isNotReadyForSubmit(params.containerUuid)) {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {

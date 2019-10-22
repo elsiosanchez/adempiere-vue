@@ -411,7 +411,7 @@ const data = {
       })
     },
     notifyCellTableChange({ commit, state, dispatch, rootGetters }, objectParams) {
-      const { parentUuid, containerUuid, panelType = 'window', isDontSendToEdit = false, columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
+      const { parentUuid, containerUuid, panelType = 'window', isSendToServer = true, columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
       const recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === containerUuid
       })
@@ -435,41 +435,38 @@ const data = {
           columnName: columnName,
           displayColumn: displayColumn
         })
-      }
-      if (!isDontSendToEdit) {
-        if (panelType === 'window') {
-          const fieldNotReady = rootGetters.isNotReadyForSubmit(containerUuid, row)
-          if (!fieldNotReady) {
-            if (!isEmptyValue(row.UUID)) {
-              dispatch('updateCurrentEntityFromTable', {
-                parentUuid: parentUuid,
-                containerUuid: containerUuid,
-                row: row
-              })
-            } else {
-              dispatch('createEntityFromTable', {
-                parentUuid: parentUuid,
-                containerUuid: containerUuid,
-                row: row
-              })
-                .then(() => {
-                  // refresh record list
-                  dispatch('getDataListTab', {
-                    parentUuid: parentUuid,
-                    containerUuid: containerUuid
-                  })
-                })
-            }
-          } else {
-            const fieldsEmpty = rootGetters.getFieldListEmptyMandatory({
+      } else if (panelType === 'window' && isSendToServer) {
+        const fieldNotReady = rootGetters.isNotReadyForSubmit(containerUuid, row)
+        if (!fieldNotReady) {
+          if (!isEmptyValue(row.UUID)) {
+            dispatch('updateCurrentEntityFromTable', {
+              parentUuid: parentUuid,
               containerUuid: containerUuid,
               row: row
             })
-            showMessage({
-              message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-              type: 'info'
+          } else {
+            dispatch('createEntityFromTable', {
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
+              row: row
             })
+              .then(() => {
+                // refresh record list
+                dispatch('getDataListTab', {
+                  parentUuid: parentUuid,
+                  containerUuid: containerUuid
+                })
+              })
           }
+        } else {
+          const fieldsEmpty = rootGetters.getFieldListEmptyMandatory({
+            containerUuid: containerUuid,
+            row: row
+          })
+          showMessage({
+            message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+            type: 'info'
+          })
         }
       }
     }

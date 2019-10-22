@@ -94,7 +94,7 @@ const windowControl = {
             dispatch('notifyPanelChange', {
               containerUuid: parameters.containerUuid,
               newValues: newValues,
-              isDontSendToEdit: true
+              isSendToServer: false
             })
             dispatch('addNewRow', {
               parentUuid: parameters.parentUuid,
@@ -335,7 +335,7 @@ const windowControl = {
               parentUuid: parameters.parentUuid,
               containerUuid: parameters.containerUuid,
               newValues: response,
-              isDontSendToEdit: true
+              isSendToServer: false
             })
           }
           // update row in table
@@ -538,7 +538,7 @@ const windowControl = {
                 parentUuid: tab.parentUuid,
                 containerUuid: containerUuid,
                 newValues: newValues,
-                isDontSendToEdit: true
+                isSendToServer: false
               })
             } else {
               // this record is missing (Deleted or the query does not include it)
