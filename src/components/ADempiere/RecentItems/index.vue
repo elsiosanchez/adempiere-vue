@@ -1,24 +1,30 @@
 <template>
-  <div class="recent-items">
-    <el-table
-      :data="search.length ? filterResult(search) : recentItems"
-      @row-click="handleClick"
-    >
-      <el-table-column
-        label=""
-        prop="displayName"
+  <el-card class="box-card">
+    <div slot="header" class="clearfix">
+      <span> {{ $t('profile.recentItems') }} </span>
+      <el-input
+        v-model="search"
+        size="mini"
+        :placeholder="$t('table.dataTable.search')"
+        class="search_recent"
+      />
+    </div>
+    <div class="recent-items">
+      <el-table
+        :data="search.length ? filterResult(search) : recentItems"
+        @row-click="handleClick"
       >
-        <template slot="header" slot-scope="scope">
-          <el-input
-            v-model="search"
-            size="mini"
-            :placeholder="$t('table.dataTable.search')"
-            :minlength="scope.$index"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
+        <el-table-column
+          type="index"
+          width="20"
+        />
+        <el-table-column
+          label="Nombre Ítems recientes"
+          prop="displayName"
+        />
+      </el-table>
+    </div>
+  </el-card>
 </template>
 
 <script>
@@ -88,6 +94,10 @@ export default {
 </script>
 
 <style scoped>
+  .search_recent {
+    width: 50%!important;
+    float: right;
+  }
 	.header {
 		padding-bottom: 10px;
 	}

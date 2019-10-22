@@ -175,7 +175,7 @@
             <!-- // TODO: Copy panell with getter and filter fields -->
             <el-collapse
               v-if="isParent && isAdvancedQuery"
-              v-show="$route.query.action === 'advancedQuery'"
+              v-show="isAdvancedQuery || $route.query.action === 'advancedQuery'"
               v-model="activeName"
               accordion
             >
