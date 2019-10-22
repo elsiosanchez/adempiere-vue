@@ -476,13 +476,11 @@ export default {
       }
 
       const isUpdateableAllFields = field.isReadOnly || field.isReadOnlyFromLogic
-
       if (this.panelType === 'window') {
         // edit mode is diferent to create new
         const editMode = !this.isEmptyValue(row.UUID)
         return (!field.isUpdateable && editMode) || (isUpdateableAllFields || field.isReadOnlyFromForm)
-      }
-      if (this.panelType === 'browser') {
+      } else if (this.panelType === 'browser') {
         // browser result
         return field.isReadOnly
       }
@@ -504,6 +502,7 @@ export default {
       this.$store.dispatch('addNewRow', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
+        fieldList: this.fieldList,
         isEdit: true,
         isSendServer: false
       })
@@ -788,6 +787,19 @@ export default {
     padding-left: 10px;
     padding-right: 10px;
   }
+  .el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    max-height: 50px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    line-height: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   .tr.current-row > td {
     background-color: initial !important;
     /* background-color: #e8f4ff; */
@@ -801,18 +813,6 @@ export default {
   .header-table-records {
     height: 45px !important;
     padding: 0 !important;
-  }
-  .el-table .cell {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    overflow: hidden;
-    max-height: 40px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-break: break-all;
-    line-height: 23px;
-    padding-left: 10px;
-    padding-right: 10px;
   }
   .icon-mobile {
     padding-right: 5%;

@@ -1,5 +1,5 @@
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
-import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
+import { convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const data = {
@@ -120,6 +120,10 @@ const data = {
      */
     addNewRow({ commit, getters, rootGetters }, parameters) {
       const { parentUuid, containerUuid, isPanelValues = false, isEdit = true } = parameters
+      var { fieldList } = parameters
+      if (fieldList === undefined) {
+        fieldList = rootGetters.getFieldsListFromPanel(containerUuid)
+      }
 
       const data = getters.getDataRecordsList(containerUuid)
       // add row with default values to create new record
@@ -136,6 +140,50 @@ const data = {
       })
       values.isEdit = isEdit
       values.isSendServer = false
+
+      if (fieldList.length) {
+        var propertyValue = 'defaultValue'
+        if (isPanelValues) {
+          propertyValue = 'value'
+        }
+        fieldList
+          .filter(itemField => itemField.componentPath === 'FieldSelect')
+          .forEach(itemField => {
+            var parsedValue = itemField[propertyValue]
+
+            // TODO: First evaluate if is read only
+            // is the property to set is a default value you need to pair with the context values
+            if (propertyValue === 'defaultValue' && !isEmptyValue(itemField.defaultValue)) {
+              parsedValue = parseContext({
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
+                columnName: itemField.columnName,
+                value: itemField[propertyValue]
+              })
+
+              // always the values for these types of fields are integers
+              if (['Table', 'TableDirect'].includes(itemField.referenceType)) {
+                parsedValue = parseInt(parsedValue)
+              }
+            }
+
+            if (!isEmptyValue(parsedValue)) {
+              // get label (DisplayColumn) from vuex store
+              // TODO: Add get from data server
+              const option = rootGetters.getLookupItem({
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
+                directQuery: itemField.reference.directQuery,
+                tableName: itemField.reference.tableName,
+                value: parsedValue
+              })
+              // if there is a lookup option, assign the display column with the label
+              if (option) {
+                values['DisplayColumn_' + itemField.columnName] = option.label
+              }
+            }
+          })
+      }
 
       var linkColumnName
       // get the link column name from the tab

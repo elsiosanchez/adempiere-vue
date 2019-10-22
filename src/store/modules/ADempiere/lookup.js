@@ -72,8 +72,6 @@ const lookup = {
           value: query
         })
       }
-      console.log(parameters)
-      console.log('parsed', parsedQuery)
 
       return getLookupList({
         tableName: tableName,
