@@ -291,7 +291,7 @@ export default {
   .el-aside {
     height: 100%;
     color: #333;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
   }
   aside {

@@ -1,271 +1,286 @@
 <template>
-  <el-form v-if="isLoadPanel" label-position="top">
-    <el-header height="60px" class="header-table-records">
-      <div class="table-root">
-        <div v-if="!isMobile">
-          <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-more" />
-              </template>
-              <el-menu-item
+  <el-container v-if="isLoadPanel" label-position="top" style="height: inherit;">
+    <el-main style="padding: 0px!important; overflow: hidden;">
+      <el-container style="height: 100%;">
+        <el-header :style="isAdvancedQuery ? this.activeName ? {height: '50%',overflow: 'auto'} :{height: '12%',overflow: 'hidden'} : { height: '5%' }">
+          <div>
+            <div v-if="!isMobile">
+              <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
+                <el-submenu index="2">
+                  <template slot="title">
+                    <i class="el-icon-more" />
+                  </template>
+                  <el-menu-item
+                    v-if="!isParent && panelType === 'window'"
+                    :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                    index="new"
+                    @click="addNewRow()"
+                  >
+                    {{ $t('window.newRecord') }}
+                  </el-menu-item>
+                  <el-menu-item
+                    v-if="panelType === 'window'"
+                    :disabled="Boolean(getDataSelection.length < 1)"
+                    index="delete"
+                    @click="deleteSelection()"
+                  >
+                    {{ $t('table.dataTable.deleteSelection') }}
+                  </el-menu-item>
+                  <el-menu-item
+                    v-if="isParent && panelType === 'window'"
+                    :disabled="Boolean(getterDataRecords.length <= 0)"
+                    index="advancedQuery"
+                    @click="activeAdvancedQuery(!isAdvancedQuery)"
+                  >
+                    {{ $t('table.dataTable.advancedQuery') }}
+                  </el-menu-item>
+                  <el-menu-item index="optional" @click="optionalPanel()">
+                    {{ $t('components.filterableItems') }}
+                  </el-menu-item>
+                  <el-menu-item index="fixed" @click="fixedPanel()">
+                    {{ $t('components.fixedleItems') }}
+                  </el-menu-item>
+                </el-submenu>
+              </el-menu>
+              <el-button
                 v-if="!isParent && panelType === 'window'"
+                type="text"
+                icon="el-icon-circle-plus"
+                style="float: right;padding-top: 10px;font-size: large;padding-left: 6px;"
                 :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                index="new"
                 @click="addNewRow()"
-              >
-                {{ $t('window.newRecord') }}
-              </el-menu-item>
-              <el-menu-item
-                v-if="panelType === 'window'"
-                :disabled="Boolean(getDataSelection.length < 1)"
-                index="delete"
-                @click="deleteSelection()"
-              >
-                {{ $t('table.dataTable.deleteSelection') }}
-              </el-menu-item>
-              <el-menu-item
-                v-if="isParent && panelType === 'window'"
-                :disabled="Boolean(getterDataRecords.length <= 0)"
-                index="advancedQuery"
-                @click="activeAdvancedQuery(!isAdvancedQuery)"
-              >
-                {{ $t('table.dataTable.advancedQuery') }}
-              </el-menu-item>
-              <el-menu-item index="optional" @click="optionalPanel()">
-                {{ $t('components.filterableItems') }}
-              </el-menu-item>
-              <el-menu-item index="fixed" @click="fixedPanel()">
-                {{ $t('components.fixedleItems') }}
-              </el-menu-item>
-            </el-submenu>
-          </el-menu>
-          <el-button
-            v-if="!isParent && panelType === 'window'"
-            type="text"
-            icon="el-icon-circle-plus"
-            style="float: right;padding-top: 10px;font-size: large;padding-left: 6px;"
-            :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-            @click="addNewRow()"
-          />
-          <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
-            <fixed-columns
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-              class="header-search-input"
-            />
-          </icon-element>
-          <filter-columns
-            v-if="isOptional"
-            :container-uuid="containerUuid"
-            :panel-type="panelType"
-            class="field-optional"
-          />
-          <!-- <i class="el-icon-circle-plus-outline" /> -->
-          <div :class="{'show':showTableSearch}" class="table-search">
-            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
-            <el-input
-              ref="headerSearchSelect"
-              v-model="searchTable"
-              size="mini"
-              :placeholder="$t('table.dataTable.search')"
-              class="header-search-select"
-              clearable
-            />
-          </div>
-        </div>
-        <div v-else>
-          <div v-if="!isParent">
-            <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
-              <el-submenu index="2">
-                <template slot="title">
-                  <i class="el-icon-more" />
-                </template>
-                <el-menu-item
-                  v-if="panelType === 'window'"
-                  :disabled="Boolean(getDataSelection.length < 1)"
-                  index="delete"
+              />
+              <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
+                <fixed-columns
+                  :container-uuid="containerUuid"
+                  :panel-type="panelType"
+                  class="header-search-input"
+                />
+              </icon-element>
+              <filter-columns
+                v-if="isOptional"
+                :container-uuid="containerUuid"
+                :panel-type="panelType"
+                class="field-optional"
+              />
+              <!-- <i class="el-icon-circle-plus-outline" /> -->
+              <div :class="{'show':showTableSearch}" class="table-search">
+                <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+                <el-input
+                  ref="headerSearchSelect"
+                  v-model="searchTable"
+                  size="mini"
+                  :placeholder="$t('table.dataTable.search')"
+                  class="header-search-select"
+                  clearable
+                />
+              </div>
+            </div>
+            <div v-else>
+              <div v-if="!isParent">
+                <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
+                  <el-submenu index="2">
+                    <template slot="title">
+                      <i class="el-icon-more" />
+                    </template>
+                    <el-menu-item
+                      v-if="panelType === 'window'"
+                      :disabled="Boolean(getDataSelection.length < 1)"
+                      index="delete"
+                      @click="deleteSelection()"
+                    >
+                      {{ $t('table.dataTable.deleteSelection') }}
+                    </el-menu-item>
+                    <el-menu-item
+                      v-if="isParent && panelType === 'window'"
+                      :disabled="Boolean(getterDataRecords.length <= 0)"
+                      index="advancedQuery"
+                      @click="activeAdvancedQuery(!isAdvancedQuery)"
+                    >
+                      {{ $t('table.dataTable.advancedQuery') }}
+                    </el-menu-item>
+                    <el-menu-item index="optional" @click="optionalPanel()">
+                      {{ $t('components.filterableItems') }}
+                    </el-menu-item>
+                    <el-menu-item index="fixed" @click="fixedPanel()">
+                      {{ $t('components.fixedleItems') }}
+                    </el-menu-item>
+                    <el-menu-item
+                      v-if="!isParent && panelType === 'window'"
+                      :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                      index="new"
+                      @click="addNewRow()"
+                    >
+                      {{ $t('window.newRecord') }}
+                    </el-menu-item>
+                  </el-submenu>
+                </el-menu>
+                <icon-element v-if="isFixed" icon="el-icon-news">
+                  <fixed-columns
+                    :container-uuid="containerUuid"
+                    :panel-type="panelType"
+                    class="header-search-input"
+                  />
+                </icon-element>
+                <filter-columns
+                  v-if="isOptional"
+                  :container-uuid="containerUuid"
+                  :panel-type="panelType"
+                  class="field-optional"
+                />
+                <div :class="{'show':showTableSearch}" class="table-search">
+                  <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+                  <el-input
+                    ref="headerSearchSelect"
+                    v-model="searchTable"
+                    size="mini"
+                    :placeholder="$t('table.dataTable.search')"
+                    class="header-search-select"
+                    clearable
+                  />
+                </div>
+              </div>
+              <div v-else class="panel-expand">
+                <div :class="{'show':showTableSearch}" class="table-search">
+                  <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+                  <el-input
+                    ref="headerSearchSelect"
+                    v-model="searchTable"
+                    size="mini"
+                    :placeholder="$t('table.dataTable.search')"
+                    class="header-search-select-mobile"
+                    clearable
+                  />
+                </div>
+                <el-button
+                  v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length"
+                  type="text"
+                  icon="el-icon-delete"
+                  style="color: black;font-size: 17px;font-weight: 605!important;"
                   @click="deleteSelection()"
-                >
-                  {{ $t('table.dataTable.deleteSelection') }}
-                </el-menu-item>
-                <el-menu-item
-                  v-if="isParent && panelType === 'window'"
-                  :disabled="Boolean(getterDataRecords.length <= 0)"
-                  index="advancedQuery"
-                  @click="activeAdvancedQuery(!isAdvancedQuery)"
-                >
-                  {{ $t('table.dataTable.advancedQuery') }}
-                </el-menu-item>
-                <el-menu-item index="optional" @click="optionalPanel()">
-                  {{ $t('components.filterableItems') }}
-                </el-menu-item>
-                <el-menu-item index="fixed" @click="fixedPanel()">
-                  {{ $t('components.fixedleItems') }}
-                </el-menu-item>
-                <el-menu-item
-                  v-if="!isParent && panelType === 'window'"
-                  :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                  index="new"
-                  @click="addNewRow()"
-                >
-                  {{ $t('window.newRecord') }}
-                </el-menu-item>
-              </el-submenu>
-            </el-menu>
-            <icon-element v-if="isFixed" icon="el-icon-news">
-              <fixed-columns
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-                class="header-search-input"
-              />
-            </icon-element>
-            <filter-columns
-              v-if="isOptional"
-              :container-uuid="containerUuid"
-              :panel-type="panelType"
-              class="field-optional"
-            />
-            <div :class="{'show':showTableSearch}" class="table-search">
-              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
-              <el-input
-                ref="headerSearchSelect"
-                v-model="searchTable"
-                size="mini"
-                :placeholder="$t('table.dataTable.search')"
-                class="header-search-select"
-                clearable
-              />
+                />
+                <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
+                  <fixed-columns
+                    :container-uuid="containerUuid"
+                    :panel-type="panelType"
+                    class="header-search-input-mobile"
+                  />
+                </icon-element>
+              </div>
             </div>
           </div>
-          <div v-else class="panel-expand">
-            <div :class="{'show':showTableSearch}" class="table-search">
-              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
-              <el-input
-                ref="headerSearchSelect"
-                v-model="searchTable"
-                size="mini"
-                :placeholder="$t('table.dataTable.search')"
-                class="header-search-select-mobile"
-                clearable
-              />
-            </div>
-            <el-button
-              v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length"
-              type="text"
-              icon="el-icon-delete"
-              style="color: black;font-size: 17px;font-weight: 605!important;"
-              @click="deleteSelection()"
+          <br>
+          <el-collapse-transition>
+            <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
+            <!-- // TODO: Copy panell with getter and filter fields -->
+            <el-collapse
+              v-if="isParent && isAdvancedQuery"
+              v-show="$route.query.action === 'advancedQuery'"
+              v-model="activeName"
+              accordion
+            >
+              <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
+                <main-panel
+                  :container-uuid="containerUuid"
+                  :parent-uuid="parentUuid"
+                  :metadata="getterPanel"
+                  :panel-type="'table'"
+                  :is-advanced-query="true"
+                  style="height: 171; overflow: hidden; width:100%;"
+                />
+              </el-collapse-item>
+            </el-collapse>
+          </el-collapse-transition>
+        </el-header>
+        <el-main style="padding: 0px!important; overflow: hidden;">
+          <el-table
+            ref="multipleTable"
+            v-loading="isLoaded"
+            :height="getHeigthTable"
+            style="width: 100%"
+            border
+            :row-key="getterPanel.keyColumn"
+            highlight-current-row
+            :reserve-selection="true"
+            :row-style="rowStyle"
+            :data="showTableSearch ? filterResult() : getterDataRecords"
+            :element-loading-text="$t('notifications.loading')"
+            element-loading-background="rgba(255, 255, 255, 0.8)"
+            element-loading-spinner="el-icon-loading"
+            cell-class-name="datatable-max-cell-height"
+            @row-click="handleRowClick"
+            @row-dblclick="handleRowDblClick"
+            @select="handleSelection"
+            @select-all="handleSelectionAll"
+          >
+            <el-table-column
+              v-if="isTableSelection"
+              type="selection"
+              :prop="getterPanel.keyColumn"
+              fixed
+              min-width="50"
             />
-            <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
-              <fixed-columns
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-                class="header-search-input-mobile"
-              />
-            </icon-element>
-          </div>
+            <template v-for="(item, key) in fieldList">
+              <el-table-column
+                v-if="isDisplayed(item)"
+                :key="key"
+                :label="headerLabel(item)"
+                :column-key="item.columnName"
+                :prop="item.columnName"
+                sortable
+                :formatter="changeOrder"
+                min-width="200"
+                :class-name="cellClass(item)"
+                :fixed="item.isFixedTableColumn"
+              >
+                <template slot-scope="scope">
+                  <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item)">
+                    <field-definition
+                      :is-data-table="true"
+                      :is-show-label="false"
+                      :in-table="true"
+                      :metadata-field="{
+                        ...item,
+                        parentUuid: parentUuid,
+                        displayColumn: scope.row['DisplayColumn_' + item.columnName],
+                        tableIndex: scope.$index,
+                        rowKey: scope.row[getterPanel.keyColumn],
+                        keyColumn: getterPanel.keyColumn,
+                        recordUuid: scope.row.UUID
+                      }"
+                      :record-data-fields="scope.row[item.columnName]"
+                      size="mini"
+                      @keyup.enter.native="confirmEdit(scope.row)"
+                    />
+                  </template>
+                  <span v-else>
+                    {{ displayedValue(scope.row, item) }}
+                  </span>
+                </template>
+              </el-table-column>
+            </template>
+          </el-table>
+        </el-main>
+      </el-container>
+    </el-main>
+    <el-footer style="height: 30px;">
+      <div>
+        <div style="float: right;">
+          <el-pagination
+            layout="slot, total, prev, pager, next"
+            :current-page="currentPage"
+            :page-size="defaultMaxPagination"
+            :total="getterDataRecords.length"
+            @current-change="handleChangePage"
+          >
+            <template v-slot>
+              <span>{{ $t('table.dataTable.selected') }}: {{ getDataSelection.length }} / </span>
+            </template>
+          </el-pagination>
         </div>
       </div>
-    </el-header>
-    <el-collapse-transition>
-      <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
-      <!-- // TODO: Copy panell with getter and filter fields -->
-      <el-collapse v-if="isParent" v-show="isAdvancedQuery || $route.query.action === 'advancedQuery'" v-model="activeNames" @change="handleChange">
-        <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
-          <main-panel
-            :container-uuid="containerUuid"
-            :parent-uuid="parentUuid"
-            :metadata="getterPanel"
-            :panel-type="'table'"
-            :is-advanced-query="true"
-          />
-        </el-collapse-item>
-      </el-collapse>
-    </el-collapse-transition>
-    <el-table
-      ref="multipleTable"
-      v-loading="isLoaded"
-      :height="getHeigthTable"
-      style="width: 100%"
-      border
-      :row-key="getterPanel.keyColumn"
-      highlight-current-row
-      :reserve-selection="true"
-      :row-style="rowStyle"
-      :data="showTableSearch ? filterResult() : getterDataRecords"
-      :element-loading-text="$t('notifications.loading')"
-      element-loading-background="rgba(255, 255, 255, 0.8)"
-      element-loading-spinner="el-icon-loading"
-      cell-class-name="datatable-max-cell-height"
-      @row-click="handleRowClick"
-      @row-dblclick="handleRowDblClick"
-      @select="handleSelection"
-      @select-all="handleSelectionAll"
-    >
-      <el-table-column
-        v-if="isTableSelection"
-        type="selection"
-        :prop="getterPanel.keyColumn"
-        fixed
-        min-width="50"
-      />
-      <template v-for="(item, key) in fieldList">
-        <el-table-column
-          v-if="isDisplayed(item)"
-          :key="key"
-          :label="headerLabel(item)"
-          :column-key="item.columnName"
-          :prop="item.columnName"
-          sortable
-          :formatter="changeOrder"
-          min-width="200"
-          :class-name="cellClass(item)"
-          :fixed="item.isFixedTableColumn"
-        >
-          <template slot-scope="scope">
-            <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item)">
-              <field-definition
-                :is-data-table="true"
-                :is-show-label="false"
-                :in-table="true"
-                :metadata-field="{
-                  ...item,
-                  parentUuid: parentUuid,
-                  displayColumn: scope.row['DisplayColumn_' + item.columnName],
-                  tableIndex: scope.$index,
-                  rowKey: scope.row[getterPanel.keyColumn],
-                  keyColumn: getterPanel.keyColumn,
-                  recordUuid: scope.row.UUID
-                }"
-                :record-data-fields="scope.row[item.columnName]"
-                size="mini"
-                @keyup.enter.native="confirmEdit(scope.row)"
-              />
-            </template>
-            <span v-else>
-              {{ displayedValue(scope.row, item) }}
-            </span>
-          </template>
-        </el-table-column>
-      </template>
-    </el-table>
-    <div class="table-footer">
-      <div style="float: right;">
-        <el-pagination
-          layout="slot, total, prev, pager, next"
-          :current-page="currentPage"
-          :page-size="defaultMaxPagination"
-          :total="getterDataRecords.length"
-          @current-change="handleChangePage"
-        >
-          <template v-slot>
-            <span>{{ $t('table.dataTable.selected') }}: {{ getDataSelection.length }} / </span>
-          </template>
-        </el-pagination>
-      </div>
-    </div>
-  </el-form>
+    </el-footer>
+  </el-container>
 </template>
 
 <script>
@@ -326,7 +341,7 @@ export default {
       searchTable: '', // text from search
       defaultMaxPagination: 100,
       menuTable: '1',
-      activeNames: ['1'],
+      activeName: '1',
       isOptional: false,
       isFixed: false,
       isLoadPanelFromServer: false,
@@ -383,7 +398,11 @@ export default {
         // table record navigation
         if (this.isParent) {
           if (this.isAdvancedQuery) {
-            return this.getterHeight - 200
+            if (!this.activeName) {
+              return this.getterHeight - 220
+            } else {
+              return this.getterHeight - 550
+            }
           } else {
             return this.getterHeight - 180
           }
@@ -869,6 +888,12 @@ export default {
   /* used in cell type number */
   td.cell-align-right {
     text-align: right !important;
+  }
+  .el-collapse {
+    border-top: 1px solid #e6ebf5;
+    border-bottom: 1px solid #e6ebf5;
+    overflow: hidden;
+    width: 100%;
   }
 </style>
 <style lang="scss" scoped>
