@@ -1,6 +1,6 @@
 import { runProcess, requestProcessActivity } from '@/api/ADempiere'
 import { showNotification } from '@/utils/ADempiere/notification'
-import { isEmptyValue } from '@/utils/ADempiere'
+import { isEmptyValue, convertValuesMapToObject } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
 
@@ -88,9 +88,7 @@ const processControl = {
             message: `In this process (${samePocessInExecution.name}) there is already an execution in progress.`
           })
         }
-        if (params.panelType === 'window' && params.reportFormat === 'xls') {
-          console.log(params)
-        }
+
         // additional attributes to send server, selection to browser, or table name and record id to window
         var selection = []
         var tab, tableName, recordId
@@ -283,71 +281,78 @@ const processControl = {
      * TODO: Add date time in which the process/report was executed
      */
     getSessionProcessFromServer({ commit, dispatch, getters, rootGetters }) {
-      return new Promise((resolve, reject) => {
-        // Example of process Activity
-        requestProcessActivity()
-          .then(response => {
-            var responseList = response.getResponsesList().map(responseItem => {
-              var uuid = responseItem.getUuid()
-              var responseOutput = responseItem.getOutput()
-              var output
-              if (responseOutput !== undefined) {
-                output = {
-                  uuid: uuid,
-                  name: responseOutput.getName(),
-                  description: responseOutput.getDescription(),
-                  fileName: responseOutput.getFilename(),
-                  mimeType: responseOutput.getMimetype(),
-                  output: responseOutput.getOutput(),
-                  outputStream: responseOutput.getOutputstream(),
-                  outputStream_asB64: responseOutput.getOutputstream_asB64(),
-                  outputStream_asU8: responseOutput.getOutputstream_asU8(),
-                  reportType: responseOutput.getReporttype()
-                }
+      // process Activity
+      return requestProcessActivity()
+        .then(response => {
+          var responseList = response.getResponsesList().map(responseItem => {
+            var uuid = responseItem.getUuid()
+            var responseOutput = responseItem.getOutput()
+            var output
+            if (responseOutput !== undefined) {
+              output = {
+                uuid: uuid,
+                name: responseOutput.getName(),
+                description: responseOutput.getDescription(),
+                fileName: responseOutput.getFilename(),
+                mimeType: responseOutput.getMimetype(),
+                output: responseOutput.getOutput(),
+                outputStream: responseOutput.getOutputstream(),
+                outputStream_asB64: responseOutput.getOutputstream_asB64(),
+                outputStream_asU8: responseOutput.getOutputstream_asU8(),
+                reportType: responseOutput.getReporttype()
               }
-              var logList = responseItem.getLogsList().map(log => {
-                return {
-                  recordId: log.getRecordid(),
-                  log: log.getLog()
-                }
-              })
-
-              var processMetadata = rootGetters.getProcess(uuid)
-              // if no exists metadata process in store and no request progess
-              if (processMetadata === undefined && getters.getInRequestMetadata(uuid) === undefined) {
-                commit('addInRequestMetadata', uuid)
-                dispatch('getProcessFromServer', uuid)
-                  .finally(() => {
-                    commit('deleteInRequestMetadata', uuid)
-                  })
+            }
+            var logList = responseItem.getLogsList().map(log => {
+              return {
+                recordId: log.getRecordid(),
+                log: log.getLog()
               }
-
-              var process = {
-                processUuid: responseItem.getUuid(),
-                instanceUuid: responseItem.getInstanceuuid(),
-                isError: responseItem.getIserror(),
-                isProcessing: responseItem.getIsprocessing(),
-                logs: logList,
-                output: output,
-                parametersMap: responseItem.getParametersMap(),
-                ResultTableName: responseItem.getResulttablename(),
-                summary: responseItem.getSummary()
-              }
-              return process
             })
 
-            var processResponseList = {
-              recordCount: response.getRecordcount(),
-              processList: responseList,
-              nextPageToken: response.getNextPageToken()
+            var processMetadata = rootGetters.getProcess(uuid)
+            // if no exists metadata process in store and no request progess
+            if (processMetadata === undefined && getters.getInRequestMetadata(uuid) === undefined) {
+              commit('addInRequestMetadata', uuid)
+              dispatch('getProcessFromServer', uuid)
+                .finally(() => {
+                  commit('deleteInRequestMetadata', uuid)
+                })
             }
-            commit('setSessionProcess', processResponseList)
-            resolve(processResponseList)
+
+            var process = {
+              processUuid: responseItem.getUuid(),
+              instanceUuid: responseItem.getInstanceuuid(),
+              isError: responseItem.getIserror(),
+              isProcessing: responseItem.getIsprocessing(),
+              logs: logList,
+              output: output,
+              lastRun: responseItem.getLastrun(),
+              parametersMap: responseItem.getParametersMap(),
+              parameters: convertValuesMapToObject(
+                responseItem.getParametersMap()
+              ),
+              ResultTableName: responseItem.getResulttablename(),
+              summary: responseItem.getSummary()
+            }
+            return process
           })
-          .catch(error => {
-            reject(error)
+
+          var processResponseList = {
+            recordCount: response.getRecordcount(),
+            processList: responseList,
+            nextPageToken: response.getNextPageToken()
+          }
+          commit('setSessionProcess', processResponseList)
+          return processResponseList
+        })
+        .catch(error => {
+          showNotification({
+            title: language.t('notifications.error'),
+            message: error.message,
+            type: 'error'
           })
-      })
+          console.warn('Error getting process activity:' + error.message + '. Code: ' + error.code)
+        })
     },
     /**
      *
@@ -363,7 +368,7 @@ const processControl = {
         }
       }
     },
-    finishProcess({ commit, dispatch }, parameters) {
+    finishProcess({ commit }, parameters) {
       var processMessage = {
         name: parameters.processOutput.processName,
         title: language.t('notifications.succesful'),

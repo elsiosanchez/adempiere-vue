@@ -136,9 +136,6 @@ export default {
             }
             this.displayReport(this.reportResult)
           })
-          .catch(error => {
-            console.log(error)
-          })
       } else {
         this.displayReport(this.reportResult)
       }
