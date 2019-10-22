@@ -94,9 +94,8 @@ export function getCriteria(tableName) {
 export function getObjectListFromCriteria(object) {
   const criteriaForList = getCriteria(object.tableName)
 
-  if (object.query) {
-    criteriaForList.setQuery(object.query)
-  }
+  criteriaForList.setQuery(object.query)
+
   if (object.whereClause) {
     criteriaForList.setWhereclause(object.whereClause)
   }

@@ -498,14 +498,17 @@ const windowControl = {
       const { parentUuid, containerUuid, recordUuid, isRefreshPanel = false, isLoadAllRecords = false, columnName, value } = parameters
       const tab = rootGetters.getTab(parentUuid, containerUuid)
 
-      var parsedQuery = parseContext({
-        parentUuid: parentUuid,
-        containerUuid: containerUuid,
-        value: tab.query
-      })
+      var parsedQuery = tab.query
+      if (!isEmptyValue(parsedQuery) && parsedQuery.includes('@')) {
+        parsedQuery = parseContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          value: tab.query
+        })
+      }
 
-      var parsedWhereClause
-      if (!isEmptyValue(tab.whereClause)) {
+      var parsedWhereClause = tab.whereClause
+      if (!isEmptyValue(parsedWhereClause) && parsedWhereClause.includes('@')) {
         parsedWhereClause = parseContext({
           parentUuid: parentUuid,
           containerUuid: containerUuid,

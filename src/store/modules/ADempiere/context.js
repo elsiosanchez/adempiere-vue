@@ -1,11 +1,11 @@
 import Vue from 'vue'
 // Delete when get global context and account context
-import { contextInitialObject } from '@/utils/ADempiere/dataEmulation.js'
+import { contextInitial } from '@/utils/ADempiere/dataEmulation.js'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtil.js'
 
 const context = {
   state: {
-    context: contextInitialObject()
+    context: contextInitial()
   },
   mutations: {
     setContext(state, payload) {
@@ -25,7 +25,7 @@ const context = {
       Vue.set(state.context, key, payload.value)
     },
     setInitialContext(state, objectContext) {
-      state.context = contextInitialObject()
+      state.context = contextInitial()
       Object.keys(objectContext).forEach(key => {
         Vue.set(state.context, key, objectContext[key])
       })
