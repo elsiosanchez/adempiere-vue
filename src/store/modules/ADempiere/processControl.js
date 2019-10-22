@@ -118,9 +118,7 @@ const processControl = {
         const processDefinition = rootGetters.getProcess(params.action.uuid)
         var reportType = params.reportFormat
         const finalParameters = rootGetters.getParametersToServer({ containerUuid: processDefinition.uuid })
-        if (params.panelType !== 'window') {
-          router.push({ path: '/dashboard' })
-        }
+
         showNotification({
           title: language.t('notifications.processing'),
           message: processDefinition.name,
@@ -163,11 +161,13 @@ const processControl = {
           }
         }
         commit('addInExecution', processResult)
-        // close view if is process, report or browser.
         if (params.panelType === 'window') {
           reportType = 'pdf'
         } else {
+          // close view if is process, report or browser.
+          router.push({ path: '/dashboard' })
           dispatch('tagsView/delView', params.routeToDelete)
+
           // delete data associate to browser
           if (params.panelType === 'browser') {
             dispatch('deleteRecordContainer', {
@@ -244,8 +244,8 @@ const processControl = {
               logs: logList,
               output: output
             })
-            resolve(processResult)
             dispatch('setReportTypeToShareLink', processResult.output.reportType)
+            resolve(processResult)
           })
           .catch(error => {
             Object.assign(processResult, {
@@ -379,12 +379,7 @@ const processControl = {
       }
       var errorMessage = !isEmptyValue(parameters.processOutput.message) ? parameters.processOutput.message : language.t('login.unexpectedError')
       // TODO: Add isReport to type always 'success'
-      if (
-        parameters.processOutput.isError ||
-        isEmptyValue(parameters.processOutput.processId) ||
-        isEmptyValue(parameters.processOutput.instanceUuid) ||
-        isEmptyValue(parameters.processOutput.output.fileName)
-      ) {
+      if (parameters.processOutput.isError || isEmptyValue(parameters.processOutput.processId) || isEmptyValue(parameters.processOutput.instanceUuid)) {
         processMessage.title = language.t('notifications.error')
         processMessage.message = errorMessage
         processMessage.type = 'error'
