@@ -149,7 +149,7 @@ const windowControl = {
       const panel = rootGetters.getPanel(containerUuid)
 
       // TODO: Add support to Binary columns (BinaryData)
-      const columnsToDontSend = ['BinaryData']
+      const columnsToDontSend = ['BinaryData', 'isSendServer', 'isEdit']
 
       // attributes or fields
       var finalAttributes = convertObjectToArrayPairs(row)
@@ -281,7 +281,7 @@ const windowControl = {
       const panel = rootGetters.getPanel(parameters.containerUuid)
 
       // TODO: Add support to Binary columns (BinaryData)
-      const columnsToDontSend = ['BinaryData']
+      const columnsToDontSend = ['BinaryData', 'isSendServer', 'isEdit']
 
       // attributes or fields
       var finalAttributes = convertObjectToArrayPairs(parameters.row)

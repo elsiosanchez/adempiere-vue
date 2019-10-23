@@ -210,6 +210,7 @@ const window = {
           }
 
           var fieldUuidsequence = 0
+          var fieldLinkColumnName
           //  Convert from gRPC
           fieldsList = fieldsList.map((item, index) => {
             item = convertField(item, {
@@ -219,6 +220,11 @@ const window = {
             if (item.sequence > fieldUuidsequence) {
               fieldUuidsequence = item.sequence
             }
+
+            if (item.isParent) {
+              fieldLinkColumnName = item.columnName
+            }
+
             return item
           })
 
@@ -253,6 +259,7 @@ const window = {
           const panel = {
             ...getters.getTab(parentUuid, containerUuid),
             isAdvancedQuery: isAdvancedQuery,
+            fieldLinkColumnName: fieldLinkColumnName,
             fieldList: fieldsList,
             panelType: panelType
           }

@@ -138,6 +138,26 @@ const data = {
       values.isEdit = isEdit
       values.isSendServer = false
 
+      var linkColumnName
+      // get the link column name from the tab
+      const tab = rootGetters.getPanel(containerUuid)
+      linkColumnName = tab.linkColumnName
+      if (isEmptyValue(linkColumnName)) {
+        // get the link column name from field list
+        linkColumnName = tab.fieldLinkColumnName
+      }
+
+      var valueLink
+      // get context value if link column exists and does not exist in row
+      if (!isEmptyValue(linkColumnName)) {
+        valueLink = rootGetters.getContext({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          columnName: linkColumnName
+        })
+      }
+
+      // get display column
       if (fieldList.length) {
         var propertyValue = 'defaultValue'
         if (isPanelValues) {
@@ -149,24 +169,25 @@ const data = {
             var parsedValue = itemField[propertyValue]
 
             // TODO: First evaluate if is read only
-            // is the property to set is a default value you need to pair with the context values
-            if (propertyValue === 'defaultValue' && !isEmptyValue(itemField.defaultValue)) {
+            // overwrite value with column link
+            if (linkColumnName === itemField.columnName) {
+              parsedValue = valueLink
+            } else if (parsedValue.includes('@')) {
+              // get value form context
               parsedValue = parseContext({
                 parentUuid: parentUuid,
                 containerUuid: containerUuid,
                 columnName: itemField.columnName,
-                value: itemField[propertyValue]
+                value: parsedValue
               })
-
-              // always the values for these types of fields are integers
-              if (['Table', 'TableDirect'].includes(itemField.referenceType)) {
-                parsedValue = parseInt(parsedValue)
-              }
+            }
+            // always the values for these types of fields are integers
+            if (['TableDirect'].includes(itemField.referenceType)) {
+              parsedValue = parseInt(parsedValue)
             }
 
             if (!isEmptyValue(parsedValue)) {
               // get label (DisplayColumn) from vuex store
-              // TODO: Add get from data server
               const option = rootGetters.getLookupItem({
                 parentUuid: parentUuid,
                 containerUuid: containerUuid,
@@ -177,30 +198,24 @@ const data = {
               // if there is a lookup option, assign the display column with the label
               if (option) {
                 values['DisplayColumn_' + itemField.columnName] = option.label
+              } else if (linkColumnName === itemField.columnName) {
+                // get context value if link column exists and does not exist in row
+                const label = rootGetters.getContext({
+                  parentUuid: parentUuid,
+                  containerUuid: containerUuid,
+                  columnName: 'Name'
+                })
+                values['DisplayColumn_' + itemField.columnName] = label
+              } else {
+                // TODO: Add get from data server
               }
             }
           })
       }
 
-      var linkColumnName
-      // get the link column name from the tab
-      const tab = rootGetters.getPanel(containerUuid)
-      linkColumnName = tab.linkColumnName
-      if (isEmptyValue(linkColumnName)) {
-        // get the link column name from field list
-        const fieldLink = tab.fieldList.find(item => item.isParent)
-        if (fieldLink) {
-          linkColumnName = fieldLink.columnName
-        }
-      }
-
-      // get context value if link column exists and does not exist in row
-      if (!isEmptyValue(linkColumnName) && isEmptyValue(values[linkColumnName])) {
-        values[linkColumnName] = rootGetters.getContext({
-          parentUuid: parentUuid,
-          containerUuid: containerUuid,
-          columnName: linkColumnName
-        })
+      // overwrite value with column link
+      if (isEmptyValue(values[linkColumnName])) {
+        values[linkColumnName] = valueLink
       }
 
       commit('addNewRow', {

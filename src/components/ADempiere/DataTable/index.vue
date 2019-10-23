@@ -491,6 +491,10 @@ export default {
 
       const isUpdateableAllFields = field.isReadOnly || field.isReadOnlyFromLogic
       if (this.panelType === 'window') {
+        if (field.columnName === this.getterPanel.linkColumnName ||
+          field.columnName === this.getterPanel.fieldLinkColumnName) {
+          return true
+        }
         // edit mode is diferent to create new
         const editMode = !this.isEmptyValue(row.UUID)
         return (!field.isUpdateable && editMode) || (isUpdateableAllFields || field.isReadOnlyFromForm)
