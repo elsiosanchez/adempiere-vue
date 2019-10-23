@@ -101,17 +101,17 @@ export default {
     RunProcessAs: 'Run As',
     ExportTo: 'Export to',
     contextMenuDownload: 'Download',
-    contextMenuShareLink: 'Share link',
+    contextMenuShareLink: 'Share Link',
     contextMenuRefresh: 'Refresh',
     contextMennuExport: 'Export Smart Browser',
-    contextMennuWindowReport: 'Window report ',
+    contextMennuWindowReport: 'Window Report ',
     dateStartPlaceholder: 'Start date',
     dateEndPlaceholder: 'End date',
     timePlaceholder: 'Select time',
     dialogCancelButton: 'Cancel',
     dialogConfirmButton: 'Confirm',
-    filterableItems: 'Optional Column',
-    fixedleItems: 'Fixed Column',
+    filterableItems: 'Optional Columns',
+    fixedleItems: 'Fixed Columns',
     resetAllFilters: 'Reset all filters',
     switchActiveText: 'Yes',
     switchInactiveText: 'Not'
@@ -149,7 +149,7 @@ export default {
       search: 'Search',
       records: 'Records',
       selected: 'Selected',
-      deleteSelection: 'Delete selected records',
+      deleteSelection: 'Delete Selected Records',
       advancedQuery: 'Advanced Query'
     },
     recentItems: {
@@ -203,6 +203,7 @@ export default {
   profile: {
     aboutMe: 'About Me',
     recentItems: 'Recent Items',
+    recentItemsName: 'Name Recent Items',
     role: 'Role',
     availableRoles: 'Available roles',
     currentRole: 'Current role',
