@@ -42,6 +42,9 @@ export default {
       if (['Memo', 'Text', 'TextLong'].includes(this.metadata.referenceType)) {
         typeInput = 'textarea'
       }
+      if (this.metadata.isEncrypted) {
+        typeInput = 'password'
+      }
       return typeInput
     }
   },
