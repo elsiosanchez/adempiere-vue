@@ -7,6 +7,7 @@
     :placeholder="metadata.help"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
+    :maxlength="maxLength"
     @blur="validateInput"
     @change="preHandleChange"
   />
@@ -46,6 +47,12 @@ export default {
         typeInput = 'password'
       }
       return typeInput
+    },
+    maxLength() {
+      if (!this.isEmptyValue(this.metadata.fieldLength)) {
+        return Number(this.metadata.fieldLength)
+      }
+      return undefined
     }
   },
   watch: {

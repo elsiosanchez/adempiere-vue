@@ -150,6 +150,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     parsedDefaultValue: parsedDefaultValue,
     defaultValueTo: fieldGRPC.getDefaultvalueto(),
     parsedDefaultValueTo: parsedDefaultValueTo,
+    fieldLength: fieldGRPC.getFieldlength(),
     valueMin: fieldGRPC.getValuemin(),
     valueMax: fieldGRPC.getValuemax(),
     //
