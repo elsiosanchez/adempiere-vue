@@ -11,14 +11,41 @@
             <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
             <div slot="paneL" class="left-container">
               <el-aside v-show="isShowedRecordNavigation" width="100%">
-                <div style="top: 41%;position: relative;z-index: 3;">
-                  <el-button
-                    v-show="isShowedRecordNavigation && isShowedRecordPanel"
-                    icon="el-icon-caret-left"
-                    circle
-                    style="float: right;"
-                    @click="handleChangeShowedPanel()"
-                  />
+                <div class="small-4 columns">
+                  <div class="w">
+                    <div class="open-left" />
+                    <div class="open-datatable">
+                      <el-button
+                        :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                        circle
+                        @click="handleChangeShowedRecordNavigation()"
+                      />
+                    </div>
+                    <div class="open-datatable">
+                      <el-button
+                        v-show="isShowedRecordNavigation"
+                        :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                        circle
+                        style="margin-top: 35px;margin-left: inherit;"
+                        @click="handleChangeShowedPanel()"
+                      />
+                    </div>
+                    <data-table
+                      :parent-uuid="windowUuid"
+                      :container-uuid="windowMetadata.currentTab.uuid"
+                      :table-name="windowMetadata.currentTab.tableName"
+                      :is-showed-panel-record="true"
+                      :is-parent="true"
+                    />
+                    <div class="close-datatable">
+                      <el-button
+                        v-show="isShowedRecordNavigation && isShowedRecordPanel"
+                        icon="el-icon-caret-left"
+                        circle
+                        @click="handleChangeShowedPanel()"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <i
                   v-if="isMobile"
@@ -26,13 +53,13 @@
                   style="position: fixed;padding-top: 15px; color: #000000;font-size: 121%;font-weight: 615!important;padding-left: 9px;"
                   @click="handleChangeShowedRecordNavigation()"
                 />
-                <data-table
+                <!-- <data-table
                   :parent-uuid="windowUuid"
                   :container-uuid="windowMetadata.currentTab.uuid"
                   :table-name="windowMetadata.currentTab.tableName"
                   :is-showed-panel-record="true"
                   :is-parent="true"
-                />
+                /> -->
               </el-aside>
             </div>
           </template>
@@ -345,7 +372,21 @@ export default {
     position: fixed;
     top: 50%;
     display: none;
-    z-index: 3;
+    z-index: 5;
+  }
+  .open-datatable {
+    position: absolute;
+    top: 46%;
+    display: none;
+    z-index: 5;
+    right: -6%!important;
+  }
+  .close-datatable {
+    position: absolute;
+    top: 45%;
+    display: none;
+    z-index: 5;
+    right: 0%!important;
   }
   .button {
     display: none;
@@ -354,6 +395,12 @@ export default {
     display: inline-block;
   }
   .w:hover .open-navegation {
+    display: inline-block;
+  }
+  .w:hover .open-datatable {
+    display: inline-block;
+  }
+  .w:hover .close-datatable {
     display: inline-block;
   }
   .open-detail {
