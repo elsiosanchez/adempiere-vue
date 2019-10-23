@@ -52,6 +52,9 @@ export default {
       if (this.panelType === 'table') {
         // fields to search without taking into account the mandatory
         return this.$store.getters.getFieldsListFromPanel(this.containerUuid, this.isAdvancedQuery)
+          .filter(fieldItem => {
+            return fieldItem.componentPath !== 'FieldButton'
+          })
       } else if (this.panelType === 'window') {
         // compare group fields to window
         return this.$store.getters.getFieldsListNotMandatory(this.containerUuid)
