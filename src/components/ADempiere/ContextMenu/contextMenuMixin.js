@@ -148,17 +148,11 @@ export const contextMixin = {
           isRefreshPanel: true,
           recordUuid: this.recordUuid
         })
-          .catch(error => {
-            console.warn(error)
-          })
       } else if (this.panelType === 'browser') {
         this.$store.dispatch('getBrowserSearch', {
           containerUuid: this.containerUuid,
           isClearSelection: true
         })
-          .catch(error => {
-            console.warn(error)
-          })
       }
     },
     getReferences() {

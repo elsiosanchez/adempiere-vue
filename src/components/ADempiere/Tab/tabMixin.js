@@ -64,9 +64,6 @@ export const tabMixin = {
         parentUuid: this.windowUuid,
         containerUuid: this.tabUuid
       })
-        .catch(error => {
-          console.warn(error)
-        })
     }
   }
 }

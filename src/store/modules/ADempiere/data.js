@@ -105,9 +105,6 @@ const data = {
             containerUuid: parameters.containerUuid,
             isClearSelection: true
           })
-            .catch(error => {
-              console.warn(error)
-            })
         }
       }
     },
@@ -335,7 +332,6 @@ const data = {
         tableName: tableName,
         conditions: conditions
       })
-
       return getObjectListFromCriteria({
         tableName: tableName,
         query: query,
@@ -384,6 +380,18 @@ const data = {
           return record
         })
         .catch(error => {
+          // Set default registry values so that the table does not say loading,
+          // there was already a response from the server
+          dispatch('setRecordSelection', {
+            parentUuid: parentUuid,
+            containerUuid: containerUuid,
+            record: [],
+            selection: [],
+            recordCount: 0,
+            nextPageToken: undefined,
+            pageNumber: 1
+          })
+
           if (isShowNotification) {
             showMessage({
               title: language.t('notifications.error'),

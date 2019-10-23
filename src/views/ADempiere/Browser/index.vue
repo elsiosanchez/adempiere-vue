@@ -188,9 +188,6 @@ export default {
       this.$store.dispatch('getBrowserSearch', {
         containerUuid: this.browserUuid
       })
-        .catch(error => {
-          console.warn(error)
-        })
     }
   }
 }
