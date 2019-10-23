@@ -139,7 +139,7 @@ export default {
       this.handleChange(value, undefined, label)
     },
     validateValue(value) {
-      if (['Table', 'TableDirect'].includes(this.metadata.referenceType)) {
+      if (['TableDirect'].includes(this.metadata.referenceType)) {
         return this.isEmptyValue(value) ? undefined : parseInt(value, 10)
       }
       // return this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value, 10)
