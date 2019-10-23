@@ -169,28 +169,23 @@
               </div>
             </div>
           </div>
-          <br>
-          <el-collapse-transition>
-            <!-- // TODO: Evaluate when isAdvancedQuery not request to server -->
-            <!-- // TODO: Copy panell with getter and filter fields -->
-            <el-collapse
-              v-if="isParent && isAdvancedQuery"
-              v-show="isAdvancedQuery || $route.query.action === 'advancedQuery'"
-              v-model="activeName"
-              accordion
-            >
-              <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
-                <main-panel
-                  :container-uuid="containerUuid"
-                  :parent-uuid="parentUuid"
-                  :metadata="getterPanel"
-                  :panel-type="'table'"
-                  :is-advanced-query="true"
-                  style="height: 171; overflow: hidden; width:100%;"
-                />
-              </el-collapse-item>
-            </el-collapse>
-          </el-collapse-transition>
+          <el-collapse
+            v-if="isParent && isAdvancedQuery"
+            v-show="isAdvancedQuery"
+            v-model="activeName"
+            accordion
+          >
+            <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
+              <main-panel
+                :container-uuid="containerUuid"
+                :parent-uuid="parentUuid"
+                :metadata="getterPanel"
+                :panel-type="'table'"
+                :is-advanced-query="true"
+                style="height: 171; overflow: hidden; width:100%;"
+              />
+            </el-collapse-item>
+          </el-collapse>
         </el-header>
         <el-main style="padding: 0px!important; overflow: hidden;">
           <el-table
@@ -352,7 +347,7 @@ export default {
       inEdited: [],
       uuidCurrentRecordSelected: '',
       showTableSearch: false,
-      isAdvancedQuery: false
+      isAdvancedQuery: this.$route.query.action === 'advancedQuery'
     }
   },
   computed: {
@@ -735,47 +730,6 @@ export default {
         var oldAction = this.$store.getters.getOldAction
         this.$router.push({ query: { ...this.$route.query, action: oldAction }})
       }
-    },
-    fallbackCopyTextToClipboard(text) {
-      var textArea = document.createElement('textarea')
-      textArea.value = text
-      document.body.appendChild(textArea)
-      textArea.focus()
-      textArea.select()
-      try {
-        var successful = document.execCommand('copy')
-        if (successful) {
-          var message = this.$t('notifications.copySuccessful')
-          this.clipboardMessage(message)
-        }
-      } catch (err) {
-        message = this.$t('notifications.copyUnsuccessful')
-        this.clipboardMessage(message)
-      }
-      document.body.removeChild(textArea)
-    },
-    activeClipboard(text) {
-      if (!navigator.clipboard) {
-        this.fallbackCopyTextToClipboard(text)
-        return
-      }
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          var message = this.$t('notifications.copySuccessful')
-          this.clipboardMessage(message)
-        })
-        .catch(() => {
-          var message = this.$t('notifications.copyUnsuccessful')
-          this.clipboardMessage(message)
-        })
-      navigator.clipboard.writeText(text)
-    },
-    clipboardMessage(message) {
-      this.$message({
-        message: message,
-        type: 'success',
-        duration: 1500
-      })
     }
   }
 }

@@ -540,14 +540,6 @@ export default {
         res[key].numberFields = res[key].metadataFields.length
 
         res[key].metadataFields.forEach((element, index) => {
-          if (element.isAdvancedQuery) {
-            element.isDisplayed = true
-            element.isDisplayedFromLogic = true
-            element.isShowedFromUser = true
-            if (element.isKey || !element.isSelectionColumn) {
-              element.isShowedFromUser = false
-            }
-          }
           if (element.isDisplayed) {
             count++
           }

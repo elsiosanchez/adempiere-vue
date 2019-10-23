@@ -54,7 +54,7 @@ const panel = {
     addPanel({ commit, dispatch }, params) {
       var keyColumn = ''
       var selectionColumn = []
-
+      var count = 0
       params.fieldList.forEach(itemField => {
         if (itemField.isKey) {
           keyColumn = itemField.columnName
@@ -63,8 +63,13 @@ const panel = {
           selectionColumn.push(itemField.columnName)
         }
 
-        if (!(params.panelType === 'table' || params.isAdvancedQuery)) {
-          // TODO: Evaluate if send context when is children tab
+        if (params.panelType === 'table' || params.isAdvancedQuery) {
+          itemField.isShowedFromUser = false
+          if (count < 2 && itemField.isSelectionColumn && itemField.sequence >= 10) {
+            itemField.isShowedFromUser = true
+            count++
+          }
+        } else {
           dispatch('setContext', {
             parentUuid: params.parentUuid,
             containerUuid: params.uuid,
