@@ -26,57 +26,6 @@ export function fieldIsDisplayed(field) {
 }
 
 /**
- * Converted the gRPC value to the value needed
- * @param {mixed} initialValue Value get of gRPC
- */
-export function convertValue(initialValue) {
-  if (initialValue === undefined || initialValue === null) {
-    return undefined
-  }
-  var returnValue
-  switch (initialValue.getValuetype()) {
-    // data type Number (integer)
-    case 0:
-      returnValue = initialValue.getIntvalue()
-      break
-    // data type Number (integer)
-    case 1:
-      returnValue = initialValue.getLongvalue()
-      break
-    // data type Number (float)
-    case 2:
-      returnValue = initialValue.getDoublevalue()
-      break
-    // data type Boolean
-    case 3:
-      returnValue = initialValue.getBooleanvalue()
-      break
-    // data type String
-    case 4:
-      returnValue = initialValue.getStringvalue()
-      break
-    // data type Date
-    case 5:
-      returnValue = new Date(initialValue.getLongvalue())
-      break
-  }
-  return returnValue
-}
-
-export function convertValuesMapToObject(map) {
-  var objectConverted = {}
-  map.forEach((value, key) => {
-    var valueResult = map.get(key)
-    var tempValue
-    if (valueResult) {
-      tempValue = convertValue(value)
-    }
-    objectConverted[key] = tempValue
-  })
-  return objectConverted
-}
-
-/**
  * Converted gRPC attributes to object
  * @param {object}  fieldGRPC
  * @param {object}  moreAttributes, additional attributes
@@ -683,6 +632,5 @@ export function parsedValueComponent({ fieldType, value, referenceType }) {
 
 export default evaluator // from '@/utils/ADempiere/evaluator.js'
 export * from '@/utils/ADempiere/auth.js'
-export * from '@/utils/ADempiere/dataEmulation.js'
 export * from '@/utils/ADempiere/notification.js'
 export * from '@/utils/ADempiere/valueUtil.js'

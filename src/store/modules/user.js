@@ -2,7 +2,7 @@ import { login, logout, getInfo, changeRole } from '@/api/user'
 import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import { showMessage } from '@/utils/ADempiere'
+import { showMessage, convertMapToArrayPairs } from '@/utils/ADempiere'
 
 const state = {
   token: getToken(),
@@ -40,7 +40,7 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
@@ -56,6 +56,24 @@ const actions = {
 
           commit('SET_TOKEN', data.token)
           commit('SET_ROL', data.currentRole)
+
+          var defaultContext = convertMapToArrayPairs({
+            toConvert: response.getDefaultcontextMap()
+          })
+          // TODO: return request #Date as long data type Date (5)
+          // join column names without duplicating it
+          defaultContext = Array.from(new Set([
+            ...defaultContext,
+            ...[{
+              columnName: '#Date',
+              value: new Date()
+            }]
+          ]))
+          // set multiple context
+          dispatch('setMultipleContext', defaultContext, {
+            root: true
+          })
+
           setToken(data.token)
           setCurrentRole(data.currentRole.uuid)
           resolve(data)
@@ -82,9 +100,6 @@ const actions = {
         var rol = response.rolesList.find(itemRol => {
           return itemRol.uuid === getCurrentRole()
         })
-
-        // set initial context
-        dispatch('setInitialContext', {}, { root: true })
 
         // set multiple context
         dispatch('setMultipleContext', [
@@ -183,6 +198,24 @@ const actions = {
         dispatch('clearProcessControl', null, {
           root: true
         })
+
+        var defaultContext = convertMapToArrayPairs({
+          toConvert: response.getDefaultcontextMap()
+        })
+        // join column names without duplicating it
+        // TODO: return request #Date as long data type Date (5)
+        defaultContext = Array.from(new Set([
+          ...defaultContext,
+          ...[{
+            columnName: '#Date',
+            value: new Date()
+          }]
+        ]))
+        // set multiple context
+        dispatch('setMultipleContext', defaultContext, {
+          root: true
+        })
+
         return {
           ...rol,
           sessionUuid: response.getUuid()

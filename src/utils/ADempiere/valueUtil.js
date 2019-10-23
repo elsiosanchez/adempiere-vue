@@ -106,6 +106,44 @@ export function clientDateTime(date = null, type = '') {
 }
 
 /**
+ * Converted the gRPC value to the value needed
+ * @param {mixed} initialValue Value get of gRPC
+ */
+export function convertValueFromGRPC(initialValue) {
+  if (initialValue === undefined || initialValue === null) {
+    return undefined
+  }
+  var returnValue
+  switch (initialValue.getValuetype()) {
+    // data type Number (integer)
+    case 0:
+      returnValue = initialValue.getIntvalue()
+      break
+    // data type Number (integer)
+    case 1:
+      returnValue = initialValue.getLongvalue()
+      break
+    // data type Number (float)
+    case 2:
+      returnValue = initialValue.getDoublevalue()
+      break
+    // data type Boolean
+    case 3:
+      returnValue = initialValue.getBooleanvalue()
+      break
+    // data type String
+    case 4:
+      returnValue = initialValue.getStringvalue()
+      break
+    // data type Date
+    case 5:
+      returnValue = new Date(initialValue.getLongvalue())
+      break
+  }
+  return returnValue
+}
+
+/**
  * Convert a object to array pairs
  * @param {object} objectToConvert, object to convert
  * @param {string} nameKey, name from key in pairs
@@ -135,6 +173,47 @@ export function convertArrayPairsToObject(arrayToConver, nameKey = 'columnName',
     result[element[nameKey]] = element[nameValue]
   })
 
+  return result
+}
+
+export function convertValuesMapToObject(map) {
+  var objectConverted = {}
+  map.forEach((value, key) => {
+    var valueResult = map.get(key)
+    var tempValue
+    if (valueResult) {
+      tempValue = convertValueFromGRPC(value)
+    }
+    objectConverted[key] = tempValue
+  })
+  return objectConverted
+}
+
+export function convertMapToArrayPairs({
+  toConvert,
+  nameKey = 'columnName',
+  nameValue = 'value',
+  isGRPC = true
+}) {
+  var result = []
+  toConvert.forEach((value, key) => {
+    var element = {}
+    element[nameKey] = key
+    element[nameValue] = value
+    if (isGRPC) {
+      element[nameValue] = convertValueFromGRPC(value)
+    }
+
+    result.push(element)
+  })
+  return result
+}
+
+export function convertHasMapToObject(hasMapToConvert) {
+  var result = {}
+  hasMapToConvert.forEach((value, key) => {
+    result[key] = value
+  })
   return result
 }
 

@@ -1,5 +1,5 @@
 import { getLookup, getLookupList } from '@/api/ADempiere'
-import { convertValue, isEmptyValue, getCurrentRole, parseContext } from '@/utils/ADempiere'
+import { convertValueFromGRPC, isEmptyValue, getCurrentRole, parseContext } from '@/utils/ADempiere'
 
 const lookup = {
   state: {
@@ -37,10 +37,10 @@ const lookup = {
       })
         .then(response => {
           const map = response.getValuesMap()
-          const label = convertValue(map.get('DisplayColumn'))
+          const label = convertValueFromGRPC(map.get('DisplayColumn'))
           var option = {
             label: isEmptyValue(label) ? ' ' : label,
-            // key: convertValue(map.get('KeyColumn'))
+            // key: convertValueFromGRPC(map.get('KeyColumn'))
             key: value
           }
 
@@ -82,8 +82,8 @@ const lookup = {
           var options = []
           recordList.forEach(element => {
             const map = element.getValuesMap()
-            const name = convertValue(map.get('DisplayColumn'))
-            const key = convertValue(map.get('KeyColumn'))
+            const name = convertValueFromGRPC(map.get('DisplayColumn'))
+            const key = convertValueFromGRPC(map.get('KeyColumn'))
             options.push({
               label: isEmptyValue(name) ? ' ' : name,
               key: isEmptyValue(key) ? -1 : isNaN(key) ? key : parseInt(key)
