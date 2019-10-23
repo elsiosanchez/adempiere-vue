@@ -19,7 +19,7 @@
           width="20"
         />
         <el-table-column
-          label="Nombre Ítems recientes"
+          :label="$t('profile.recentItemsName')"
           prop="displayName"
         />
       </el-table>

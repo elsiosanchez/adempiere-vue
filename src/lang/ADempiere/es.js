@@ -97,10 +97,10 @@ export default {
     contextMenuActions: 'Acciones',
     contextMenuReferences: 'Referencias',
     contextMenuDownload: 'Descargar',
-    contextMenuShareLink: 'Compartir link',
+    contextMenuShareLink: 'Compartir Link',
     contextMenuRefresh: 'Actualizar',
     contextMennuExport: 'Exportar Smart Browser',
-    contextMennuWindowReport: 'Informe de ventana',
+    contextMennuWindowReport: 'Informe de Ventana',
     RunProcess: 'Ejecutar',
     ChangeParameters: 'Cambiar Parametros',
     RunProcessAs: 'Ejecutar como',
@@ -110,8 +110,8 @@ export default {
     timePlaceholder: 'Seleccione tiempo',
     dialogCancelButton: 'Cancelar',
     dialogConfirmButton: 'Confirmar',
-    filterableItems: 'Columna opcionales',
-    fixedleItems: 'Columna Fijas',
+    filterableItems: 'Columnas Opcionales',
+    fixedleItems: 'Columnas Fijas',
     resetAllFilters: 'Reiniciar todos los filtros',
     switchActiveText: 'Si',
     switchInactiveText: 'No'
@@ -149,8 +149,8 @@ export default {
       search: 'Buscar',
       records: 'Registros',
       selected: 'Seleccionados',
-      deleteSelection: 'Eliminar registros seleccionados',
-      advancedQuery: 'Consulta avanzada'
+      deleteSelection: 'Eliminar Registros Seleccionados',
+      advancedQuery: 'Consulta Avanzada'
     },
     recentItems: {
       search: 'Filtrar por nombre, descripción o fecha',
@@ -177,7 +177,8 @@ export default {
   },
   profile: {
     aboutMe: 'Sobre Mi',
-    recentItems: 'Artículos recientes',
+    recentItems: 'Artículos Recientes',
+    recentItemsName: 'Nombre Ítems Recientes',
     role: 'Rol',
     availableRoles: 'Roles disponibles',
     currentRole: 'Rol actual',
