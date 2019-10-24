@@ -622,14 +622,18 @@ const data = {
      *  }
      * ]
      */
-    getSelectionToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
+    getSelectionToServer: (state, getters, rootState, rootGetters) => (parameters) => {
+      var { containerUuid, selection = [] } = parameters
       var selectionToServer = []
-      var dataList = getters.getDataRecordAndSelection(containerUuid)
-      const withOut = ['isEdit', 'isSelected']
-      if (dataList.selection.length) {
+      const withOut = ['isEdit', 'isSelected', 'isSendToServer']
+
+      if (selection.length <= 0) {
+        selection = getters.getDataRecordSelection(containerUuid)
+      }
+      if (selection.length) {
         const panel = rootGetters.getPanel(containerUuid)
 
-        dataList.selection.forEach(itemRow => {
+        selection.forEach(itemRow => {
           var records = []
 
           Object.keys(itemRow).forEach(key => {

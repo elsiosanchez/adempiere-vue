@@ -29,16 +29,19 @@ const browserControl = {
         fieldList: browser.fieldList
       })
 
-      const parsedQuery = parseContext({
-        containerUuid: containerUuid,
-        value: browser.query
-      })
+      var parsedQuery = browser.query
+      if (!isEmptyValue(parsedQuery) && parsedQuery.includes('@')) {
+        parseContext({
+          containerUuid: containerUuid,
+          value: parsedQuery
+        })
+      }
 
-      var parsedWhereClause
-      if (!isEmptyValue(browser.whereClause)) {
+      var parsedWhereClause = browser.whereClause
+      if (!isEmptyValue(parsedWhereClause) && parsedWhereClause.includes('@')) {
         parsedWhereClause = parseContext({
           containerUuid: containerUuid,
-          value: browser.whereClause
+          value: parsedWhereClause
         })
       }
 

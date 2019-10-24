@@ -91,10 +91,15 @@ const processControl = {
 
         // additional attributes to send server, selection to browser, or table name and record id to window
         var selection = []
+        var allData = {}
         var tab, tableName, recordId
         if (params.panelType) {
           if (params.panelType === 'browser') {
-            selection = rootGetters.getSelectionToServer(params.containerUuid)
+            allData = getters.getDataRecordAndSelection(params.containerUuid)
+            selection = rootGetters.getSelectionToServer({
+              containerUuid: params.containerUuid,
+              selection: allData.selection
+            })
             if (selection.length < 1) {
               showNotification({
                 title: language.t('data.selectionRequired'),
@@ -163,18 +168,22 @@ const processControl = {
         commit('addInExecution', processResult)
         if (params.panelType === 'window') {
           reportType = 'pdf'
-        } else {
-          // close view if is process, report or browser.
-          router.push({ path: '/dashboard' })
-          dispatch('tagsView/delView', params.routeToDelete)
-
-          // delete data associate to browser
-          if (params.panelType === 'browser') {
+        } else if (params.panelType === 'browser') {
+          if (allData.record.length <= 100) {
+            // close view if is browser.
+            router.push({ path: '/dashboard' })
+            dispatch('tagsView/delView', params.routeToDelete)
+            // delete data associate to browser
             dispatch('deleteRecordContainer', {
               viewUuid: params.containerUuid
             })
           }
+        } else {
+          // close view if is process, report.
+          router.push({ path: '/dashboard' })
+          dispatch('tagsView/delView', params.routeToDelete)
         }
+
         runProcess({
           uuid: processDefinition.uuid,
           id: processDefinition.id,
@@ -265,6 +274,12 @@ const processControl = {
                   containerUuid: params.containerUuid,
                   tab: tab
                 })
+              } else if (params.panelType === 'browser') {
+                if (allData.record.length >= 100) {
+                  dispatch('getBrowserSearch', {
+                    containerUuid: params.containerUuid
+                  })
+                }
               }
             }
 
