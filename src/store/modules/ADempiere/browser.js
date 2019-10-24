@@ -1,6 +1,7 @@
 import { getBrowser as getBrowserMetadata } from '@/api/ADempiere/dictionary'
-import { convertField, isEmptyValue } from '@/utils/ADempiere'
-
+import { convertField, isEmptyValue, showMessage } from '@/utils/ADempiere'
+import router from '@/router'
+import language from '@/lang'
 const browser = {
   state: {
     browser: []
@@ -17,8 +18,12 @@ const browser = {
     }
   },
   actions: {
-    getBrowserFromServer: ({ commit, dispatch }, browserUuid) => {
+    getBrowserFromServer: ({ commit, dispatch }, parameters) => {
       return new Promise((resolve, reject) => {
+        console.log(parameters)
+        // console.log(params.parameters.routeToDelete)
+        var browserUuid = parameters.containerUuid
+        // console.log(processUuid)
         getBrowserMetadata(browserUuid)
           .then(response => {
             const panelType = 'browser'
@@ -150,6 +155,12 @@ const browser = {
             resolve(newBrowser)
           })
           .catch(error => {
+            router.push({ path: '/dashboard' })
+            dispatch('tagsView/delView', parameters.routeToDelete)
+            showMessage({
+              message: language.t('login.unexpectedError'),
+              type: 'error'
+            })
             console.warn('Dictionary Browser - Error ' + error.code + ': ' + error.message)
             reject(error)
           })

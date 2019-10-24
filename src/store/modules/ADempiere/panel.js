@@ -539,7 +539,7 @@ const panel = {
     },
     getPanelAndFields({ dispatch }, parameters) {
       if (parameters.type === 'process' || parameters.type === 'report') {
-        return dispatch('getProcessFromServer', parameters.containerUuid)
+        return dispatch('getProcessFromServer', parameters)
           .then(response => {
             return response
           })
@@ -551,7 +551,7 @@ const panel = {
             }
           })
       } else if (parameters.type === 'browser') {
-        return dispatch('getBrowserFromServer', parameters.containerUuid)
+        return dispatch('getBrowserFromServer', parameters)
           .then(response => {
             return response
           })
