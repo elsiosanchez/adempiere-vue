@@ -148,7 +148,7 @@
                     size="mini"
                     :placeholder="$t('table.dataTable.search')"
                     class="header-search-select-mobile"
-                    clearable|
+                    clearable
                   />
                 </div>
                 <el-button
