@@ -36,6 +36,11 @@ export const tabMixin = {
         containerUuid: this.tabUuid
       })
     },
+    setCurrentTabChild() {
+      if (this.$route.query.tabChild === undefined && this.firstIndex) {
+        this.currentTabChild = this.firstIndex
+      }
+    },
     /**
      * @param {object} tabHTML DOM HTML the tab clicked
      */
@@ -44,20 +49,6 @@ export const tabMixin = {
         this.tabUuid = tabHTML.$attrs.tabuuid
         this.setCurrentTab()
       }
-    },
-    /**
-     * TODO: Verify use
-     */
-    setPemantLink(tabHTML) {
-      this.$route.params.tabNumber = tabHTML.name
-      this.currentTab = this.$route.params.tabNumber
-      this.$router.push({
-        name: this.$route.name,
-        query: {
-          action: this.$route.query.action,
-          tabNumber: tabHTML.name
-        }
-      })
     },
     getData() {
       this.$store.dispatch('getDataListTab', {

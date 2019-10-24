@@ -93,7 +93,8 @@ export default {
         this.$router.push({
           name: this.$route.name,
           query: {
-            action: this.windowRecordSelected.UUID
+            action: this.windowRecordSelected.UUID,
+            ...this.$route.query
           }
         })
         this.closeDialog()

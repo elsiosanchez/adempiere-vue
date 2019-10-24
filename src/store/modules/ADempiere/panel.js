@@ -227,8 +227,8 @@ const panel = {
         router.push({
           name: oldRoute.name,
           query: {
-            action: 'create-new',
-            tabNumber: oldRoute.query.tabNumber
+            ...oldRoute.query,
+            action: 'create-new'
           }
         })
         showMessage({
@@ -446,8 +446,8 @@ const panel = {
                   router.push({
                     name: oldRoute.name,
                     query: {
-                      action: response.recordUuid,
-                      tabNumber: oldRoute.query.tabNumber
+                      ...oldRoute.query,
+                      action: response.recordUuid
                     }
                   })
                   dispatch('tagsView/delView', oldRoute, true)

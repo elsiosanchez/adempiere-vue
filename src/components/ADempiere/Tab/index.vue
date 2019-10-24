@@ -7,7 +7,7 @@
         :windowuuid="windowUuid"
         :tabuuid="item.uuid"
         :position-tab="key"
-        :name="String(key)"
+        :name="String(item.index)"
         :lazy="true"
         :disabled="Boolean(key > 0 && isCreateNew)"
         :style="isShowedDetail ? { height: '100%', overflow: 'hidden' } : { height: '75vh', overflow: 'auto' }"
@@ -50,7 +50,7 @@ export default {
     },
     currentTab(newValue, oldValue) {
       if (newValue !== oldValue) {
-        this.$router.push({ query: { ...this.$route.query, tabNumber: newValue }})
+        this.$router.push({ query: { ...this.$route.query, tabNumber: String(newValue) }})
       }
     }
   }
