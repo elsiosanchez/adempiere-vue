@@ -607,10 +607,8 @@ export default {
     },
     confirmEdit(row, newValue, value) {
       var missingField = this.fieldList.filter(fieldItem => {
-        if (fieldItem.isMandatory) {
-          if (isEmptyValue(value)) {
-            return fieldItem.name
-          }
+        if (fieldItem.isMandatory && isEmptyValue(value)) {
+          return fieldItem.name
         }
       })
       if (!missingField) {
