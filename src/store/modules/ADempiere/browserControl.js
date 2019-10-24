@@ -93,9 +93,17 @@ const browserControl = {
           return record
         })
         .catch(error => {
+          // Set default registry values so that the table does not say loading,
+          // there was already a response from the server
+          dispatch('setRecordSelection', {
+            containerUuid: containerUuid,
+            panelType: 'browser'
+          })
+
           showMessage({
             title: language.t('notifications.error'),
             message: language.t('notifications.errorSearch'),
+            summary: error.message,
             type: 'error'
           })
           console.warn('Error getting browser search: ' + error.message + '. Code: ' + error.code)

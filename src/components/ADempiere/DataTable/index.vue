@@ -300,11 +300,11 @@ export default {
   props: {
     parentUuid: {
       type: String,
-      default: ''
+      default: undefined
     },
     containerUuid: {
       type: String,
-      default: ''
+      required: true
     },
     panelType: {
       type: String,
@@ -507,13 +507,13 @@ export default {
     },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
-        containerUuid: this.containerUuid,
-        parentUuid: this.parentUuid
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid
       })
       this.$store.dispatch('setRecordSelection', {
+        parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
-        selection: [],
-        record: []
+        panelType: this.panelType
       })
     },
     addNewRow() {

@@ -244,14 +244,24 @@ const data = {
      * @param {array}   parameters.record
      * @param {array}   parameters.selection
      * @param {integer} parameters.pageNumber
+     * @param {integer} parameters.recordCount
      * @param {string}  parameters.nextPageToken
+     * @param {string}  parameters.panelType
      */
     setRecordSelection({ commit, state }, parameters) {
+      const { parentUuid, containerUuid, record = [], selection = [], pageNumber = 1, recordCount = 0, nextPageToken, panelType = 'window' } = parameters
       var index = state.recordSelection.findIndex(recordItem => {
-        return recordItem.containerUuid === parameters.containerUuid
+        return recordItem.containerUuid === containerUuid
       })
       commit('setRecordSelection', {
-        ...parameters,
+        parentUuid: parentUuid,
+        containerUuid: containerUuid,
+        record: record,
+        selection: selection,
+        pageNumber: pageNumber,
+        recordCount: recordCount,
+        nextPageToken: nextPageToken,
+        panelType: panelType,
         isLoaded: true,
         isLoadedContext: false,
         index: index
@@ -399,12 +409,7 @@ const data = {
           // there was already a response from the server
           dispatch('setRecordSelection', {
             parentUuid: parentUuid,
-            containerUuid: containerUuid,
-            record: [],
-            selection: [],
-            recordCount: 0,
-            nextPageToken: undefined,
-            pageNumber: 1
+            containerUuid: containerUuid
           })
 
           if (isShowNotification) {
