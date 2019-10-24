@@ -172,7 +172,7 @@ const data = {
             // overwrite value with column link
             if (linkColumnName === itemField.columnName) {
               parsedValue = valueLink
-            } else if (parsedValue.includes('@')) {
+            } else if (String(parsedValue).includes('@')) {
               // get value form context
               parsedValue = parseContext({
                 parentUuid: parentUuid,

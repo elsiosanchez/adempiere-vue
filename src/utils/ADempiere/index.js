@@ -92,19 +92,22 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
 
   var componentReference = evalutateTypeField(fieldGRPC.getDisplaytype(), true)
 
-  var parsedDefaultValue = parseContext({
-    ...moreAttributes,
-    columnName: fieldGRPC.getColumnname(),
-    value: fieldGRPC.getDefaultvalue()
-  })
+  var parsedDefaultValue = fieldGRPC.getDefaultvalue()
+  if (String(parsedDefaultValue).includes('@')) {
+    parsedDefaultValue = parseContext({
+      ...moreAttributes,
+      columnName: fieldGRPC.getColumnname(),
+      value: parsedDefaultValue
+    })
+  }
   parsedDefaultValue = parsedValueComponent({
     fieldType: componentReference.type,
     value: parsedDefaultValue,
     referenceType: componentReference.alias[0]
   })
 
-  var parsedDefaultValueTo
-  if (fieldGRPC.getIsrange()) {
+  var parsedDefaultValueTo = fieldGRPC.getDefaultvalueto()
+  if (String(parsedDefaultValueTo).includes('@')) {
     parsedDefaultValueTo = parseContext({
       ...moreAttributes,
       columnName: fieldGRPC.getColumnname(),
@@ -573,7 +576,7 @@ export function parsedValueComponent({ fieldType, value, referenceType }) {
     // data type Number
     case 'FieldNumber':
       if (String(value).trim() === '') {
-        returnValue = undefined
+        returnValue = 0
       } else {
         returnValue = Number(value)
       }

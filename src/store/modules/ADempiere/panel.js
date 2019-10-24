@@ -651,7 +651,7 @@ const panel = {
           value = row[fieldItem.columnName]
         }
         if (isEmptyValue(value)) {
-          return fieldItem.name
+          return true
         }
       })
       return fieldList.map(fieldItem => {
