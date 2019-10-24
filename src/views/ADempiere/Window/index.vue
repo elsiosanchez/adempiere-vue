@@ -5,19 +5,49 @@
   >
     <el-container style="height: 86vh;">
       <el-main>
+
         <split-pane :min-percent="10" :default-percent="isShowedRecordPanel ? (isShowedRecordNavigation ? 100 : 50) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
           <template>
             <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
             <div slot="paneL" class="left-container">
               <el-aside v-show="isShowedRecordNavigation" width="100%">
-                <div style="top: 41%;position: relative;z-index: 3;">
-                  <el-button
-                    v-show="isShowedRecordNavigation && isShowedRecordPanel"
-                    icon="el-icon-caret-left"
-                    circle
-                    style="float: right;"
-                    @click="handleChangeShowedPanel()"
-                  />
+                <div class="small-4 columns">
+                  <div class="w">
+                    <div class="open-left" />
+                    <div class="open-data">
+                      <el-button
+                        v-show="!isPanel"
+                        :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                        circle
+                        style="margin-top: 35px;"
+                        @click="handleChangeShowedRecordNavigation()"
+                      />
+                    </div>
+                    <div class="open-datatable">
+                      <el-button
+                        v-show="!isPanel"
+                        :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                        circle
+                        style="margin-top: 35px;"
+                        @click="handleChangeShowedPanel()"
+                      />
+                    </div>
+                    <data-table
+                      :parent-uuid="windowUuid"
+                      :container-uuid="windowMetadata.currentTab.uuid"
+                      :table-name="windowMetadata.currentTab.tableName"
+                      :is-showed-panel-record="true"
+                      :is-parent="true"
+                    />
+                    <div class="close-datatable">
+                      <el-button
+                        v-show="isPanel"
+                        icon="el-icon-caret-left"
+                        circle
+                        @click="handleChangeShowedPanel()"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <i
                   v-if="isMobile"
@@ -25,13 +55,13 @@
                   style="position: fixed;padding-top: 15px; color: #000000;font-size: 121%;font-weight: 615!important;padding-left: 9px;"
                   @click="handleChangeShowedRecordNavigation()"
                 />
-                <data-table
+                <!-- <data-table
                   :parent-uuid="windowUuid"
                   :container-uuid="windowMetadata.currentTab.uuid"
                   :table-name="windowMetadata.currentTab.tableName"
                   :is-showed-panel-record="true"
                   :is-parent="true"
-                />
+                /> -->
               </el-aside>
             </div>
           </template>
@@ -81,19 +111,20 @@
                       <div class="w">
                         <div class="open-left" />
                         <el-button
+                          v-show="!isShowedRecordNavigation"
                           :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
                           class="open-navegation"
                           circle
                           @click="handleChangeShowedRecordNavigation()"
                         />
-                        <el-button
+                        <!-- <el-button
                           v-show="isShowedRecordNavigation"
                           :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
                           circle
                           class="open-navegation"
                           style="margin-top: 35px;margin-left: inherit;"
                           @click="handleChangeShowedPanel()"
-                        />
+                        /> -->
                       </div>
                     </div>
                   </el-main>
@@ -164,6 +195,7 @@ export default {
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
       isLoading: false,
+      isPanel: false,
       isLoadingFromServer: false,
       listRecordNavigation: 0,
       isShowedTabChildren: true,
@@ -251,6 +283,7 @@ export default {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
     },
     handleChangeShowedPanel(value) {
+      this.isPanel = !this.isPanel
       this.isShowedRecordPanel = !this.isShowedRecordPanel
     },
     changeShowedRecordNavigation() {
@@ -344,7 +377,28 @@ export default {
     position: fixed;
     top: 50%;
     display: none;
-    z-index: 3;
+    z-index: 5;
+  }
+  .open-datatable {
+    position: absolute;
+    top: 35%;
+    display: none;
+    z-index: 5;
+    right: 1%!important;
+  }
+  .open-data {
+    position: absolute;
+    top: 41%;
+    display: none;
+    z-index: 5;
+    right: 1%!important;
+  }
+  .close-datatable {
+    position: absolute;
+    top: 45%;
+    display: none;
+    z-index: 5;
+    right: 0%!important;
   }
   .button {
     display: none;
@@ -353,6 +407,15 @@ export default {
     display: inline-block;
   }
   .w:hover .open-navegation {
+    display: inline-block;
+  }
+  .w:hover .open-datatable {
+    display: inline-block;
+  }
+  .w:hover .open-data {
+    display: inline-block;
+  }
+  .w:hover .close-datatable {
     display: inline-block;
   }
   .open-detail {
@@ -451,4 +514,15 @@ export default {
     height: 100%;
     padding-left: 10px;
 }
+</style>
+<style>
+.splitter-pane-resizer.vertical {
+    width: 11px;
+    height: 100%;
+    background: gray!important;
+    margin-left: -5px;
+    border-left: 5px solid hsla(0,0%,100%,0);
+    border-right: 5px solid hsla(0,0%,100%,0);
+    cursor: col-resize;
+  }
 </style>
