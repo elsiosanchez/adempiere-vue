@@ -103,7 +103,8 @@ export default {
       } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.processUuid,
-          type: this.panelType
+          type: this.panelType,
+          routeToDelete: this.$route
         }).then(response => {
           this.isLoadedMetadata = true
         }).catch(error => {

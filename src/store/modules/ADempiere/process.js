@@ -1,6 +1,7 @@
 import { getProcess as getProcessMetadata } from '@/api/ADempiere'
-import { convertField, isEmptyValue } from '@/utils/ADempiere'
+import { convertField, isEmptyValue, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
+import router from '@/router'
 
 const process = {
   state: {
@@ -15,8 +16,9 @@ const process = {
     }
   },
   actions: {
-    getProcessFromServer: ({ commit, dispatch }, processUuid) => {
+    getProcessFromServer: ({ commit, dispatch }, parameters) => {
       return new Promise((resolve, reject) => {
+        var processUuid = parameters.containerUuid
         getProcessMetadata(processUuid)
           .then(response => {
             var panelType = 'process'
@@ -175,6 +177,12 @@ const process = {
             resolve(processDefinition)
           })
           .catch(error => {
+            router.push({ path: '/dashboard' })
+            dispatch('tagsView/delView', parameters.routeToDelete)
+            showMessage({
+              message: language.t('login.unexpectedError'),
+              type: 'error'
+            })
             console.warn('Dictionary Process (State) - Error ' + error)
             reject(error)
           })

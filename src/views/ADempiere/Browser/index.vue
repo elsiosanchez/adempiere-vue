@@ -179,7 +179,8 @@ export default {
       } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.browserUuid,
-          type: this.panelType
+          type: this.panelType,
+          routeToDelete: this.$route
         })
           .then(() => {
             this.isLoaded = true

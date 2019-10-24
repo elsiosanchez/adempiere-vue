@@ -269,13 +269,12 @@ export default {
       if (this.getterWindow) {
         this.isLoadingFromServer = true
       } else {
-        this.$store.dispatch('getWindowFromServer', this.windowUuid)
+        this.$store.dispatch('getWindowFromServer', { windowUuid: this.windowUuid, routeToDelete: this.$route })
           .then(response => {
             this.isLoadingFromServer = true
           })
-          .catch(error => {
+          .finally(() => {
             this.isLoading = true
-            console.warn('Dictionary Window - Error ' + error.code + ': ' + error.message)
           })
       }
     },
