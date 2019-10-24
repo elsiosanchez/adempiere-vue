@@ -191,8 +191,8 @@ const windowControl = {
             router.push({
               name: oldRoute.name,
               query: {
-                action: result.recordUuid,
-                tabNumber: oldRoute.query.tabNumber
+                ...oldRoute.query,
+                action: result.recordUuid
               }
             })
           }
@@ -435,8 +435,8 @@ const windowControl = {
                 router.push({
                   name: oldRoute.name,
                   query: {
-                    action: 'create-new',
-                    tabNumber: oldRoute.query.tabNumber
+                    ...oldRoute.query,
+                    action: 'create-new'
                   }
                 })
                 // clear fields with default values

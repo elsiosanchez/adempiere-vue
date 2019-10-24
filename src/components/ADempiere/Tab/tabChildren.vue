@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="currentTab" type="border-card" @tab-click="handleClick">
+  <el-tabs v-model="currentTabChild" type="border-card" @tab-click="handleClick">
     <template v-for="(item, key) in tabsList">
       <!-- TODO: Add support to tabs isSortTab (sequence) -->
       <el-tab-pane
@@ -8,7 +8,7 @@
         :windowuuid="windowUuid"
         :tabuuid="item.uuid"
         :position-tab="key"
-        :name="String(key)"
+        :name="String(item.index)"
         :lazy="true"
         :disabled="isCreateNew"
       >
@@ -38,6 +38,15 @@ export default {
     firstTabUuid: {
       type: String,
       default: undefined
+    },
+    firstIndex: {
+      type: String,
+      default: undefined
+    }
+  },
+  data() {
+    return {
+      currentTabChild: this.$route.query.tabChild
     }
   },
   computed: {
@@ -66,7 +75,15 @@ export default {
       if (this.getterIsLoadRecordParent && !this.getDataSelection.isLoaded && value) {
         this.getData()
       }
+    },
+    currentTabChild(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.$router.push({ query: { ...this.$route.query, tabChild: String(newValue) }})
+      }
     }
+  },
+  mounted() {
+    this.setCurrentTabChild()
   }
 }
 </script>

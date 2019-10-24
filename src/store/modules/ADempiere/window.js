@@ -48,7 +48,7 @@ const window = {
           var childrenTabs = []
           var parentTabs = []
 
-          tabs = tabs.map(tabItem => {
+          tabs = tabs.map((tabItem, index) => {
             var group = {
               groupName: '',
               groupType: ''
@@ -100,7 +100,8 @@ const window = {
               isChangeLog: tabItem.getIschangelog(),
               // app properties
               isShowedRecordNavigation: !(tabItem.getIssinglerow()),
-              isLoadFieldList: false
+              isLoadFieldList: false,
+              index: index
             }
 
             // Convert from gRPC process list
