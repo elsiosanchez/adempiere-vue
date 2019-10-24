@@ -46,7 +46,7 @@
                 v-if="!isParent && panelType === 'window'"
                 type="text"
                 icon="el-icon-circle-plus"
-                style="float: right;padding-top: 10px;font-size: large;padding-left: 6px;"
+                style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
                 :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                 @click="addNewRow()"
               />
@@ -72,7 +72,6 @@
                   size="mini"
                   :placeholder="$t('table.dataTable.search')"
                   class="header-search-select"
-                  clearable
                 />
               </div>
             </div>
