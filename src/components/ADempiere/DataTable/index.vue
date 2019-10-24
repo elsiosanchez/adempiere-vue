@@ -285,7 +285,7 @@ import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
 import MainPanel from '@/components/ADempiere/Panel'
-import { sortFields, isEmptyValue } from '@/utils/ADempiere'
+import { sortFields } from '@/utils/ADempiere'
 import language from '@/lang'
 
 export default {
@@ -362,6 +362,14 @@ export default {
     },
     getterDataRecords() {
       return this.getterDataRecordsAndSelection.record
+    },
+    getterNewRecords() {
+      var newRecordTable = this.getterDataRecordsAndSelection.record.filter(recordItem => {
+        if (recordItem.isEdit && !recordItem.isSendServer) {
+          return recordItem
+        }
+      })
+      return newRecordTable
     },
     getPageNumber() {
       return this.getterDataRecordsAndSelection.pageNumber
@@ -517,13 +525,21 @@ export default {
       })
     },
     addNewRow() {
-      this.$store.dispatch('addNewRow', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid,
-        fieldList: this.fieldList,
-        isEdit: true,
-        isSendServer: false
-      })
+      if (this.getterNewRecords.length <= 0) {
+        this.$store.dispatch('addNewRow', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          fieldList: this.fieldList,
+          isEdit: true,
+          isSendServer: false
+        })
+      } else {
+        const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
+        this.$message({
+          message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+          type: 'warning'
+        })
+      }
       // this.inEdited.push(undefined)
     },
     optionalPanel() {
@@ -606,7 +622,7 @@ export default {
     },
     confirmEdit(row, newValue, value) {
       var missingField = this.fieldList.filter(fieldItem => {
-        if (fieldItem.isMandatory && isEmptyValue(value)) {
+        if (fieldItem.isMandatory && this.isEmptyValue(value)) {
           return fieldItem.name
         }
       })
