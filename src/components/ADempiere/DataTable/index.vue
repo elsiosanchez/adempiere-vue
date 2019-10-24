@@ -285,7 +285,8 @@ import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
 import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
 import MainPanel from '@/components/ADempiere/Panel'
-import { sortFields } from '@/utils/ADempiere'
+import { sortFields, isEmptyValue } from '@/utils/ADempiere'
+import language from '@/lang'
 
 export default {
   name: 'DataTable',
@@ -604,9 +605,22 @@ export default {
       }
     },
     confirmEdit(row, newValue, value) {
-      if (row.isEdit) {
-        row.isEdit = false
-        this.inEdited = this.inEdited.filter(item => item !== row.UUID)
+      var missingField = this.fieldList.filter(fieldItem => {
+        if (fieldItem.isMandatory && isEmptyValue(value)) {
+          return fieldItem.name
+        }
+      })
+      if (!missingField) {
+        if (row.isEdit) {
+          row.isEdit = false
+          this.inEdited = this.inEdited.filter(item => item !== row.UUID)
+        }
+      } else {
+        const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
+        this.$message({
+          message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+          type: 'info'
+        })
       }
     },
     handleRowClick(row, column, event) {

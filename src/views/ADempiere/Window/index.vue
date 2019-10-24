@@ -55,13 +55,6 @@
                   style="position: fixed;padding-top: 15px; color: #000000;font-size: 121%;font-weight: 615!important;padding-left: 9px;"
                   @click="handleChangeShowedRecordNavigation()"
                 />
-                <!-- <data-table
-                  :parent-uuid="windowUuid"
-                  :container-uuid="windowMetadata.currentTab.uuid"
-                  :table-name="windowMetadata.currentTab.tableName"
-                  :is-showed-panel-record="true"
-                  :is-parent="true"
-                /> -->
               </el-aside>
             </div>
           </template>
@@ -117,14 +110,6 @@
                           circle
                           @click="handleChangeShowedRecordNavigation()"
                         />
-                        <!-- <el-button
-                          v-show="isShowedRecordNavigation"
-                          :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
-                          circle
-                          class="open-navegation"
-                          style="margin-top: 35px;margin-left: inherit;"
-                          @click="handleChangeShowedPanel()"
-                        /> -->
                       </div>
                     </div>
                   </el-main>

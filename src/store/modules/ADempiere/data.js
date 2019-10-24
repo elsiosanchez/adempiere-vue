@@ -73,7 +73,7 @@ const data = {
       }
     },
     addNewRow(state, payload) {
-      payload.data = payload.data.push(payload.values)
+      payload.data = payload.data.unshift(payload.values)
     }
   },
   actions: {
