@@ -244,14 +244,24 @@ const data = {
      * @param {array}   parameters.record
      * @param {array}   parameters.selection
      * @param {integer} parameters.pageNumber
+     * @param {integer} parameters.recordCount
      * @param {string}  parameters.nextPageToken
+     * @param {string}  parameters.panelType
      */
     setRecordSelection({ commit, state }, parameters) {
+      const { parentUuid, containerUuid, record = [], selection = [], pageNumber = 1, recordCount = 0, nextPageToken, panelType = 'window' } = parameters
       var index = state.recordSelection.findIndex(recordItem => {
-        return recordItem.containerUuid === parameters.containerUuid
+        return recordItem.containerUuid === containerUuid
       })
       commit('setRecordSelection', {
-        ...parameters,
+        parentUuid: parentUuid,
+        containerUuid: containerUuid,
+        record: record,
+        selection: selection,
+        pageNumber: pageNumber,
+        recordCount: recordCount,
+        nextPageToken: nextPageToken,
+        panelType: panelType,
         isLoaded: true,
         isLoadedContext: false,
         index: index
@@ -399,12 +409,7 @@ const data = {
           // there was already a response from the server
           dispatch('setRecordSelection', {
             parentUuid: parentUuid,
-            containerUuid: containerUuid,
-            record: [],
-            selection: [],
-            recordCount: 0,
-            nextPageToken: undefined,
-            pageNumber: 1
+            containerUuid: containerUuid
           })
 
           if (isShowNotification) {
@@ -617,14 +622,18 @@ const data = {
      *  }
      * ]
      */
-    getSelectionToServer: (state, getters, rootState, rootGetters) => (containerUuid) => {
+    getSelectionToServer: (state, getters, rootState, rootGetters) => (parameters) => {
+      var { containerUuid, selection = [] } = parameters
       var selectionToServer = []
-      var dataList = getters.getDataRecordAndSelection(containerUuid)
-      const withOut = ['isEdit', 'isSelected']
-      if (dataList.selection.length) {
+      const withOut = ['isEdit', 'isSelected', 'isSendToServer']
+
+      if (selection.length <= 0) {
+        selection = getters.getDataRecordSelection(containerUuid)
+      }
+      if (selection.length) {
         const panel = rootGetters.getPanel(containerUuid)
 
-        dataList.selection.forEach(itemRow => {
+        selection.forEach(itemRow => {
           var records = []
 
           Object.keys(itemRow).forEach(key => {

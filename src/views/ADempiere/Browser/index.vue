@@ -143,6 +143,11 @@ export default {
         if (this.getDataRecords.length <= 0) {
           if (this.getContainerIsReadyForSubmit) {
             this.defaultSearch()
+          } else {
+            this.$store.dispatch('setRecordSelection', {
+              containerUuid: this.browserUuid,
+              panelType: this.panelType
+            })
           }
         }
       }
