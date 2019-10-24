@@ -158,7 +158,7 @@ export default {
       this.$nextTick(() => {
         for (const tag of tags) {
           if (this.$route.name === 'Report Viewer') {
-            if (tag.to.params.processId === this.$route.params.processId) {
+            if (this.$route.params && tag.to.params && tag.to.params.processId === this.$route.params.processId) {
               this.$refs.scrollPane.moveToTarget(tag)
             }
           }
@@ -190,7 +190,7 @@ export default {
             viewUuid: view.meta.uuid
           })
         }
-        if (view.meta.type !== 'window') {
+        if (view.meta.type && view.meta.type !== 'window') {
           this.$store.dispatch('resetPanelToNew', {
             containerUuid: view.meta.uuid,
             panelType: view.meta.type
