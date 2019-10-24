@@ -72,7 +72,6 @@
                   size="mini"
                   :placeholder="$t('table.dataTable.search')"
                   class="header-search-select"
-                  clearable
                 />
               </div>
             </div>
