@@ -105,10 +105,10 @@ export default {
             message: this.$t('notifications.successChangeRole'),
             type: 'success'
           })
-          this.$store.dispatch('permission/generateRoutes', response.name)
+          this.$store.dispatch('permission/generateRoutes')
             .then(response => {
               this.resetRouter()
-              response.forEach((element) => {
+              response.forEach(element => {
                 this.$router.resolve(element)
               })
               this.$router.addRoutes(response)

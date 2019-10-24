@@ -14,7 +14,7 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({ commit }) {
     return new Promise(resolve => {
       return loadMainMenu().then(menu => {
         commit('SET_ROUTES', menu)

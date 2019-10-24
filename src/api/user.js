@@ -48,7 +48,7 @@ export function getInfo(token) {
         }
       })
       // TODO: Add user.id, user.level in request
-      var user = session.getUserinfo()
+      const user = session.getUserinfo()
 
       const response = {
         name: user.getName(),
@@ -56,14 +56,22 @@ export function getInfo(token) {
         description: user.getDescription(),
         // TODO: Add from ADempiere
         avatar: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
-        introduction: session.getUserinfo().getDescription(),
         roles: roles, // rol list names, used from app (src/permission.js, src/utils/permission.js)
-        rolesList: rolesList
+        rolesList: rolesList,
+        responseGrpc: session
       }
       return response
     }).catch(error => {
       console.log(error)
     })
+}
+
+/**
+ * Get session info
+ * @param {string} sessionUuid
+ */
+export function getSessionInfo(sessionUuid) {
+  return Instance.call(this).getSession(sessionUuid)
 }
 
 // Logout from server

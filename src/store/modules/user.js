@@ -1,4 +1,4 @@
-import { login, logout, getInfo, changeRole } from '@/api/user'
+import { login, logout, getInfo, getSessionInfo, changeRole } from '@/api/user'
 import { convertRoleFromGRPC } from '@/utils/ADempiere'
 import { getToken, setToken, removeToken, getCurrentRole, setCurrentRole, removeCurrentRole } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
@@ -11,7 +11,9 @@ const state = {
   introduction: '',
   rol: {}, // info current rol
   rolesList: [],
-  roles: []
+  roles: [],
+  isSession: false,
+  sessionInfo: {}
 }
 
 const mutations = {
@@ -35,12 +37,18 @@ const mutations = {
   },
   SET_ROL: (state, rol) => {
     state.rol = rol
+  },
+  setIsSession(state, payload) {
+    state.isSession = payload
+  },
+  setSessionInfo(state, payload) {
+    state.sessionInfo = payload
   }
 }
 
 const actions = {
   // user login
-  login({ commit, dispatch }, userInfo) {
+  login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
@@ -57,23 +65,6 @@ const actions = {
           commit('SET_TOKEN', data.token)
           commit('SET_ROL', data.currentRole)
 
-          var defaultContext = convertMapToArrayPairs({
-            toConvert: response.getDefaultcontextMap()
-          })
-          // TODO: return request #Date as long data type Date (5)
-          // join column names without duplicating it
-          defaultContext = Array.from(new Set([
-            ...defaultContext,
-            ...[{
-              columnName: '#Date',
-              value: new Date()
-            }]
-          ]))
-          // set multiple context
-          dispatch('setMultipleContext', defaultContext, {
-            root: true
-          })
-
           setToken(data.token)
           setCurrentRole(data.currentRole.uuid)
           resolve(data)
@@ -82,8 +73,57 @@ const actions = {
         })
     })
   },
+  // session info
+  getInfo({ commit, dispatch }, sessionUuid = null) {
+    if (!sessionUuid) {
+      sessionUuid = getToken()
+    }
+    return getSessionInfo(sessionUuid)
+      .then(response => {
+        commit('setIsSession', true)
+        commit('setSessionInfo', {
+          id: response.getId(),
+          uuid: response.getUuid(),
+          name: response.getName(),
+          isProcessed: response.getProcessed()
+        })
+
+        const userInfo = response.getUserinfo()
+        commit('SET_NAME', userInfo.getName())
+        commit('SET_INTRODUCTION', userInfo.getDescription())
+
+        var defaultContext = convertMapToArrayPairs({
+          toConvert: response.getDefaultcontextMap()
+        })
+        // TODO: return request #Date as long data type Date (5)
+        // join column names without duplicating it
+        defaultContext = Array.from(new Set([
+          ...defaultContext,
+          ...[{
+            columnName: '#Date',
+            value: new Date()
+          }]
+        ]))
+        // set multiple context
+        dispatch('setMultipleContext', defaultContext, {
+          root: true
+        })
+
+        const sessionResponse = {
+          name: response.getName(),
+          defaultContext: defaultContext
+        }
+        return sessionResponse
+      })
+      .catch(error => {
+        console.warn('Error gettin context', error.message)
+      })
+      .finally(() => {
+        dispatch('getUserInfoValue', sessionUuid)
+      })
+  },
   // get user info
-  getInfo({ commit, state, dispatch }, sessionUuid = null) {
+  getUserInfoValue({ commit }, sessionUuid = null) {
     if (!sessionUuid) {
       sessionUuid = getToken()
     }
@@ -101,28 +141,10 @@ const actions = {
           return itemRol.uuid === getCurrentRole()
         })
 
-        // set multiple context
-        dispatch('setMultipleContext', [
-          { columnName: '#AD_User_Name', value: response.name },
-          { columnName: '#AD_Role_ID', value: rol.id },
-          { columnName: '#AD_Role_Name', value: rol.name },
-          { columnName: '#AD_Client_ID', value: rol.clientId },
-          { columnName: '#AD_Client_Name', value: rol.clientName },
-          { columnName: '#Date', value: new Date() },
-          // TODO: Support in request
-          // { columnName: '#AD_User_ID', value: response.id },
-          { columnName: '#SysAdmin', value: 'Y' },
-          { columnName: '#User_Level', value: 'S' }
-        ], {
-          root: true
-        })
-
         commit('SET_ROLES_LIST', response.rolesList)
         commit('SET_ROLES', response.roles)
-        commit('SET_NAME', response.name)
         commit('SET_ROL', rol)
         commit('SET_AVATAR', response.avatar)
-        commit('SET_INTRODUCTION', response.introduction)
         resolve(response)
       }).catch(error => {
         reject(error)
@@ -135,6 +157,7 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
+        commit('setIsSession', false)
         dispatch('clearProcessControl', null, {
           root: true
         })
@@ -199,23 +222,6 @@ const actions = {
           root: true
         })
 
-        var defaultContext = convertMapToArrayPairs({
-          toConvert: response.getDefaultcontextMap()
-        })
-        // join column names without duplicating it
-        // TODO: return request #Date as long data type Date (5)
-        defaultContext = Array.from(new Set([
-          ...defaultContext,
-          ...[{
-            columnName: '#Date',
-            value: new Date()
-          }]
-        ]))
-        // set multiple context
-        dispatch('setMultipleContext', defaultContext, {
-          root: true
-        })
-
         return {
           ...rol,
           sessionUuid: response.getUuid()
@@ -251,6 +257,9 @@ const getters = {
   // current rol info
   getRol: (state) => {
     return state.rol
+  },
+  getIsSession: (state) => {
+    return state.isSession
   }
 }
 
