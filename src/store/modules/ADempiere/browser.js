@@ -20,10 +20,7 @@ const browser = {
   actions: {
     getBrowserFromServer: ({ commit, dispatch }, parameters) => {
       return new Promise((resolve, reject) => {
-        console.log(parameters)
-        // console.log(params.parameters.routeToDelete)
         var browserUuid = parameters.containerUuid
-        // console.log(processUuid)
         getBrowserMetadata(browserUuid)
           .then(response => {
             const panelType = 'browser'
