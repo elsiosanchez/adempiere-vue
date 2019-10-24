@@ -2,8 +2,9 @@ import {
   getWindow as getWindowMetadata,
   getTab as getTabMetadata
 } from '@/api/ADempiere/dictionary'
-import { convertContextInfoFromGRPC, convertField, getFieldTemplate } from '@/utils/ADempiere'
+import { convertContextInfoFromGRPC, convertField, getFieldTemplate, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
+import router from '@/router'
 
 const window = {
   state: {
@@ -30,165 +31,168 @@ const window = {
     }
   },
   actions: {
-    getWindowFromServer({ commit, dispatch }, windowUuid) {
-      return new Promise((resolve, reject) => {
-        getWindowMetadata(windowUuid)
-          .then(response => {
-            var newWindow = {
-              id: response.getId(),
-              uuid: windowUuid,
-              name: response.getName(),
-              contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
-              windowType: response.getWindowtype(),
-              isShowedRecordNavigation: undefined,
-              firstTabUuid: response.getTabsList()[0].getUuid()
+    getWindowFromServer({ commit, dispatch }, params) {
+      return getWindowMetadata(params.windowUuid)
+        .then(response => {
+          var newWindow = {
+            id: response.getId(),
+            uuid: params.windowUuid,
+            name: response.getName(),
+            contextInfo: convertContextInfoFromGRPC(response.getContextinfo()),
+            windowType: response.getWindowtype(),
+            isShowedRecordNavigation: undefined,
+            firstTabUuid: response.getTabsList()[0].getUuid()
+          }
+          var tabs = response.getTabsList()
+          const firstTab = tabs[0].getTablename()
+          var childrenTabs = []
+          var parentTabs = []
+
+          tabs = tabs.map(tabItem => {
+            var group = {
+              groupName: '',
+              groupType: ''
             }
-            var tabs = response.getTabsList()
-            const firstTab = tabs[0].getTablename()
-            var childrenTabs = []
-            var parentTabs = []
+            if (tabItem.getFieldgroup()) {
+              group.groupName = tabItem.getFieldgroup().getName()
+              group.groupType = tabItem.getFieldgroup().getFieldgrouptype()
+            }
 
-            tabs = tabs.map(tabItem => {
-              var group = {
-                groupName: '',
-                groupType: ''
+            var tab = {
+              id: tabItem.getId(),
+              uuid: tabItem.getUuid(),
+              containerUuid: tabItem.getUuid(),
+              parentUuid: params.windowUuid,
+              windowUuid: params.windowUuid,
+              name: tabItem.getName(),
+              tabGroup: group,
+              firstTabUuid: newWindow.firstTabUuid,
+              //
+              displayLogic: tabItem.getDisplaylogic(),
+              isView: tabItem.getIsview(),
+              isDocument: tabItem.getIsdocument(),
+              isInsertRecord: tabItem.getIsinsertrecord(),
+              isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
+              // relations
+              isParentTab: Boolean(firstTab === tabItem.getTablename()),
+              sequence: tabItem.getSequence(),
+              tabLevel: tabItem.getTablevel(),
+              parentTabUuid: tabItem.getParenttabuuid(),
+              linkColumnName: tabItem.getLinkcolumnname(),
+              parentColumnName: tabItem.getParentcolumnname(),
+              //
+              contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
+              isAdvancedTab: tabItem.getIsadvancedtab(),
+              isHasTree: tabItem.getIshastree(),
+              isInfoTab: tabItem.getIsinfotab(),
+              isTranslationTab: tabItem.getIstranslationtab(),
+              isReadOnly: tabItem.getIsreadonly(),
+              isDeleteable: tabItem.getIsdeleteable(),
+              accessLevel: tabItem.getAccesslevel(),
+              isSingleRow: tabItem.getIssinglerow(),
+              // conditionals
+              commitWarning: tabItem.getCommitwarning(),
+              // query db
+              tableName: tabItem.getTablename(),
+              query: tabItem.getQuery(),
+              whereClause: tabItem.getWhereclause(),
+              orderByClause: tabItem.getOrderbyclause(),
+              isChangeLog: tabItem.getIschangelog(),
+              // app properties
+              isShowedRecordNavigation: !(tabItem.getIssinglerow()),
+              isLoadFieldList: false
+            }
+
+            // Convert from gRPC process list
+            // action is dispatch used in vuex
+            var actions = []
+            actions.push({
+              // action to set default values and enable fields not isUpdateable
+              name: language.t('window.newRecord'),
+              processName: language.t('window.newRecord'),
+              type: 'dataAction',
+              action: 'resetPanelToNew',
+              uuidParent: newWindow.uuid,
+              disabled: !tab.isInsertRecord || tab.isReadOnly
+            }, {
+              // action to delete record selected
+              name: language.t('window.deleteRecord'),
+              processName: language.t('window.deleteRecord'),
+              type: 'dataAction',
+              action: 'deleteEntity',
+              uuidParent: newWindow.uuid,
+              disabled: tab.isReadOnly
+            }, {
+              // action to undo create, update, delete record
+              name: language.t('data.undo'),
+              processName: language.t('data.undo'),
+              type: 'dataAction',
+              action: 'undoModifyData',
+              uuidParent: newWindow.uuid,
+              disabled: false
+            })
+            const processList = tabItem.getProcessesList().map(processItem => {
+              return {
+                name: processItem.getName(),
+                type: 'process',
+                uuid: processItem.getUuid(),
+                description: processItem.getDescription(),
+                help: processItem.getHelp(),
+                isReport: processItem.getIsreport(),
+                accessLevel: processItem.getAccesslevel(),
+                showHelp: processItem.getShowhelp(),
+                isDirectPrint: processItem.getIsdirectprint()
               }
-              if (tabItem.getFieldgroup()) {
-                group.groupName = tabItem.getFieldgroup().getName()
-                group.groupType = tabItem.getFieldgroup().getFieldgrouptype()
-              }
+            })
+            actions = actions.concat(processList)
 
-              var tab = {
-                id: tabItem.getId(),
-                uuid: tabItem.getUuid(),
-                containerUuid: tabItem.getUuid(),
-                parentUuid: windowUuid,
-                windowUuid: windowUuid,
-                name: tabItem.getName(),
-                tabGroup: group,
-                firstTabUuid: newWindow.firstTabUuid,
-                //
-                displayLogic: tabItem.getDisplaylogic(),
-                isView: tabItem.getIsview(),
-                isDocument: tabItem.getIsdocument(),
-                isInsertRecord: tabItem.getIsinsertrecord(),
-                isSortTab: tabItem.getIssorttab(), // Tab type Order Tab
-                // relations
-                isParentTab: Boolean(firstTab === tabItem.getTablename()),
-                sequence: tabItem.getSequence(),
-                tabLevel: tabItem.getTablevel(),
-                parentTabUuid: tabItem.getParenttabuuid(),
-                linkColumnName: tabItem.getLinkcolumnname(),
-                parentColumnName: tabItem.getParentcolumnname(),
-                //
-                contextInfo: convertContextInfoFromGRPC(tabItem.getContextinfo()),
-                isAdvancedTab: tabItem.getIsadvancedtab(),
-                isHasTree: tabItem.getIshastree(),
-                isInfoTab: tabItem.getIsinfotab(),
-                isTranslationTab: tabItem.getIstranslationtab(),
-                isReadOnly: tabItem.getIsreadonly(),
-                isDeleteable: tabItem.getIsdeleteable(),
-                accessLevel: tabItem.getAccesslevel(),
-                isSingleRow: tabItem.getIssinglerow(),
-                // conditionals
-                commitWarning: tabItem.getCommitwarning(),
-                // query db
-                tableName: tabItem.getTablename(),
-                query: tabItem.getQuery(),
-                whereClause: tabItem.getWhereclause(),
-                orderByClause: tabItem.getOrderbyclause(),
-                isChangeLog: tabItem.getIschangelog(),
-                // app properties
-                isShowedRecordNavigation: !(tabItem.getIssinglerow()),
-                isLoadFieldList: false
-              }
-
-              // Convert from gRPC process list
-              // action is dispatch used in vuex
-              var actions = []
-              actions.push({
-                // action to set default values and enable fields not isUpdateable
-                name: language.t('window.newRecord'),
-                processName: language.t('window.newRecord'),
-                type: 'dataAction',
-                action: 'resetPanelToNew',
-                uuidParent: newWindow.uuid,
-                disabled: !tab.isInsertRecord || tab.isReadOnly
-              }, {
-                // action to delete record selected
-                name: language.t('window.deleteRecord'),
-                processName: language.t('window.deleteRecord'),
-                type: 'dataAction',
-                action: 'deleteEntity',
-                uuidParent: newWindow.uuid,
-                disabled: tab.isReadOnly
-              }, {
-                // action to undo create, update, delete record
-                name: language.t('data.undo'),
-                processName: language.t('data.undo'),
-                type: 'dataAction',
-                action: 'undoModifyData',
-                uuidParent: newWindow.uuid,
-                disabled: false
-              })
-              const processList = tabItem.getProcessesList().map(processItem => {
-                return {
-                  name: processItem.getName(),
-                  type: 'process',
-                  uuid: processItem.getUuid(),
-                  description: processItem.getDescription(),
-                  help: processItem.getHelp(),
-                  isReport: processItem.getIsreport(),
-                  accessLevel: processItem.getAccesslevel(),
-                  showHelp: processItem.getShowhelp(),
-                  isDirectPrint: processItem.getIsdirectprint()
-                }
-              })
-              actions = actions.concat(processList)
-
-              //  Add process menu
-              dispatch('setContextMenu', {
-                containerUuid: tab.uuid,
-                relations: [],
-                actions: actions,
-                references: []
-              })
-
-              // TODO: Add support to isSortTab and isTranslationTab
-              if (!(tab.isSortTab || tab.isTranslationTab)) {
-                if (tab.isParentTab) {
-                  parentTabs.push(tab)
-                } else {
-                  childrenTabs.push(tab)
-                }
-              }
-              return tab
-            }).filter(itemTab => {
-              return !(itemTab.isSortTab || itemTab.isTranslationTab)
+            //  Add process menu
+            dispatch('setContextMenu', {
+              containerUuid: tab.uuid,
+              relations: [],
+              actions: actions,
+              references: []
             })
 
-            var tabProperties = {
-              tabsList: tabs,
-              currentTab: parentTabs[0],
-              tabsListParent: parentTabs,
-              tabsListChildren: childrenTabs,
-              // app attributes
-              isShowedDetail: Boolean(childrenTabs.length),
-              currentTabUuid: parentTabs[0].uuid
+            // TODO: Add support to isSortTab and isTranslationTab
+            if (!(tab.isSortTab || tab.isTranslationTab)) {
+              if (tab.isParentTab) {
+                parentTabs.push(tab)
+              } else {
+                childrenTabs.push(tab)
+              }
             }
+            return tab
+          }).filter(itemTab => {
+            return !(itemTab.isSortTab || itemTab.isTranslationTab)
+          })
 
-            newWindow = {
-              ...newWindow,
-              ...tabProperties
-            }
-            commit('addWindow', newWindow)
-            resolve(newWindow)
+          var tabProperties = {
+            tabsList: tabs,
+            currentTab: parentTabs[0],
+            tabsListParent: parentTabs,
+            tabsListChildren: childrenTabs,
+            // app attributes
+            isShowedDetail: Boolean(childrenTabs.length),
+            currentTabUuid: parentTabs[0].uuid
+          }
+
+          newWindow = {
+            ...newWindow,
+            ...tabProperties
+          }
+          commit('addWindow', newWindow)
+          return newWindow
+        })
+        .catch(error => {
+          router.push({ path: '/dashboard' })
+          dispatch('tagsView/delView', params.routeToDelete)
+          showMessage({
+            message: language.t('login.unexpectedError'),
+            type: 'error'
           })
-          .catch(error => {
-            console.warn('Dictionary Window (State Window) - Error ' + error.code + ': ' + error.message)
-            reject(error)
-          })
-      })
+          console.warn('Dictionary Window (State Window) - Error ' + error.code + ': ' + error.message)
+        })
     },
     getTabAndFieldFromServer({ dispatch, getters }, {
       parentUuid,
@@ -272,8 +276,11 @@ const window = {
           return panel
         })
         .catch(error => {
+          showMessage({
+            message: language.t('login.unexpectedError'),
+            type: 'error'
+          })
           console.warn('Dictionary Tab (State Window) - Error ' + error.code + ': ' + error.message)
-          return error
         })
     },
     changeShowedDetailWindow: ({ commit, state }, params) => {
