@@ -14,6 +14,33 @@ import enADempiere from './ADempiere/en'
 
 Vue.use(VueI18n)
 
+const dateTimeFormats = {
+  'en': {
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      weekday: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }
+  },
+  'es': {
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      weekday: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    }
+  }
+}
+
 const messages = {
   en: {
     ...enLocale,
@@ -52,8 +79,10 @@ const i18n = new VueI18n({
   // set locale
   // options: en | zh | es
   locale: getLanguage(),
+  fallbackLocale: 'en',
   // set locale messages
-  messages
+  messages,
+  dateTimeFormats
 })
 
 export default i18n

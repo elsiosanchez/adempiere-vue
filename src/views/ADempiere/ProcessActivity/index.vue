@@ -1,10 +1,10 @@
 <template>
   <div v-if="getRunProcessAll.length" class="app-container">
-    <el-timeline :reverse="true">
+    <el-timeline>
       <el-timeline-item
         v-for="(activity, index) in getRunProcessAll"
         :key="index"
-        :timestamp="activity.lastRun | formatDate"
+        :timestamp="translateDate(activity.lastRun)"
         placement="top"
         type="primary"
         size="large"
@@ -56,9 +56,11 @@
                 <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
                 <ul>
                   <li> {{ activity.summary }} </li>
-                  <li v-for="(item, key) in activity.logs" :key="key">
-                    {{ item.log }}
-                  </li>
+                  <el-scrollbar wrap-class="popover-scroll">
+                    <li v-for="(item, key) in activity.logs" :key="key">
+                      {{ item.log }}
+                    </li>
+                  </el-scrollbar>
                 </ul>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
                   {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
@@ -79,8 +81,6 @@
                   <a type="text" :href="activity.url" :download="activity.download">
                     {{ $t('components.contextMenuDownload') }} <i class="el-icon-download" />
                   </a>
-                  <!-- file: {{ activity.download }} <br> download: {{ activity.url }} -->
-                  <!-- <span>{{ activity.url }}</span><br> -->
                 </div>
                 <el-tag slot="reference" :type="checkStatus(activity.isError, activity.isProcessing, activity.isReport).type">
                   {{ checkStatus(activity.isError, activity.isProcessing, activity.isReport).text }}
@@ -154,7 +154,13 @@ export default {
         // add new process to show
         processAllReturned.push(processMetadataReturned)
       })
-      return processAllReturned
+      return processAllReturned.sort((a, b) => {
+        // sort by date and reverse string to order by most recently
+        return new Date(a.lastRun) - new Date(b.lastRun)
+      }).reverse()
+    },
+    language() {
+      return this.$store.getters.language
     }
   },
   beforeMount() {
@@ -219,6 +225,9 @@ export default {
         return translatedTitle
       }
       return title
+    },
+    translateDate(value) {
+      return this.$d(new Date(value), 'long', this.language)
     }
   }
 }
