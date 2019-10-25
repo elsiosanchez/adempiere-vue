@@ -45,10 +45,10 @@
               <el-button
                 v-if="!isParent && panelType === 'window'"
                 type="text"
-                :icon="(getterNewRecords.length <= 0) ? 'el-icon-circle-plus' : 'el-icon-remove'"
+                icon="el-icon-circle-plus"
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
                 :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                @click="(getterNewRecords.length <= 0) ? addNewRow() : callOffNewRecord()"
+                @click="addNewRow()"
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
                 <fixed-columns
@@ -286,7 +286,7 @@ import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
 import MainPanel from '@/components/ADempiere/Panel'
 import { sortFields } from '@/utils/ADempiere'
-import language from '@/lang'
+// import language from '@/lang'
 import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
 import { fieldIsDisplayed } from '@/utils/ADempiere'
 
@@ -375,7 +375,7 @@ export default {
     },
     getterNewRecords() {
       var newRecordTable = this.getterDataRecordsAndSelection.record.filter(recordItem => {
-        if (recordItem.isEdit && !recordItem.isSendServer) {
+        if (!recordItem.isSendServer) {
           return recordItem
         }
       })
@@ -609,22 +609,13 @@ export default {
       this.getterDataRecords.shift()
     },
     addNewRow() {
-      if (this.getterNewRecords.length <= 0) {
-        this.$store.dispatch('addNewRow', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          fieldList: this.fieldList,
-          isEdit: true,
-          isSendServer: false
-        })
-      } else {
-        const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
-        this.$message({
-          message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-          type: 'info'
-        })
-      }
-      // this.inEdited.push(undefined)
+      this.$store.dispatch('addNewRow', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid,
+        fieldList: this.fieldList,
+        isEdit: true,
+        isSendServer: false
+      })
     },
     optionalPanel() {
       this.showTableSearch = false
@@ -697,23 +688,25 @@ export default {
       }
     },
     confirmEdit(row, newValue, value) {
-      var missingField = this.fieldList.filter(fieldItem => {
-        if (fieldItem.isMandatory && this.isEmptyValue(value)) {
-          return fieldItem.name
-        }
-      })
-      if (!missingField) {
-        if (row.isEdit) {
-          row.isEdit = false
-          this.inEdited = this.inEdited.filter(item => item !== row.UUID)
-        }
-      } else {
-        const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
-        this.$message({
-          message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-          type: 'info'
-        })
+      // var missingField = this.fieldList.filter(fieldItem => {
+      //   if (fieldItem.isMandatory && this.isEmptyValue(value)) {
+      //     return fieldItem.name
+      //   }
+      // })
+      // console.log(missingField)
+      // console.log(this.getterNewRecords)
+      // if (missingField) {
+      if (row.isEdit) {
+        row.isEdit = false
+        this.inEdited = this.inEdited.filter(item => item !== row.UUID)
       }
+      // } else {
+      //   const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
+      //   this.$message({
+      //     message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+      //     type: 'info'
+      //   })
+      // }
     },
     handleRowClick(row, column, event) {
       if (this.isShowedPanelRecord && this.isParent) {
