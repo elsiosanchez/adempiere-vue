@@ -55,9 +55,9 @@
               >
                 <b>{{ $t('table.ProcessActivity.Logs') }}</b><br>
                 <ul>
-                  <li> {{ activity.summary }} </li>
+                  <li @click="zoomIn(activity)"> {{ activity.summary }} </li>
                   <el-scrollbar wrap-class="popover-scroll">
-                    <li v-for="(item, key) in activity.logs" :key="key">
+                    <li v-for="(item, key) in activity.logs" :key="key" @click="zoomIn(activity)">
                       {{ item.log }}
                     </li>
                   </el-scrollbar>

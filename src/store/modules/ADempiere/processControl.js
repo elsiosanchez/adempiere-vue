@@ -140,7 +140,7 @@ const processControl = {
           menuParentUuid: params.menuParentUuid,
           processIdPath: params.routeToDelete.path,
           // process attributes
-          timeInitialized: timeInitialized,
+          lastRun: timeInitialized,
           action: processDefinition.name,
           name: processDefinition.name,
           description: processDefinition.description,
