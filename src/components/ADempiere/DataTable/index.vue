@@ -609,15 +609,13 @@ export default {
       this.getterDataRecords.shift()
     },
     addNewRow() {
-      if (this.getterNewRecords <= 1) {
-        this.$store.dispatch('addNewRow', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          fieldList: this.fieldList,
-          isEdit: true,
-          isSendServer: false
-        })
-      }
+      this.$store.dispatch('addNewRow', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid,
+        fieldList: this.fieldList,
+        isEdit: true,
+        isSendServer: false
+      })
     },
     optionalPanel() {
       this.showTableSearch = false
