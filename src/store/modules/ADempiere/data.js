@@ -284,8 +284,9 @@ const data = {
      * @param {string} viewUuid // As parentUuid in window
      * @param {array} withOut
      */
-    deleteRecordContainer({ commit, state }, parameters) {
-      const { viewUuid, withOut = [] } = parameters
+    deleteRecordContainer({ commit, state, dispatch }, parameters) {
+      const { viewUuid, withOut = [], isNew = false } = parameters
+      var setNews = []
       const record = state.recordSelection.filter(itemRecord => {
         // ignore this uuid
         if (withOut.includes(itemRecord.containerUuid)) {
@@ -293,12 +294,24 @@ const data = {
         }
         // remove window and tabs data
         if (itemRecord.parentUuid) {
+          if (isNew) {
+            setNews.push(itemRecord.containerUuid)
+          }
           return itemRecord.parentUuid !== viewUuid
         }
         // remove browser data
         return itemRecord.containerUuid !== viewUuid
       })
       commit('deleteRecordContainer', record)
+
+      if (setNews.length) {
+        setNews.forEach(uuid => {
+          dispatch('setRecordSelection', {
+            parentUuid: viewUuid,
+            containerUuid: uuid
+          })
+        })
+      }
     },
     /**
      * @param {string} tableName

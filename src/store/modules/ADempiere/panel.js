@@ -212,7 +212,7 @@ const panel = {
      * TODO: Evaluate if it is necessary to parse the default values
      */
     resetPanelToNew({ dispatch, getters }, parameters) {
-      const { containerUuid, panelType } = parameters
+      const { parentUuid, containerUuid, panelType = 'window' } = parameters
 
       const defaultAttributes = getters.getColumnNamesAndValues({
         containerUuid: containerUuid,
@@ -234,6 +234,12 @@ const panel = {
         showMessage({
           message: language.t('data.createNewRecord'),
           type: 'info'
+        })
+        // delete records tabs children when change record uuid
+        dispatch('deleteRecordContainer', {
+          viewUuid: parentUuid,
+          withOut: [containerUuid],
+          isNew: true
         })
       }
       dispatch('notifyPanelChange', {
