@@ -45,10 +45,10 @@
               <el-button
                 v-if="!isParent && panelType === 'window'"
                 type="text"
-                icon="el-icon-circle-plus"
+                :icon="(getterNewRecords.length <= 0) ? 'el-icon-circle-plus' : 'el-icon-remove'"
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
                 :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                @click="addNewRow()"
+                @click="(getterNewRecords.length <= 0) ? addNewRow() : callOffNewRecord()"
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
                 <fixed-columns
@@ -564,6 +564,9 @@ export default {
         panelType: this.panelType
       })
     },
+    callOffNewRecord() {
+      this.getterDataRecords.shift()
+    },
     addNewRow() {
       if (this.getterNewRecords.length <= 0) {
         this.$store.dispatch('addNewRow', {
@@ -577,7 +580,7 @@ export default {
         const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
         this.$message({
           message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-          type: 'warning'
+          type: 'info'
         })
       }
       // this.inEdited.push(undefined)
