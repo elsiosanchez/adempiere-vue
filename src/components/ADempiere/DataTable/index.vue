@@ -697,22 +697,9 @@ export default {
       }
     },
     confirmEdit(row, newValue, value) {
-      var missingField = this.fieldList.filter(fieldItem => {
-        if (fieldItem.isMandatory && this.isEmptyValue(value)) {
-          return fieldItem.name
-        }
-      })
-      if (!missingField) {
-        if (row.isEdit) {
-          row.isEdit = false
-          this.inEdited = this.inEdited.filter(item => item !== row.UUID)
-        }
-      } else {
-        const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
-        this.$message({
-          message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-          type: 'info'
-        })
+      if (row.isEdit) {
+        row.isEdit = false
+        this.inEdited = this.inEdited.filter(item => item !== row.UUID)
       }
     },
     handleRowClick(row, column, event) {
