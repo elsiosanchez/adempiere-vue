@@ -609,13 +609,15 @@ export default {
       this.getterDataRecords.shift()
     },
     addNewRow() {
-      this.$store.dispatch('addNewRow', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid,
-        fieldList: this.fieldList,
-        isEdit: true,
-        isSendServer: false
-      })
+      if (this.getterNewRecords.length <= 1) {
+        this.$store.dispatch('addNewRow', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          fieldList: this.fieldList,
+          isEdit: true,
+          isSendServer: false
+        })
+      }
     },
     optionalPanel() {
       this.showTableSearch = false
@@ -688,25 +690,10 @@ export default {
       }
     },
     confirmEdit(row, newValue, value) {
-      // var missingField = this.fieldList.filter(fieldItem => {
-      //   if (fieldItem.isMandatory && this.isEmptyValue(value)) {
-      //     return fieldItem.name
-      //   }
-      // })
-      // console.log(missingField)
-      // console.log(this.getterNewRecords)
-      // if (missingField) {
       if (row.isEdit) {
         row.isEdit = false
         this.inEdited = this.inEdited.filter(item => item !== row.UUID)
       }
-      // } else {
-      //   const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
-      //   this.$message({
-      //     message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-      //     type: 'info'
-      //   })
-      // }
     },
     handleRowClick(row, column, event) {
       if (this.isShowedPanelRecord && this.isParent) {
