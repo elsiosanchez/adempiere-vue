@@ -12,7 +12,7 @@
                   </template>
                   <el-menu-item
                     v-if="!isParent && panelType === 'window'"
-                    :disabled="Boolean(isReadOnlyParent || inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                    :disabled="Boolean(isReadOnlyParent || getterNewRecords || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                     index="new"
                     @click="addNewRow()"
                   >
@@ -45,10 +45,10 @@
               <el-button
                 v-if="!isParent && panelType === 'window'"
                 type="text"
-                :icon="(getterNewRecords.length <= 0) ? 'el-icon-circle-plus' : 'el-icon-remove'"
+                :icon="(getterNewRecords <= 0) ? 'el-icon-circle-plus' : 'el-icon-remove'"
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
-                :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
-                @click="(getterNewRecords.length <= 0) ? addNewRow() : callOffNewRecord()"
+                :disabled="Boolean(!getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                @click="(getterNewRecords <= 0) ? addNewRow() : callOffNewRecord()"
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
                 <fixed-columns
@@ -106,7 +106,7 @@
                     </el-menu-item>
                     <el-menu-item
                       v-if="!isParent && panelType === 'window'"
-                      :disabled="Boolean(isReadOnlyParent || inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                      :disabled="Boolean(isReadOnlyParent || getterNewRecords || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                       index="new"
                       @click="addNewRow()"
                     >
@@ -346,7 +346,6 @@ export default {
       sortable: null,
       isExpand: false,
       currentPage: 1,
-      inEdited: [],
       uuidCurrentRecordSelected: '',
       showTableSearch: false,
       isAdvancedQuery: this.$route.query.action === 'advancedQuery'
@@ -374,12 +373,13 @@ export default {
       return this.getterDataRecordsAndSelection.record
     },
     getterNewRecords() {
-      var newRecordTable = this.getterDataRecordsAndSelection.record.filter(recordItem => {
-        if (recordItem.isEdit && !recordItem.isSendServer) {
-          return recordItem
-        }
-      })
-      return newRecordTable
+      if (this.panelType === 'window' && !this.isParent) {
+        var newRecordTable = this.getterDataRecordsAndSelection.record.filter(recordItem => {
+          return recordItem.isNew
+        })
+        return newRecordTable.length
+      }
+      return 0
     },
     getPageNumber() {
       return this.getterDataRecordsAndSelection.pageNumber
@@ -609,7 +609,7 @@ export default {
       this.getterDataRecords.shift()
     },
     addNewRow() {
-      if (this.getterNewRecords.length <= 0) {
+      if (this.getterNewRecords <= 0) {
         this.$store.dispatch('addNewRow', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
@@ -624,7 +624,6 @@ export default {
           type: 'info'
         })
       }
-      // this.inEdited.push(undefined)
     },
     optionalPanel() {
       this.showTableSearch = false
@@ -696,11 +695,30 @@ export default {
         this.$refs.multipleTable.clearSelection()
       }
     },
-    confirmEdit(row, newValue, value) {
-      if (row.isEdit) {
-        row.isEdit = false
-        this.inEdited = this.inEdited.filter(item => item !== row.UUID)
+    confirmEdit(row) {
+      const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({
+        containerUuid: this.containerUuid,
+        row: row
+      })
+
+      if (row.isNew) {
+        row.isEdit = true
+        this.$message({
+          message: this.$t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+          type: 'info'
+        })
+        return
       }
+
+      if (row.isEdit && fieldsEmpty) {
+        row.isEdit = false
+        this.$message({
+          message: this.$t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+          type: 'info'
+        })
+        return
+      }
+      row.isEdit = false
     },
     handleRowClick(row, column, event) {
       if (this.isShowedPanelRecord && this.isParent) {
@@ -716,7 +734,6 @@ export default {
       } else {
         if (!row.isEdit) {
           row.isEdit = true
-          this.inEdited.push(row.UUID)
           /*
           var inSelection = this.getDataSelection.some(item => {
             return JSON.stringify(item) === JSON.stringify(row)
@@ -730,7 +747,7 @@ export default {
     },
     handleRowDblClick(row, column, event) {
       if (!this.isShowedPanelRecord) {
-        this.confirmEdit(row, null, null)
+        this.confirmEdit(row)
       }
     },
     handleSelection(rowsSelection, rowSelected) {
