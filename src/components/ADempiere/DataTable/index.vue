@@ -47,7 +47,7 @@
                 type="text"
                 icon="el-icon-circle-plus"
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
-                :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                :disabled="Boolean(isReadOnlyParent || inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                 @click="addNewRow()"
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
@@ -375,7 +375,7 @@ export default {
     },
     getterNewRecords() {
       var newRecordTable = this.getterDataRecordsAndSelection.record.filter(recordItem => {
-        if (!recordItem.isSendServer) {
+        if (recordItem.isEdit && !recordItem.isSendServer) {
           return recordItem
         }
       })
@@ -609,7 +609,7 @@ export default {
       this.getterDataRecords.shift()
     },
     addNewRow() {
-      if (this.getterNewRecords.length <= 1) {
+      if (this.getterNewRecords <= 1) {
         this.$store.dispatch('addNewRow', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
