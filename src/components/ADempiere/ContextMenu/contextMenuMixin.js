@@ -235,7 +235,10 @@ export const contextMixin = {
       if (action.type === 'process') {
         var processData = this.$store.getters.getProcess(action.uuid)
         if (processData === undefined) {
-          this.$store.dispatch('getProcessFromServer', action.uuid)
+          this.$store.dispatch('getProcessFromServer', {
+            containerUuid: action.uuid,
+            routeToDelete: this.$route
+          })
             .then(response => {
               this.$store.dispatch('setShowDialog', {
                 type: action.type,
