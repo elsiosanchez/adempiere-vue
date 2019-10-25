@@ -12,7 +12,7 @@
                   </template>
                   <el-menu-item
                     v-if="!isParent && panelType === 'window'"
-                    :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                    :disabled="Boolean(isReadOnlyParent || inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                     index="new"
                     @click="addNewRow()"
                   >
@@ -20,7 +20,7 @@
                   </el-menu-item>
                   <el-menu-item
                     v-if="panelType === 'window'"
-                    :disabled="Boolean(getDataSelection.length < 1)"
+                    :disabled="Boolean(getDataSelection.length < 1 || (isReadOnlyParent && !isParent))"
                     index="delete"
                     @click="deleteSelection()"
                   >
@@ -84,7 +84,7 @@
                     </template>
                     <el-menu-item
                       v-if="panelType === 'window'"
-                      :disabled="Boolean(getDataSelection.length < 1)"
+                      :disabled="Boolean(getDataSelection.length < 1 || (isReadOnlyParent && !isParent))"
                       index="delete"
                       @click="deleteSelection()"
                     >
@@ -106,7 +106,7 @@
                     </el-menu-item>
                     <el-menu-item
                       v-if="!isParent && panelType === 'window'"
-                      :disabled="Boolean(inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                      :disabled="Boolean(isReadOnlyParent || inEdited.length || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                       index="new"
                       @click="addNewRow()"
                     >
@@ -214,41 +214,41 @@
               fixed
               min-width="50"
             />
-            <template v-for="(item, key) in fieldList">
+            <template v-for="(fieldAttributes, key) in fieldList">
               <el-table-column
-                v-if="isDisplayed(item)"
+                v-if="isDisplayed(fieldAttributes)"
                 :key="key"
-                :label="headerLabel(item)"
-                :column-key="item.columnName"
-                :prop="item.columnName"
+                :label="headerLabel(fieldAttributes)"
+                :column-key="fieldAttributes.columnName"
+                :prop="fieldAttributes.columnName"
                 sortable
                 :formatter="changeOrder"
                 min-width="200"
-                :class-name="cellClass(item)"
-                :fixed="item.isFixedTableColumn"
+                :class-name="cellClass(fieldAttributes)"
+                :fixed="fieldAttributes.isFixedTableColumn"
               >
                 <template slot-scope="scope">
-                  <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item) && !isReadOnlyRow(scope.row, item)">
+                  <template v-if="rowCanBeEdited(scope.row, fieldAttributes)">
                     <field-definition
                       :is-data-table="true"
                       :is-show-label="false"
                       :in-table="true"
                       :metadata-field="{
-                        ...item,
+                        ...fieldAttributes,
                         parentUuid: parentUuid,
-                        displayColumn: scope.row['DisplayColumn_' + item.columnName],
+                        displayColumn: scope.row['DisplayColumn_' + fieldAttributes.columnName],
                         tableIndex: scope.$index,
                         rowKey: scope.row[getterPanel.keyColumn],
                         keyColumn: getterPanel.keyColumn,
                         recordUuid: scope.row.UUID
                       }"
-                      :record-data-fields="scope.row[item.columnName]"
+                      :record-data-fields="scope.row[fieldAttributes.columnName]"
                       size="mini"
                       @keyup.enter.native="confirmEdit(scope.row)"
                     />
                   </template>
                   <span v-else>
-                    {{ displayedValue(scope.row, item) }}
+                    {{ displayedValue(scope.row, fieldAttributes) }}
                   </span>
                 </template>
               </el-table-column>
@@ -458,8 +458,28 @@ export default {
       }
       return undefined
     },
+    isPanelWindow() {
+      return Boolean(this.panelType === 'window')
+    },
     getterContextClientId() {
-      return parseInt(this.$store.getters.getContextClientId, 10)
+      if (this.isPanelWindow) {
+        return parseInt(this.$store.getters.getContextClientId, 10)
+      }
+      return undefined
+    },
+    isReadOnlyParent() {
+      if (this.isPanelWindow) {
+        if (this.$store.getters.getContextIsActive(this.parentUuid) === false) {
+          return true
+        }
+        if (this.$store.getters.getContextProcessing(this.parentUuid)) {
+          return true
+        }
+        if (this.$store.getters.getContextProcessed(this.parentUuid)) {
+          return true
+        }
+      }
+      return false
     }
   },
   created() {
@@ -504,14 +524,62 @@ export default {
         return row['DisplayColumn_' + field.columnName] || row[field.columnName]
       }
     },
-    isReadOnly(row, field) {
+    rowCanBeEdited(record, fieldAttributes) {
+      if (!this.isParent) {
+        if (this.isPanelWindow) {
+          // getter with context
+          if (this.isReadOnlyParent) {
+            return false
+          }
+          // if is IsActive, Processed, Processing
+          if (this.isReadOnlyRow(record, fieldAttributes)) {
+            return false
+          }
+        }
+        // if isReadOnly, isReadOnlyFromLogic
+        if (this.isReadOnlyCell(record, fieldAttributes)) {
+          return false
+        }
+        if (record.isEdit) {
+          return true
+        }
+      }
+      return false
+    },
+    isReadOnlyRow(row, field) {
+      // evaluate context
+      if (this.getterContextClientId !== parseInt(row.AD_Client_ID, 10)) {
+        return true
+      }
+      if (fieldIsDisplayed(field)) {
+        // const fieldReadOnlyAllForm = FIELD_READ_ONLY_FORM.filter(item => {
+        //   return row.hasOwnProperty(item.columnName) && item.isChangedAllForm
+        // })
+        // // columnName: Processed, Processing
+        // if (fieldReadOnlyAllForm.length) {
+        //   var isReadOnlyAllRow = Boolean(fieldReadOnlyAllForm.find(item => row[item.columnName] === item.valueIsReadOnlyForm))
+        //   return isReadOnlyAllRow
+        // }
+
+        // columnName: IsActive
+        const fieldReadOnlyForm = FIELD_READ_ONLY_FORM.find(item => {
+          return row.hasOwnProperty(item.columnName) && !item.isChangedAllForm
+        })
+        if (fieldReadOnlyForm) {
+          var isReadOnlyRow = row[fieldReadOnlyForm.columnName] === fieldReadOnlyForm.valueIsReadOnlyForm && field.columnName !== fieldReadOnlyForm.columnName
+          return isReadOnlyRow
+        }
+      }
+      return false
+    },
+    isReadOnlyCell(row, field) {
       // TODO: Add support to its type fields
       if (field.componentPath === 'FieldImage' || field.componentPath === 'FieldBinary') {
         return true
       }
 
       const isUpdateableAllFields = field.isReadOnly || field.isReadOnlyFromLogic
-      if (this.panelType === 'window') {
+      if (this.isPanelWindow) {
         if (field.columnName === this.getterPanel.linkColumnName ||
           field.columnName === this.getterPanel.fieldLinkColumnName) {
           return true
@@ -525,33 +593,6 @@ export default {
       }
       // other type of panels (process/reports)
       return isUpdateableAllFields
-    },
-    isReadOnlyRow(row, field) {
-      if (this.panelType === 'window') {
-        if (this.getterContextClientId !== parseInt(row.AD_Client_ID, 10)) {
-          return true
-        }
-        if (fieldIsDisplayed(field)) {
-          // const fieldReadOnlyAllForm = FIELD_READ_ONLY_FORM.filter(item => {
-          //   return row.hasOwnProperty(item.columnName) && item.isChangedAllForm
-          // })
-          // // columnName: Processed, Processing
-          // if (fieldReadOnlyAllForm.length) {
-          //   var isReadOnlyAllRow = Boolean(fieldReadOnlyAllForm.find(item => row[item.columnName] === item.valueIsReadOnlyForm))
-          //   return isReadOnlyAllRow
-          // }
-
-          // columnName: IsActive
-          const fieldReadOnlyForm = FIELD_READ_ONLY_FORM.find(item => {
-            return row.hasOwnProperty(item.columnName) && !item.isChangedAllForm
-          })
-          if (fieldReadOnlyForm) {
-            var isReadOnlyRow = row[fieldReadOnlyForm.columnName] === fieldReadOnlyForm.valueIsReadOnlyForm && field.columnName !== fieldReadOnlyForm.columnName
-            return isReadOnlyRow
-          }
-        }
-      }
-      return false
     },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {

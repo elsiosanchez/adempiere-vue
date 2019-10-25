@@ -74,6 +74,16 @@ const context = {
     },
     getContextClientId: (state) => {
       return state.context['#AD_Client_ID']
+    },
+    // Using to read only in data tables
+    getContextIsActive: (state) => (parentUuid) => {
+      return state.context[`${parentUuid}|IsActive`]
+    },
+    getContextProcessing: (state) => (parentUuid) => {
+      return state.context[`${parentUuid}|Processing`]
+    },
+    getContextProcessed: (state) => (parentUuid) => {
+      return state.context[`${parentUuid}|Processed`]
     }
   }
 }
