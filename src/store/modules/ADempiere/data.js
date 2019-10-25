@@ -368,8 +368,14 @@ const data = {
         .then(response => {
           const recordList = response.getRecordsList()
           const record = recordList.map(itemRecord => {
-            const map = itemRecord.getValuesMap()
-            const values = convertValuesMapToObject(map)
+            var values = convertValuesMapToObject(
+              itemRecord.getValuesMap()
+            )
+
+            // datatables attribute
+            values.isEdit = false
+            values.isSelected = false
+            values.isReadOnlyFromRow = false
             return values
           })
 

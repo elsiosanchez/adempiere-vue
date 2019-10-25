@@ -67,6 +67,7 @@ const browserControl = {
             // datatables attribute
             values.isEdit = false
             values.isSelected = false
+            values.isReadOnlyFromRow = false
             return values
           })
 

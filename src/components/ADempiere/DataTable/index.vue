@@ -5,7 +5,7 @@
         <el-header :style="isAdvancedQuery ? activeName ? {height: '50%',overflow: 'auto'} :{height: '12%',overflow: 'hidden'} : { height: '5%' }">
           <div>
             <div v-if="!isMobile">
-              <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
+              <el-menu :default-active="menuTable" :class="classTableMenu + ' menu-table-container'" mode="horizontal">
                 <el-submenu index="2">
                   <template slot="title">
                     <i class="el-icon-more" />
@@ -77,7 +77,7 @@
             </div>
             <div v-else>
               <div v-if="!isParent">
-                <el-menu :default-active="menuTable" :class="classTableMenu() + ' menu-table-container'" mode="horizontal">
+                <el-menu :default-active="menuTable" :class="classTableMenu + ' menu-table-container'" mode="horizontal">
                   <el-submenu index="2">
                     <template slot="title">
                       <i class="el-icon-more" />
@@ -228,7 +228,7 @@
                 :fixed="item.isFixedTableColumn"
               >
                 <template slot-scope="scope">
-                  <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item)">
+                  <template v-if="scope.row.isEdit && !isReadOnly(scope.row, item) && !isReadOnlyRow(scope.row, item)">
                     <field-definition
                       :is-data-table="true"
                       :is-show-label="false"
@@ -287,6 +287,8 @@ import { formatDate } from '@/filters/ADempiere'
 import MainPanel from '@/components/ADempiere/Panel'
 import { sortFields } from '@/utils/ADempiere'
 import language from '@/lang'
+import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
+import { fieldIsDisplayed } from '@/utils/ADempiere'
 
 export default {
   name: 'DataTable',
@@ -353,6 +355,14 @@ export default {
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    classTableMenu() {
+      if (this.isMobile) {
+        return 'menu-table-mobile'
+      } else if (this.$store.state.app.sidebar.opened) {
+        return 'menu-table'
+      }
+      return 'menu-table'
     },
     getterPanel() {
       return this.$store.getters.getPanel(this.containerUuid)
@@ -447,6 +457,9 @@ export default {
         return this.$store.getters.getPanelParameters(this.containerUuid, false, [], this.isAdvancedQuery).params
       }
       return undefined
+    },
+    getterContextClientId() {
+      return parseInt(this.$store.getters.getContextClientId, 10)
     }
   },
   created() {
@@ -512,6 +525,33 @@ export default {
       }
       // other type of panels (process/reports)
       return isUpdateableAllFields
+    },
+    isReadOnlyRow(row, field) {
+      if (this.panelType === 'window') {
+        if (this.getterContextClientId !== parseInt(row.AD_Client_ID, 10)) {
+          return true
+        }
+        if (fieldIsDisplayed(field)) {
+          // const fieldReadOnlyAllForm = FIELD_READ_ONLY_FORM.filter(item => {
+          //   return row.hasOwnProperty(item.columnName) && item.isChangedAllForm
+          // })
+          // // columnName: Processed, Processing
+          // if (fieldReadOnlyAllForm.length) {
+          //   var isReadOnlyAllRow = Boolean(fieldReadOnlyAllForm.find(item => row[item.columnName] === item.valueIsReadOnlyForm))
+          //   return isReadOnlyAllRow
+          // }
+
+          // columnName: IsActive
+          const fieldReadOnlyForm = FIELD_READ_ONLY_FORM.find(item => {
+            return row.hasOwnProperty(item.columnName) && !item.isChangedAllForm
+          })
+          if (fieldReadOnlyForm) {
+            var isReadOnlyRow = row[fieldReadOnlyForm.columnName] === fieldReadOnlyForm.valueIsReadOnlyForm && field.columnName !== fieldReadOnlyForm.columnName
+            return isReadOnlyRow
+          }
+        }
+      }
+      return false
     },
     deleteSelection() {
       this.$store.dispatch('deleteSelectionDataList', {
@@ -584,14 +624,6 @@ export default {
     changeOrder() {
       var reversed = this.getterDataRecords.reverse()
       return reversed
-    },
-    classTableMenu() {
-      if (this.isMobile) {
-        return 'menu-table-mobile'
-      } else if (this.$store.state.app.sidebar.opened) {
-        return 'menu-table'
-      }
-      return 'menu-table'
     },
     /**
      * @param {object} field
