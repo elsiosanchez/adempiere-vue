@@ -163,6 +163,7 @@ export default {
             }
           }
           if (tag.to.name === this.$route.name) {
+            this.$router.push({ path: tag.to.fullPath })
             this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
