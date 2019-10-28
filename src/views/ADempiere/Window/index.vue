@@ -396,10 +396,11 @@ export default {
     bottom: 5%;
   }
   .open-left {
-    width: 4%;
-    height: 95%;
+    width: 5%;
+    height: 97%;
     position: absolute;
     top: 2%;
+    left: 1%;
   }
   .el-button {
     cursor: pointer;

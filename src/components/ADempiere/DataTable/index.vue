@@ -43,13 +43,6 @@
                   >
                     {{ $t('table.dataTable.deleteSelection') }}
                   </el-menu-item>
-                  <el-menu-item
-                    v-if="isParent && isPanelWindow"
-                    index="advancedQuery"
-                    @click="activeAdvancedQuery(!isAdvancedQuery)"
-                  >
-                    {{ $t('table.dataTable.advancedQuery') }}
-                  </el-menu-item>
                   <el-menu-item index="optional" @click="optionalPanel()">
                     {{ $t('components.filterableItems') }}
                   </el-menu-item>
@@ -102,14 +95,6 @@
                       @click="deleteSelection()"
                     >
                       {{ $t('table.dataTable.deleteSelection') }}
-                    </el-menu-item>
-                    <el-menu-item
-                      v-if="isParent && isPanelWindow"
-                      :disabled="Boolean(getterDataRecords.length <= 0)"
-                      index="advancedQuery"
-                      @click="activeAdvancedQuery(!isAdvancedQuery)"
-                    >
-                      {{ $t('table.dataTable.advancedQuery') }}
                     </el-menu-item>
                     <el-menu-item index="optional" @click="optionalPanel()">
                       {{ $t('components.filterableItems') }}
@@ -284,6 +269,7 @@ import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
 import { fieldIsDisplayed } from '@/utils/ADempiere'
 
 export default {
+
   name: 'DataTable',
   components: {
     FieldDefinition,
@@ -331,7 +317,7 @@ export default {
       searchTable: '', // text from search
       defaultMaxPagination: 100,
       menuTable: '1',
-      activeName: '1',
+      activeName: '',
       isOptional: false,
       isFixed: false,
       isLoadPanelFromServer: false,
@@ -341,7 +327,7 @@ export default {
       currentPage: 1,
       uuidCurrentRecordSelected: '',
       showTableSearch: false,
-      isAdvancedQuery: this.$route.query.action === 'advancedQuery'
+      isAdvancedQuery: true
     }
   },
   computed: {
