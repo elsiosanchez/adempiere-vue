@@ -13,16 +13,17 @@
     @clear="clearLookup"
   >
     <el-option
-      v-for="(item, key) in options"
+      v-for="(option, key) in options"
       :key="key"
-      :value="item.key"
-      :label="item.label"
+      :value="option.key"
+      :label="option.label"
     />
   </el-select>
 </template>
 
 <script>
 import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
+import { parseContext } from '@/utils/ADempiere'
 
 export default {
   name: 'FieldSelect',
@@ -45,6 +46,9 @@ export default {
     }
   },
   computed: {
+    isPanelWindow() {
+      return this.metadata.panelType === 'window'
+    },
     getterValue() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
@@ -94,19 +98,39 @@ export default {
     },
     // TODO: Verify peformance in props with watcher in panel or watch metadata.value.
     '$route.query.action'(actionValue) {
-      if (actionValue === 'create-new' && this.metadata.panelType === 'window') {
-        this.value = this.validateValue(this.metadata.parsedDefaultValue)
+      if (actionValue === 'create-new' && this.isPanelWindow) {
+        var value = this.metadata.defaultValue
+        if (!this.isEmptyValue(value) && value.includes('@')) {
+          // get value from context
+          value = parseContext({
+            parentUuid: this.metadata.parentUuid,
+            containerUuid: this.metadata.containerUuid,
+            value: value
+          })
+        }
+        this.value = this.validateValue(value)
       }
-      if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
+      if (!this.isEmptyValue(this.value) && !this.findLabel(this.value) && !this.isPanelWindow) {
         this.getDataLookupItem()
       }
     },
     'metadata.displayed'(value, oldValue) {
-      if (value) {
+      if (value && !this.isPanelWindow) {
         if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
           this.getDataLookupItem()
         }
       }
+    },
+    'metadata.displayColumn'(value) {
+      if (this.isPanelWindow) {
+        if (!this.isEmptyValue(value) && !this.options.find(itemOption => itemOption.label === value)) {
+          this.othersOptions = [{
+            key: this.value,
+            label: this.metadata.displayColumn
+          }]
+        }
+      }
+      this.options = this.getterLookupAll.concat(this.othersOptions)
     }
   },
   beforeMount() {
@@ -114,7 +138,7 @@ export default {
 
     // enable to dataTable records
     // TODO: Evlauate values with empty string or number in 0
-    if (this.metadata.displayColumn) {
+    if (!this.isEmptyValue(this.metadata.displayColumn)) {
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
         key = this.valueModel
@@ -129,7 +153,7 @@ export default {
       // join options in store with pased from props
       this.options = this.getterLookupAll.concat(this.othersOptions)
       this.value = key
-    } else if (!this.isEmptyValue(this.value) && (!this.findLabel(this.value) && this.metadata.displayed)) {
+    } else if (!this.isEmptyValue(this.value) && !this.isPanelWindow && (!this.findLabel(this.value) && this.metadata.displayed)) {
       this.getDataLookupItem()
     }
   },
@@ -174,7 +198,7 @@ export default {
         value: this.value
       })
         .then(response => {
-          if (this.metadata.panelType === 'window') {
+          if (this.isPanelWindow) {
             this.$store.dispatch('notifyFieldChangeDisplayColumn', {
               containerUuid: this.metadata.containerUuid,
               columnName: this.metadata.columnName,

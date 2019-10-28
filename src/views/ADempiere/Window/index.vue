@@ -5,7 +5,6 @@
   >
     <el-container style="height: 86vh;">
       <el-main>
-
         <split-pane :min-percent="10" :default-percent="isShowedRecordPanel ? (isShowedRecordNavigation ? 100 : 50) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
           <template>
             <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->

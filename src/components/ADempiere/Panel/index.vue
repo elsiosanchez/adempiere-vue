@@ -32,16 +32,17 @@
               :body-style="{ padding: '10px' }"
             >
               <el-row :gutter="gutterRow">
-                <template v-for="(subItem, subKey) in firstGroup.metadataFields">
+                <template v-for="(fieldAttributes, subKey) in firstGroup.metadataFields">
                   <field-definition
                     :key="subKey"
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
                     :metadata-field="{
-                      ...subItem,
+                      ...fieldAttributes,
+                      displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
                       optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                     }"
-                    :record-data-fields="isAdvancedQuery ? undefined : dataRecords[subItem.columnName]"
+                    :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                     :panel-type="panelType"
                     :in-group="!getterIsShowedRecordNavigation"
                     :is-advanced-query="isAdvancedQuery"
@@ -88,18 +89,19 @@
                       </div>
                     </div>
                     <el-row :gutter="gutterRow">
-                      <template v-for="(subItem, subKey) in item.metadataFields">
+                      <template v-for="(fieldAttributes, subKey) in item.metadataFields">
                         <field-definition
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
-                            ...subItem,
+                            ...fieldAttributes,
+                            displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                           }"
-                          :record-data-fields="isAdvancedQuery ? undefined : dataRecords[subItem.columnName]"
+                          :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                           :panel-type="panelType"
-                          :in-group="isMutipleGroups && fieldGroups.length > 1"
+                          :in-group="isPanelWindow && fieldGroups.length > 1"
                           :is-advanced-query="isAdvancedQuery"
                         />
                       </template>
@@ -139,18 +141,19 @@
                       </div>
                     </div>
                     <el-row :gutter="gutterRow">
-                      <template v-for="(subItem, subKey) in item.metadataFields">
+                      <template v-for="(fieldAttributes, subKey) in item.metadataFields">
                         <field-definition
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
-                            ...subItem,
+                            ...fieldAttributes,
+                            displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
                             optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
                           }"
-                          :record-data-fields="isAdvancedQuery ? undefined : dataRecords[subItem.columnName]"
+                          :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                           :panel-type="panelType"
-                          :in-group="isMutipleGroups && fieldGroups.length > 1"
+                          :in-group="isPanelWindow && fieldGroups.length > 1"
                         />
                       </template>
                     </el-row>
@@ -229,15 +232,17 @@ export default {
       fieldGroups: [],
       firstGroup: {},
       groupsView: 0,
-      isMutipleGroups: Boolean(this.panelType === 'window'),
       tagTitle: {
         base: this.$route.meta.title, action: ''
       }
     }
   },
   computed: {
+    isPanelWindow() {
+      return this.panelType === 'window'
+    },
     getterIsShowedRecordNavigation() {
-      if (this.panelType === 'window') {
+      if (this.isPanelWindow) {
         return this.$store.getters.getIsShowedRecordNavigation(this.parentUuid)
       }
       return false
@@ -260,7 +265,7 @@ export default {
       })
     },
     getterRowData() {
-      if (this.panelType === 'window' && !this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
+      if (this.isPanelWindow && !this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
         return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
       }
       return false
@@ -269,7 +274,7 @@ export default {
      * Load dictionary fields in panel
      */
     getterIsLoadedField() {
-      if (this.panelType === 'window') {
+      if (this.isPanelWindow) {
         return this.$store.getters.getTabIsLoadField(this.parentUuid, this.containerUuid)
       }
       return false
@@ -291,7 +296,7 @@ export default {
     // used if the first load contains a uuid
     isLoadRecord(value) {
       // TODO: Validate UUID value
-      if (value && this.panelType === 'window' && this.uuidRecord !== 'create-new' && !this.isEmptyValue(this.uuidRecord)) {
+      if (value && this.isPanelWindow && this.uuidRecord !== 'create-new' && !this.isEmptyValue(this.uuidRecord)) {
         this.setTagsViewTitle(this.uuidRecord)
       }
     },
@@ -311,7 +316,7 @@ export default {
   },
   created() {
     // get tab with uuid
-    if (this.panelType === 'window' && !this.getterTotalDataRecordCount) {
+    if (this.isPanelWindow && !this.getterTotalDataRecordCount) {
       this.$store.dispatch('getDataListTab', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid
@@ -372,7 +377,7 @@ export default {
         isNewRecord: false,
         isWindow: true
       }
-      if (this.panelType === 'window') {
+      if (this.isPanelWindow) {
         // TODO: use action notifyPanelChange with isShowedField in true
         this.getterFieldList.forEach(fieldItem => {
           if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAdvancedQuery) {
@@ -451,7 +456,7 @@ export default {
      * @param  {object} parameters parameters to condition the data query
      */
     getData(parameters) {
-      if (parameters.isWindow && this.panelType === 'window') {
+      if (parameters.isWindow && this.isPanelWindow) {
         this.$store.dispatch('getDataListTab', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
@@ -509,7 +514,7 @@ export default {
       }]
 
       // reduce, create array with number groupAssigned element comun
-      if (this.panelType === 'window') {
+      if (this.isPanelWindow) {
         res = arr
           .reduce((res, currentValue) => {
             if (!res.includes(currentValue.groupAssigned)) {
@@ -569,7 +574,7 @@ export default {
           this.tagTitle.action = this.$t('tagsView.seeRecord')
         }
       }
-      if (this.panelType === 'window'/* this.$route.meta && this.$route.meta.type === 'window' */) {
+      if (this.isPanelWindow) {
         var route = Object.assign({}, tempRoute, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
         this.$store.dispatch('tagsView/updateVisitedView', route)
       }
