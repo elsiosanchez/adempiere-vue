@@ -49,6 +49,7 @@
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
                 :disabled="Boolean(!getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                 @click="(getterNewRecords <= 0) ? addNewRow() : callOffNewRecord()"
+
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
                 <fixed-columns
@@ -286,7 +287,7 @@ import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
 import MainPanel from '@/components/ADempiere/Panel'
 import { sortFields } from '@/utils/ADempiere'
-import language from '@/lang'
+// import language from '@/lang'
 import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
 import { fieldIsDisplayed } from '@/utils/ADempiere'
 
