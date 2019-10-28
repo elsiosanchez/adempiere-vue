@@ -14,21 +14,18 @@
                 <div class="small-4 columns">
                   <div class="w">
                     <div class="open-left" />
-                    <div class="open-data">
+                    <div class="open-datatable-aside">
                       <el-button
                         v-show="!isPanel"
                         :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
                         circle
-                        style="margin-top: 35px;"
+                        style="margin-left: 10px;"
                         @click="handleChangeShowedRecordNavigation()"
                       />
-                    </div>
-                    <div class="open-datatable">
                       <el-button
                         v-show="!isPanel"
                         :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
                         circle
-                        style="margin-top: 35px;"
                         @click="handleChangeShowedPanel()"
                       />
                     </div>
@@ -364,14 +361,7 @@ export default {
     display: none;
     z-index: 5;
   }
-  .open-datatable {
-    position: absolute;
-    top: 35%;
-    display: none;
-    z-index: 5;
-    right: 1%!important;
-  }
-  .open-data {
+  .open-datatable-aside {
     position: absolute;
     top: 41%;
     display: none;
@@ -394,11 +384,8 @@ export default {
   .w:hover .open-navegation {
     display: inline-block;
   }
-  .w:hover .open-datatable {
-    display: inline-block;
-  }
-  .w:hover .open-data {
-    display: inline-block;
+  .w:hover .open-datatable-aside {
+    display: grid;
   }
   .w:hover .close-datatable {
     display: inline-block;

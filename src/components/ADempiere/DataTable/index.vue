@@ -49,7 +49,6 @@
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
                 :disabled="Boolean(!getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
                 @click="(getterNewRecords <= 0) ? addNewRow() : callOffNewRecord()"
-
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
                 <fixed-columns
@@ -621,7 +620,7 @@ export default {
       } else {
         const fieldsEmpty = this.$store.getters.getFieldListEmptyMandatory({ containerUuid: this.containerUuid })
         this.$message({
-          message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+          message: this.$t('notifications.mandatoryFieldMissing') + fieldsEmpty,
           type: 'info'
         })
       }
