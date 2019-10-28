@@ -11,15 +11,15 @@
                     <i class="el-icon-more" />
                   </template>
                   <el-menu-item
-                    v-if="!isParent && panelType === 'window'"
-                    :disabled="Boolean(isReadOnlyParent || getterNewRecords || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                    v-if="!isParent && isPanelWindow"
+                    :disabled="isDisabledAddNew"
                     index="new"
                     @click="addNewRow()"
                   >
                     {{ $t('window.newRecord') }}
                   </el-menu-item>
                   <el-menu-item
-                    v-if="panelType === 'window'"
+                    v-if="isPanelWindow"
                     :disabled="Boolean(getDataSelection.length < 1 || (isReadOnlyParent && !isParent))"
                     index="delete"
                     @click="deleteSelection()"
@@ -27,7 +27,7 @@
                     {{ $t('table.dataTable.deleteSelection') }}
                   </el-menu-item>
                   <el-menu-item
-                    v-if="isParent && panelType === 'window'"
+                    v-if="isParent && isPanelWindow"
                     :disabled="Boolean(getterDataRecords.length <= 0)"
                     index="advancedQuery"
                     @click="activeAdvancedQuery(!isAdvancedQuery)"
@@ -43,11 +43,11 @@
                 </el-submenu>
               </el-menu>
               <el-button
-                v-if="!isParent && panelType === 'window'"
+                v-if="!isParent && isPanelWindow"
                 type="text"
                 :icon="(getterNewRecords <= 0) ? 'el-icon-circle-plus' : 'el-icon-remove'"
                 style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
-                :disabled="Boolean(!getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                :disabled="isDisabledAddNewIcon"
                 @click="(getterNewRecords <= 0) ? addNewRow() : callOffNewRecord()"
               />
               <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
@@ -83,7 +83,7 @@
                       <i class="el-icon-more" />
                     </template>
                     <el-menu-item
-                      v-if="panelType === 'window'"
+                      v-if="isPanelWindow"
                       :disabled="Boolean(getDataSelection.length < 1 || (isReadOnlyParent && !isParent))"
                       index="delete"
                       @click="deleteSelection()"
@@ -91,7 +91,7 @@
                       {{ $t('table.dataTable.deleteSelection') }}
                     </el-menu-item>
                     <el-menu-item
-                      v-if="isParent && panelType === 'window'"
+                      v-if="isParent && isPanelWindow"
                       :disabled="Boolean(getterDataRecords.length <= 0)"
                       index="advancedQuery"
                       @click="activeAdvancedQuery(!isAdvancedQuery)"
@@ -105,8 +105,8 @@
                       {{ $t('components.fixedleItems') }}
                     </el-menu-item>
                     <el-menu-item
-                      v-if="!isParent && panelType === 'window'"
-                      :disabled="Boolean(isReadOnlyParent || getterNewRecords || !getterPanel.isInsertRecord || (!isParent && $route.query.action === 'create-new'))"
+                      v-if="!isParent && isPanelWindow"
+                      :disabled="isDisabledAddNew"
                       index="new"
                       @click="addNewRow()"
                     >
@@ -152,7 +152,7 @@
                   />
                 </div>
                 <el-button
-                  v-show="isParent && panelType === 'window' && isMobile && getDataSelection.length"
+                  v-show="isParent && isPanelWindow && isMobile && getDataSelection.length"
                   type="text"
                   icon="el-icon-delete"
                   style="color: black;font-size: 17px;font-weight: 605!important;"
@@ -286,7 +286,6 @@ import IconElement from '@/components/ADempiere/IconElement'
 import { formatDate } from '@/filters/ADempiere'
 import MainPanel from '@/components/ADempiere/Panel'
 import { sortFields } from '@/utils/ADempiere'
-// import language from '@/lang'
 import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
 import { fieldIsDisplayed } from '@/utils/ADempiere'
 
@@ -373,7 +372,7 @@ export default {
       return this.getterDataRecordsAndSelection.record
     },
     getterNewRecords() {
-      if (this.panelType === 'window' && !this.isParent) {
+      if (this.isPanelWindow && !this.isParent) {
         var newRecordTable = this.getterDataRecordsAndSelection.record.filter(recordItem => {
           return recordItem.isNew
         })
@@ -407,7 +406,7 @@ export default {
       return this.$store.getters.getHeigth
     },
     getHeigthTable() {
-      if (this.panelType === 'window') {
+      if (this.isPanelWindow) {
         // table record navigation
         if (this.isParent) {
           if (this.isAdvancedQuery) {
@@ -478,6 +477,36 @@ export default {
         if (this.$store.getters.getContextProcessed(this.parentUuid)) {
           return true
         }
+      }
+      return false
+    },
+    isDisabledAddNew() {
+      if (this.isParent) {
+        return true
+      }
+      if (this.$route.query.action === 'create-new') {
+        return true
+      }
+      if (!this.getterPanel.isInsertRecord) {
+        return true
+      }
+      if (this.isReadOnlyParent) {
+        return true
+      }
+      if (this.getterNewRecords) {
+        return true
+      }
+      return false
+    },
+    isDisabledAddNewIcon() {
+      if (this.isParent) {
+        return true
+      }
+      if (this.$route.query.action === 'create-new') {
+        return true
+      }
+      if (!this.getterPanel.isInsertRecord) {
+        return true
       }
       return false
     }
@@ -806,7 +835,7 @@ export default {
      */
     getPanel() {
       // get panel from server only window and tab children
-      if (this.panelType === 'window' && !this.isParent && !this.getterPanel) {
+      if (this.isPanelWindow && !this.isParent && !this.getterPanel) {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
