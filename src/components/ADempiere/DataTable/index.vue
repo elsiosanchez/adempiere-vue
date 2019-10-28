@@ -3,6 +3,23 @@
     <el-main style="padding: 0px!important; overflow: hidden;">
       <el-container style="height: 100%;">
         <el-header :style="isAdvancedQuery ? activeName ? {height: '50%',overflow: 'auto'} :{height: '12%',overflow: 'hidden'} : { height: '5%' }">
+          <el-collapse
+            v-if="isParent && isAdvancedQuery"
+            v-show="isAdvancedQuery"
+            v-model="activeName"
+            accordion
+          >
+            <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
+              <main-panel
+                :container-uuid="containerUuid"
+                :parent-uuid="parentUuid"
+                :metadata="getterPanel"
+                :panel-type="'table'"
+                :is-advanced-query="true"
+                style="height: 171; overflow: hidden; width:100%;"
+              />
+            </el-collapse-item>
+          </el-collapse>
           <div>
             <div v-if="!isMobile">
               <el-menu :default-active="menuTable" :class="classTableMenu + ' menu-table-container'" mode="horizontal">
@@ -28,7 +45,6 @@
                   </el-menu-item>
                   <el-menu-item
                     v-if="isParent && isPanelWindow"
-                    :disabled="Boolean(getterDataRecords.length <= 0)"
                     index="advancedQuery"
                     @click="activeAdvancedQuery(!isAdvancedQuery)"
                   >
@@ -114,13 +130,11 @@
                     </el-menu-item>
                   </el-submenu>
                 </el-menu>
-                <icon-element v-if="isFixed" icon="el-icon-news">
-                  <fixed-columns
-                    :container-uuid="containerUuid"
-                    :panel-type="panelType"
-                    class="header-search-input"
-                  />
-                </icon-element>
+                <fixed-columns
+                  :container-uuid="containerUuid"
+                  :panel-type="panelType"
+                  class="header-search-input"
+                />
                 <filter-columns
                   v-if="isOptional"
                   :container-uuid="containerUuid"
@@ -168,23 +182,6 @@
               </div>
             </div>
           </div>
-          <el-collapse
-            v-if="isParent && isAdvancedQuery"
-            v-show="isAdvancedQuery"
-            v-model="activeName"
-            accordion
-          >
-            <el-collapse-item :title="$t('table.dataTable.advancedQuery')" name="1">
-              <main-panel
-                :container-uuid="containerUuid"
-                :parent-uuid="parentUuid"
-                :metadata="getterPanel"
-                :panel-type="'table'"
-                :is-advanced-query="true"
-                style="height: 171; overflow: hidden; width:100%;"
-              />
-            </el-collapse-item>
-          </el-collapse>
         </el-header>
         <el-main style="padding: 0px!important; overflow: hidden;">
           <el-table
@@ -413,7 +410,7 @@ export default {
             if (!this.activeName) {
               return this.getterHeight - 220
             } else {
-              return this.getterHeight - 550
+              return this.getterHeight - 420
             }
           } else {
             return this.getterHeight - 180
@@ -890,6 +887,16 @@ export default {
   }
 </style>
 <style>
+  .el-collapse-item__wrap {
+    min-height: 190px;
+    max-height: 200px;
+    will-change: height;
+    background-color: #fff;
+    overflow: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e6ebf5;
+  }
   .el-table > .cell {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
