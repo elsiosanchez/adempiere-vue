@@ -122,7 +122,7 @@ const data = {
         fieldList = rootGetters.getFieldsListFromPanel(containerUuid)
       }
 
-      const data = getters.getDataRecordsList(containerUuid)
+      const dataStore = getters.getDataRecordsList(containerUuid)
       // add row with default values to create new record
       var propertyName = 'parsedDefaultValue'
       if (isPanelValues) {
@@ -221,7 +221,7 @@ const data = {
 
       commit('addNewRow', {
         values: values,
-        data: data
+        data: dataStore
       })
     },
     /**
@@ -351,7 +351,7 @@ const data = {
      * @param {array}  conditions, conditions to criteria
      */
     getObjectListFromCriteria({ commit, dispatch, getters }, parameters) {
-      const { parentUuid, containerUuid, tableName, query, whereClause, orderByClause, conditions = [], isShowNotification = true } = parameters
+      const { parentUuid, containerUuid, tableName, query, whereClause, orderByClause, conditions = [], isShowNotification = true, isParentTab = true } = parameters
       if (isShowNotification) {
         showMessage({
           title: language.t('notifications.loading'),
@@ -364,6 +364,14 @@ const data = {
       var nextPageToken
       if (!isEmptyValue(allData.nextPageToken)) {
         nextPageToken = allData.nextPageToken + '-' + allData.pageNumber
+      }
+
+      var inEdited = []
+      if (!isParentTab) {
+        // TODO: Evaluate peformance to evaluate records to edit
+        inEdited = allData.record.filter(itemRecord => {
+          return itemRecord.isEdit && !itemRecord.isNew
+        })
       }
 
       commit('addInGetting', {
@@ -391,6 +399,10 @@ const data = {
             values.isEdit = false
             values.isSelected = false
             values.isReadOnlyFromRow = false
+
+            if (inEdited.find(itemEdit => itemEdit.UUID === values.UUID)) {
+              values.isEdit = true
+            }
             return values
           })
 

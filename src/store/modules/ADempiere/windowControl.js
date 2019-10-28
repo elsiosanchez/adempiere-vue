@@ -530,7 +530,8 @@ const windowControl = {
         whereClause: parsedWhereClause,
         orderByClause: tab.orderByClause,
         // TODO: evaluate if overwrite values to conditions
-        conditions: isLoadAllRecords ? [] : conditions
+        conditions: isLoadAllRecords ? [] : conditions,
+        isParentTab: tab.isParentTab
       })
         .then(response => {
           if (isRefreshPanel && !isEmptyValue(recordUuid) && recordUuid !== 'create-new') {
