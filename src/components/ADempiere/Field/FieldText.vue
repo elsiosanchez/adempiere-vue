@@ -8,6 +8,7 @@
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
     :maxlength="maxLength"
+    :show-password="metadata.isEncrypted ? true : false"
     @blur="validateInput"
     @change="preHandleChange"
   />
