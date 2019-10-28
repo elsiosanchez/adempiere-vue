@@ -57,7 +57,21 @@ export default {
       return this.$store.getters.getNotificationProcess
     }
   },
+  watch: {
+    show(value) {
+      if (value) {
+        document.body.addEventListener('click', this.close)
+      } else {
+        document.body.removeEventListener('click', this.close)
+      }
+    }
+  },
   methods: {
+    close() {
+      this.$refs.badge && this.$refs.badge.blur()
+      this.options = []
+      this.show = false
+    },
     handleCurrentChange(getRecordNotification, val, index, rows) {
       if (val !== null) {
         if (getRecordNotification && getRecordNotification.isReport) {
