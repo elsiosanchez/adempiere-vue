@@ -53,9 +53,6 @@
                   <el-menu-item index="optional" @click="optionalPanel()">
                     {{ $t('components.filterableItems') }}
                   </el-menu-item>
-                  <el-menu-item index="fixed" @click="fixedPanel()">
-                    {{ $t('components.fixedleItems') }}
-                  </el-menu-item>
                 </el-submenu>
               </el-menu>
               <el-button
@@ -66,7 +63,7 @@
                 :disabled="isDisabledAddNew"
                 @click="(getterNewRecords <= 0) ? addNewRow() : callOffNewRecord()"
               />
-              <icon-element v-if="isFixed && !isMobile" icon="el-icon-news">
+              <icon-element v-if="!isMobile" icon="el-icon-news">
                 <fixed-columns
                   :container-uuid="containerUuid"
                   :panel-type="panelType"
