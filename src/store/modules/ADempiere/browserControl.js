@@ -65,6 +65,7 @@ const browserControl = {
             var values = convertValuesMapToObject(itemRecord.getValuesMap())
 
             // datatables attribute
+            values.isNew = false
             values.isEdit = false
             values.isSelected = false
             values.isReadOnlyFromRow = false

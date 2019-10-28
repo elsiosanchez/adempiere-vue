@@ -546,6 +546,7 @@ const windowControl = {
             } else {
               // this record is missing (Deleted or the query does not include it)
               dispatch('resetPanelToNew', {
+                parentUuid: tab.parentUuid,
                 containerUuid: containerUuid
               })
             }

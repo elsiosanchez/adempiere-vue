@@ -116,7 +116,7 @@ const data = {
      * @param {boolean} isEdit, define if used values form panel
      */
     addNewRow({ commit, getters, rootGetters }, parameters) {
-      const { parentUuid, containerUuid, isPanelValues = false, isEdit = true } = parameters
+      const { parentUuid, containerUuid, isPanelValues = false, isEdit = true, isNew = true } = parameters
       var { fieldList } = parameters
       if (fieldList === undefined) {
         fieldList = rootGetters.getFieldsListFromPanel(containerUuid)
@@ -135,6 +135,7 @@ const data = {
         isObjectReturn: true,
         isAddDisplayColumn: true
       })
+      values.isNew = isNew
       values.isEdit = isEdit
       values.isSendServer = false
 
@@ -284,8 +285,9 @@ const data = {
      * @param {string} viewUuid // As parentUuid in window
      * @param {array} withOut
      */
-    deleteRecordContainer({ commit, state }, parameters) {
-      const { viewUuid, withOut = [] } = parameters
+    deleteRecordContainer({ commit, state, dispatch }, parameters) {
+      const { viewUuid, withOut = [], isNew = false } = parameters
+      var setNews = []
       const record = state.recordSelection.filter(itemRecord => {
         // ignore this uuid
         if (withOut.includes(itemRecord.containerUuid)) {
@@ -293,12 +295,24 @@ const data = {
         }
         // remove window and tabs data
         if (itemRecord.parentUuid) {
+          if (isNew) {
+            setNews.push(itemRecord.containerUuid)
+          }
           return itemRecord.parentUuid !== viewUuid
         }
         // remove browser data
         return itemRecord.containerUuid !== viewUuid
       })
       commit('deleteRecordContainer', record)
+
+      if (setNews.length) {
+        setNews.forEach(uuid => {
+          dispatch('setRecordSelection', {
+            parentUuid: viewUuid,
+            containerUuid: uuid
+          })
+        })
+      }
     },
     /**
      * @param {string} tableName
@@ -373,6 +387,7 @@ const data = {
             )
 
             // datatables attribute
+            values.isNew = false
             values.isEdit = false
             values.isSelected = false
             values.isReadOnlyFromRow = false
