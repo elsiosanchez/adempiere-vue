@@ -103,7 +103,8 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   parsedDefaultValue = parsedValueComponent({
     fieldType: componentReference.type,
     value: parsedDefaultValue,
-    referenceType: componentReference.alias[0]
+    referenceType: componentReference.alias[0],
+    isMandatory: fieldGRPC.getIsmandatory()
   })
 
   var parsedDefaultValueTo = fieldGRPC.getDefaultvalueto()
@@ -117,7 +118,8 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   parsedDefaultValueTo = parsedValueComponent({
     fieldType: componentReference.type,
     value: parsedDefaultValueTo,
-    referenceType: componentReference.alias[0]
+    referenceType: componentReference.alias[0],
+    isMandatory: fieldGRPC.getIsmandatory()
   })
 
   var field = {
@@ -566,7 +568,7 @@ export function sortFields(arr, orderBy = 'sequence', type = 'asc', panelType = 
   return arr
 }
 
-export function parsedValueComponent({ fieldType, value, referenceType }) {
+export function parsedValueComponent({ fieldType, value, referenceType, isMandatory = false }) {
   if (value === undefined || value === null) {
     return undefined
   }
@@ -576,7 +578,10 @@ export function parsedValueComponent({ fieldType, value, referenceType }) {
     // data type Number
     case 'FieldNumber':
       if (String(value).trim() === '') {
-        returnValue = 0
+        returnValue = undefined
+        if (isMandatory) {
+          returnValue = 0
+        }
       } else {
         returnValue = Number(value)
       }

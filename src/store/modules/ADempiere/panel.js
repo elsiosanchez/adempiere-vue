@@ -5,7 +5,7 @@
 // - Window: Just need storage tab and fields
 // - Process & Report: Always save a panel and parameters
 // - Smart Browser: Can have a search panel, table panel and process panel
-import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue, parsedValueComponent, showMessage } from '@/utils/ADempiere'
+import evaluator, { assignedGroup, fieldIsDisplayed, isEmptyValue, parseContext, parsedValueComponent, showMessage } from '@/utils/ADempiere'
 import router from '@/router'
 import language from '@/lang'
 
@@ -214,12 +214,9 @@ const panel = {
     resetPanelToNew({ dispatch, getters }, parameters) {
       const { parentUuid, containerUuid, panelType = 'window' } = parameters
 
-      const defaultAttributes = getters.getColumnNamesAndValues({
-        containerUuid: containerUuid,
-        propertyName: 'parsedDefaultValue',
-        isObjectReturn: true,
-        panelType: panelType,
-        isAddDisplayColumn: true
+      const defaultAttributes = getters.getParsedDefaultValues({
+        parentUuid: parentUuid,
+        containerUuid: containerUuid
       })
       if (panelType === 'window') {
         // redirect to create new record
@@ -775,6 +772,36 @@ const panel = {
         return attributesObject
       }
       return attributesList
+    },
+    getParsedDefaultValues: (state, getters) => ({
+      parentUuid,
+      containerUuid
+    }) => {
+      var attributesList = getters.getFieldsListFromPanel(containerUuid)
+      var attributesObject = {}
+
+      attributesList
+        .map(fieldItem => {
+          var valueToReturn
+
+          if (String(fieldItem.defaultValue).includes('@')) {
+            valueToReturn = parseContext({
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
+              columnName: fieldItem.columnName,
+              value: fieldItem.defaultValue
+            })
+          } else {
+            valueToReturn = fieldItem.parsedDefaultValue
+          }
+          attributesObject[fieldItem.columnName] = valueToReturn
+
+          return {
+            columnName: fieldItem.columnName,
+            value: valueToReturn
+          }
+        })
+      return attributesObject
     },
     getFieldsIsDisplayed: (state, getters) => (containerUuid) => {
       const fieldList = getters.getFieldsListFromPanel(containerUuid)
