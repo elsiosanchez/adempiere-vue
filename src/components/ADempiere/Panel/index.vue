@@ -300,6 +300,11 @@ export default {
         this.setTagsViewTitle(this.uuidRecord)
       }
     },
+    getterIsLoadedField(value) {
+      if (value) {
+        this.readParameters(this.$route)
+      }
+    },
     '$route.query.action'(newValue, oldValue) {
       // used in field, if uuid record or different create-new, field is read only
       this.uuidRecord = newValue
@@ -353,7 +358,6 @@ export default {
     },
     generatePanel(fieldList) {
       // order and assign groups
-      this.isLoadPanel = false // is declared false to check that it is loaded from the store and must read parameters again
       this.fieldList = fieldList
       if (fieldList.length) {
         this.fieldGroups = this.sortAndGroup(fieldList)
