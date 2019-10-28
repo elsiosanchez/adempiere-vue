@@ -78,7 +78,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
-import Badge from '@/components/ADempiere/badge'
+import Badge from '@/components/ADempiere/Badge'
 
 export default {
   components: {
