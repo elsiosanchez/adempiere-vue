@@ -116,7 +116,7 @@ const data = {
      * @param {boolean} isEdit, define if used values form panel
      */
     addNewRow({ commit, getters, rootGetters }, parameters) {
-      const { parentUuid, containerUuid, isPanelValues = false, isEdit = true } = parameters
+      const { parentUuid, containerUuid, isPanelValues = false, isEdit = true, isNew = true } = parameters
       var { fieldList } = parameters
       if (fieldList === undefined) {
         fieldList = rootGetters.getFieldsListFromPanel(containerUuid)
@@ -135,6 +135,7 @@ const data = {
         isObjectReturn: true,
         isAddDisplayColumn: true
       })
+      values.isNew = isNew
       values.isEdit = isEdit
       values.isSendServer = false
 
@@ -386,6 +387,7 @@ const data = {
             )
 
             // datatables attribute
+            values.isNew = false
             values.isEdit = false
             values.isSelected = false
             values.isReadOnlyFromRow = false
