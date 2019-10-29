@@ -5,12 +5,6 @@
       width="400"
       trigger="click"
     >
-      <el-button
-        icon="el-icon-delete"
-        type="text"
-        style="position: fixed;z-index: inherit;right: 4%;"
-        @click.native.prevent="deleteAll()"
-      />
       <el-table
         :data="getRecordNotification"
         :highlight-current-row="true"
@@ -21,6 +15,13 @@
           fixed="right"
           width="50"
         >
+          <template slot="header">
+            <el-button
+              icon="el-icon-delete"
+              type="text"
+              @click.native.prevent="deleteAll()"
+            />
+          </template>
           <template slot-scope="scope">
             <el-button
               icon="el-icon-close"
