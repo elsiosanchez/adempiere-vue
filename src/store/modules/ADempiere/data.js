@@ -1,5 +1,5 @@
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
-import { convertValuesMapToObject, isEmptyValue, parseContext, showMessage } from '@/utils/ADempiere'
+import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const data = {
@@ -115,37 +115,46 @@ const data = {
      * @param {boolean} isPanelValues, define if used values form panel
      * @param {boolean} isEdit, define if used values form panel
      */
-    addNewRow({ commit, getters, rootGetters }, parameters) {
+    addNewRow({ commit, getters, rootGetters, dispatch }, parameters) {
       const { parentUuid, containerUuid, isPanelValues = false, isEdit = true, isNew = true } = parameters
-      var { fieldList } = parameters
-      if (fieldList === undefined) {
-        fieldList = rootGetters.getFieldsListFromPanel(containerUuid)
+      var { fieldList = [] } = parameters
+
+      const tabPanel = rootGetters.getPanel(containerUuid)
+
+      if (!fieldList.length) {
+        fieldList = tabPanel.fieldList // rootGetters.getFieldsListFromPanel(containerUuid)
       }
 
-      const dataStore = getters.getDataRecordsList(containerUuid)
+      var values = {}
       // add row with default values to create new record
-      var propertyName = 'parsedDefaultValue'
       if (isPanelValues) {
         // add row with values used from record in panel
-        propertyName = 'value'
+        values = rootGetters.getColumnNamesAndValues({
+          containerUuid: containerUuid,
+          propertyName: 'value',
+          isObjectReturn: true,
+          isAddDisplayColumn: true,
+          fieldList: fieldList
+        })
+      } else {
+        values = getters.getParsedDefaultValues({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          fieldList: fieldList
+        })
       }
-      var values = rootGetters.getColumnNamesAndValues({
-        containerUuid: containerUuid,
-        propertyName: propertyName,
-        isObjectReturn: true,
-        isAddDisplayColumn: true
-      })
       values.isNew = isNew
       values.isEdit = isEdit
       values.isSendServer = false
 
-      var linkColumnName
       // get the link column name from the tab
-      const tab = rootGetters.getPanel(containerUuid)
-      linkColumnName = tab.linkColumnName
+      var linkColumnName = tabPanel.linkColumnName
       if (isEmptyValue(linkColumnName)) {
         // get the link column name from field list
-        linkColumnName = tab.fieldLinkColumnName
+        linkColumnName = tabPanel.fieldLinkColumnName
+      }
+      if (!isEmptyValue(linkColumnName)) {
+        linkColumnName = parseInt(tabPanel.fieldLinkColumnName, 10)
       }
 
       var valueLink
@@ -160,57 +169,66 @@ const data = {
 
       // get display column
       if (fieldList.length) {
-        var propertyValue = 'defaultValue'
-        if (isPanelValues) {
-          propertyValue = 'value'
-        }
         fieldList
           .filter(itemField => itemField.componentPath === 'FieldSelect')
           .forEach(itemField => {
-            var parsedValue = itemField[propertyValue]
+            var valueGetDisplayColumn = values[itemField.columnName]
 
             // TODO: First evaluate if is read only
             // overwrite value with column link
-            if (linkColumnName === itemField.columnName) {
-              parsedValue = valueLink
-            } else if (String(parsedValue).includes('@')) {
-              // get value form context
-              parsedValue = parseContext({
-                parentUuid: parentUuid,
-                containerUuid: containerUuid,
-                columnName: itemField.columnName,
-                value: parsedValue
-              })
+            if (!isEmptyValue(linkColumnName) && linkColumnName === itemField.columnName) {
+              valueGetDisplayColumn = valueLink
+            }
+
+            // break this itineration if is empty
+            if (isEmptyValue(valueGetDisplayColumn)) {
+              return
             }
             // always the values for these types of fields are integers
             if (['TableDirect'].includes(itemField.referenceType)) {
-              parsedValue = parseInt(parsedValue)
-            }
-
-            if (!isEmptyValue(parsedValue)) {
-              // get label (DisplayColumn) from vuex store
-              const option = rootGetters.getLookupItem({
-                parentUuid: parentUuid,
-                containerUuid: containerUuid,
-                directQuery: itemField.reference.directQuery,
-                tableName: itemField.reference.tableName,
-                value: parsedValue
-              })
-              // if there is a lookup option, assign the display column with the label
-              if (option) {
-                values['DisplayColumn_' + itemField.columnName] = option.label
-              } else if (linkColumnName === itemField.columnName) {
-                // get context value if link column exists and does not exist in row
-                const label = rootGetters.getContext({
-                  parentUuid: parentUuid,
-                  containerUuid: containerUuid,
-                  columnName: 'Name'
-                })
-                values['DisplayColumn_' + itemField.columnName] = label
-              } else {
-                // TODO: Add get from data server
+              valueGetDisplayColumn = parseInt(valueGetDisplayColumn, 10)
+            } else {
+              if (!isNaN(valueGetDisplayColumn)) {
+                valueGetDisplayColumn = parseInt(valueGetDisplayColumn, 10)
               }
             }
+
+            // get label (DisplayColumn) from vuex store
+            const options = rootGetters.getLookupAll({
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
+              tableName: itemField.reference.tableName,
+              query: itemField.reference.query,
+              directQuery: itemField.reference.directQuery,
+              value: valueGetDisplayColumn
+            })
+
+            const option = options.find(itemOption => itemOption.key === valueGetDisplayColumn)
+            // if there is a lookup option, assign the display column with the label
+            if (option) {
+              values['DisplayColumn_' + itemField.columnName] = option.label
+              return
+            }
+            if (linkColumnName === itemField.columnName) {
+              // get context value if link column exists and does not exist in row
+              const label = rootGetters.getContext({
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
+                columnName: 'Name'
+              })
+              if (label) {
+                values['DisplayColumn_' + itemField.columnName] = label
+                return
+              }
+            }
+            // get from server
+            dispatch('getLookupItemFromServer', {
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
+              tableName: itemField.reference.tableName,
+              directQuery: itemField.reference.directQuery,
+              value: valueGetDisplayColumn
+            })
           })
       }
 
@@ -218,6 +236,8 @@ const data = {
       if (isEmptyValue(values[linkColumnName])) {
         values[linkColumnName] = valueLink
       }
+
+      const dataStore = getters.getDataRecordsList(containerUuid)
 
       commit('addNewRow', {
         values: values,
