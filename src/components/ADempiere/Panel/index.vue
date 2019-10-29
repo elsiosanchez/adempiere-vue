@@ -389,6 +389,10 @@ export default {
         this.getterFieldList.forEach(fieldItem => {
           if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAdvancedQuery) {
             fieldItem.isShowedFromUser = true
+            fieldItem.value = parsedValueComponent({
+              fieldType: fieldItem.componentPath,
+              value: route.query[fieldItem.columnName]
+            })
             if (String(route.query.isAdvancedQuery) === String(fieldItem.isAdvancedQuery)) {
               fieldItem.value = parsedValueComponent({
                 fieldType: fieldItem.componentPath,
