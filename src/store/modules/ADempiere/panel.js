@@ -706,9 +706,14 @@ const panel = {
       isAddDisplayColumn = false,
       isAddRangeColumn = false,
       withOut = [],
-      isEvaluatedChangedValue = false
+      isEvaluatedChangedValue = false,
+      fieldList = []
     }) => {
-      var attributesList = getters.getFieldsListFromPanel(containerUuid)
+      if (!fieldList.length) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid)
+      }
+
+      var attributesList = fieldList
       var attributesObject = {}
       var displayColumnsList = []
       var rangeColumnsList = []
@@ -775,12 +780,15 @@ const panel = {
     },
     getParsedDefaultValues: (state, getters) => ({
       parentUuid,
-      containerUuid
+      containerUuid,
+      fieldList = []
     }) => {
-      var attributesList = getters.getFieldsListFromPanel(containerUuid)
+      if (!fieldList.length) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid)
+      }
       var attributesObject = {}
 
-      attributesList
+      fieldList
         .map(fieldItem => {
           var valueToReturn
 
@@ -794,6 +802,12 @@ const panel = {
           } else {
             valueToReturn = fieldItem.parsedDefaultValue
           }
+          valueToReturn = parsedValueComponent({
+            fieldType: fieldItem.componentPath,
+            referenceType: fieldItem.referenceType,
+            isMandatory: fieldItem.isMandatory,
+            value: valueToReturn
+          })
           attributesObject[fieldItem.columnName] = valueToReturn
 
           return {
