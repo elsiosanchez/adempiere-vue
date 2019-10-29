@@ -126,7 +126,7 @@ export default {
     }
   },
   beforeMount() {
-    this.options = this.getterLookupAll
+    this.options = this.getterLookupList
 
     // enable to dataTable records
     // TODO: Evlauate values with empty string or number in 0
