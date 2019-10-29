@@ -173,7 +173,6 @@
             style="width: 100%"
             border
             :row-key="getterPanel.keyColumn"
-            highlight-current-row
             :reserve-selection="true"
             :row-style="rowStyle"
             :data="showTableSearch ? filterResult() : getterDataRecords"
