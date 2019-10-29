@@ -1,5 +1,6 @@
 <template>
   <el-switch
+    :ref="metadata.columnName"
     v-model="value"
     :inactive-text="$t('components.switchInactiveText')"
     :active-text="$t('components.switchActiveText')"
@@ -65,6 +66,11 @@ export default {
           fieldsExcludes: !fieldReadOnlyForm.isChangedAllForm ? [this.metadata.columnName] : [],
           currenValue: value
         })
+      }
+    },
+    activeFocus(columnName) {
+      if (this.metadata.isUpdateable) {
+        this.$refs[columnName].focus()
       }
     }
   }

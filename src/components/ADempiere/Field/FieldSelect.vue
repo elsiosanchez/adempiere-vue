@@ -1,5 +1,6 @@
 <template>
   <el-select
+    :ref="metadata.columnName"
     v-model="value"
     :filterable="!isMobile"
     :placeholder="metadata.help"
@@ -251,6 +252,11 @@ export default {
       })
       // TODO: Evaluate if is number -1 or string '' (or default value)
       this.value = this.blanckOption.key
+    },
+    activeFocus(columnName) {
+      if (this.metadata.isUpdateable) {
+        this.$refs[columnName].focus()
+      }
     }
   }
 }

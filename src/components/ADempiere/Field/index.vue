@@ -17,6 +17,7 @@
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
       <component
         :is="afterLoader"
+        :ref="field.columnName"
         :metadata="{
           ...field,
           panelType: panelType,
@@ -261,6 +262,11 @@ export default {
         }
       })
       return Boolean(field)
+    },
+    focus(value) {
+      if (this.isDisplayed() && this.isMandatory() && !this.isReadOnly()) {
+        this.$refs[value].activeFocus(value)
+      }
     }
   }
 }

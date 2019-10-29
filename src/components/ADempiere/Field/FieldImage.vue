@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-upload
+      :ref="metadata.columnName"
       with-credentials
       action="https://jsonplaceholder.typicode.com/posts/"
       list-type="picture-card"
@@ -82,6 +83,11 @@ export default {
         this.$message.error(this.$t('components.imageError'))
       }
       return isJPG + isPNG + isLt2M
+    },
+    activeFocus(columnName) {
+      if (this.metadata.isUpdateable) {
+        this.$refs[columnName].focus()
+      }
     }
   }
 }
