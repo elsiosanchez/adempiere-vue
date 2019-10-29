@@ -480,21 +480,6 @@ export default {
         return true
       }
       return false
-    },
-    isDisabledAddNewIcono() {
-      if (this.isParent) {
-        return true
-      }
-      if (this.$route.query.action === 'create-new') {
-        return true
-      }
-      if (!this.getterPanel.isInsertRecord) {
-        return true
-      }
-      if (this.isReadOnlyParent) {
-        return true
-      }
-      return false
     }
   },
   created() {
