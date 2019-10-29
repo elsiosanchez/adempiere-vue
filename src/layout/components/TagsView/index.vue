@@ -163,6 +163,9 @@ export default {
             }
           }
           if (tag.to.name === this.$route.name) {
+            if (tag.to.query.action && tag.to.query.action === this.$route.query.action) {
+              tag.to.params.isReadParameters = false
+            }
             this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {

@@ -415,7 +415,9 @@ export default {
           parameters.columnName = 'UUID'
         }
         // Only call get data if panel type is window
-        this.getData(parameters)
+        if (!route.params.hasOwnProperty('isReadParameters') || route.params.isReadParameters) {
+          this.getData(parameters)
+        }
       } else {
         if (this.panelType === 'table' && route.query.action === 'advancedQuery') {
           // TODO: use action notifyPanelChange with isShowedField in true
