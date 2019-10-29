@@ -1,5 +1,6 @@
 <template>
   <el-date-picker
+    :ref="metadata.columnName"
     v-model="value"
     :format="formatView"
     :value-format="formatSend"
@@ -190,6 +191,11 @@ export default {
         valueTo = new Date(valueTo)
       }
       this.handleChange(valueFirst, valueTo)
+    },
+    activeFocus(columnName) {
+      if (this.metadata.isUpdateable) {
+        this.$refs[columnName].focus()
+      }
     }
   }
 }

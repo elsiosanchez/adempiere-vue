@@ -1,5 +1,6 @@
 <template>
   <el-input
+    :ref="metadata.columnName"
     v-model="value"
     :pattern="pattern"
     :rows="rows"
@@ -98,6 +99,11 @@ export default {
       } else {
         // e.target.focus()
         console.log('url wrong')
+      }
+    },
+    activeFocus(columnName) {
+      if (this.metadata.isUpdateable) {
+        this.$refs[columnName].focus()
       }
     }
   }

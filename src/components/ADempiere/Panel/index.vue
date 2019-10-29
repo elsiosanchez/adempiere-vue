@@ -34,13 +34,14 @@
               <el-row :gutter="gutterRow">
                 <template v-for="(fieldAttributes, subKey) in firstGroup.metadataFields">
                   <field-definition
+                    :ref="fieldAttributes.columnName"
                     :key="subKey"
                     :parent-uuid="parentUuid"
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...fieldAttributes,
                       displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
-                      optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
+                      optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord
                     }"
                     :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                     :panel-type="panelType"
@@ -91,13 +92,14 @@
                     <el-row :gutter="gutterRow">
                       <template v-for="(fieldAttributes, subKey) in item.metadataFields">
                         <field-definition
+                          :ref="fieldAttributes.columnName"
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...fieldAttributes,
                             displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
-                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
+                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord
                           }"
                           :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                           :panel-type="panelType"
@@ -143,13 +145,14 @@
                     <el-row :gutter="gutterRow">
                       <template v-for="(fieldAttributes, subKey) in item.metadataFields">
                         <field-definition
+                          :ref="fieldAttributes.columnName"
                           :key="subKey"
                           :parent-uuid="parentUuid"
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...fieldAttributes,
                             displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
-                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord,
+                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord
                           }"
                           :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                           :panel-type="panelType"
@@ -386,6 +389,10 @@ export default {
         this.getterFieldList.forEach(fieldItem => {
           if (route.query.hasOwnProperty(fieldItem.columnName) && !fieldItem.isAdvancedQuery) {
             fieldItem.isShowedFromUser = true
+            fieldItem.value = parsedValueComponent({
+              fieldType: fieldItem.componentPath,
+              value: route.query[fieldItem.columnName]
+            })
             if (String(route.query.isAdvancedQuery) === String(fieldItem.isAdvancedQuery)) {
               fieldItem.value = parsedValueComponent({
                 fieldType: fieldItem.componentPath,
@@ -497,9 +504,11 @@ export default {
                 })
               }
               this.setTagsViewTitle(this.$route.query.action)
+              this.setFocus()
               this.isLoadRecord = true
             } else {
               this.$router.push({ query: { action: 'create-new', ...this.$route.query }})
+              this.setFocus()
             }
           })
       }
@@ -608,7 +617,25 @@ export default {
           })
         })
       }
+      this.setFocus()
       this.setTagsViewTitle(uuidRecord)
+    },
+    setFocus() {
+      var isFocusEnabled = false
+      this.getterFieldList.forEach((element) => {
+        if (!isFocusEnabled && this.isFocusable(element) && this.$refs.hasOwnProperty(element.columnName)) {
+          var field = this.$refs[element.columnName][0]
+          isFocusEnabled = true
+          field.focus(element.columnName)
+        }
+      })
+    },
+    isFocusable(field) {
+      if (field.isActive && field.isDisplayed && !field.isReadOnly && field.isUpdateable) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }

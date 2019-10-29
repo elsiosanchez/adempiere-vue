@@ -2,7 +2,7 @@
   <el-container v-if="isLoadPanel" label-position="top" style="height: inherit;">
     <el-main style="padding: 0px!important; overflow: hidden;">
       <el-container style="height: 100%;">
-        <el-header :style="isAdvancedQuery ? activeName ? {height: '50%',overflow: 'auto'} :{height: '12%',overflow: 'hidden'} : { height: '5%' }">
+        <el-header :style="isAdvancedQuery ? activeName ? { height: '50%',overflow: 'auto' } : { height: '12%',overflow: 'hidden' } : { height: '5%' }">
           <el-collapse
             v-if="isParent && isAdvancedQuery"
             v-show="isAdvancedQuery"
@@ -52,8 +52,8 @@
                 v-if="!isParent && isPanelWindow"
                 type="text"
                 :icon="(getterNewRecords <= 0) ? 'el-icon-circle-plus' : 'el-icon-remove'"
-                style="float: right;padding-top: 8px;font-size: larger;padding-left: 6px; color: gray;"
-                :disabled="isDisabledAddNewIcono"
+                style="float: right; padding-top: 8px; font-size: larger; padding-left: 6px; color: gray;"
+                :disabled="getterNewRecords <= 0 ? isDisabledAddNew : false"
                 @click="(getterNewRecords <= 0) ? addNewRow() : callOffNewRecord()"
               />
               <icon-element v-if="!isMobile" icon="el-icon-news">
@@ -70,7 +70,7 @@
                 class="field-optional"
               />
               <!-- <i class="el-icon-circle-plus-outline" /> -->
-              <div :class="{'show':showTableSearch}" class="table-search">
+              <div :class="{ 'show': showTableSearch }" class="table-search">
                 <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
                 <el-input
                   ref="headerSearchSelect"
@@ -151,7 +151,7 @@
                   v-show="isParent && isPanelWindow && isMobile && getDataSelection.length"
                   type="text"
                   icon="el-icon-delete"
-                  style="color: black;font-size: 17px;font-weight: 605!important;"
+                  style="color: black; font-size: 17px; font-weight: 605 !important;"
                   @click="deleteSelection()"
                 />
                 <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
@@ -165,7 +165,7 @@
             </div>
           </div>
         </el-header>
-        <el-main style="padding: 0px!important; overflow: hidden;">
+        <el-main style="padding: 0px !important; overflow: hidden;">
           <el-table
             ref="multipleTable"
             v-loading="isLoaded"
@@ -270,7 +270,6 @@ import { FIELD_READ_ONLY_FORM } from '@/components/ADempiere/Field/references'
 import { fieldIsDisplayed } from '@/utils/ADempiere'
 
 export default {
-
   name: 'DataTable',
   components: {
     FieldDefinition,

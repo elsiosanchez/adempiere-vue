@@ -1,5 +1,6 @@
 <template>
   <el-time-picker
+    :ref="metadata.columnName"
     v-model="value"
     :picker-options="{
       minTime: minValue,
@@ -69,6 +70,11 @@ export default {
       }
 
       this.handleChange(value)
+    },
+    activeFocus(columnName) {
+      if (this.metadata.isUpdateable) {
+        this.$refs[columnName].focus()
+      }
     }
   }
 }
