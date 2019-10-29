@@ -255,10 +255,11 @@
       <div>
         <div style="float: right;">
           <el-pagination
+            small
             layout="slot, total, prev, pager, next"
             :current-page="currentPage"
             :page-size="defaultMaxPagination"
-            :total="getterDataRecords.length"
+            :total="getterRecordCount"
             @current-change="handleChangePage"
           >
             <template v-slot>
@@ -361,6 +362,9 @@ export default {
     },
     getterDataRecordsAndSelection() {
       return this.$store.getters.getDataRecordAndSelection(this.containerUuid)
+    },
+    getterRecordCount() {
+      return this.getterDataRecordsAndSelection.recordCount
     },
     getterDataRecords() {
       return this.getterDataRecordsAndSelection.record

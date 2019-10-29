@@ -359,17 +359,17 @@ const data = {
           type: 'info'
         })
       }
-      const allData = getters.getDataRecordAndSelection(containerUuid)
+      const dataStore = getters.getDataRecordAndSelection(containerUuid)
 
       var nextPageToken
-      if (!isEmptyValue(allData.nextPageToken)) {
-        nextPageToken = allData.nextPageToken + '-' + allData.pageNumber
+      if (!isEmptyValue(dataStore.nextPageToken)) {
+        nextPageToken = dataStore.nextPageToken + '-' + dataStore.pageNumber
       }
 
       var inEdited = []
       if (!isParentTab) {
         // TODO: Evaluate peformance to evaluate records to edit
-        inEdited = allData.record.filter(itemRecord => {
+        inEdited = dataStore.record.filter(itemRecord => {
           return itemRecord.isEdit && !itemRecord.isNew
         })
       }
@@ -413,7 +413,7 @@ const data = {
               token = token.slice(0, -1)
             }
           } else {
-            token = allData.nextPageToken
+            token = dataStore.nextPageToken
           }
           if (isShowNotification) {
             let searchMessage = 'searchWithOutRecords'
@@ -430,10 +430,10 @@ const data = {
             parentUuid: parentUuid,
             containerUuid: containerUuid,
             record: record,
-            selection: allData.selection,
+            selection: dataStore.selection,
             recordCount: response.getRecordcount(),
             nextPageToken: token,
-            pageNumber: allData.pageNumber
+            pageNumber: dataStore.pageNumber
           })
           return record
         })
