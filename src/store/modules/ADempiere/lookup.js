@@ -178,7 +178,12 @@ const lookup = {
           itemLookup.clientId === rootGetters.getContextClientId
       })
       if (lookupList) {
-        return lookupList.list
+        const resultLookup = lookupList.list.filter(lookup => {
+          if (lookup.key !== undefined) {
+            return lookup
+          }
+        })
+        return resultLookup
       }
       return []
     },
