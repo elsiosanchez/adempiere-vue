@@ -73,7 +73,7 @@ export default {
       }
     },
     handleClick(row) {
-      this.$router.push({ name: row.menuUuid, query: { action: (row.uuidRecord) ? row.uuidRecord : 'create-new', tabNumber: 0 }})
+      this.$router.push({ name: row.menuUuid, query: { action: (row.uuidRecord) ? row.uuidRecord : 'create-new', tabParent: 0 }})
     },
     subscribeChanges() {
       this.$store.subscribe((mutation, state) => {

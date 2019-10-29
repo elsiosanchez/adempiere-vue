@@ -50,7 +50,7 @@ export default {
     },
     currentTab(newValue, oldValue) {
       if (newValue !== oldValue) {
-        this.$router.push({ query: { ...this.$route.query, tabNumber: String(newValue) }})
+        this.$router.push({ query: { ...this.$route.query, tabParent: String(newValue) }})
       }
     }
   }

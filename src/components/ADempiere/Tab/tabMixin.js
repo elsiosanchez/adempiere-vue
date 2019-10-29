@@ -12,7 +12,7 @@ export const tabMixin = {
   },
   data() {
     return {
-      currentTab: this.$route.query.tabNumber,
+      currentTab: this.$route.query.tabParent,
       tabUuid: '',
       panelType: 'window',
       firstTableName: this.tabsList[0].tableName

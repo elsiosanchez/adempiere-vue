@@ -75,7 +75,7 @@ export default {
         this.$router.push({
           name: item.name,
           query: {
-            tabNumber: 0
+            tabParent: 0
           },
           params: {
             childs: item.children
