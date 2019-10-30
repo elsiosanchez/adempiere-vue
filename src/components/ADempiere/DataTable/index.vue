@@ -16,7 +16,7 @@
                 :metadata="getterPanel"
                 :panel-type="'table'"
                 :is-advanced-query="true"
-                style="height: 171; overflow: hidden; width:100%;"
+                :class="!activeName ? 'collapse_item' : 'collapse_item_wrap'"
               />
             </el-collapse-item>
           </el-collapse>
@@ -860,16 +860,6 @@ export default {
   }
 </style>
 <style>
-  .el-collapse-item__wrap {
-    min-height: 190px;
-    max-height: 200px;
-    will-change: height;
-    background-color: #fff;
-    overflow: auto;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    border-bottom: 1px solid #e6ebf5;
-  }
   .el-table > .cell {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -973,6 +963,16 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  .collapse_item_wrap {
+    min-height: 180px;
+    max-height: 180px;
+    will-change: height;
+    background-color: #fff;
+    overflow: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e6ebf5;
+  }
   .el-table__header-wrapper {
     .el-table__footer-wrapper {
       overflow: auto;
