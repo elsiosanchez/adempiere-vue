@@ -85,7 +85,6 @@ export default {
         tableName: this.metadata.reference.tableName,
         value: this.value
       })
-      // TODO: Evaluate -1 when list is string key
       if (allOptions.length && !allOptions[0].key) {
         allOptions.unshift(this.blanckOption)
       }
@@ -127,10 +126,10 @@ export default {
   },
   beforeMount() {
     this.options = this.getterLookupList
-
     // enable to dataTable records
-    // TODO: Evlauate values with empty string or number in 0
+    // Evaluate values of the displayColumn with empty string or number at 0
     if (!this.isEmptyValue(this.metadata.displayColumn)) {
+      this.remoteMethod()
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
         key = this.valueModel
@@ -161,6 +160,7 @@ export default {
       this.handleChange(value, undefined, label)
     },
     validateValue(value) {
+      // this.remoteMethod()
       if (['TableDirect'].includes(this.metadata.referenceType)) {
         return this.isEmptyValue(value) ? undefined : parseInt(value, 10)
       }
