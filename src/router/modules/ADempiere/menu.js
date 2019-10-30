@@ -93,6 +93,7 @@ function getChildFromAction(menu, index) {
       title: menu.getName(),
       description: menu.getDescription(),
       uuid: menu.getReferenceuuid(),
+      tabUuid: '',
       type: actionAttributes.name,
       parentUuid: menu.getParentuuid(),
       icon: actionAttributes.icon,

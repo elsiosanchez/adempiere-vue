@@ -35,6 +35,7 @@ export const tabMixin = {
         parentUuid: this.windowUuid,
         containerUuid: this.tabUuid
       })
+      this.$route.meta.tabUuid = this.tabUuid
     },
     setCurrentTabChild() {
       if (this.$route.query.tabChild === undefined && this.firstIndex) {

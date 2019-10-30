@@ -274,10 +274,12 @@ const data = {
       const data = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === containerUuid
       })
-      commit('setIsloadContext', {
-        data: data,
-        isLoadedContext: true
-      })
+      if (data) {
+        commit('setIsloadContext', {
+          data: data,
+          isLoadedContext: true
+        })
+      }
     },
     /**
      * Set record, selection, page number, token, and record count, with container uuid

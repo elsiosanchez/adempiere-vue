@@ -163,7 +163,7 @@ export default {
             }
           }
           if (tag.to.name === this.$route.name) {
-            if (tag.to.query && tag.to.query.action && tag.to.query.action === this.$route.query.action) {
+            if (tag.to.query.action && tag.to.query.action === this.$route.query.action) {
               tag.to.params.isReadParameters = false
             }
             this.$refs.scrollPane.moveToTarget(tag)
@@ -187,16 +187,16 @@ export default {
       })
     },
     closeSelectedTag(view) {
-      if (view.meta) {
-        if (view.meta.uuid && (view.meta.type === 'window' || view.meta.type === 'browser')) {
+      if (view.meta && view.meta.uuid && view.meta.type) {
+        this.$store.dispatch('resetPanelToNew', {
+          parentUuid: view.meta.type !== 'window' ? undefined : view.meta.uuid,
+          containerUuid: view.meta.type === 'window' ? view.meta.tabUuid : view.meta.uuid,
+          panelType: view.meta.type,
+          isNewRecord: false
+        })
+        if (view.meta.type === 'window' || view.meta.type === 'browser') {
           this.$store.dispatch('deleteRecordContainer', {
             viewUuid: view.meta.uuid
-          })
-        }
-        if (view.meta.type && view.meta.type !== 'window') {
-          this.$store.dispatch('resetPanelToNew', {
-            containerUuid: view.meta.uuid,
-            panelType: view.meta.type
           })
         }
       }

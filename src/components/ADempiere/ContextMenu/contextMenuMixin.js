@@ -313,7 +313,8 @@ export const contextMixin = {
           containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
           recordUuid: this.recordUuid,
-          panelType: this.panelType
+          panelType: this.panelType,
+          isNewRecord: action.action === 'resetPanelToNew'
         })
       } else if (action.type === 'reference') {
         this.$store.dispatch('getWindowByUuid', { routes: this.permissionRoutes, windowUuid: action.windowUuid })

@@ -212,13 +212,13 @@ const panel = {
      * TODO: Evaluate if it is necessary to parse the default values
      */
     resetPanelToNew({ dispatch, getters }, parameters) {
-      const { parentUuid, containerUuid, panelType = 'window' } = parameters
+      const { parentUuid, containerUuid, panelType = 'window', isNewRecord = false } = parameters
 
       const defaultAttributes = getters.getParsedDefaultValues({
         parentUuid: parentUuid,
         containerUuid: containerUuid
       })
-      if (panelType === 'window') {
+      if (panelType === 'window' && isNewRecord) {
         // redirect to create new record
         const oldRoute = router.app._route
         router.push({
