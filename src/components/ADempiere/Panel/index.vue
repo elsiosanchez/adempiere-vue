@@ -334,7 +334,7 @@ export default {
   },
   methods: {
     cards() {
-      if (this.isMobile || this.groupsView.length < 2 || this.fieldGroups.length < 2 || !this.isMutipleGroups || this.getterIsShowedRecordNavigation) {
+      if (this.isMobile || this.fieldGroups.length < 2 || this.getterIsShowedRecordNavigation) {
         return 'cards-not-group'
       }
       return 'cards-in-group'
