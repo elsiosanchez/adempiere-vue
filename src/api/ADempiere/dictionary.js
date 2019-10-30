@@ -24,10 +24,6 @@ export function getBrowser(uuid) {
   return Instance.call(this).requestBrowser(uuid)
 }
 
-export function getReport(uuid, childrenFields = false) {
-  return Instance.call(this).requestReport(uuid, childrenFields)
-}
-
 export function getTab(uuid, childrenFields = true) {
   return Instance.call(this).requestTab(uuid, childrenFields)
 }

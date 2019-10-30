@@ -260,16 +260,11 @@ export default {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
-    // TODO: Verify used
-    getterData() {
-      return this.$store.getters.getRecordDetail({
-        tableName: this.metadata.tableName,
-        recordUuid: this.$route.query.action
-      })
-    },
     getterRowData() {
-      if (this.isPanelWindow && !this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
-        return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+      if (this.isPanelWindow) {
+        if (!this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
+          return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+        }
       }
       return false
     },
@@ -323,14 +318,8 @@ export default {
     }
   },
   created() {
-    // get tab with uuid
-    if (this.isPanelWindow && !this.getterTotalDataRecordCount) {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.parentUuid,
-        containerUuid: this.containerUuid
-      })
-    }
-    this.getPanel(this.isAdvancedQuery)
+    // get fields with uuid
+    this.getPanel()
   },
   methods: {
     cards() {
@@ -342,7 +331,7 @@ export default {
     /**
      * Get the tab object with all its attributes as well as the fields it contains
      */
-    getPanel(isAdvancedQuery) {
+    getPanel() {
       var fieldList = this.getterFieldList
       if (fieldList && Array.isArray(fieldList)) {
         this.generatePanel(fieldList)
@@ -350,8 +339,8 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          type: isAdvancedQuery ? 'table' : this.panelType,
-          isAdvancedQuery: isAdvancedQuery
+          type: this.isAdvancedQuery ? 'table' : this.panelType,
+          isAdvancedQuery: this.isAdvancedQuery
         }).then(() => {
           this.isLoadFromServer = true
         }).catch(error => {
@@ -504,12 +493,11 @@ export default {
                 })
               }
               this.setTagsViewTitle(this.$route.query.action)
-              this.setFocus()
               this.isLoadRecord = true
             } else {
               this.$router.push({ query: { action: 'create-new', ...this.$route.query }})
-              this.setFocus()
             }
+            this.setFocus()
           })
       }
     },
@@ -570,16 +558,13 @@ export default {
       return res
     },
     setTagsViewTitle(actionValue) {
-      var tempRoute = this.$route
       if (actionValue === 'create-new' || actionValue === '') {
         this.tagTitle.action = this.$t('tagsView.newRecord')
       } else if (actionValue === 'advancedQuery') {
         this.tagTitle.action = this.$t('tagsView.advancedQuery')
       } else {
-        var field = this.fieldList.find(
-          fieldItem => fieldItem.isIdentifier === true
-        )
-        if (field !== undefined) {
+        var field = this.fieldList.find(fieldItem => fieldItem.isIdentifier)
+        if (field) {
           if (this.dataRecords[field.columnName]) {
             this.tagTitle.action = this.dataRecords[field.columnName]
           } else {
@@ -590,8 +575,8 @@ export default {
         }
       }
       if (this.isPanelWindow) {
-        var route = Object.assign({}, tempRoute, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
-        this.$store.dispatch('tagsView/updateVisitedView', route)
+        var tempRoute = Object.assign({}, this.$route, { title: `${this.tagTitle.base} - ${this.tagTitle.action}` })
+        this.$store.dispatch('tagsView/updateVisitedView', tempRoute)
       }
     },
     setData(dataTransfer) {
@@ -622,7 +607,7 @@ export default {
     },
     setFocus() {
       var isFocusEnabled = false
-      this.getterFieldList.forEach((element) => {
+      this.getterFieldList.forEach(element => {
         if (!isFocusEnabled && this.isFocusable(element) && this.$refs.hasOwnProperty(element.columnName)) {
           var field = this.$refs[element.columnName][0]
           isFocusEnabled = true
