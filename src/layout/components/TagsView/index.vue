@@ -163,7 +163,7 @@ export default {
             }
           }
           if (tag.to.name === this.$route.name) {
-            if (tag.to.query.action && tag.to.query.action === this.$route.query.action) {
+            if (tag.to.query && tag.to.query.action && tag.to.query.action === this.$route.query.action) {
               tag.to.params.isReadParameters = false
             }
             this.$refs.scrollPane.moveToTarget(tag)
