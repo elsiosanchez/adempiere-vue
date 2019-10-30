@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
 import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
@@ -74,6 +75,9 @@ const data = {
     },
     addNewRow(state, payload) {
       payload.data = payload.data.unshift(payload.values)
+    },
+    addDisplayColumn(state, payload) {
+      Vue.set(payload.row, payload.columnName, payload.displayColumn)
     }
   },
   actions: {
@@ -153,9 +157,6 @@ const data = {
         // get the link column name from field list
         linkColumnName = tabPanel.fieldLinkColumnName
       }
-      if (!isEmptyValue(linkColumnName)) {
-        linkColumnName = parseInt(tabPanel.fieldLinkColumnName, 10)
-      }
 
       var valueLink
       // get context value if link column exists and does not exist in row
@@ -166,15 +167,18 @@ const data = {
           columnName: linkColumnName
         })
       }
+      if (!isEmptyValue(valueLink)) {
+        valueLink = parseInt(valueLink, 10)
+      }
 
       // get display column
       if (fieldList.length) {
         fieldList
+          // TODO: Evaluate if is field is read only and FieldSelect
           .filter(itemField => itemField.componentPath === 'FieldSelect')
           .forEach(itemField => {
             var valueGetDisplayColumn = values[itemField.columnName]
 
-            // TODO: First evaluate if is read only
             // overwrite value with column link
             if (!isEmptyValue(linkColumnName) && linkColumnName === itemField.columnName) {
               valueGetDisplayColumn = valueLink
@@ -211,13 +215,13 @@ const data = {
             }
             if (linkColumnName === itemField.columnName) {
               // get context value if link column exists and does not exist in row
-              const label = rootGetters.getContext({
+              const nameParent = rootGetters.getContext({
                 parentUuid: parentUuid,
                 containerUuid: containerUuid,
                 columnName: 'Name'
               })
-              if (label) {
-                values['DisplayColumn_' + itemField.columnName] = label
+              if (nameParent) {
+                values['DisplayColumn_' + itemField.columnName] = nameParent
                 return
               }
             }
@@ -229,6 +233,13 @@ const data = {
               directQuery: itemField.reference.directQuery,
               value: valueGetDisplayColumn
             })
+              .then(responseLookup => {
+                dispatch('addDisplayColumn', {
+                  containerUuid: containerUuid,
+                  columnName: itemField.columnName,
+                  displayColumn: responseLookup.label
+                })
+              })
           })
       }
 
@@ -238,10 +249,20 @@ const data = {
       }
 
       const dataStore = getters.getDataRecordsList(containerUuid)
-
       commit('addNewRow', {
         values: values,
         data: dataStore
+      })
+    },
+    addDisplayColumn({ commit, getters }, parameters) {
+      const { containerUuid, columnName, displayColumn } = parameters
+      const dataStore = getters.getDataRecordsList(containerUuid)
+      const rowRecord = dataStore.find(itemData => itemData.isNew)
+
+      commit('addDisplayColumn', {
+        row: rowRecord,
+        displayColumn: displayColumn,
+        columnName: 'DisplayColumn_' + columnName
       })
     },
     /**
