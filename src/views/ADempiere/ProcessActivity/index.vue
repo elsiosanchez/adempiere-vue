@@ -184,12 +184,10 @@ export default {
           }
         })
       } else {
-        this.$router.push({ path: activity.processIdPath })
-        this.$store.dispatch('notifyPanelChange', {
-          containerUuid: activity.containerUuid,
-          newValues: activity.parameters,
-          panelType: activity.panelType
+        activity.parameters.forEach(param => {
+          this.$route.query[param.columnName] = param.value
         })
+        this.$router.push({ path: activity.processIdPath, query: { ...this.$route.query }})
       }
     },
     checkStatus(isError, isProcessing, isReport) {
