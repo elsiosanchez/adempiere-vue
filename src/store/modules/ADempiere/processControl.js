@@ -323,12 +323,11 @@ const processControl = {
                 log: log.getLog()
               }
             })
-
             var processMetadata = rootGetters.getProcess(uuid)
             // if no exists metadata process in store and no request progess
             if (processMetadata === undefined && getters.getInRequestMetadata(uuid) === undefined) {
               commit('addInRequestMetadata', uuid)
-              dispatch('getProcessFromServer', uuid)
+              dispatch('getProcessFromServer', { containerUuid: uuid })
                 .finally(() => {
                   commit('deleteInRequestMetadata', uuid)
                 })
