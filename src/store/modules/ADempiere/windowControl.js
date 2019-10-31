@@ -223,7 +223,7 @@ const windowControl = {
       }
 
       // TODO: Add support to Binary columns (BinaryData)
-      const columnsToDontSend = ['BinaryData', 'Account_Acct']
+      const columnsToDontSend = ['Account_Acct']
 
       // attributes or fields
       var finalAttributes = rootGetters.getColumnNamesAndValues({

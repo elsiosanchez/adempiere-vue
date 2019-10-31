@@ -1,34 +1,16 @@
 <template>
-  <div>
-    <el-upload
-      :ref="metadata.columnName"
-      with-credentials
-      action="https://jsonplaceholder.typicode.com/posts/"
-      list-type="picture-card"
-      :on-preview="handlePictureCardPreview"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload"
-      :disabled="isDisabled"
-    >
-      <i class="el-icon-plus" />
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
-    <!-- <el-upload
-      :show-file-list="false"
-      :before-upload="beforeAvatarUpload"
-      class="avatar-uploader"
-      action="https://jsonplaceholder.typicode.com/posts/"
-      :disabled="metadata.readonly || metadata.disabled"
-    >
-      <img v-if="imageUrl" :src="imageUrl" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon" />
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog> -->
-  </div>
+  <el-upload
+    :ref="metadata.columnName"
+    action="https://jsonplaceholder.typicode.com/posts/"
+    :show-file-list="false"
+    :on-success="handleAvatarSuccess"
+    :before-upload="beforeAvatarUpload"
+    :disabled="isDisabled"
+    class="avatar-uploader"
+  >
+    <img v-if="value" :src="value" class="avatar">
+    <i v-else class="el-icon-plus avatar-uploader-icon" />
+  </el-upload>
 </template>
 
 <script>
@@ -39,9 +21,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      imageUrl: '',
-      dialogImageUrl: '',
-      dialogVisible: false
+      value: ''
     }
   },
   watch: {
@@ -59,20 +39,18 @@ export default {
     }
   },
   methods: {
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload(file) {
-      this.$store.dispatch('notifyFieldChange', {
+      this.value = URL.createObjectURL(file.raw)
+      // TODO: define one method to control change value
+      this.handleChange(this.value)
+      /* this.$store.dispatch('notifyFieldChange', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         columnName: this.metadata.columnName,
-        newValue: file
-      })
+        newValue: this.value
+      }) */
+    },
+    beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       // const isGIF = file.type === 'image/gif'
