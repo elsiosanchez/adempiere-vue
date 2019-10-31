@@ -105,6 +105,7 @@ export default {
     'metadata.displayColumn'(value) {
       if (this.isPanelWindow) {
         if (!this.isEmptyValue(value) && !this.options.find(itemOption => itemOption.label === value)) {
+          this.remoteMethod()
           this.othersOptions = [{
             key: this.value,
             label: this.metadata.displayColumn
@@ -160,7 +161,6 @@ export default {
       this.handleChange(value, undefined, label)
     },
     validateValue(value) {
-      // this.remoteMethod()
       if (['TableDirect'].includes(this.metadata.referenceType)) {
         return this.isEmptyValue(value) ? undefined : parseInt(value, 10)
       }
