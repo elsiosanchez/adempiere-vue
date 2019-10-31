@@ -8,7 +8,7 @@
     :placeholder="metadata.help"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
-    :maxlength="maxLength"
+    :maxlength="maxLength <= 0 ? undefined : maxLength"
     :show-password="metadata.isEncrypted ? true : false"
     @blur="validateInput"
     @change="preHandleChange"
