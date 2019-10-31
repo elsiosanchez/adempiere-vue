@@ -279,3 +279,11 @@ export function getReferencesList(parameters) {
 
   return Instance.call(this).listReferencesRequest(requestReference)
 }
+
+/**
+ *
+ * @param {string} parametersCallout.callout
+ */
+export function runCallOutRequest(parametersCallout) {
+  return Instance.call(this).runCalloutRequest(parametersCallout)
+}

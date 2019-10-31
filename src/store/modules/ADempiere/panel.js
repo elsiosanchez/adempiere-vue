@@ -316,6 +316,7 @@ const panel = {
       }
     },
     /**
+     * TODO: Add fieldAttributes
      * @param {string} params.parentUuid
      * @param {string} params.containerUuid
      * @param {string} params.columnName
@@ -325,14 +326,12 @@ const panel = {
      * @param {string} params.isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
-      var panel
-      if (params.isAdvancedQuery) {
-        panel = getters.getPanel(params.containerUuid, params.isAdvancedQuery)
-      } else {
-        panel = getters.getPanel(params.containerUuid)
-      }
+      const { parentUuid, containerUuid, columnName, isSendToServer = true, isAdvancedQuery = false, panelType = 'window' } = params
+      const panel = getters.getPanel(containerUuid, isAdvancedQuery)
       var fieldList = panel.fieldList
-      var field = field = fieldList.find(fieldItem => fieldItem.columnName === params.columnName)
+      // get field
+      var field = fieldList.find(fieldItem => fieldItem.columnName === columnName)
+
       params.newValue = parsedValueComponent({
         fieldType: field.componentPath,
         referenceType: field.referenceType,
@@ -347,12 +346,12 @@ const panel = {
         })
       }
 
-      if (!(params.panelType === 'table' || params.isAdvancedQuery)) {
+      if (!(panelType === 'table' || isAdvancedQuery)) {
         //  Call context management
         dispatch('setContext', {
-          parentUuid: params.parentUuid,
-          containerUuid: params.containerUuid,
-          columnName: params.columnName,
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          columnName: columnName,
           value: params.newValue
         })
       }
@@ -361,7 +360,6 @@ const panel = {
       if (params.newValue === field.value) {
         return
       }
-
       commit('changeFieldValue', {
         field: field,
         newValue: params.newValue,
@@ -419,21 +417,32 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-      if (params.isSendToServer) {
+      if (isSendToServer) {
+        if (!isEmptyValue(params.newValue) && !isEmptyValue(field.callout)) {
+          dispatch('getCallout', {
+            parentUuid: parentUuid,
+            containerUuid: containerUuid,
+            tableName: panel.tableName,
+            columnName: field.columnName,
+            callout: field.callout,
+            name: field.name,
+            value: params.newValue
+          })
+        }
         // TODO: refactory for it and change for a standard method
-        if (!getters.isNotReadyForSubmit(params.containerUuid)) {
+        if (!getters.isNotReadyForSubmit(containerUuid)) {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {
             dispatch('getBrowserSearch', {
-              containerUuid: params.containerUuid,
+              containerUuid: containerUuid,
               isClearSelection: true
             })
           }
           if (field.panelType === 'window' && fieldIsDisplayed(field)) {
-            var uuid = getters.getUuid(params.containerUuid)
+            var uuid = getters.getUuid(containerUuid)
             if (isEmptyValue(uuid)) {
               dispatch('createNewEntity', {
-                parentUuid: params.parentUuid,
-                containerUuid: params.containerUuid
+                parentUuid: parentUuid,
+                containerUuid: containerUuid
               })
                 .then(response => {
                   // change old value so that it is not send in the next update
@@ -464,7 +473,7 @@ const panel = {
                 })
             } else {
               dispatch('updateCurrentEntity', {
-                containerUuid: params.containerUuid,
+                containerUuid: containerUuid,
                 recordUuid: uuid
               })
                 .then(response => {
@@ -483,7 +492,7 @@ const panel = {
 
                   // change value in table
                   dispatch('notifyRowTableChange', {
-                    containerUuid: params.containerUuid,
+                    containerUuid: containerUuid,
                     row: response,
                     isEdit: false
                   })
@@ -492,7 +501,7 @@ const panel = {
           }
         } else {
           const fieldsEmpty = getters.getFieldListEmptyMandatory({
-            containerUuid: params.containerUuid
+            containerUuid: containerUuid
           })
           showMessage({
             message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
@@ -500,8 +509,8 @@ const panel = {
           })
         }
       } else if (!params.isDontSendToQuery) {
-        if (params.panelType === 'table' && fieldIsDisplayed(field) && field.isShowedFromUser) {
-          if (panel.isAdvancedQuery) {
+        if (panelType === 'table' || isAdvancedQuery) {
+          if (fieldIsDisplayed(field) && field.isShowedFromUser) {
             // change action to advanced query on field value is changed in this panel
             if (router.currentRoute.query.action !== 'advancedQuery') {
               router.push({
@@ -512,13 +521,13 @@ const panel = {
               })
             }
             dispatch('getObjectListFromCriteria', {
-              parentUuid: panel.parentUuid,
-              containerUuid: panel.uuid,
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
               tableName: panel.tableName,
               query: panel.query,
               whereClause: panel.whereClause,
               conditions: getters.getParametersToServer({
-                containerUuid: params.containerUuid,
+                containerUuid: containerUuid,
                 isAdvancedQuery: true,
                 isEvaluateMandatory: false
               })
