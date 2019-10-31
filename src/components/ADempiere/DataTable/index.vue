@@ -168,7 +168,7 @@
         <el-main style="padding: 0px !important; overflow: hidden;">
           <el-table
             ref="multipleTable"
-            v-loading="isLoaded"
+            v-loading="$route.query.action !== 'create-new' && isLoaded"
             :height="getHeigthTable"
             style="width: 100%"
             border
