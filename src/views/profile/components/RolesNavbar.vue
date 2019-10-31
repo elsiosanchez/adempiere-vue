@@ -7,10 +7,11 @@
       @change="handleChange"
     >
       <el-option
-        v-for="(item, key) in getRoles"
+        v-for="(rol, key) in getRolesList"
         :key="key"
-        :label="item.name"
-        :value="item.uuid"
+        :label="rol.name"
+        :value="rol.uuid"
+        :disabled="isEmptyValue(rol.uuid)"
       />
     </el-select>
   </el-form>
@@ -35,7 +36,7 @@ export default {
     getRol() {
       return this.$store.getters['user/getRol']
     },
-    getRoles() {
+    getRolesList() {
       return this.$store.getters['user/getRoles']
     },
     languageCookie() {
