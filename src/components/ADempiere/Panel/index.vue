@@ -586,24 +586,27 @@ export default {
     },
     changePanelRecord(uuidRecord) {
       if (uuidRecord !== 'create-new' && uuidRecord !== 'reference' && uuidRecord !== 'advancedQuery') {
-        this.dataRecords = this.$store.getters.getDataRecordsList(this.containerUuid).find(record => record.UUID === uuidRecord)
-        this.$store.dispatch('notifyPanelChange', {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          newValues: this.dataRecords,
-          isSendToServer: false,
-          fieldList: this.fieldList,
-          panelType: this.panelType
-        }).then(() => {
-          // delete records tabs children when change record uuid
-          this.$store.dispatch('deleteRecordContainer', {
-            viewUuid: this.parentUuid,
-            withOut: [this.containerUuid]
+        var recordSelected = this.$store.getters.getDataRecordsList(this.containerUuid).find(record => record.UUID === uuidRecord)
+        if (recordSelected) {
+          this.dataRecords = recordSelected
+          this.$store.dispatch('notifyPanelChange', {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid,
+            newValues: this.dataRecords,
+            isSendToServer: false,
+            fieldList: this.fieldList,
+            panelType: this.panelType
+          }).then(() => {
+            // delete records tabs children when change record uuid
+            this.$store.dispatch('deleteRecordContainer', {
+              viewUuid: this.parentUuid,
+              withOut: [this.containerUuid]
+            })
           })
-        })
+          this.setTagsViewTitle(uuidRecord)
+        }
       }
       this.setFocus()
-      this.setTagsViewTitle(uuidRecord)
     },
     setFocus() {
       var isFocusEnabled = false
