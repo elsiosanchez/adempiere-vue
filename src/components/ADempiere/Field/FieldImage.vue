@@ -83,11 +83,6 @@ export default {
         this.$message.error(this.$t('components.imageError'))
       }
       return isJPG + isPNG + isLt2M
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

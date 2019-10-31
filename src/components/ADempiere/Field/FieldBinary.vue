@@ -53,11 +53,6 @@ export default {
     },
     handleSuccess(file) {
       this.$message.success(`The file has been successfully loaded.`)
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

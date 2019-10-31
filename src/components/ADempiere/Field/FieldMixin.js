@@ -29,6 +29,11 @@ export const fieldMixin = {
     }
   },
   methods: {
+    activeFocus() {
+      if (this.metadata.isUpdateable) {
+        this.$refs[this.metadata.columnName].focus()
+      }
+    },
     handleChange(value, valueTo = undefined, label = undefined) {
       const sendParameters = {
         parentUuid: this.metadata.parentUuid,

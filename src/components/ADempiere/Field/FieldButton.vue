@@ -33,11 +33,6 @@ export default {
     // validate values before send values to store or server
     preHandleChange(value) {
       this.handleChange(value)
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

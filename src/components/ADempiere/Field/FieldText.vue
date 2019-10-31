@@ -95,11 +95,6 @@ export default {
         // e.target.focus()
         console.log('url wrong')
       }
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

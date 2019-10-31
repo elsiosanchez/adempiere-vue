@@ -68,11 +68,6 @@ export default {
           currenValue: value
         })
       }
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

@@ -70,11 +70,6 @@ export default {
       }
 
       this.handleChange(value)
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

@@ -191,11 +191,6 @@ export default {
         valueTo = new Date(valueTo)
       }
       this.handleChange(valueFirst, valueTo)
-    },
-    activeFocus(columnName) {
-      if (this.metadata.isUpdateable) {
-        this.$refs[columnName].focus()
-      }
     }
   }
 }

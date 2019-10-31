@@ -185,6 +185,7 @@ import FieldDefinition from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
 import { parsedValueComponent } from '@/utils/ADempiere'
+import { fieldIsDisplayed } from '@/utils/ADempiere'
 
 export default {
   name: 'PanelFields',
@@ -610,20 +611,21 @@ export default {
     },
     setFocus() {
       var isFocusEnabled = false
-      this.getterFieldList.forEach(element => {
-        if (!isFocusEnabled && this.isFocusable(element) && this.$refs.hasOwnProperty(element.columnName)) {
-          var field = this.$refs[element.columnName][0]
-          isFocusEnabled = true
-          field.focus(element.columnName)
+      this.getterFieldList.forEach(fieldItem => {
+        if (!isFocusEnabled) {
+          if (this.isFocusable(fieldItem) && this.$refs.hasOwnProperty(fieldItem.columnName)) {
+            this.$refs[fieldItem.columnName][0].focus(fieldItem.columnName)
+            isFocusEnabled = true
+          }
         }
+        return
       })
     },
     isFocusable(field) {
-      if (field.isActive && field.isDisplayed && !field.isReadOnly && field.isUpdateable) {
+      if (fieldIsDisplayed(field) && !field.isReadOnly && field.isUpdateable) {
         return true
-      } else {
-        return false
       }
+      return false
     }
   }
 }

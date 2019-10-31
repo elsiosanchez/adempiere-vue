@@ -263,9 +263,9 @@ export default {
       })
       return Boolean(field)
     },
-    focus(value) {
+    focus(columnName) {
       if (this.isDisplayed() && this.isMandatory() && !this.isReadOnly()) {
-        this.$refs[value].activeFocus(value)
+        this.$refs[columnName].activeFocus(columnName)
       }
     }
   }
