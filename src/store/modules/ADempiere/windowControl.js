@@ -359,20 +359,24 @@ const windowControl = {
           .then(response => {
             const oldRoute = router.app._route
 
-            // clear fields with default values
-            dispatch('resetPanelToNew', {
-              containerUuid: parameters.containerUuid
-            })
-
-            // TODO: Verify if necessary
-            // delete view with uuid record delete
-            dispatch('tagsView/delView', oldRoute, true)
-
             // refresh record list
             dispatch('getDataListTab', {
               parentUuid: parameters.parentUuid,
               containerUuid: parameters.containerUuid
             })
+              .then(response => {
+                // if response is void, go to new record
+                if (response.length <= 0) {
+                  dispatch('resetPanelToNew', {
+                    containerUuid: parameters.containerUuid,
+                    panelType: 'window',
+                    isNewRecord: true
+                  })
+                } else {
+                  // else display first record of table in panel
+                  router.push({ name: oldRoute.name, query: { ...oldRoute.query, action: response[0].UUID }})
+                }
+              })
             showMessage({
               message: language.t('data.deleteRecordSuccessful'),
               type: 'success'
