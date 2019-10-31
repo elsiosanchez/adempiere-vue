@@ -63,7 +63,8 @@ export default {
           fieldsIncludes: [],
           attribute: 'isReadOnlyFromForm',
           valueAttribute: Boolean(fieldReadOnlyForm.valueIsReadOnlyForm !== value),
-          fieldsExcludes: !fieldReadOnlyForm.isChangedAllForm ? [this.metadata.columnName] : [],
+          // if isChangedAllForm it does not exclude anything, otherwise it excludes this columnName
+          fieldsExcludes: fieldReadOnlyForm.isChangedAllForm ? [] : [this.metadata.columnName],
           currenValue: value
         })
       }

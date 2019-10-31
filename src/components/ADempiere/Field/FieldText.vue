@@ -8,9 +8,8 @@
     :placeholder="metadata.help"
     :readonly="Boolean(metadata.readonly)"
     :disabled="isDisabled"
-    :maxlength="maxLength <= 0 ? undefined : maxLength"
+    :maxlength="maxLength"
     :show-password="metadata.isEncrypted ? true : false"
-    @blur="validateInput"
     @change="preHandleChange"
   />
 </template>
@@ -25,10 +24,6 @@ export default {
     pattern: {
       type: String,
       default: undefined
-    },
-    validateInput: {
-      type: Function,
-      default: () => undefined
     }
   },
   data() {
@@ -51,7 +46,7 @@ export default {
       return typeInput
     },
     maxLength() {
-      if (!this.isEmptyValue(this.metadata.fieldLength)) {
+      if (!this.isEmptyValue(this.metadata.fieldLength) && this.metadata.fieldLength > 0) {
         return Number(this.metadata.fieldLength)
       }
       return undefined
@@ -62,13 +57,13 @@ export default {
       if (this.isEmptyValue(value)) {
         value = ''
       }
-      this.value = value
+      this.value = String(value)
     },
     'metadata.value'(value) {
       if (this.isEmptyValue(value)) {
         value = ''
       }
-      this.value = value
+      this.value = String(value)
     }
   },
   beforeMount() {
