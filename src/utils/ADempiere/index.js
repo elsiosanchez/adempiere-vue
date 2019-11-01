@@ -416,7 +416,7 @@ export function parseContext(context, isBoolToString = false) {
         ctxInfo = 'N'
       }
     }
- 
+
     if ((ctxInfo === undefined || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
       context.parentUuid = undefined
       context.containerUuid = undefined

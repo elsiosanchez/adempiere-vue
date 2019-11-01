@@ -261,7 +261,8 @@ const panel = {
         newValues = {},
         isSendToServer = true,
         isShowedField = false,
-        panelType = 'window'
+        panelType = 'window',
+        withOutColumnNames = []
       } = parameters
       var { fieldList = [] } = parameters
 
@@ -290,6 +291,7 @@ const panel = {
             valueTo: newValues[actionField.columnName + '_To'],
             fieldList: fieldList,
             field: actionField,
+            withOutColumnNames: withOutColumnNames,
             isChangedOldValue: true // defines if set oldValue with newValue instead of current value
           })
         }
@@ -326,7 +328,7 @@ const panel = {
      * @param {string} params.isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
-      const { parentUuid, containerUuid, columnName, isSendToServer = true, isAdvancedQuery = false, panelType = 'window' } = params
+      const { parentUuid, containerUuid, columnName, isSendToServer = true, isAdvancedQuery = false, panelType = 'window', withOutColumnNames = [] } = params
       const panel = getters.getPanel(containerUuid, isAdvancedQuery)
       var fieldList = panel.fieldList
       // get field
@@ -417,8 +419,11 @@ const panel = {
           isReadOnlyFromLogic: isReadOnlyFromLogic
         })
       })
-      if (isSendToServer) {
-        if (!isEmptyValue(params.newValue) && !isEmptyValue(field.callout)) {
+
+      // request callouts
+      if (field.panelType === 'window') {
+        if (!withOutColumnNames.includes(field.columnName) && !isEmptyValue(params.newValue) && !isEmptyValue(field.callout)) {
+          withOutColumnNames.push(field.columnName)
           dispatch('getCallout', {
             parentUuid: parentUuid,
             containerUuid: containerUuid,
@@ -426,9 +431,13 @@ const panel = {
             columnName: field.columnName,
             callout: field.callout,
             name: field.name,
-            value: params.newValue
+            value: params.newValue,
+            withOutColumnNames: withOutColumnNames
           })
         }
+      }
+
+      if (isSendToServer) {
         // TODO: refactory for it and change for a standard method
         if (!getters.isNotReadyForSubmit(containerUuid)) {
           if (field.panelType === 'browser' && fieldIsDisplayed(field)) {

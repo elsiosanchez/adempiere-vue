@@ -38,6 +38,7 @@ export const fieldMixin = {
       const sendParameters = {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
+        field: this.metadata,
         panelType: this.metadata.panelType,
         columnName: this.metadata.columnName,
         newValue: value === 'NotSend' ? this.value : value,

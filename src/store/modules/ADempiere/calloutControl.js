@@ -1,5 +1,5 @@
 import { runCallOutRequest } from '@/api/ADempiere/data'
-import { convertValuesMapToObject } from '@/utils/ADempiere'
+import { convertValuesMapToObject, showMessage } from '@/utils/ADempiere'
 
 const callOutControl = {
   actions: {
@@ -21,16 +21,30 @@ const callOutControl = {
           const values = convertValuesMapToObject(
             response.getValuesMap()
           )
-          dispatch('notifyPanelChange', {
-            containerUuid: parameters.containerUuid,
-            panelType: 'window',
-            newValues: values,
-            isSendToServer: false
-          })
-          console.log('response callout', values)
+          if (parameters.isTable) {
+            dispatch('notifyRowTableChange', {
+              parentUuid: parameters.parentUuid,
+              containerUuid: parameters.containerUuid,
+              row: values,
+              isEdit: true
+            })
+          } else {
+            dispatch('notifyPanelChange', {
+              parentUuid: parameters.parentUuid,
+              containerUuid: parameters.containerUuid,
+              panelType: 'window',
+              newValues: values,
+              isSendToServer: false,
+              withOutColumnNames: parameters.withOutColumnNames
+            })
+          }
         })
         .catch(error => {
-          console.error('error callout', error, parameters)
+          showMessage({
+            message: error.message,
+            type: 'error'
+          })
+          console.warn('error callout', error, parameters)
         })
     }
   }

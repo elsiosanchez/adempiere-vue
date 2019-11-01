@@ -215,7 +215,8 @@ export default {
         if (this.field.isAlwaysUpdateable) {
           return false
         } else {
-          if (this.$store.getters.getContextProcessing(this.parentUuid)) {
+          if (this.$store.getters.getContextProcessing(this.parentUuid) === true ||
+            this.$store.getters.getContextProcessing(this.parentUuid) === 'Y') {
             return true
           }
           if (this.$store.getters.getContextProcessed(this.parentUuid)) {

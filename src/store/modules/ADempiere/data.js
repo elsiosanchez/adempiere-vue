@@ -531,6 +531,7 @@ const data = {
       })
     },
     /**
+     * TODO: Add support to tab children
      * @param {object} objectParams
      * @param {string} objectParams.containerUuid
      * @param {objec}  objectParams.row, new data to change
@@ -563,13 +564,19 @@ const data = {
       })
     },
     notifyCellTableChange({ commit, state, dispatch, rootGetters }, objectParams) {
-      const { parentUuid, containerUuid, panelType = 'window', isSendToServer = true, columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
+      const { parentUuid, containerUuid, field, panelType = 'window', isSendToServer = true, columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
       const recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === containerUuid
       })
       const row = recordSelection.record.find(itemRecord => {
         return itemRecord[keyColumn] === rowKey
       })
+
+      // the field has not changed, then the action is broken
+      if (row[columnName] === newValue) {
+        return
+      }
+
       const rowSelection = recordSelection.selection.find(itemRecord => {
         return itemRecord[keyColumn] === rowKey
       })
@@ -587,38 +594,54 @@ const data = {
           columnName: columnName,
           displayColumn: displayColumn
         })
-      } else if (panelType === 'window' && isSendToServer) {
-        const fieldNotReady = rootGetters.isNotReadyForSubmit(containerUuid, row)
-        if (!fieldNotReady) {
-          if (!isEmptyValue(row.UUID)) {
-            dispatch('updateCurrentEntityFromTable', {
-              parentUuid: parentUuid,
-              containerUuid: containerUuid,
-              row: row
-            })
-          } else {
-            dispatch('createEntityFromTable', {
-              parentUuid: parentUuid,
-              containerUuid: containerUuid,
-              row: row
-            })
-              .then(() => {
-                // refresh record list
-                dispatch('getDataListTab', {
-                  parentUuid: parentUuid,
-                  containerUuid: containerUuid
-                })
-              })
-          }
-        } else {
-          const fieldsEmpty = rootGetters.getFieldListEmptyMandatory({
+      } else if (panelType === 'window') {
+        // request callouts
+        if (!isEmptyValue(newValue) && !isEmptyValue(field.callout)) {
+          dispatch('getCallout', {
+            parentUuid: parentUuid,
             containerUuid: containerUuid,
-            row: row
+            tableName: field.tableName,
+            columnName: field.columnName,
+            callout: field.callout,
+            name: field.name,
+            value: newValue,
+            inTable: true
           })
-          showMessage({
-            message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
-            type: 'info'
-          })
+        }
+
+        if (isSendToServer) {
+          const fieldNotReady = rootGetters.isNotReadyForSubmit(containerUuid, row)
+          if (!fieldNotReady) {
+            if (!isEmptyValue(row.UUID)) {
+              dispatch('updateCurrentEntityFromTable', {
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
+                row: row
+              })
+            } else {
+              dispatch('createEntityFromTable', {
+                parentUuid: parentUuid,
+                containerUuid: containerUuid,
+                row: row
+              })
+                .then(() => {
+                  // refresh record list
+                  dispatch('getDataListTab', {
+                    parentUuid: parentUuid,
+                    containerUuid: containerUuid
+                  })
+                })
+            }
+          } else {
+            const fieldsEmpty = rootGetters.getFieldListEmptyMandatory({
+              containerUuid: containerUuid,
+              row: row
+            })
+            showMessage({
+              message: language.t('notifications.mandatoryFieldMissing') + fieldsEmpty,
+              type: 'info'
+            })
+          }
         }
       }
     }
