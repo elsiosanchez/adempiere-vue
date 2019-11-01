@@ -452,6 +452,7 @@ export default {
               containerUuid: this.containerUuid,
               newValues: route.query,
               isShowedField: true,
+              isSendCallout: false,
               panelType: this.panelType
             })
             parameters.isWindow = false
@@ -488,6 +489,7 @@ export default {
                   containerUuid: this.containerUuid,
                   newValues: this.dataRecords,
                   isSendToServer: false,
+                  isSendCallout: false,
                   fieldList: this.fieldList,
                   panelType: this.panelType
                 })
@@ -498,6 +500,7 @@ export default {
                   containerUuid: this.containerUuid,
                   newValues: this.dataRecords,
                   isSendToServer: false,
+                  isSendCallout: false,
                   fieldList: this.fieldList,
                   panelType: this.panelType
                 })
@@ -604,6 +607,7 @@ export default {
             containerUuid: this.containerUuid,
             newValues: this.dataRecords,
             isSendToServer: false,
+            isSendCallout: false,
             fieldList: this.fieldList,
             panelType: this.panelType
           }).then(() => {

@@ -65,7 +65,3 @@ export const fieldMixin = {
     }
   }
 }
-
-export const fieldMixin2 = {
-
-}
