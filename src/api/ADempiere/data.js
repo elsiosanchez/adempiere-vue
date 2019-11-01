@@ -12,12 +12,6 @@ function Instance() {
   )
 }
 
-export function getObject(table, uuid = false, id = false) {
-  return Instance.call(this).getEntity(
-    Instance.call(this).getEntityRequest(table, uuid, id)
-  )
-}
-
 /**
  * Create entity
  * @param {string}  parameters.tableName
@@ -81,6 +75,12 @@ export function deleteEntity(parameters) {
 
 export function getCriteria(tableName) {
   return Instance.call(this).getCriteria(tableName)
+}
+
+export function getObject(table, uuid = false, id = false) {
+  return Instance.call(this).getEntity(
+    Instance.call(this).getEntityRequest(table, uuid, id)
+  )
 }
 
 /**

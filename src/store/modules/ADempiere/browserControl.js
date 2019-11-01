@@ -31,10 +31,10 @@ const browserControl = {
 
       var parsedQuery = browser.query
       if (!isEmptyValue(parsedQuery) && parsedQuery.includes('@')) {
-        parseContext({
+        parsedQuery = parseContext({
           containerUuid: containerUuid,
           value: parsedQuery
-        })
+        }, true)
       }
 
       var parsedWhereClause = browser.whereClause
@@ -42,7 +42,7 @@ const browserControl = {
         parsedWhereClause = parseContext({
           containerUuid: containerUuid,
           value: parsedWhereClause
-        })
+        }, true)
       }
 
       var nextPageToken

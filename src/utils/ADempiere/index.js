@@ -378,8 +378,9 @@ export function getParentFields(fieldGRPC) {
  *  - parentUuid: (REQUIRED from Window) UUID Window
  *  - containerUuid: (REQUIRED) UUID Tab, Process, SmartBrowser, Report and Form
  *  - columnName: (Optional if exists in value) Column name to search in context
+ * @param {boolean} isBoolToString, convert boolean values to string
  */
-export function parseContext(context) {
+export function parseContext(context, isBoolToString = false) {
   const store = require('@/store')
   var value = String(context.value)
   if (valueUtil.isEmptyValue(value)) { return '' }
@@ -408,13 +409,14 @@ export function parseContext(context) {
     context.columnName = token
 
     var ctxInfo = store.default.getters.getContext(context)	// get context
-    if (typeof ctxInfo === 'boolean') {
+    if (isBoolToString && typeof ctxInfo === 'boolean') {
       if (ctxInfo) {
         ctxInfo = 'Y'
       } else {
         ctxInfo = 'N'
       }
     }
+ 
     if ((ctxInfo === undefined || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
       context.parentUuid = undefined
       context.containerUuid = undefined

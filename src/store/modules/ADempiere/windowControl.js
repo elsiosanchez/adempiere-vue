@@ -508,7 +508,7 @@ const windowControl = {
           parentUuid: parentUuid,
           containerUuid: containerUuid,
           value: tab.query
-        })
+        }, true)
       }
 
       var parsedWhereClause = tab.whereClause
@@ -517,7 +517,7 @@ const windowControl = {
           parentUuid: parentUuid,
           containerUuid: containerUuid,
           value: tab.whereClause
-        })
+        }, true)
       }
       var conditions = []
       if (tab.isParentTab && !isEmptyValue(tab.tableName) && !isEmptyValue(value)) {
