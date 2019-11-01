@@ -241,6 +241,7 @@ export default {
         query: this.metadata.reference.query
       })
         .then(response => {
+          console.log(response)
           this.options = this.getterLookupAll.concat(this.othersOptions)
         })
         .finally(() => {

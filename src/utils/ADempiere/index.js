@@ -408,6 +408,13 @@ export function parseContext(context) {
     context.columnName = token
 
     var ctxInfo = store.default.getters.getContext(context)	// get context
+    if (typeof ctxInfo === 'boolean') {
+      if (ctxInfo) {
+        ctxInfo = 'Y'
+      } else {
+        ctxInfo = 'N'
+      }
+    }
     if ((ctxInfo === undefined || ctxInfo.length === 0) && (token.startsWith('#') || token.startsWith('$'))) {
       context.parentUuid = undefined
       context.containerUuid = undefined

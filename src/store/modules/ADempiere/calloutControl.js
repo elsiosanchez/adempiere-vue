@@ -3,7 +3,7 @@ import { convertValuesMapToObject } from '@/utils/ADempiere'
 
 const callOutControl = {
   actions: {
-    getCallout({ rootGetters }, parameters) {
+    getCallout({ rootGetters, dispatch }, parameters) {
       const finalParameters = rootGetters.getParametersToServer({
         containerUuid: parameters.containerUuid
       })
@@ -21,6 +21,12 @@ const callOutControl = {
           const values = convertValuesMapToObject(
             response.getValuesMap()
           )
+          dispatch('notifyPanelChange', {
+            containerUuid: parameters.containerUuid,
+            panelType: 'window',
+            newValues: values,
+            isSendToServer: false
+          })
           console.log('response callout', values)
         })
         .catch(error => {
