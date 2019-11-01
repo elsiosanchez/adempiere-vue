@@ -112,7 +112,7 @@ export default {
           }]
         }
       }
-      this.options = this.getterLookupAll.concat(this.othersOptions)
+      this.options = this.getterLookupAll
     },
     'metadata.optionCRUD'(value) {
       if (value === 'create-new') {
@@ -143,7 +143,13 @@ export default {
         })
       }
       // join options in store with pased from props
-      this.options = this.getterLookupAll.concat(this.othersOptions)
+      // validate empty or duplicate data
+      const optionList = this.getterLookupAll.filter(lookup => {
+        if (lookup.key !== null) {
+          return lookup
+        }
+      })
+      this.options = optionList
       this.value = key
     } else if (!this.isEmptyValue(this.value) && (!this.findLabel(this.value) && this.metadata.displayed)) {
       if (this.isPanelWindow) {
@@ -207,7 +213,7 @@ export default {
               displayColumn: response.label
             })
           }
-          this.options = this.getterLookupAll.concat(this.othersOptions)
+          this.options = this.getterLookupAll
           if (this.options.length && !this.options[0].key) {
             this.options.unshift(this.blanckOption)
           }
