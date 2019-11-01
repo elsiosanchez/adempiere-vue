@@ -270,6 +270,7 @@ export default {
       return false
     },
     /**
+     * TODO: Verify use and implementation
      * Load dictionary fields in panel
      */
     getterIsLoadedField() {
@@ -278,8 +279,20 @@ export default {
       }
       return false
     },
+    getterDataStore() {
+      if (this.isPanelWindow) {
+        return this.$store.getters.getDataRecordAndSelection(this.containerUuid)
+      }
+      return {
+        recordCount: 0,
+        isLoaded: false
+      }
+    },
     getterTotalDataRecordCount() {
-      return this.$store.getters.getDataRecordCount(this.containerUuid)
+      return this.getterDataStore.recordCount
+    },
+    getterIsLoadedRecord() {
+      return this.getterDataStore.isLoaded
     }
   },
   watch: {
@@ -299,11 +312,7 @@ export default {
         this.setTagsViewTitle(this.uuidRecord)
       }
     },
-    getterIsLoadedField(value) {
-      if (value) {
-        this.readParameters(this.$route)
-      }
-    },
+
     '$route.query.action'(newValue, oldValue) {
       // used in field, if uuid record or different create-new, field is read only
       this.uuidRecord = newValue
@@ -459,7 +468,7 @@ export default {
      * @param  {object} parameters parameters to condition the data query
      */
     getData(parameters) {
-      if (parameters.isWindow && this.isPanelWindow) {
+      if (parameters.isWindow && this.isPanelWindow && !this.getterIsLoadedRecord) {
         this.$store.dispatch('getDataListTab', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
