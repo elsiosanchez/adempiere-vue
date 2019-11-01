@@ -35,7 +35,8 @@ const callOutControl = {
               panelType: 'window',
               newValues: values,
               isSendToServer: false,
-              withOutColumnNames: parameters.withOutColumnNames
+              withOutColumnNames: parameters.withOutColumnNames,
+              isSendCallout: false
             })
           }
         })

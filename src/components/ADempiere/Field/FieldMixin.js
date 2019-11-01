@@ -44,7 +44,8 @@ export const fieldMixin = {
         newValue: value === 'NotSend' ? this.value : value,
         valueTo: valueTo,
         isAdvancedQuery: this.metadata.isAdvancedQuery,
-        isSendToServer: !(value === 'NotSend' || this.metadata.isAdvancedQuery)
+        isSendToServer: !(value === 'NotSend' || this.metadata.isAdvancedQuery),
+        isSendCallout: !(value === 'NotSend' || this.metadata.isAdvancedQuery)
       }
 
       if (this.metadata.inTable) {

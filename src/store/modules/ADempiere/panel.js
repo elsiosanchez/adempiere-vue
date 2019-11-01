@@ -240,6 +240,7 @@ const panel = {
         })
       }
       dispatch('notifyPanelChange', {
+        parentUuid: parentUuid,
         containerUuid: containerUuid,
         panelType: panelType,
         newValues: defaultAttributes,
@@ -262,7 +263,8 @@ const panel = {
         isSendToServer = true,
         isShowedField = false,
         panelType = 'window',
-        withOutColumnNames = []
+        withOutColumnNames = [],
+        isSendCallout = true
       } = parameters
       var { fieldList = [] } = parameters
 
@@ -283,6 +285,7 @@ const panel = {
         if (newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
             isSendToServer: isSendToServer,
+            isSendCallout: isSendCallout,
             parentUuid: parentUuid,
             containerUuid: containerUuid,
             columnName: actionField.columnName,
@@ -328,7 +331,7 @@ const panel = {
      * @param {string} params.isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
-      const { parentUuid, containerUuid, columnName, isSendToServer = true, isAdvancedQuery = false, panelType = 'window', withOutColumnNames = [] } = params
+      const { parentUuid, containerUuid, columnName, isSendToServer = true, isAdvancedQuery = false, panelType = 'window', withOutColumnNames = [], isSendCallout = true } = params
       const panel = getters.getPanel(containerUuid, isAdvancedQuery)
       var fieldList = panel.fieldList
       // get field
@@ -421,7 +424,7 @@ const panel = {
       })
 
       // request callouts
-      if (field.panelType === 'window') {
+      if (field.panelType === 'window' && isSendCallout) {
         if (!withOutColumnNames.includes(field.columnName) && !isEmptyValue(params.newValue) && !isEmptyValue(field.callout)) {
           withOutColumnNames.push(field.columnName)
           dispatch('getCallout', {

@@ -304,14 +304,15 @@ export const contextMixin = {
         this.showModal(action)
         if (this.panelType === 'process' || this.panelType === 'browser' || this.panelType === 'report') {
           this.$store.dispatch('resetPanelToNew', {
+            parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType
           })
         }
       } else if (action.type === 'dataAction') {
         this.$store.dispatch(action.action, {
-          containerUuid: this.containerUuid,
           parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
           recordUuid: this.recordUuid,
           panelType: this.panelType,
           isNewRecord: action.action === 'resetPanelToNew'

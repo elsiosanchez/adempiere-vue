@@ -368,6 +368,7 @@ const windowControl = {
                 // if response is void, go to new record
                 if (response.length <= 0) {
                   dispatch('resetPanelToNew', {
+                    parentUuid: parameters.parentUuid,
                     containerUuid: parameters.containerUuid,
                     panelType: 'window',
                     isNewRecord: true
@@ -445,6 +446,7 @@ const windowControl = {
                 })
                 // clear fields with default values
                 dispatch('resetPanelToNew', {
+                  parentUuid: parentUuid,
                   containerUuid: containerUuid
                 })
                 // delete view with uuid record delete
