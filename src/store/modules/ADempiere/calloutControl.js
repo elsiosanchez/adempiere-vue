@@ -4,6 +4,7 @@ import { convertValuesMapToObject, showMessage } from '@/utils/ADempiere'
 const callOutControl = {
   actions: {
     getCallout({ rootGetters, dispatch }, parameters) {
+      const window = rootGetters.getWindow(parameters.parentUuid)
       const finalParameters = rootGetters.getParametersToServer({
         containerUuid: parameters.containerUuid
       })
@@ -15,7 +16,8 @@ const callOutControl = {
         columnName: parameters.columnName,
         value: parameters.value,
         callout: parameters.callout,
-        attributesList: finalParameters
+        attributesList: finalParameters,
+        windowNo: window.windowIndex
       })
         .then(response => {
           const values = convertValuesMapToObject(
