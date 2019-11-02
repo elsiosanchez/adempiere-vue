@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="currentTab" type="border-card" @tab-click="handleClick">
+  <el-tabs v-model="currentTab" type="border-card" :before-leave="handleBeforeLeave" @tab-click="handleClick">
     <template v-for="(item, key) in tabsList">
       <el-tab-pane
         :key="key"

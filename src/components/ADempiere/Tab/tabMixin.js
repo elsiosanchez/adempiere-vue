@@ -1,3 +1,4 @@
+import { parseContext } from '@/utils/ADempiere'
 
 export const tabMixin = {
   props: {
@@ -30,6 +31,7 @@ export const tabMixin = {
     this.tabUuid = this.tabsList[0].uuid
   },
   methods: {
+    parseContext,
     setCurrentTab() {
       this.$store.dispatch('setCurrentTab', {
         parentUuid: this.windowUuid,
@@ -56,6 +58,16 @@ export const tabMixin = {
         parentUuid: this.windowUuid,
         containerUuid: this.tabUuid
       })
+    },
+    handleBeforeLeave(activeName) {
+      var metadataTab = this.tabsList.find(tab => tab.index === parseInt(activeName))
+      if (!this.isEmptyValue(metadataTab.whereClause) && metadataTab.whereClause.includes('@')) {
+        metadataTab.whereClause = parseContext({
+          parentUuid: metadataTab.parentUuid,
+          containerUuid: metadataTab.uuid,
+          value: metadataTab.whereClause
+        }, true)
+      }
     }
   }
 }
