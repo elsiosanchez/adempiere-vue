@@ -8,11 +8,13 @@ import router from '@/router'
 
 const window = {
   state: {
-    window: []
+    window: [],
+    windowIndex: 0
   },
   mutations: {
     addWindow(state, payload) {
       state.window.push(payload)
+      state.windowIndex++
     },
     dictionaryResetCacheWindow(state, payload) {
       state.window = payload
@@ -31,7 +33,7 @@ const window = {
     }
   },
   actions: {
-    getWindowFromServer({ commit, dispatch }, params) {
+    getWindowFromServer({ commit, state, dispatch }, params) {
       return getWindowMetadata(params.windowUuid)
         .then(response => {
           var newWindow = {
@@ -180,7 +182,8 @@ const window = {
 
           newWindow = {
             ...newWindow,
-            ...tabProperties
+            ...tabProperties,
+            windowIndex: state.windowIndex + 1
           }
           commit('addWindow', newWindow)
           return newWindow
@@ -325,6 +328,9 @@ const window = {
       return state.window.find(
         item => item.uuid === windowUuid
       )
+    },
+    getIndexWindow: (state) => {
+      return state.windowIndex
     },
     getIsShowedRecordNavigation: (state, getters) => (windowUuid) => {
       return getters.getWindow(windowUuid).isShowedRecordNavigation
