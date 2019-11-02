@@ -14,6 +14,7 @@ const callOutControl = {
         tableName: parameters.tableName,
         columnName: parameters.columnName,
         value: parameters.value,
+        oldValue: parameters.oldValue,
         callout: parameters.callout,
         attributesList: finalParameters
       })
@@ -45,7 +46,7 @@ const callOutControl = {
             message: error.message,
             type: 'error'
           })
-          console.warn('error callout', error, parameters)
+          console.warn(`Field ${parameters.name} error callout`, error.message)
         })
     }
   }

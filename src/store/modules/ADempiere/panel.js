@@ -48,6 +48,12 @@ const panel = {
       payload.field.value = payload.newValue
       payload.field.valueTo = payload.valueTo
       payload.field.displayColumn = payload.displayColumn
+    },
+    changeFieldValueToNull(state, payload) {
+      payload.field.oldValue = payload.value
+      payload.field.value = payload.value
+      payload.field.valueTo = payload.value
+      payload.field.displayColumn = payload.value
     }
   },
   actions: {
@@ -211,8 +217,9 @@ const panel = {
      * @param {string} panelType
      * TODO: Evaluate if it is necessary to parse the default values
      */
-    resetPanelToNew({ dispatch, getters }, parameters) {
+    resetPanelToNew({ commit, dispatch, getters }, parameters) {
       const { parentUuid, containerUuid, panelType = 'window', isNewRecord = false } = parameters
+      var { fieldList = [] } = parameters
 
       const defaultAttributes = getters.getParsedDefaultValues({
         parentUuid: parentUuid,
@@ -232,6 +239,17 @@ const panel = {
           message: language.t('data.createNewRecord'),
           type: 'info'
         })
+
+        if (!fieldList.length) {
+          fieldList = getters.getFieldsListFromPanel(containerUuid)
+        }
+        fieldList.forEach(fieldToBlanck => {
+          commit('changeFieldValueToNull', {
+            field: fieldToBlanck,
+            value: undefined
+          })
+        })
+
         // delete records tabs children when change record uuid
         dispatch('deleteRecordContainer', {
           viewUuid: parentUuid,
@@ -435,6 +453,7 @@ const panel = {
             callout: field.callout,
             name: field.name,
             value: params.newValue,
+            oldValue: field.oldValue,
             withOutColumnNames: withOutColumnNames
           })
         }
