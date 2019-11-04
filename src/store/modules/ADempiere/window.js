@@ -212,6 +212,7 @@ const window = {
             containerUuid: containerUuid,
             isShowedFromUser: true,
             panelType: panelType,
+            tableName: response.getTablename(),
             //
             isReadOnlyFromForm: false,
             isAdvancedQuery: isAdvancedQuery

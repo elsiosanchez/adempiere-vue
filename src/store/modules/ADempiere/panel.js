@@ -451,7 +451,6 @@ const panel = {
             tableName: panel.tableName,
             columnName: field.columnName,
             callout: field.callout,
-            name: field.name,
             value: params.newValue,
             oldValue: field.oldValue,
             withOutColumnNames: withOutColumnNames
@@ -525,7 +524,8 @@ const panel = {
                   dispatch('notifyRowTableChange', {
                     containerUuid: containerUuid,
                     row: response,
-                    isEdit: false
+                    isEdit: false,
+                    isParent: true
                   })
                 })
             }
@@ -988,6 +988,7 @@ const panel = {
      */
     getParametersToServer: (state, getters) => ({
       containerUuid,
+      row,
       fieldList = [],
       withOutColumnNames = [],
       isEvaluateDisplayed = true,
@@ -1008,6 +1009,11 @@ const panel = {
             return false
           }
 
+          // exclude key column if is new
+          if (row && row.isNew && fieldItem.isKey) {
+            return false
+          }
+
           const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
           // mandatory fields
           if (isEvaluateMandatory && isMandatory && !isAdvancedQuery) {
@@ -1020,8 +1026,17 @@ const panel = {
             if (isAdvancedQuery) {
               isDisplayed = fieldItem.isShowedFromUser
             }
-            if (isDisplayed && !isEmptyValue(fieldItem.value)) {
-              return true
+
+            if (isDisplayed) {
+              if (row) {
+                if (!isEmptyValue(row[fieldItem.columnName])) {
+                  return true
+                }
+              } else {
+                if (!isEmptyValue(fieldItem.value)) {
+                  return true
+                }
+              }
             }
           }
 
@@ -1031,14 +1046,15 @@ const panel = {
       // conever parameters
       parametersList = parametersList
         .map(parameterItem => {
-          var value = parameterItem.value
-          var valueTo = parameterItem.valueTo
+          var value = row ? row[parameterItem.columnName] : parameterItem.value
+          var valueTo = row ? row[`${parameterItem.columnName}_To`] : parameterItem.valueTo
 
           if (isConvertedDateToTimestamp) {
-            if (['FieldDate', 'FieldTime'].includes(parameterItem.componentPath)) {
-              value = parameterItem.value.getTime()
+            if (['FieldDate', 'FieldTime'].includes(parameterItem.componentPath) &&
+              Object.prototype.toString.call(value) === '[object Date]') {
+              value = value.getTime()
               if (valueTo) {
-                valueTo = parameterItem.valueTo.getTime()
+                valueTo = valueTo.getTime()
               }
             }
           }

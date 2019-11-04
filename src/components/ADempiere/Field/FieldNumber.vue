@@ -8,6 +8,7 @@
     :max="maxValue"
     :placeholder="metadata.help"
     :disabled="isDisabled"
+    :precision="precision"
     controls-position="right"
     :class="'display-type-' + cssClass"
     @blur="validateInput"
@@ -47,7 +48,15 @@ export default {
       return -Infinity
     },
     cssClass() {
-      return this.metadata.referenceType.split(/(?=[A-Z])/).join('-').toLowerCase()
+      return this.metadata.referenceType
+        .split(/(?=[A-Z])/)
+        .join('-').toLowerCase()
+    },
+    precision() {
+      if (['Number', 'Amount'].includes()) {
+        return 2
+      }
+      return undefined
     }
   },
   watch: {

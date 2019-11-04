@@ -5,9 +5,17 @@ const callOutControl = {
   actions: {
     getCallout({ rootGetters, dispatch }, parameters) {
       const window = rootGetters.getWindow(parameters.parentUuid)
-      const finalParameters = rootGetters.getParametersToServer({
-        containerUuid: parameters.containerUuid
-      })
+      var finalParameters = []
+      if (parameters.inTable) {
+        finalParameters = rootGetters.getParametersToServer({
+          containerUuid: parameters.containerUuid,
+          row: parameters.row
+        })
+      } else {
+        finalParameters = rootGetters.getParametersToServer({
+          containerUuid: parameters.containerUuid
+        })
+      }
 
       return runCallOutRequest({
         windowUuid: parameters.parentUuid,
@@ -24,7 +32,7 @@ const callOutControl = {
           const values = convertValuesMapToObject(
             response.getValuesMap()
           )
-          if (parameters.isTable) {
+          if (parameters.inTable) {
             dispatch('notifyRowTableChange', {
               parentUuid: parameters.parentUuid,
               containerUuid: parameters.containerUuid,
