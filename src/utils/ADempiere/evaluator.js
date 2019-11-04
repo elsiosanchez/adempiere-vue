@@ -213,7 +213,7 @@ class evaluator {
   static parseDepends(parseString) {
     var listFields = []
     if (parseString === null || parseString === undefined) {
-      // return array empy
+      // return array empty
       return listFields
     }
 

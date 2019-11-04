@@ -617,9 +617,9 @@ export default {
               withOut: [this.containerUuid]
             })
           })
-          this.setTagsViewTitle(uuidRecord)
         }
       }
+      this.setTagsViewTitle(uuidRecord)
       this.setFocus()
     },
     setFocus() {
