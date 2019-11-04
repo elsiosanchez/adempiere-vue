@@ -2,7 +2,7 @@ export default {
   route: {
     dashboard: 'Panel de control',
     documentation: 'Documentación',
-    forgotPassword: 'Se te Olvidó tu Contraseña',
+    forgotPassword: 'Olvidó tu Contraseña',
     guide: 'Guía',
     page401: '401',
     page404: '404',
@@ -60,7 +60,7 @@ export default {
     submit: 'Enviar',
     logIn: 'Acceso',
     username: 'Usuario',
-    usernameOrEmail: 'Username or Email',
+    usernameOrEmail: 'Usuario o Correo',
     password: 'Contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',
