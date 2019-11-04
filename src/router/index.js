@@ -71,6 +71,10 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/forgotPassword',
+    component: () => import('@/views/login/reset-Password'),
+    hidden: true
+  }, {
     path: '',
     component: Layout,
     redirect: 'dashboard',

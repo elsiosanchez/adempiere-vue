@@ -54,8 +54,11 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
+      <el-button :loading="loading" type="primary" style="width:100%" @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
+      </el-button>
+      <el-button type="text" style="float: left;" @click.native.prevent="handleReset">
+        {{ $t('route.forgotPassword') }}
       </el-button>
 
       <div style="position:relative">
@@ -199,6 +202,9 @@ export default {
           return false
         }
       })
+    },
+    handleReset() {
+      this.$router.push({ path: 'forgotPassword' })
     }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {

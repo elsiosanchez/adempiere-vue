@@ -2,6 +2,7 @@ export default {
   route: {
     dashboard: 'Panel de control',
     documentation: 'Documentación',
+    forgotPassword: 'Se te Olvidó tu Contraseña',
     guide: 'Guía',
     page401: '401',
     page404: '404',
@@ -56,8 +57,10 @@ export default {
     unexpectedError: 'Se ha producido un error inesperado, intente nuevamente',
     capsLock: 'Bloqueo de mayúsculas activado',
     title: 'Formulario de acceso',
+    submit: 'Enviar',
     logIn: 'Acceso',
     username: 'Usuario',
+    usernameOrEmail: 'Username or Email',
     password: 'Contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',
