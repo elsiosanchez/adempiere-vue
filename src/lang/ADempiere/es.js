@@ -2,7 +2,7 @@ export default {
   route: {
     dashboard: 'Panel de control',
     documentation: 'Documentación',
-    forgotPassword: 'Olvidó tu Contraseña',
+    forgotPassword: '¿Olvidó su Contraseña?',
     guide: 'Guía',
     page401: '401',
     page404: '404',

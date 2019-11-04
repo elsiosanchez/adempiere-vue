@@ -3,7 +3,7 @@ export default {
     dashboard: 'Dashboard',
     documentation: 'Documentation',
     guide: 'Guide',
-    forgotPassword: 'Forgot Password',
+    forgotPassword: 'Forgot Password?',
     page401: '401',
     page404: '404',
     profile: 'Profile',
