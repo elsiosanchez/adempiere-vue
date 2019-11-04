@@ -9,14 +9,14 @@ const data = {
     recordDetail: [],
     recentItems: [],
     inGetting: [],
-    user: []
+    forgetPassword: []
   },
   mutations: {
     addInGetting(state, payload) {
       state.inGetting.push(payload)
     },
-    addUser(state, payload) {
-      state.user.push(payload)
+    addForgetPassword(state, payload) {
+      state.forgetPassword.push(payload)
     },
     deleteInGetting(state, payload) {
       state.inGetting = state.inGetting.filter(item => item.containerUuid !== payload.containerUuid)
@@ -538,7 +538,6 @@ const data = {
      * forget password
      */
     getForgetPasswordFromServer({ commit }, parameters) {
-      console.log(parameters)
       // getForgetPassword()
       //   .then(response => {
       //     console.log(response)
@@ -546,7 +545,7 @@ const data = {
       //   .catch(error => {
       //     console.log(error)
       //   })
-      commit('addUser', parameters)
+      commit('addForgetPassword', parameters)
     },
     /**
      * TODO: Add support to tab children

@@ -262,10 +262,9 @@ export function getRecentItems() {
 }
 /**
  * forget password
- * @param {string} parameters.User
+ * @param {string} parameters.forgetPassword
  */
 export function getForgetPassword(parameters) {
-  console.log(parameters)
   return Instance.call(this).requestForgetPassword(parameters)
 }
 
