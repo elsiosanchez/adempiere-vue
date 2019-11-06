@@ -131,7 +131,7 @@ export default {
     }
   },
   beforeMount() {
-    this.options = this.getterLookupList
+    this.options = this.getterLookupAll
     // enable to dataTable records
     // Evaluate values of the displayColumn with empty string or number at 0
     if (!this.isEmptyValue(this.metadata.displayColumn)) {

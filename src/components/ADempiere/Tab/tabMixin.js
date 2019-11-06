@@ -27,11 +27,38 @@ export const tabMixin = {
       return this.$store.getters.getDataRecordsList(this.tabUuid)
     }
   },
+  watch: {
+    // Refrest the records of the TabChildren
+    getDataSelection(value) {
+      if (!value.isLoaded && this.getterIsLoadContextParent && this.getterIsLoadRecordParent) {
+        this.getDataTable()
+      }
+    },
+    // Current TabChildren
+    currentTabChild(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.$router.push({ query: { ...this.$route.query, tabChild: String(newValue) }})
+      }
+    },
+    // Load parent tab context
+    getterIsLoadContextParent(value) {
+      if (value && !this.getDataSelection.isLoaded && this.getterIsLoadRecordParent) {
+        this.getDataTable()
+      }
+    }
+  },
   created() {
     this.tabUuid = this.tabsList[0].uuid
   },
   methods: {
     parseContext,
+    //
+    getDataTable() {
+      this.$store.dispatch('getDataListTab', {
+        parentUuid: this.windowUuid,
+        containerUuid: this.tabUuid
+      })
+    },
     setCurrentTab() {
       this.$store.dispatch('setCurrentTab', {
         parentUuid: this.windowUuid,
@@ -52,12 +79,6 @@ export const tabMixin = {
         this.tabUuid = tabHTML.$attrs.tabuuid
         this.setCurrentTab()
       }
-    },
-    getData() {
-      this.$store.dispatch('getDataListTab', {
-        parentUuid: this.windowUuid,
-        containerUuid: this.tabUuid
-      })
     },
     handleBeforeLeave(activeName) {
       var metadataTab = this.tabsList.find(tab => tab.index === parseInt(activeName))
