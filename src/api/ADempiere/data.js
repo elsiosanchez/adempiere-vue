@@ -269,6 +269,13 @@ export function requestProcessActivity() {
 export function getRecentItems() {
   return Instance.call(this).requestRecentItems()
 }
+/**
+ * forget password
+ * @param {string} parameters.forgetPassword
+ */
+export function getForgetPassword(parameters) {
+  return Instance.call(this).requestForgetPassword(parameters)
+}
 
 /**
  * Reference List from Window
