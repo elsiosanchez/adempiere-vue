@@ -1,5 +1,5 @@
-import { getLookup, getLookupList } from '@/api/ADempiere'
-import { convertValueFromGRPC, isEmptyValue, getCurrentRole, parseContext } from '@/utils/ADempiere'
+import { getLookup, getLookupList, convertValueFromGRPC } from '@/api/ADempiere/data'
+import { isEmptyValue, getCurrentRole, parseContext } from '@/utils/ADempiere'
 
 const lookup = {
   state: {
