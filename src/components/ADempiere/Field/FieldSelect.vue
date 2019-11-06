@@ -141,12 +141,12 @@ export default {
         key = this.valueModel
       }
       // verify if exists to add
-      if (!this.findLabel(key)) {
-        this.othersOptions.push({
-          key: key,
-          label: this.metadata.displayColumn
-        })
-      }
+      // if (!this.findLabel(key)) {
+      //   this.othersOptions.push({
+      //     key: key,
+      //     label: this.metadata.displayColumn
+      //   })
+      // }
       // join options in store with pased from props
       // validate empty or duplicate data
       const optionList = this.getterLookupAll.filter(lookup => {
