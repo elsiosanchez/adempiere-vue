@@ -61,6 +61,7 @@ export default {
     logIn: 'Acceso',
     username: 'Usuario',
     usernameOrEmail: 'Usuario o Correo',
+    resetSuccessful: 'se Restauró la Clave de',
     password: 'Contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',

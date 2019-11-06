@@ -61,6 +61,7 @@ export default {
     logIn: 'Login',
     username: 'Username',
     usernameOrEmail: 'Username or Email',
+    resetSuccessful: 'the Key to Was Restored',
     password: 'Password',
     any: 'any',
     thirdparty: 'Or connect with',

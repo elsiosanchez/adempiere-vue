@@ -53,15 +53,14 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
       <el-button :loading="loading" type="primary" style="width:100%" @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
       </el-button>
-      <el-button type="text" style="float: left;" @click.native.prevent="handleReset">
+      <el-button type="text" style="float: left" @click.native.prevent="handleReset">
         {{ $t('route.forgotPassword') }}
       </el-button>
 
-      <div style="position:relative">
+      <div>
         <div class="tips">
           <span />
           <span />
@@ -70,21 +69,6 @@
           <span />
           <span />
         </div>
-        <!--
-        <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">
-            {{ $t('login.username') }} : editor
-          </span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          {{ $t('login.thirdparty') }}
-        </el-button>-->
       </div>
     </el-form>
 
@@ -206,24 +190,6 @@ export default {
     handleReset() {
       this.$router.push({ path: 'forgotPassword' })
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>

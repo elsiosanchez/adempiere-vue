@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="forgoForm" :model="forgoForm" :rules="forgotRules" class="login-form" auto-complete="on" label-position="left">
       <el-row>
         <el-col :span="3">
           <img src="https://avatars1.githubusercontent.com/u/1263359?s=200&v=4" class="image">
@@ -21,7 +21,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="forgoForm.username"
           :placeholder="$t('login.usernameOrEmail')"
           name="username"
           type="text"
@@ -56,17 +56,15 @@ export default {
   components: { LangSelect },
   data() {
     return {
-      loginForm: {
+      forgoForm: {
         username: ''
       },
-      loginRules: {
+      forgotRules: {
         username: [{ required: true, trigger: 'blur' }]
       },
       passwordType: 'password',
       capsTooltip: false,
-      loading: false,
-      showDialog: false,
-      redirect: undefined
+      loading: false
     }
   },
 
@@ -77,34 +75,24 @@ export default {
       })
     },
     handleSumit() {
-      console.log(this.loginForm)
-      this.$message({
-        showClose: true,
-        center: true,
-        message: 'Congrats, this is a success message.',
-        type: 'success'
-      })
-      this.$store.dispatch('getForgetPasswordFromServer', this.loginForm)
+      if (!this.isEmptyValue(this.forgoForm.username)) {
+        this.$message({
+          showClose: true,
+          center: true,
+          message: this.$t('login.resetSuccessful') + this.forgoForm.username,
+          type: 'success'
+        })
+        this.$store.dispatch('getForgetPasswordFromServer', this.forgoForm)
+      } else {
+        this.$message({
+          showClose: true,
+          center: true,
+          message: this.$t('login.unexpectedError'),
+          type: 'error'
+        })
+      }
       this.$router.push({ path: '/login/forgotPassword' })
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
