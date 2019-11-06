@@ -13,6 +13,15 @@ function Instance() {
 }
 
 /**
+ * Converted the gRPC value to the value needed
+ * @param {object} grpcValue Value get of gRPC
+ * @returns {mixed}
+ */
+export function convertValueFromGRPC(grpcValue) {
+  return Instance.call(this).convertValueFromGRPC(grpcValue)
+}
+
+/**
  * Create entity
  * @param {string}  parameters.tableName
  * @param {array}   parameters.attributesList
@@ -281,8 +290,17 @@ export function getReferencesList(parameters) {
 }
 
 /**
- *
- * @param {string} parametersCallout.callout
+ * Run callout request
+ * @param {string}  parametersCallout.windowUuid
+ * @param {integer} parametersCallout.windowNo
+ * @param {string}  parametersCallout.tabUuid
+ * @param {string}  parametersCallout.tableName
+ * @param {string}  parametersCallout.columnName
+ * @param {mixed}   parametersCallout.value
+ * @param {mixed}   parametersCallout.oldValue
+ * @param {string}  parametersCallout.callout
+ * @param {array}   parametersCallout.attributesList
+ * @returns {Map} Entity
  */
 export function runCallOutRequest(parametersCallout) {
   return Instance.call(this).runCalloutRequest(parametersCallout)

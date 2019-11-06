@@ -1,3 +1,5 @@
+import { convertValueFromGRPC } from '@/api/ADempiere/data'
+
 // Decode a HTML text
 export function decodeHtml(text) {
   var processMetadata = document.createElement('div')
@@ -103,44 +105,6 @@ export function clientDateTime(date = null, type = '') {
     return currentDateTime
   }
   return currentDateTime.date + ' ' + currentDateTime.time
-}
-
-/**
- * Converted the gRPC value to the value needed
- * @param {mixed} initialValue Value get of gRPC
- */
-export function convertValueFromGRPC(initialValue) {
-  if (initialValue === undefined || initialValue === null || initialValue.array.length <= 0) {
-    return undefined
-  }
-  var returnValue
-  switch (initialValue.getValuetype()) {
-    // data type Number (integer)
-    case 0:
-      returnValue = initialValue.getIntvalue()
-      break
-    // data type Number (integer)
-    case 1:
-      returnValue = initialValue.getLongvalue()
-      break
-    // data type Number (float)
-    case 2:
-      returnValue = initialValue.getDoublevalue()
-      break
-    // data type Boolean
-    case 3:
-      returnValue = initialValue.getBooleanvalue()
-      break
-    // data type String
-    case 4:
-      returnValue = initialValue.getStringvalue()
-      break
-    // data type Date
-    case 5:
-      returnValue = new Date(initialValue.getLongvalue())
-      break
-  }
-  return returnValue
 }
 
 /**
