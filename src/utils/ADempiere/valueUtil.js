@@ -110,7 +110,7 @@ export function clientDateTime(date = null, type = '') {
  * @param {mixed} initialValue Value get of gRPC
  */
 export function convertValueFromGRPC(initialValue) {
-  if (initialValue === undefined || initialValue === null) {
+  if (initialValue === undefined || initialValue === null || initialValue.array.length <= 0) {
     return undefined
   }
   var returnValue

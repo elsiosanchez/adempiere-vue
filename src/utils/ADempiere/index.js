@@ -94,6 +94,9 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
 
   var parsedDefaultValue = fieldGRPC.getDefaultvalue()
   if (String(parsedDefaultValue).includes('@')) {
+    if (String(parsedDefaultValue).includes('@SQL=')) {
+      parsedDefaultValue = evaluator.parseDepends(parsedDefaultValue)
+    }
     parsedDefaultValue = parseContext({
       ...moreAttributes,
       columnName: fieldGRPC.getColumnname(),

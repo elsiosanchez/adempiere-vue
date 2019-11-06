@@ -539,32 +539,38 @@ const data = {
      * @param {objec}  objectParams.isNew, if insert data to new row
      */
     notifyRowTableChange({ commit, state, getters, rootGetters }, objectParams) {
-      var currentValues = rootGetters.getColumnNamesAndValues({
-        containerUuid: objectParams.containerUuid,
+      const { parentUuid, containerUuid, isEdit = true } = objectParams
+      var currentValues = {}
+
+      currentValues = rootGetters.getColumnNamesAndValues({
+        parentUuid: parentUuid,
+        containerUuid: containerUuid,
         propertyName: 'value',
         isObjectReturn: true,
         isAddDisplayColumn: true
       })
-      var row = getters.getRowData(objectParams.containerUuid, currentValues.UUID)
 
-      var isEdit = true
-      if (objectParams.hasOwnProperty('isEdit')) {
-        isEdit = objectParams.isEdit
-      }
+      var row = getters.getRowData(objectParams.containerUuid, currentValues.UUID)
 
       var newRow = {
         ...currentValues,
         // ...objectParams.row,
         isEdit: isEdit
       }
+
       commit('notifyRowTableChange', {
         isNew: objectParams.isNew,
         newRow: newRow,
         row: row
       })
     },
-    notifyCellTableChange({ commit, state, dispatch, rootGetters }, objectParams) {
-      const { parentUuid, containerUuid, field, panelType = 'window', isSendToServer = true, columnName, rowKey, keyColumn, newValue, displayColumn } = objectParams
+    notifyCellTableChange({ commit, state, dispatch, rootGetters }, parameters) {
+      const {
+        parentUuid, containerUuid, field, panelType = 'window',
+        isSendToServer = true, columnName, rowKey, keyColumn, newValue,
+        displayColumn, withOutColumnNames = [], isSendCallout = true
+      } = parameters
+
       const recordSelection = state.recordSelection.find(recordItem => {
         return recordItem.containerUuid === containerUuid
       })
@@ -582,9 +588,9 @@ const data = {
       })
       commit('notifyCellTableChange', {
         row: row,
-        value: objectParams.newValue,
-        columnName: objectParams.columnName,
-        displayColumn: objectParams.displayColumn
+        value: newValue,
+        columnName: columnName,
+        displayColumn: displayColumn
       })
 
       if (panelType === 'browser') {
@@ -596,15 +602,18 @@ const data = {
         })
       } else if (panelType === 'window') {
         // request callouts
-        if (!isEmptyValue(newValue) && !isEmptyValue(field.callout)) {
+        if (isSendCallout && !withOutColumnNames.includes(field.columnName) &&
+          !isEmptyValue(newValue) && !isEmptyValue(field.callout)) {
+          withOutColumnNames.push(field.columnName)
           dispatch('getCallout', {
             parentUuid: parentUuid,
             containerUuid: containerUuid,
             tableName: field.tableName,
             columnName: field.columnName,
             callout: field.callout,
-            name: field.name,
             value: newValue,
+            withOutColumnNames: withOutColumnNames,
+            row: row,
             inTable: true
           })
         }
