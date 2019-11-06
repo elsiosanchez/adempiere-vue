@@ -65,23 +65,6 @@ export default {
       return this.getterDataParentTab.isLoadedContext
     }
   },
-  watch: {
-    getDataSelection(value) {
-      if (this.getterIsLoadRecordParent && !value.isLoaded && this.getterIsLoadContextParent) {
-        this.getData()
-      }
-    },
-    getterIsLoadContextParent(value) {
-      if (this.getterIsLoadRecordParent && !this.getDataSelection.isLoaded && value) {
-        this.getData()
-      }
-    },
-    currentTabChild(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.$router.push({ query: { ...this.$route.query, tabChild: String(newValue) }})
-      }
-    }
-  },
   mounted() {
     this.setCurrentTabChild()
   }
