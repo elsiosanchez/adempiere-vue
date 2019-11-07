@@ -17,7 +17,7 @@
       v-for="(option, key) in options"
       :key="key"
       :value="option.key"
-      :label="option.key + '| ' + typeof option.key + '| ' + option.label"
+      :label="option.label"
     />
   </el-select>
 </template>
