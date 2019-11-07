@@ -16,7 +16,7 @@
       >
         <el-table-column
           type="index"
-          width="20"
+          width="25"
         />
         <el-table-column
           :label="$t('profile.recentItems')"

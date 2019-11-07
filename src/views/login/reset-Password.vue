@@ -27,6 +27,7 @@
           type="text"
           tabindex="1"
           auto-complete="on"
+          autofocus
         />
       </el-form-item>
 
@@ -87,7 +88,7 @@ export default {
         this.$message({
           showClose: true,
           center: true,
-          message: this.$t('login.unexpectedError'),
+          message: this.$t('login.noValidUserOrEmail'),
           type: 'error'
         })
       }

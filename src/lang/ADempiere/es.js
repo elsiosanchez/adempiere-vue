@@ -51,6 +51,7 @@ export default {
     profile: 'Perfil'
   },
   login: {
+    noValidUserOrEmail: 'Por favor ingrese el Nombre de Usuario o Correo correcto',
     noValidUser: 'Por favor ingrese el nombre de usuario correcto',
     noValidPassword: 'La contraseña no puede estar vacía',
     invalidLogin: 'ID de usuario o contraseña no válida',
