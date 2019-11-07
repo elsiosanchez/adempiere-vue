@@ -633,12 +633,8 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
       if (String(value).trim() === '') {
         value = undefined
       }
-      if (referenceType === 'TableDirect' || referenceType === 'Table') {
-        if (!isNaN(value)) {
-          value = Number(value)
-        }
-      } else {
-        if (!isNaN(value)) {
+      if (referenceType === 'TableDirect') {
+        if ((value)) {
           value = Number(value)
         }
       } // Search or List

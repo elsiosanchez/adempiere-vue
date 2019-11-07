@@ -138,15 +138,15 @@ export default {
       this.remoteMethod()
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
-        key = this.valueModel
+        key = this.metadata.value
       }
       // verify if exists to add
-      // if (!this.findLabel(key)) {
-      //   this.othersOptions.push({
-      //     key: key,
-      //     label: this.metadata.displayColumn
-      //   })
-      // }
+      if (!this.findLabel(key)) {
+        this.othersOptions.push({
+          key: key,
+          label: this.metadata.displayColumn
+        })
+      }
       // join options in store with pased from props
       // validate empty or duplicate data
       const optionList = this.getterLookupAll.filter(lookup => {
@@ -172,17 +172,13 @@ export default {
       this.handleChange(value, undefined, label)
     },
     validateValue(value) {
-      if (['TableDirect'].includes(this.metadata.referenceType)) {
-        return this.isEmptyValue(value) ? undefined : parseInt(value, 10)
-      }
-      // return this.isEmptyValue(value) ? -1 : isNaN(value) ? value : parseInt(value, 10)
       if (this.isEmptyValue(value)) {
         return undefined
-      } else if (isNaN(value)) {
-        return value
-      } else {
+      }
+      if (['TableDirect'].includes(this.metadata.referenceType)) {
         return parseInt(value, 10)
       }
+      return value
     },
     validateBlanckOption() {
       // TODO: Evaluate -1 when list is string key
