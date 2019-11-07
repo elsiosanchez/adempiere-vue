@@ -10,7 +10,6 @@
             <h3 class="title">
               {{ $t('route.forgotPassword') }}
             </h3>
-            <lang-select class="set-language" />
           </div>
         </el-col>
       </el-row>
@@ -23,7 +22,6 @@
           ref="username"
           v-model="forgotForm.username"
           :placeholder="$t('login.usernameOrEmail')"
-          name="username"
           type="text"
           tabindex="1"
           auto-complete="off"
@@ -51,18 +49,23 @@
 </template>
 
 <script>
-import LangSelect from '@/components/LangSelect'
 
 export default {
   name: 'ForgotPassword',
-  components: { LangSelect },
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if ((value.trim()).length < 1) {
+        callback(new Error(this.$t('login.noValidUserOrEmail')))
+      } else {
+        callback()
+      }
+    }
     return {
       forgotForm: {
         username: ''
       },
       forgotRules: {
-        username: [{ required: true, trigger: 'blur' }]
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }]
       },
       loading: false
     }

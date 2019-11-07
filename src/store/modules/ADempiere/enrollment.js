@@ -15,7 +15,7 @@ const enrollment = {
         })
         .catch(error => {
           showMessage({
-            message: error.message,
+            message: language.t('login.unexpectedError'),
             type: 'error'
           })
           console.warn('Enrollment Forgot Password - Error ' + error.code + ': ' + error.message)

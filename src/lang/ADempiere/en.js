@@ -51,7 +51,7 @@ export default {
     size: 'Global Size'
   },
   login: {
-    noValidUserOrEmail: 'Please enter the Correct Username or Email',
+    noValidUserOrEmail: 'Please enter the Username or Email',
     noValidUser: 'Please enter the correct user name',
     noValidPassword: 'The password can not be empty',
     invalidLogin: 'User Id or Password invalid',
