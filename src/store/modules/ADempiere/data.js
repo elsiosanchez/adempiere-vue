@@ -8,15 +8,11 @@ const data = {
     recordSelection: [], // record data and selection
     recordDetail: [],
     recentItems: [],
-    inGetting: [],
-    forgetPassword: []
+    inGetting: []
   },
   mutations: {
     addInGetting(state, payload) {
       state.inGetting.push(payload)
-    },
-    addForgetPassword(state, payload) {
-      state.forgetPassword.push(payload)
     },
     deleteInGetting(state, payload) {
       state.inGetting = state.inGetting.filter(item => item.containerUuid !== payload.containerUuid)
@@ -533,19 +529,6 @@ const data = {
             reject(error)
           })
       })
-    },
-    /**
-     * forget password
-     */
-    getForgetPasswordFromServer({ commit }, parameters) {
-      // getForgetPassword()
-      //   .then(response => {
-      //     console.log(response)
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      //   })
-      commit('addForgetPassword', parameters)
     },
     /**
      * TODO: Add support to tab children

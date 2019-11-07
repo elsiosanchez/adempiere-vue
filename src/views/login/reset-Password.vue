@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="forgoForm" :model="forgoForm" :rules="forgotRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="forgotForm" :model="forgotForm" :rules="forgotRules" class="login-form" auto-complete="off" label-position="left">
       <el-row>
         <el-col :span="3">
           <img src="https://avatars1.githubusercontent.com/u/1263359?s=200&v=4" class="image">
@@ -21,17 +21,18 @@
         </span>
         <el-input
           ref="username"
-          v-model="forgoForm.username"
+          v-model="forgotForm.username"
           :placeholder="$t('login.usernameOrEmail')"
           name="username"
           type="text"
           tabindex="1"
-          auto-complete="on"
+          auto-complete="off"
           autofocus
+          @keyup.enter.native="handleSubmit"
         />
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleSumit">
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleSubmit">
         {{ $t('login.submit') }}
       </el-button>
 
@@ -57,33 +58,24 @@ export default {
   components: { LangSelect },
   data() {
     return {
-      forgoForm: {
+      forgotForm: {
         username: ''
       },
       forgotRules: {
         username: [{ required: true, trigger: 'blur' }]
       },
-      passwordType: 'password',
-      capsTooltip: false,
       loading: false
     }
   },
-
   methods: {
     showPwd() {
       this.$nextTick(() => {
         this.$refs.username.focus()
       })
     },
-    handleSumit() {
-      if (!this.isEmptyValue(this.forgoForm.username)) {
-        this.$message({
-          showClose: true,
-          center: true,
-          message: this.$t('login.resetSuccessful') + this.forgoForm.username,
-          type: 'success'
-        })
-        this.$store.dispatch('getForgetPasswordFromServer', this.forgoForm)
+    handleSubmit() {
+      if (!this.isEmptyValue(this.forgotForm.username)) {
+        this.$store.dispatch('forgotPassword', this.forgotForm.username)
       } else {
         this.$message({
           showClose: true,
@@ -92,7 +84,6 @@ export default {
           type: 'error'
         })
       }
-      this.$router.push({ path: '/login/forgotPassword' })
     }
   }
 }
@@ -144,7 +135,6 @@ $cursor: #fff;
   }
 }
 </style>
-
 <style lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;

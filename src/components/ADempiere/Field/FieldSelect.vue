@@ -127,6 +127,9 @@ export default {
     'metadata.value'(value) {
       if (!this.metadata.inTable) {
         this.value = this.validateValue(value)
+        if (!this.options.some(option => option.key === this.value)) {
+          this.getDataLookupItem()
+        }
       }
     }
   },
