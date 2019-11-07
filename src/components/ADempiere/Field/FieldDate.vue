@@ -110,15 +110,9 @@ export default {
     }
   },
   watch: {
-  //   valueModel(value) {
-  //     if (typeof value === 'number') {
-  //       value = new Date(value)
-  //     }
-  //     this.value = value
-  //   },
     'metadata.value'(value) {
       if (typeof value === 'number') {
-        value = new Date(value)
+        value = new Date(value).toUTCString()
       }
       if (value === null) {
         value = undefined
@@ -128,7 +122,7 @@ export default {
       if (this.metadata.isRange) {
         var valueTo = this.metadata.valueTo
         if (typeof valueTo === 'number') {
-          valueTo = new Date(valueTo)
+          valueTo = new Date(valueTo).toUTCString()
         }
         if (valueTo === null) {
           valueTo = undefined
