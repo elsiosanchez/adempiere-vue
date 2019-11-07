@@ -56,7 +56,11 @@
       <el-button :loading="loading" type="primary" style="width:100%" @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
       </el-button>
-      <el-button type="text" style="float: left" @click.native.prevent="handleReset">
+      <el-button
+        type="text"
+        style="float: left"
+        @click.native.prevent="$router.push({ path: 'forgotPassword' })"
+      >
         {{ $t('route.forgotPassword') }}
       </el-button>
 
@@ -186,9 +190,6 @@ export default {
           return false
         }
       })
-    },
-    handleReset() {
-      this.$router.push({ path: 'forgotPassword' })
     }
   }
 }

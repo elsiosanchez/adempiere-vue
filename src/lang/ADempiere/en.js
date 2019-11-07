@@ -61,11 +61,18 @@ export default {
     logIn: 'Login',
     username: 'Username',
     usernameOrEmail: 'Username or Email',
-    resetSuccessful: 'The password to was restored ',
+    passwordResetSendLink: 'The link to reset the password was sent to the email ',
     password: 'Password',
+    passwordNew: 'New password',
+    passwordConfirm: 'Password confirm',
+    passwordConfirmNew: 'New password confirm',
     any: 'any',
     thirdparty: 'Or connect with',
-    thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation.'
+    thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation.',
+    invalidToken: 'The token used is invalid.',
+    passwordReset: 'Password Reset',
+    passwordResetSuccessful: 'Password reset was successful',
+    passwordAndConfirmNotMatch: 'The new password and your confirmation do not match.'
   },
   documentation: {
     documentation: 'Documentation',

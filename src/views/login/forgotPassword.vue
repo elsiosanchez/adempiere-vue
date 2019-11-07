@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="forgotForm" :model="forgotForm" :rules="forgotRules" class="login-form" auto-complete="off" label-position="left">
+    <el-form ref="forgotForm" :model="forgotForm" class="login-form" auto-complete="off" label-position="left">
       <el-row>
         <el-col :span="3">
           <img src="https://avatars1.githubusercontent.com/u/1263359?s=200&v=4" class="image">
@@ -23,7 +23,6 @@
           ref="username"
           v-model="forgotForm.username"
           :placeholder="$t('login.usernameOrEmail')"
-          name="username"
           type="text"
           tabindex="1"
           auto-complete="off"
@@ -31,20 +30,19 @@
         />
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleSubmit">
+      <el-button
+        :disabled="isEmptyValue(forgotForm.username)"
+        :loading="loading"
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="handleSubmit"
+      >
         {{ $t('login.submit') }}
       </el-button>
 
-      <div style="position:relative">
-        <div class="tips">
-          <span />
-          <span />
-        </div>
-        <div class="tips">
-          <span />
-          <span />
-        </div>
-      </div>
+      <el-button type="text" style="float: left" @click.native.prevent="$router.push({ path: 'login' })">
+        {{ $t('login.title') }}
+      </el-button>
     </el-form>
   </div>
 </template>
@@ -74,14 +72,11 @@ export default {
     },
     handleSubmit() {
       if (!this.isEmptyValue(this.forgotForm.username)) {
+        this.loading = true
         this.$store.dispatch('forgotPassword', this.forgotForm.username)
-      } else {
-        this.$message({
-          showClose: true,
-          center: true,
-          message: this.$t('login.unexpectedError'),
-          type: 'error'
-        })
+          .finally(() => {
+            this.loading = false
+          })
       }
     }
   }

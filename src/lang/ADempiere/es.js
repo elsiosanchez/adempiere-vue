@@ -61,11 +61,18 @@ export default {
     logIn: 'Acceso',
     username: 'Usuario',
     usernameOrEmail: 'Usuario o Correo',
-    resetSuccessful: 'Se restauró la clave de ',
+    passwordResetSendLink: 'El enlace para reiniciar la contraseña se envio al correo ',
     password: 'Contraseña',
+    passwordNew: 'Nueva contraseña',
+    passwordConfirm: 'Confirmar contraseña',
+    passwordConfirmNew: 'Confirmación de nueva contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',
-    thirdpartyTips: 'No se puede simular en local, así que combine su propia simulación de negocios.'
+    thirdpartyTips: 'No se puede simular en local, así que combine su propia simulación de negocios.',
+    invalidToken: 'El token utilizado es inválido.',
+    passwordReset: 'Reiniciar contraseña',
+    passwordResetSuccessful: 'El reinicio de contraseña se realizo correctamente',
+    passwordAndConfirmNotMatch: 'la contraseña nueva y su confirmación no coinciden.'
   },
   documentation: {
     documentation: 'Documentación',
