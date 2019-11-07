@@ -92,6 +92,7 @@ const windowControl = {
 
             // update fields with new values
             dispatch('notifyPanelChange', {
+              parentUuid: parameters.parentUuid,
               containerUuid: parameters.containerUuid,
               newValues: newValues,
               isSendToServer: false

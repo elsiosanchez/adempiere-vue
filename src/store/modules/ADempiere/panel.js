@@ -290,7 +290,6 @@ const panel = {
         fieldList = getters.getFieldsListFromPanel(containerUuid)
       }
       var fieldsShowed = []
-
       fieldList.forEach(actionField => {
         if (actionField.isShowedFromUser) {
           fieldsShowed.push(actionField.columnName)
@@ -300,7 +299,7 @@ const panel = {
         if (!newValues.hasOwnProperty(actionField.columnName)) {
           return
         }
-        if (newValues[actionField.columnName] !== actionField.value) {
+        if (!isEmptyValue(newValues[actionField.columnName]) && newValues[actionField.columnName] !== actionField.value) {
           dispatch('notifyFieldChange', {
             isSendToServer: isSendToServer,
             isSendCallout: isSendCallout,
