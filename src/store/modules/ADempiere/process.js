@@ -11,8 +11,8 @@ const process = {
     addProcess(state, payload) {
       state.process.push(payload)
     },
-    dictionaryResetCacheProcess(state, payload) {
-      state.process = payload
+    dictionaryResetCacheProcess(state) {
+      state.process = []
     }
   },
   actions: {

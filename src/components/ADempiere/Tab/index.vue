@@ -38,7 +38,11 @@ export default {
   computed: {
     // if tabs children is showed or closed
     isShowedDetail() {
-      return this.$store.getters.getWindow(this.windowUuid).isShowedDetail
+      const window = this.$store.getters.getWindow(this.windowUuid)
+      if (window) {
+        return window.isShowedDetail
+      }
+      return undefined
     }
   },
   watch: {

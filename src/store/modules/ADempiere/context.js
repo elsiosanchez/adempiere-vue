@@ -27,6 +27,9 @@ const context = {
       Object.keys(objectContext).forEach(key => {
         Vue.set(state.context, key, objectContext[key])
       })
+    },
+    dictionaryResetCacheContext(state) {
+      state.context = {}
     }
   },
   actions: {

@@ -65,7 +65,7 @@
                       :parent-uuid="windowUuid"
                       :container-uuid="windowMetadata.currentTabUuid"
                       :panel-type="panelType"
-                      :is-insert-record="getterCurrentTab.isInsertRecord"
+                      :is-insert-record="getterIsInsertRecord"
                       :modal-metadata="windowMetadata"
                     />
                   </el-header>
@@ -204,8 +204,12 @@ export default {
     getterRecordList() {
       return this.$store.getters.getDataRecordsList(this.windowMetadata.currentTabUuid).length
     },
-    getterCurrentTab() {
-      return this.$store.getters.getCurrentTab(this.windowUuid)
+    getterIsInsertRecord() {
+      const tab = this.$store.getters.getCurrentTab(this.windowUuid)
+      if (tab) {
+        return tab.isInsertRecord
+      }
+      return false
     }
   },
   watch: {

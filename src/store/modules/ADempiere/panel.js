@@ -28,8 +28,8 @@ const panel = {
         payload.field.isReportFromLogic = payload.isReportFromLogic
       }
     },
-    dictionaryResetCache(state, payload) {
-      state.panel = payload
+    dictionaryResetCache(state) {
+      state.panel = []
     },
     changePanel(state, payload) {
       state = state.panel.map(item => {
@@ -621,11 +621,13 @@ const panel = {
         })
       }
     },
-    dictionaryResetCache({ commit }, param = []) {
-      commit('dictionaryResetCache', param)
-      commit('dictionaryResetCacheWindow', param)
-      commit('dictionaryResetCacheProcess', param)
-      commit('dictionaryResetCacheBrowser', param)
+    dictionaryResetCache({ commit }) {
+      commit('dictionaryResetCache')
+      commit('dictionaryResetCacheContext')
+      commit('dictionaryResetCacheContextMenu')
+      commit('dictionaryResetCacheWindow')
+      commit('dictionaryResetCacheProcess')
+      commit('dictionaryResetCacheBrowser')
     }
   },
   getters: {

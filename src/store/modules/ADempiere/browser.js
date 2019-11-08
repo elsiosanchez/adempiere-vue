@@ -10,8 +10,8 @@ const browser = {
     addBrowser(state, payload) {
       state.browser.push(payload)
     },
-    dictionaryResetCacheBrowser(state, payload) {
-      state.browser = payload
+    dictionaryResetCacheBrowser(state) {
+      state.browser = []
     },
     changeShowedCriteriaBrowser(state, payload) {
       payload.browser.isShowedCriteria = payload.isShowedCriteria

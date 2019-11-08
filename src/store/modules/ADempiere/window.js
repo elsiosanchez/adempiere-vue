@@ -16,8 +16,9 @@ const window = {
       state.window.push(payload)
       state.windowIndex++
     },
-    dictionaryResetCacheWindow(state, payload) {
-      state.window = payload
+    dictionaryResetCacheWindow(state) {
+      state.window = []
+      state.windowIndex = 0
     },
     changeShowedDetailWindow(state, payload) {
       payload.window.isShowedDetail = payload.changeShowedDetail
@@ -334,7 +335,11 @@ const window = {
       return state.windowIndex
     },
     getIsShowedRecordNavigation: (state, getters) => (windowUuid) => {
-      return getters.getWindow(windowUuid).isShowedRecordNavigation
+      const window = getters.getWindow(windowUuid)
+      if (window) {
+        return window.isShowedRecordNavigation
+      }
+      return window
     },
     getTab: (state, getters) => (windowUuid, tabUuid) => {
       const window = getters.getWindow(windowUuid)
@@ -352,7 +357,9 @@ const window = {
           return tabItem.uuid === window.currentTabUuid
         })
       }
-      return window
+      return {
+        isInsertRecord: false
+      }
     },
     getTabIsLoadField: (state, getters) => (windowUuid, tabUuid) => {
       const tab = getters.getTab(windowUuid, tabUuid)

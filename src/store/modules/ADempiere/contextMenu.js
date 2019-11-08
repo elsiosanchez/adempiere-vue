@@ -18,6 +18,9 @@ const contextMenu = {
   mutations: {
     setContextMenu(state, payload) {
       state.contextMenu.push(payload)
+    },
+    dictionaryResetCacheContextMenu(state) {
+      state.contextMenu = []
     }
   },
   actions: {
