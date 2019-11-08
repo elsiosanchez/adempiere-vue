@@ -245,7 +245,12 @@ export default {
         query: this.metadata.reference.query
       })
         .then(response => {
-          this.options = this.getterLookupAll.concat(this.othersOptions)
+          const list = this.getterLookupAll.filter(options => {
+            if (options.key !== undefined) {
+              return options
+            }
+          })
+          this.options = list
         })
         .finally(() => {
           this.isLoading = false
