@@ -5,7 +5,7 @@
   >
     <el-container style="height: 86vh;">
       <el-main>
-        <split-pane :min-percent="10" :default-percent="isShowedRecordPanel ? (isShowedRecordNavigation ? 100 : 50) : (isShowedRecordNavigation ? 50 : -1)" split="vertical">
+        <split-pane :min-percent="10" :default-percent="defaultPorcentSplitPane" split="vertical">
           <template>
             <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
             <div slot="paneL" class="left-container">
@@ -186,6 +186,19 @@ export default {
     }
   },
   computed: {
+    defaultPorcentSplitPane() {
+      // isShowedRecordPanel ? (isShowedRecordNavigation ? 100 : 50) : (isShowedRecordNavigation ? 50 : -1)
+      if (this.isShowedRecordPanel) {
+        if (this.isShowedRecordNavigation) {
+          return 100
+        }
+        return 50
+      }
+      if (this.isShowedRecordNavigation) {
+        return 50
+      }
+      return -1
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },

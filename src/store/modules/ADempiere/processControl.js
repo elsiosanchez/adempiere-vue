@@ -1,6 +1,6 @@
 import { runProcess, requestProcessActivity } from '@/api/ADempiere'
 import { showNotification } from '@/utils/ADempiere/notification'
-import { isEmptyValue, convertValuesMapToObject } from '@/utils/ADempiere'
+import { isEmptyValue, convertMapToArrayPairs } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
 
@@ -342,7 +342,7 @@ const processControl = {
               output: output,
               lastRun: responseItem.getLastrun(),
               parametersMap: responseItem.getParametersMap(),
-              parameters: convertValuesMapToObject(
+              parameters: convertMapToArrayPairs(
                 responseItem.getParametersMap()
               ),
               ResultTableName: responseItem.getResulttablename(),

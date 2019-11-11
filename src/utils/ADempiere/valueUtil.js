@@ -159,17 +159,19 @@ export function convertMapToArrayPairs({
   nameValue = 'value',
   isGRPC = true
 }) {
-  var result = []
-  toConvert.forEach((value, key) => {
-    var element = {}
-    element[nameKey] = key
-    element[nameValue] = value
-    if (isGRPC) {
-      element[nameValue] = convertValueFromGRPC(value)
-    }
+  const result = []
+  if (toConvert && toConvert.size) {
+    toConvert.forEach((value, key) => {
+      const element = {}
+      element[nameKey] = key
+      element[nameValue] = value
+      if (isGRPC) {
+        element[nameValue] = convertValueFromGRPC(value)
+      }
 
-    result.push(element)
-  })
+      result.push(element)
+    })
+  }
   return result
 }
 

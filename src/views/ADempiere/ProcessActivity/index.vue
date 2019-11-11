@@ -19,8 +19,12 @@
                   {{ $t('components.contextMenuActions') }}<i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-if="activity.isReport" :command="{...activity,command:'seeReport'}"> {{ $t('views.seeReport') }} </el-dropdown-item>
-                  <el-dropdown-item :command="{...activity,command:'zoomIn'}"> {{ $t('table.ProcessActivity.zoomIn') }} </el-dropdown-item>
+                  <el-dropdown-item v-if="activity.isReport" :command="{ ...activity, command: 'seeReport' }">
+                    {{ $t('views.seeReport') }}
+                  </el-dropdown-item>
+                  <el-dropdown-item :command="{ ...activity, command: 'zoomIn' }">
+                    {{ $t('table.ProcessActivity.zoomIn') }}
+                  </el-dropdown-item>
                   <!-- TODO: add more actions -->
                 </el-dropdown-menu>
               </el-dropdown>
@@ -184,10 +188,17 @@ export default {
           }
         })
       } else {
-        activity.parameters.forEach(param => {
-          this.$route.query[param.columnName] = param.value
+        if (activity.parameters && activity.parameters.length) {
+          activity.parameters.forEach(param => {
+            this.$route.query[param.columnName] = param.value
+          })
+        }
+        this.$router.push({
+          path: activity.processIdPath,
+          query: {
+            ...this.$route.query
+          }
         })
-        this.$router.push({ path: activity.processIdPath, query: { ...this.$route.query }})
       }
     },
     checkStatus(isError, isProcessing, isReport) {

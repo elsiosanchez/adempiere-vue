@@ -34,7 +34,7 @@
         <el-table-column
           width="50"
         >
-          <router-link :to="{ name: 'ProcessActivity'}">
+          <router-link :to="{ name: 'ProcessActivity' }">
             <el-tooltip effect="dark" :content="$t('navbar.badge.link')" placement="top-start">
               <svg-icon icon-class="tree-table" />
             </el-tooltip>
