@@ -16,14 +16,14 @@
                     <div class="open-datatable-aside">
                       <el-button
                         v-show="!isPanel"
-                        :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                        :icon="iconIsShowedRecordNavigation"
                         circle
                         style="margin-left: 10px;"
                         @click="handleChangeShowedRecordNavigation()"
                       />
                       <el-button
                         v-show="!isPanel"
-                        :icon="isShowedRecordPanel ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                        :icon="iconIsShowedAside"
                         circle
                         @click="handleChangeShowedPanel()"
                       />
@@ -57,7 +57,7 @@
           <template slot="paneR">
             <el-container style="height: 86vh;">
               <Split direction="vertical" @onDrag="onDrag">
-                <SplitArea :size="isShowedTabChildren ? 50 : 100" :style="isShowedTabChildren ? { overflow: 'auto' } : { overflow: 'hidden' }">
+                <SplitArea :size="sizeAreaStyle" :style="splitAreaStyle">
                   <el-header style="height: 39px;">
                     <context-menu
                       v-show="!isShowedRecordPanel"
@@ -69,7 +69,8 @@
                       :modal-metadata="windowMetadata"
                     />
                   </el-header>
-                  <el-main :style="isShowedTabChildren ? { height: 'initial', overflow: 'auto' } : { height: 'initial', overflow: 'hidden' }">
+                  <!-- das -->
+                  <el-main :style="styleMainIsShowedTabChildren">
                     <tab-parent
                       :window-uuid="windowUuid"
                       :tabs-list="windowMetadata.tabsListParent"
@@ -86,7 +87,7 @@
                             (isMobile && !isShowedRecordNavigation || !isMobile)"
                           v-show="!isShowedTabChildren"
                           icon="el-icon-caret-top"
-                          :class="isMobile ? 'open-table-detail-mobile' : 'open-table-detail'"
+                          :class="classIsMObile"
                           circle
                           @click="handleChangeShowedTabChildren()"
                         />
@@ -101,7 +102,7 @@
                         <div class="open-left" />
                         <el-button
                           v-show="!isShowedRecordNavigation"
-                          :icon="isShowedRecordNavigation ? 'el-icon-caret-left' : 'el-icon-caret-right'"
+                          :icon="iconIsShowedRecordNavigation"
                           class="open-navegation"
                           circle
                           @click="handleChangeShowedRecordNavigation()"
@@ -189,9 +190,53 @@ export default {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
+    // convert ternary operator into computed property
+    classIsMObile() {
+      if (this.isMobile) {
+        return 'open-table-detail-mobile'
+      } else {
+        return 'open-table-detail'
+      }
+    },
     getterIsShowedRecordNavigation() {
       return this.$store.getters.getIsShowedRecordNavigation(this.windowUuid)
     },
+    iconIsShowedRecordNavigation() {
+      if (this.isShowedRecordNavigation) {
+        return 'el-icon-caret-left'
+      } else {
+        return 'el-icon-caret-right'
+      }
+    },
+    iconIsShowedAside() {
+      if (this.isShowedRecordPanel) {
+        return 'el-icon-caret-left'
+      } else {
+        return 'el-icon-caret-right'
+      }
+    },
+    styleMainIsShowedTabChildren() {
+      if (this.isShowedTabChildren) {
+        return { height: 'initial', overflow: 'auto' }
+      } else {
+        return { height: 'initial', overflow: 'hidden' }
+      }
+    },
+    splitAreaStyle() {
+      if (this.isShowedTabChildren) {
+        return { overflow: 'auto' }
+      } else {
+        return { overflow: 'hidden' }
+      }
+    },
+    sizeAreaStyle() {
+      if (this.isShowedTabChildren) {
+        return 50
+      } else {
+        return 100
+      }
+    },
+    //
     getterWindow() {
       return this.$store.getters.getWindow(this.windowUuid)
     },
