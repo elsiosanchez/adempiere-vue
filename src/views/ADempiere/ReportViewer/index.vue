@@ -90,9 +90,6 @@ export default {
     }
   },
   computed: {
-    isMobile() {
-      return this.$store.state.app.device === 'mobile'
-    },
     // TODO: Add get metadata from server to open report view from link
     processMetadata() {
       return this.$store.getters.getProcessById(this.$route.params.processId)

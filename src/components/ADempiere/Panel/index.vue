@@ -229,7 +229,6 @@ export default {
       dataRecords: {},
       gutterRow: 0,
       isLoadPanel: false,
-      isLoadFromServer: false,
       isLoadRecord: false,
       uuidRecord: this.$route.query.action,
       fieldGroups: [],
@@ -286,11 +285,6 @@ export default {
     }
   },
   watch: {
-    isLoadFromServer(value) {
-      if (value) {
-        this.generatePanel(this.getterFieldList)
-      }
-    },
     // used only panel modal (process associated in browser or window)
     containerUuid() {
       this.generatePanel(this.metadata.fieldList)
@@ -342,7 +336,7 @@ export default {
           type: this.isAdvancedQuery ? 'table' : this.panelType,
           isAdvancedQuery: this.isAdvancedQuery
         }).then(() => {
-          this.isLoadFromServer = true
+          this.generatePanel(this.getterFieldList)
         }).catch(error => {
           console.warn('Field Load Error ' + error.code + ': ' + error.message)
         })

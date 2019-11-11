@@ -4,7 +4,7 @@
       <el-collapse-item :title="title" name="1" class="collapse-item">
         <el-row justify="space-around">
           <template v-for="(item, index) in items.children">
-            <el-col :key="index" :span="isMobile()">
+            <el-col :key="index" :span="isMobile">
               <el-card
                 :key="index"
                 shadow="never"
@@ -26,7 +26,7 @@
       </el-collapse-item>
     </el-collapse>
   </el-col>
-  <el-col v-else :span="isMobile()">
+  <el-col v-else :span="isMobile">
     <el-card
       shadow="never"
       class="custom-card"
@@ -67,6 +67,13 @@ export default {
   computed: {
     device() {
       return this.$store.state.app.device
+    },
+    isMobile() {
+      if (this.device === 'mobile') {
+        return 24
+      } else {
+        return 8
+      }
     }
   },
   methods: {
@@ -88,13 +95,6 @@ export default {
             childs: item.children
           }
         })
-      }
-    },
-    isMobile() {
-      if (this.device === 'mobile') {
-        return 24
-      } else {
-        return 8
       }
     }
   }

@@ -114,12 +114,6 @@ export default {
     getContainerIsReadyForSubmit() {
       return !this.$store.getters.isNotReadyForSubmit(this.browserUuid)
     },
-    cssClass() {
-      if (this.$store.state.app.sidebar.opened) {
-        return 'container-panel-open'
-      }
-      return 'container-panel'
-    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -134,28 +128,6 @@ export default {
         return 'content-help-mobile'
       }
       return 'content-help'
-    }
-  },
-  watch: {
-    isLoaded(value) {
-      if (value) {
-        this.browserMetadata = this.getterBrowser
-        if (this.getDataRecords.length <= 0) {
-          if (this.getContainerIsReadyForSubmit) {
-            this.defaultSearch()
-          } else {
-            this.$store.dispatch('setRecordSelection', {
-              containerUuid: this.browserUuid,
-              panelType: this.panelType
-            })
-          }
-        }
-      }
-    },
-    'browserMetadata.isShowedCriteria'(value) {
-      if (value) {
-        this.activeSearch = ['opened-criteria']
-      }
     }
   },
   created() {
@@ -175,7 +147,9 @@ export default {
     },
     getBrowser() {
       if (this.getterBrowser) {
+        this.browserMetadata = this.getterBrowser
         this.isLoaded = true
+        this.defaultSearch()
       } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.browserUuid,
@@ -183,6 +157,10 @@ export default {
           routeToDelete: this.$route
         })
           .then(() => {
+            this.browserMetadata = this.getterBrowser
+            this.defaultSearch()
+          })
+          .finally(() => {
             this.isLoaded = true
           })
           .catch(error => {
@@ -190,10 +168,25 @@ export default {
           })
       }
     },
-    async defaultSearch() {
-      this.$store.dispatch('getBrowserSearch', {
-        containerUuid: this.browserUuid
-      })
+    defaultSearch() {
+      // open or closed show criteria
+      this.activeSearch = []
+      if (this.browserMetadata.isShowedCriteria) {
+        this.activeSearch = ['opened-criteria']
+      }
+
+      if (this.getDataRecords.length <= 0) {
+        if (this.getContainerIsReadyForSubmit) {
+          this.$store.dispatch('getBrowserSearch', {
+            containerUuid: this.browserUuid
+          })
+        } else {
+          this.$store.dispatch('setRecordSelection', {
+            containerUuid: this.browserUuid,
+            panelType: this.panelType
+          })
+        }
+      }
     }
   }
 }

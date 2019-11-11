@@ -101,6 +101,7 @@ export default {
   }
 }
 </script>
+
 <style>
 .el-badge__content.is-fixed {
     position: absolute;

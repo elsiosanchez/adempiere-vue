@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isLoading"
+    v-if="isLoaded"
     key="window-loaded"
   >
     <el-container style="height: 86vh;">
@@ -144,7 +144,7 @@
   <div
     v-else
     key="window-loading"
-    v-loading="!isLoading"
+    v-loading="!isLoaded"
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
@@ -177,7 +177,7 @@ export default {
       windowMetadata: {},
       windowUuid: this.$route.meta.uuid,
       panelType: 'window',
-      isLoading: false,
+      isLoaded: false,
       isPanel: false,
       isLoadingFromServer: false,
       listRecordNavigation: 0,
@@ -270,30 +270,7 @@ export default {
       return false
     }
   },
-  watch: {
-    isShowedRecordNavigation(value) {
-      this.changeShowedRecordNavigation()
-    },
-    isLoadingFromServer(value) {
-      if (value) {
-        this.windowMetadata = this.getterWindow
-        if (this.getterIsShowedRecordNavigation === undefined) {
-          this.listRecordNavigation = this.getterRecordList
-          if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
-            this.isShowedRecordNavigation = true
-          } else if (this.windowMetadata.windowType === 'T') {
-            this.isShowedRecordNavigation = false
-          }
-        } else {
-          this.isShowedRecordNavigation = this.getterIsShowedRecordNavigation
-        }
-
-        this.isShowedTabChildren = this.windowMetadata.isShowedDetail
-        this.isLoading = true
-      }
-    }
-  },
-  mounted() {
+  created() {
     this.getWindow()
   },
   methods: {
@@ -311,19 +288,42 @@ export default {
     // get window from vuex store or server
     getWindow() {
       if (this.getterWindow) {
+        this.generateWindow()
         this.isLoadingFromServer = true
       } else {
-        this.$store.dispatch('getWindowFromServer', { windowUuid: this.windowUuid, routeToDelete: this.$route })
+        this.$store.dispatch('getWindowFromServer', {
+          windowUuid: this.windowUuid,
+          routeToDelete: this.$route
+        })
           .then(response => {
+            this.generateWindow()
             this.isLoadingFromServer = true
           })
           .finally(() => {
-            this.isLoading = true
+            this.isLoaded = true
           })
       }
     },
+    generateWindow() {
+      this.windowMetadata = this.getterWindow
+      if (this.getterIsShowedRecordNavigation === undefined) {
+        this.listRecordNavigation = this.getterRecordList
+        if (this.windowMetadata.windowType === 'Q' || this.windowMetadata.windowType === 'M' && this.listRecordNavigation >= 10) {
+          this.isShowedRecordNavigation = true
+        } else if (this.windowMetadata.windowType === 'T') {
+          this.isShowedRecordNavigation = false
+        }
+      } else {
+        this.isShowedRecordNavigation = this.getterIsShowedRecordNavigation
+      }
+
+      this.isShowedTabChildren = this.windowMetadata.isShowedDetail
+      this.isLoaded = true
+      this.changeShowedRecordNavigation()
+    },
     handleChangeShowedRecordNavigation(value) {
       this.isShowedRecordNavigation = !this.isShowedRecordNavigation
+      this.changeShowedRecordNavigation()
     },
     handleChangeShowedPanel(value) {
       this.isPanel = !this.isPanel

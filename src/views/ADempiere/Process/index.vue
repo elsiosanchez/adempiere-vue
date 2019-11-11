@@ -79,18 +79,8 @@ export default {
     }
   },
   computed: {
-    isMobile() {
-      return this.$store.state.app.device === 'mobile'
-    },
     getterProcess() {
       return this.$store.getters.getPanel(this.processUuid)
-    }
-  },
-  watch: {
-    isLoadedMetadata(value) {
-      if (value) {
-        this.processMetadata = this.getterProcess
-      }
     }
   },
   created() {
@@ -99,16 +89,19 @@ export default {
   methods: {
     getProcess() {
       if (this.getterProcess) {
+        this.processMetadata = this.getterProcess
         this.isLoadedMetadata = true
       } else {
         this.$store.dispatch('getPanelAndFields', {
           containerUuid: this.processUuid,
           type: this.panelType,
           routeToDelete: this.$route
-        }).then(response => {
-          this.isLoadedMetadata = true
+        }).then(() => {
+          this.processMetadata = this.getterProcess
         }).catch(error => {
           console.log('Dictionary Process - Error ' + error.code + ': ' + error.message)
+        }).finally(() => {
+          this.isLoadedMetadata = true
         })
       }
     }

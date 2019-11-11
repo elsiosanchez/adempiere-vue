@@ -126,13 +126,6 @@ export default {
     getterAllSessionProcess() {
       return this.$store.getters.getAllSessionProcess
     },
-    valuesPanelToShare() {
-      return this.$store.getters.getParametersToShare({
-        containerUuid: this.containerUuid,
-        isOnlyDisplayed: true,
-        isAdvancedQuery: this.$route.query.action === 'advancedQuery'
-      })
-    },
     // all process
     getRunProcessAll() {
       var processAll = this.getterAllInExecution.concat(this.getterAllFinishProcess, this.getterAllSessionProcess)

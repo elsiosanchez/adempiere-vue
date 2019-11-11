@@ -9,7 +9,7 @@
     :close-on-click-modal="true"
   >
     {{ modalMetadata.description }}
-    <panel
+    <main-panel
       v-if="(modalMetadata.panelType === 'process' || modalMetadata.panelType === 'report') && !isEmptyValue(modalMetadata.uuid)"
       :parent-uuid="parentUuid"
       :container-uuid="modalMetadata.uuid"
@@ -29,13 +29,13 @@
 </template>
 
 <script>
-import Panel from '@/components/ADempiere/Panel'
+import MainPanel from '@/components/ADempiere/Panel'
 import { showNotification } from '@/utils/ADempiere/notification'
 
 export default {
   name: 'ModalProcess',
   components: {
-    Panel
+    MainPanel
   },
   props: {
     parentUuid: {
