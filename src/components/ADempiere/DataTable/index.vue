@@ -521,6 +521,9 @@ export default {
         return formatDate(cell, field.referenceType)
         // return typeof row[field.columnName] === 'number' ? new Date.UTC(row[field.columnName]) : row[field.columnName]
       } else {
+        if (row[field.columnName] === 0) {
+          row[field.columnName] = undefined
+        }
         return row['DisplayColumn_' + field.columnName] || row[field.columnName]
       }
     },
