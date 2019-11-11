@@ -284,12 +284,13 @@ const panel = {
         isShowedField = false,
         panelType = 'window',
         withOutColumnNames = [],
-        isSendCallout = true
+        isSendCallout = true,
+        isAdvancedQuery = false
       } = parameters
       var { fieldList = [] } = parameters
 
       if (!fieldList.length) {
-        fieldList = getters.getFieldsListFromPanel(containerUuid)
+        fieldList = getters.getFieldsListFromPanel(containerUuid, isAdvancedQuery)
       }
       var fieldsShowed = []
       fieldList.forEach(actionField => {

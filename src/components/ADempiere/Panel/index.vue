@@ -184,8 +184,7 @@
 import FieldDefinition from '@/components/ADempiere/Field'
 import FilterFields from '@/components/ADempiere/Panel/filterFields'
 import draggable from 'vuedraggable'
-import { parsedValueComponent } from '@/utils/ADempiere'
-import { fieldIsDisplayed } from '@/utils/ADempiere'
+import { fieldIsDisplayed, parsedValueComponent } from '@/utils/ADempiere'
 
 export default {
   name: 'PanelFields',
@@ -261,31 +260,14 @@ export default {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
-    getterRowData() {
-      if (this.isPanelWindow) {
-        if (!this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
-          return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
-        }
-      }
-      return false
-    },
-    /**
-     * TODO: Verify use and implementation
-     * Load dictionary fields in panel
-     */
-    getterIsLoadedField() {
-      if (this.isPanelWindow) {
-        return this.$store.getters.getTabIsLoadField(this.parentUuid, this.containerUuid)
-      }
-      return false
-    },
     getterDataStore() {
       if (this.isPanelWindow) {
         return this.$store.getters.getDataRecordAndSelection(this.containerUuid)
       }
       return {
         recordCount: 0,
-        isLoaded: false
+        isLoaded: false,
+        record: []
       }
     },
     getterTotalDataRecordCount() {
@@ -293,6 +275,14 @@ export default {
     },
     getterIsLoadedRecord() {
       return this.getterDataStore.isLoaded
+    },
+    getterRowData() {
+      if (this.isPanelWindow) {
+        if (!this.isEmptyValue(this.uuidRecord) && this.uuidRecord !== 'create-new') {
+          return this.$store.getters.getRowData(this.containerUuid, this.uuidRecord)
+        }
+      }
+      return false
     }
   },
   watch: {
@@ -481,9 +471,19 @@ export default {
             if (response.length && !parameters.isNewRecord) {
               this.dataRecords = response[0]
               if (this.$route.query.action === 'create-new') {
-                this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
+                this.$router.push({
+                  name: this.$route.name,
+                  query: {
+                    ...this.$route.query
+                  }
+                })
               } else if (this.$route.query.action === 'reference') {
-                this.$router.push({ name: this.$route.name, query: { ...this.$route.query }})
+                this.$router.push({
+                  name: this.$route.name,
+                  query: {
+                    ...this.$route.query
+                  }
+                })
                 this.$store.dispatch('notifyPanelChange', {
                   parentUuid: this.parentUuid,
                   containerUuid: this.containerUuid,
@@ -494,7 +494,13 @@ export default {
                   panelType: this.panelType
                 })
               } else {
-                this.$router.push({ name: this.$route.name, query: { action: this.dataRecords.UUID, ...this.$route.query }})
+                this.$router.push({
+                  name: this.$route.name,
+                  query: {
+                    action: this.dataRecords.UUID,
+                    ...this.$route.query
+                  }
+                })
                 this.$store.dispatch('notifyPanelChange', {
                   parentUuid: this.parentUuid,
                   containerUuid: this.containerUuid,
@@ -508,7 +514,12 @@ export default {
               this.setTagsViewTitle(this.$route.query.action)
               this.isLoadRecord = true
             } else {
-              this.$router.push({ query: { action: 'create-new', ...this.$route.query }})
+              this.$router.push({
+                query: {
+                  action: 'create-new',
+                  ...this.$route.query
+                }
+              })
             }
             this.setFocus()
           })
