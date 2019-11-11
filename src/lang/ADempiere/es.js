@@ -78,6 +78,7 @@ export default {
     thirdpartyTips: 'No se puede simular en local, así que combine su propia simulación de negocios.',
     invalidToken: 'El token utilizado es inválido.',
     passwordReset: 'Reiniciar contraseña',
+    createPassword: 'Crear contraseña',
     passwordResetSuccessful: 'El reinicio de contraseña se realizo correctamente',
     passwordAndConfirmNotMatch: 'La contraseña nueva y su confirmación no coinciden.'
   },

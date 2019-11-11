@@ -82,7 +82,14 @@ export const constantRoutes = [
   },
   {
     path: '/passwordReset',
-    component: () => import('@/views/login/passwordReset'),
+    name: 'passwordReset',
+    component: () => import('@/views/login/setPassword'),
+    hidden: true
+  },
+  {
+    path: '/createPassword',
+    name: 'createPassword',
+    component: () => import('@/views/login/setPassword'),
     hidden: true
   },
   {

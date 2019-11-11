@@ -78,6 +78,7 @@ export default {
     thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation.',
     invalidToken: 'The token used is invalid.',
     passwordReset: 'Password Reset',
+    createPassword: 'Create password',
     passwordResetSuccessful: 'Password reset was successful',
     passwordAndConfirmNotMatch: 'The new password and your confirmation do not match.'
   },

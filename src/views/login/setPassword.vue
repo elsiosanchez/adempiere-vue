@@ -1,6 +1,6 @@
 <template>
   <div v-if="verifyToken()" class="login-container">
-    <el-form ref="passwordResetForm" :rules="passwordResetRules" :model="passwordResetForm" class="login-form" auto-complete="off" label-position="left">
+    <el-form ref="changePasswordForm" :rules="passwordResetRules" :model="changePasswordForm" class="login-form" auto-complete="off" label-position="left">
       <el-row>
         <el-col :span="3">
           <img src="https://avatars1.githubusercontent.com/u/1263359?s=200&v=4" class="image">
@@ -8,7 +8,7 @@
         <el-col :span="20">
           <div class="title-container">
             <h3 class="title">
-              {{ $t('login.passwordReset') }}
+              {{ $t(`login.${formName}`) }}
             </h3>
             <lang-select class="set-language" />
           </div>
@@ -23,7 +23,7 @@
           <el-input
             :key="passwordType"
             ref="password"
-            v-model="passwordResetForm.password"
+            v-model="changePasswordForm.password"
             :type="passwordType"
             :placeholder="$t('login.passwordNew')"
             tabindex="1"
@@ -45,14 +45,14 @@
           <el-input
             :key="passwordConfirmType + 'New'"
             ref="passwordConfirm"
-            v-model="passwordResetForm.passwordConfirm"
+            v-model="changePasswordForm.passwordConfirm"
             :type="passwordConfirmType"
             :placeholder="$t('login.passwordConfirmNew')"
             tabindex="2"
             auto-complete="off"
             @keyup.native="checkCapslockNew"
             @blur="capsTooltipNew = false"
-            @keyup.enter.native="handleSubmitPasswordReset"
+            @keyup.enter.native="handleSubmit"
           />
           <span class="show-pwd" @click="showPasswordConfirm">
             <svg-icon :icon-class="passwordConfirmType === 'password' ? 'eye' : 'eye-open'" />
@@ -61,11 +61,11 @@
       </el-tooltip>
 
       <el-button
-        :disabled="isEmptyValue(passwordResetForm.password) || passwordResetForm.password !== passwordResetForm.passwordConfirm"
+        :disabled="isEmptyValue(changePasswordForm.password) || changePasswordForm.password !== changePasswordForm.passwordConfirm"
         :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleSubmitPasswordReset"
+        @click.native.prevent="handleSubmit"
       >
         {{ $t('login.submit') }}
       </el-button>
@@ -81,7 +81,7 @@
 import LangSelect from '@/components/LangSelect'
 
 export default {
-  name: 'PasswordReset',
+  name: 'ChangePassword',
   components: { LangSelect },
   data() {
     const validatePass = (rule, value, callback) => {
@@ -91,32 +91,34 @@ export default {
         callback()
       }
     }
-
     const validateNewPass = (rule, value, callback) => {
       if (this.isEmptyValue(value)) {
         callback(new Error(this.$t('notifications.fieldMandatory')))
-      } else if (value !== this.passwordResetForm.password) {
+      } else if (value !== this.changePasswordForm.password) {
         callback(new Error(this.$t('login.passwordAndConfirmNotMatch')))
       } else {
         callback()
       }
     }
     return {
-      passwordResetForm: {
+      changePasswordForm: {
         password: '',
         passwordConfirm: ''
       },
       passwordResetRules: {
         password: [{ validator: validatePass, trigger: 'blur' }],
-        passwordConfirm: [
-          { validator: validateNewPass, trigger: 'blur' }
-        ]
+        passwordConfirm: [{ validator: validateNewPass, trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
       passwordConfirmType: 'password',
       capsTooltip: false,
       capsTooltipNew: false
+    }
+  },
+  computed: {
+    formName() {
+      return this.$route.name
     }
   },
   methods: {
@@ -161,12 +163,16 @@ export default {
         this.$refs.passwordConfirm.focus()
       })
     },
-    handleSubmitPasswordReset() {
-      if (!this.isEmptyValue(this.passwordResetForm.password) && !this.isEmptyValue(this.passwordResetForm.passwordConfirm)) {
+    handleSubmit() {
+      if (!this.isEmptyValue(this.changePasswordForm.password) && !this.isEmptyValue(this.changePasswordForm.passwordConfirm)) {
         this.loading = true
-        this.$store.dispatch('resetPasswordFromToken', {
+        let actionType = 'resetPasswordFromToken'
+        if (this.formName === 'createPassword') {
+          actionType = 'createPasswordFromToken'
+        }
+        this.$store.dispatch(actionType, {
           token: this.$route.query.token,
-          password: this.passwordResetForm.password
+          password: this.changePasswordForm.password
         })
           .finally(() => {
             this.loading = false

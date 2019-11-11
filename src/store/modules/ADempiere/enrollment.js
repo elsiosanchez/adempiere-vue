@@ -61,6 +61,38 @@ const enrollment = {
         })
     },
     /**
+     * TODO: Add support gRPC service createPassword
+     * Create password to new user from token
+     * @param {string} parameters.token
+     * @param {string} parameters.password
+     */
+    createPasswordFromToken({ commit }, parameters) {
+      return resetPasswordFromToken(parameters.token, parameters.password)
+        .then(response => {
+          if (response.getResponsetype() === 0) {
+            showMessage({
+              message: language.t('login.createPasswordSuccessful'),
+              type: 'success'
+            })
+          } else {
+            showMessage({
+              message: language.t('login.unexpectedError'),
+              type: 'error'
+            })
+          }
+          router.push({
+            path: 'login'
+          })
+        })
+        .catch(error => {
+          showMessage({
+            message: language.t('login.unexpectedError'),
+            type: 'error'
+          })
+          console.warn('Create Password - Error ' + error.code + ': ' + error.message)
+        })
+    },
+    /**
      * @param {string} parameters.token
      * @param {string} parameters.password
      */
