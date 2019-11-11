@@ -262,7 +262,9 @@ const panel = {
         containerUuid: containerUuid,
         panelType: panelType,
         newValues: defaultAttributes,
-        isSendToServer: false
+        isSendToServer: false,
+        // if isNewRecord active callouts, if window is closed no send callout
+        isSendCallout: isNewRecord
       })
     },
     /**

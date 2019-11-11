@@ -231,9 +231,7 @@ export default {
      */
     getDataLookupList(showList) {
       if (showList) {
-        if (this.getterLookupList.length === 0) {
-          this.remoteMethod()
-        }
+        this.remoteMethod()
       }
     },
     remoteMethod() {
