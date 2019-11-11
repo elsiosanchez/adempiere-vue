@@ -4,6 +4,7 @@ export default {
     documentation: 'Documentation',
     guide: 'Guide',
     forgotPassword: 'Forgot Password?',
+    userEnrollment: 'User Enrollment',
     page401: '401',
     page404: '404',
     profile: 'Profile',
@@ -36,7 +37,8 @@ export default {
     copySuccessful: 'Copied',
     copyUnsuccessful: 'Error, unable to copy',
     mandatoryFieldMissing: 'Missing fill in the fields ',
-    updateFields: 'The record is updated with the field '
+    updateFields: 'The record is updated with the field ',
+    invalidEmailFormat: 'Invalid email format'
   },
   navbar: {
     badge: {
@@ -59,8 +61,13 @@ export default {
     title: 'Login Form',
     submit: 'Submit',
     logIn: 'Login',
-    username: 'Username',
-    usernameOrEmail: 'Username or Email',
+    name: 'Name',
+    lastName: 'Last name',
+    eMail: 'Email',
+    userName: 'User name',
+    userNameOrEmail: 'User name or Email',
+    userEnrollment: 'Enrollment user',
+    userEnrollmentSuccessful: 'Successful user enrollment, check your email',
     passwordResetSendLink: 'The link to reset the password was sent to the email ',
     password: 'Password',
     passwordNew: 'New password',

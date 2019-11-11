@@ -15,15 +15,15 @@
         </el-col>
       </el-row>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
-          name="username"
+          ref="userName"
+          v-model="loginForm.userName"
+          :placeholder="$t('login.userName')"
+          name="userName"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -62,6 +62,13 @@
         @click.native.prevent="$router.push({ path: 'forgotPassword' })"
       >
         {{ $t('route.forgotPassword') }}
+      </el-button>
+      <el-button
+        type="text"
+        style="float: right"
+        @click.native.prevent="$router.push({ path: 'userEnrollment' })"
+      >
+        {{ $t('route.userEnrollment') }}
       </el-button>
 
       <div>
@@ -110,11 +117,11 @@ export default {
     }
     return {
       loginForm: {
-        username: '',
+        userName: '',
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
@@ -136,8 +143,8 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
+    if (this.loginForm.userName === '') {
+      this.$refs.userName.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }

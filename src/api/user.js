@@ -15,7 +15,7 @@ function Instance() {
 export function login(loginValues) {
   if (loginValues.role !== undefined && loginValues.role.trim() !== '') {
     return Instance.call(this).requestLogin(
-      loginValues.username,
+      loginValues.userName,
       loginValues.password,
       loginValues.role,
       null,
@@ -23,7 +23,7 @@ export function login(loginValues) {
     )
   } else {
     return Instance.call(this).requestLoginDefault(
-      loginValues.username,
+      loginValues.userName,
       loginValues.password,
       loginValues.language
     )

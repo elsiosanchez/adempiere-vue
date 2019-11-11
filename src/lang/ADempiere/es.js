@@ -3,6 +3,7 @@ export default {
     dashboard: 'Panel de control',
     documentation: 'Documentación',
     forgotPassword: '¿Olvidó su Contraseña?',
+    userEnrollment: 'Registro de Usuario',
     guide: 'Guía',
     page401: '401',
     page404: '404',
@@ -36,7 +37,8 @@ export default {
     copySuccessful: 'Copiado',
     copyUnsuccessful: 'Error, no se puede copiar',
     mandatoryFieldMissing: 'Falta completar los campos ',
-    updateFields: 'Se actualiza el registro con el campo '
+    updateFields: 'Se actualiza el registro con el campo ',
+    invalidEmailFormat: 'Formato de correo electronico invalido'
   },
   navbar: {
     badge: {
@@ -59,8 +61,13 @@ export default {
     title: 'Formulario de acceso',
     submit: 'Enviar',
     logIn: 'Acceso',
-    username: 'Usuario',
-    usernameOrEmail: 'Usuario o Correo',
+    name: 'Nombre',
+    lastName: 'Apellido',
+    eMail: 'Correo electronico',
+    userName: 'Usuario',
+    userNameOrEmail: 'Usuario o Correo',
+    userEnrollment: 'Registrar usuario',
+    userEnrollmentSuccessful: 'Registro de usuario exitoso, verifique su correo electronico',
     passwordResetSendLink: 'El enlace para reiniciar la contraseña se envio al correo ',
     password: 'Contraseña',
     passwordNew: 'Nueva contraseña',
@@ -72,7 +79,7 @@ export default {
     invalidToken: 'El token utilizado es inválido.',
     passwordReset: 'Reiniciar contraseña',
     passwordResetSuccessful: 'El reinicio de contraseña se realizo correctamente',
-    passwordAndConfirmNotMatch: 'la contraseña nueva y su confirmación no coinciden.'
+    passwordAndConfirmNotMatch: 'La contraseña nueva y su confirmación no coinciden.'
   },
   documentation: {
     documentation: 'Documentación',

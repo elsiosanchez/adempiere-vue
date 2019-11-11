@@ -1,10 +1,35 @@
-import { forgotPassword, resetPasswordFromToken } from '@/api/ADempiere/enrollment'
-import { showMessage, isEmptyValue } from '@/utils/ADempiere'
+import { enrollmentUser, forgotPassword, resetPasswordFromToken } from '@/api/ADempiere/enrollment'
+import { showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 import router from '@/router'
 
 const enrollment = {
   actions: {
+    /**
+     * Enroll user
+     * @param {string} userData.name
+     * @param {string} userData.userName
+     * @param {string} userData.password
+     */
+    enrollmentUser({ commit }, userData) {
+      return enrollmentUser(userData)
+        .then(response => {
+          showMessage({
+            message: language.t('login.userEnrollmentSuccessful'),
+            type: 'success'
+          })
+          router.push({
+            path: 'login'
+          })
+        })
+        .catch(error => {
+          showMessage({
+            message: language.t('login.unexpectedError'),
+            type: 'error'
+          })
+          console.warn('Enrollment User - Error ' + error.code + ': ' + error.message)
+        })
+    },
     /**
      * @param {string} eMailOrUserName
      */
@@ -16,18 +41,9 @@ const enrollment = {
               message: language.t('login.passwordResetSendLink') + eMailOrUserName,
               type: 'success'
             })
-            if (isEmptyValue(response.getToken())) {
-              router.push({
-                path: 'login'
-              })
-            } else {
-              router.push({
-                path: 'passwordReset',
-                query: {
-                  token: response.getToken()
-                }
-              })
-            }
+            router.push({
+              path: 'login'
+            })
           } else {
             showMessage({
               message: language.t('login.unexpectedError'),
@@ -38,10 +54,10 @@ const enrollment = {
         })
         .catch(error => {
           showMessage({
-            message: error.message,
+            message: language.t('login.unexpectedError'),
             type: 'error'
           })
-          console.warn('Enrollment Forgot Password - Error ' + error.code + ': ' + error.message)
+          console.warn('Forgot Password - Error ' + error.code + ': ' + error.message)
         })
     },
     /**
@@ -67,7 +83,11 @@ const enrollment = {
           })
         })
         .catch(error => {
-          console.warn(error)
+          showMessage({
+            message: language.t('login.unexpectedError'),
+            type: 'error'
+          })
+          console.warn('Reset Password - Error ' + error.code + ': ' + error.message)
         })
     }
   }

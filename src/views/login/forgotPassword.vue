@@ -15,14 +15,14 @@
         </el-col>
       </el-row>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="forgotForm.username"
-          :placeholder="$t('login.usernameOrEmail')"
+          ref="userName"
+          v-model="forgotForm.userName"
+          :placeholder="$t('login.userNameOrEmail')"
           type="text"
           tabindex="1"
           auto-complete="off"
@@ -31,7 +31,7 @@
       </el-form-item>
 
       <el-button
-        :disabled="isEmptyValue(forgotForm.username)"
+        :disabled="isEmptyValue(forgotForm.userName)"
         :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;"
@@ -56,10 +56,10 @@ export default {
   data() {
     return {
       forgotForm: {
-        username: ''
+        userName: ''
       },
       forgotRules: {
-        username: [{ required: true, trigger: 'blur' }]
+        userName: [{ required: true, trigger: 'blur' }]
       },
       loading: false
     }
@@ -67,13 +67,13 @@ export default {
   methods: {
     showPwd() {
       this.$nextTick(() => {
-        this.$refs.username.focus()
+        this.$refs.userName.focus()
       })
     },
     handleSubmit() {
-      if (!this.isEmptyValue(this.forgotForm.username)) {
+      if (!this.isEmptyValue(this.forgotForm.userName)) {
         this.loading = true
-        this.$store.dispatch('forgotPassword', this.forgotForm.username)
+        this.$store.dispatch('forgotPassword', this.forgotForm.userName)
           .finally(() => {
             this.loading = false
           })
