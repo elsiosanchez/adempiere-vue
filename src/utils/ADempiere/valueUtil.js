@@ -160,7 +160,7 @@ export function convertMapToArrayPairs({
   isGRPC = true
 }) {
   const result = []
-  if (toConvert && toConvert.size) {
+  if (toConvert) {
     toConvert.forEach((value, key) => {
       const element = {}
       element[nameKey] = key
