@@ -1,7 +1,7 @@
 <template>
   <el-select
     :ref="metadata.columnName"
-    v-model="value"
+    :v-model="metadata.displayColumn"
     :filterable="!isMobile"
     :placeholder="metadata.help"
     :loading="isLoading"
@@ -30,7 +30,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      value: this.validateValue(this.metadata.value),
+      value: this.validateValue(this.metadata.displayColumn),
       isLoading: false,
       baseNumber: 10,
       options: [{
@@ -65,7 +65,7 @@ export default {
         containerUuid: this.metadata.containerUuid,
         directQuery: this.metadata.reference.directQuery,
         tableName: this.metadata.reference.tableName,
-        value: this.value
+        value: this.metadata.value
       })
     },
     getterLookupList() {
@@ -83,7 +83,7 @@ export default {
         query: this.metadata.reference.query,
         directQuery: this.metadata.reference.directQuery,
         tableName: this.metadata.reference.tableName,
-        value: this.value
+        value: this.metadata.value
       })
       if (allOptions.length && !allOptions[0].key) {
         allOptions.unshift(this.blanckOption)
@@ -95,26 +95,8 @@ export default {
     valueModel(value) {
       this.value = this.validateValue(value)
     },
-    'metadata.displayed'(value, oldValue) {
-      if (value && !this.isPanelWindow) {
-        if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
-          this.getDataLookupItem()
-        }
-      }
-    },
-    'metadata.displayColumn'(value) {
-      if (this.isPanelWindow) {
-        if (!this.isEmptyValue(value) && !this.options.find(itemOption => itemOption.label === value)) {
-          this.remoteMethod()
-          this.othersOptions = [{
-            key: this.value,
-            label: this.metadata.displayColumn
-          }]
-        }
-      }
-      this.options = this.getterLookupAll
-    },
     'metadata.optionCRUD'(value) {
+      this.value = this.metadata.value
       if (value === 'create-new') {
         this.value = this.getterValue
       }
@@ -127,9 +109,6 @@ export default {
     'metadata.value'(value) {
       if (!this.metadata.inTable) {
         this.value = this.validateValue(value)
-        if (!this.options.some(option => option.key === this.value)) {
-          this.getDataLookupItem()
-        }
       }
     }
   },
@@ -138,12 +117,7 @@ export default {
     // enable to dataTable records
     // Evaluate values of the displayColumn with empty string or number at 0
     if (!this.isEmptyValue(this.metadata.displayColumn)) {
-      this.remoteMethod()
-      var key = this.validateValue(this.metadata.value)
-      if (this.valueModel !== undefined && this.validateValue !== null) {
-        key = this.metadata.value
-      }
-      // verify if exists to add
+      var key = this.validateValue(this.metadata.displayColumn)
       if (!this.findLabel(key)) {
         this.othersOptions.push({
           key: key,
@@ -152,21 +126,7 @@ export default {
       }
       // join options in store with pased from props
       // validate empty or duplicate data
-      const optionList = this.getterLookupAll.filter(lookup => {
-        if (lookup.key !== null) {
-          return lookup
-        }
-      })
-      this.options = optionList
       this.value = key
-    } else if (!this.isEmptyValue(this.value) && (!this.findLabel(this.value) && this.metadata.displayed)) {
-      if (this.isPanelWindow) {
-        if (this.metadata.optionCRUD === 'create-new') {
-          this.getDataLookupItem()
-        }
-      } else {
-        this.getDataLookupItem()
-      }
     }
   },
   methods: {
@@ -179,7 +139,7 @@ export default {
         return undefined
       }
       if (['TableDirect'].includes(this.metadata.referenceType)) {
-        return parseInt(value, 10)
+        return value
       }
       return value
     },
@@ -207,7 +167,7 @@ export default {
         containerUuid: this.metadata.containerUuid,
         tableName: this.metadata.reference.tableName,
         directQuery: this.metadata.reference.directQuery,
-        value: this.value
+        value: this.metadata.value
       })
         .then(response => {
           if (this.isPanelWindow) {
@@ -231,7 +191,9 @@ export default {
      */
     getDataLookupList(showList) {
       if (showList) {
-        this.remoteMethod()
+        if (this.getterLookupList.length === 0) {
+          this.remoteMethod()
+        }
       }
     },
     remoteMethod() {
@@ -261,7 +223,7 @@ export default {
         tableName: this.metadata.reference.tableName,
         query: this.metadata.reference.query,
         directQuery: this.metadata.reference.directQuery,
-        value: this.value
+        value: this.metadata.value
       })
       // TODO: Evaluate if is number -1 or string '' (or default value)
       this.value = this.blanckOption.key
