@@ -20,8 +20,13 @@ export default {
   name: 'FieldYesNo',
   mixins: [fieldMixin],
   data() {
+    let value = this.metadata.value
+    if (this.metadata.inTable) {
+      value = this.valueModel
+    }
+
     return {
-      value: Boolean(this.metadata.value),
+      value: Boolean(value),
       valuesReadOnly: [
         {
           columnName: 'IsActive',
@@ -32,10 +37,14 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = Boolean(value)
+      if (this.metadata.inTable) {
+        this.value = Boolean(value)
+      }
     },
     'metadata.value'(value) {
-      this.value = Boolean(value)
+      if (!this.metadata.inTable) {
+        this.value = Boolean(value)
+      }
     },
     value(value, oldValue) {
       if (typeof value !== 'boolean') {
