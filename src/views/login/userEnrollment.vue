@@ -252,18 +252,24 @@ export default {
       })
     },
     handleSubmit() {
-      this.$refs.enrollmentUserForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('enrollmentUser', this.enrollmentUserForm)
-            .finally(() => {
-              this.loading = false
-            })
-        } else {
-          console.log('error submit!!')
-          return false
+      if (this.isReadyFormSubmit) {
+        this.loading = true
+        var dataToSubmit = {
+          name: this.enrollmentUserForm.name,
+          userName: this.enrollmentUserForm.userName,
+          eMail: this.enrollmentUserForm.eMail
         }
-      })
+        if (this.isShowPassword) {
+          dataToSubmit.password = this.enrollmentUserForm.password
+        }
+        this.$store.dispatch('enrollmentUser', dataToSubmit)
+          .finally(() => {
+            this.loading = false
+          })
+      } else {
+        console.log('error submit!!')
+        return false
+      }
     }
   }
 }
