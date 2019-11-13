@@ -30,7 +30,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      value: this.validateValue(this.metadata.value),
+      value: this.validateValue(this.metadata.displayColumn),
       isLoading: false,
       baseNumber: 10,
       options: [{
@@ -65,7 +65,7 @@ export default {
         containerUuid: this.metadata.containerUuid,
         directQuery: this.metadata.reference.directQuery,
         tableName: this.metadata.reference.tableName,
-        value: this.value
+        value: this.metadata.value
       })
     },
     getterLookupList() {
@@ -83,7 +83,7 @@ export default {
         query: this.metadata.reference.query,
         directQuery: this.metadata.reference.directQuery,
         tableName: this.metadata.reference.tableName,
-        value: this.value
+        value: this.metadata.value
       })
       if (allOptions.length && !allOptions[0].key) {
         allOptions.unshift(this.blanckOption)
@@ -92,44 +92,12 @@ export default {
     }
   },
   watch: {
-    valueModel(value) {
-      this.value = this.validateValue(value)
-    },
-    'metadata.displayed'(value, oldValue) {
-      if (value && !this.isPanelWindow) {
-        if (!this.isEmptyValue(this.value) && !this.findLabel(this.value)) {
-          this.getDataLookupItem()
-        }
-      }
-    },
-    'metadata.displayColumn'(value) {
-      if (this.isPanelWindow) {
-        if (!this.isEmptyValue(value) && !this.options.find(itemOption => itemOption.label === value)) {
-          this.remoteMethod()
-          this.othersOptions = [{
-            key: this.value,
-            label: this.metadata.displayColumn
-          }]
-        }
-      }
-      this.options = this.getterLookupAll
-    },
     'metadata.optionCRUD'(value) {
       if (value === 'create-new') {
-        this.value = this.getterValue
-      }
-      if (!this.isEmptyValue(this.value) && !this.findLabel(this.value) && this.metadata.displayed) {
-        if (this.metadata.optionCRUD === 'create-new') {
-          this.getDataLookupItem()
-        }
-      }
-    },
-    'metadata.value'(value) {
-      if (!this.metadata.inTable) {
-        this.value = this.validateValue(value)
-        if (!this.options.some(option => option.key === this.value)) {
-          this.getDataLookupItem()
-        }
+        this.value = this.metadata.value
+        this.getDataLookupItem()
+      } else {
+        this.value = this.validateValue(this.metadata.displayColumn)
       }
     }
   },
@@ -138,7 +106,6 @@ export default {
     // enable to dataTable records
     // Evaluate values of the displayColumn with empty string or number at 0
     if (!this.isEmptyValue(this.metadata.displayColumn)) {
-      this.remoteMethod()
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
         key = this.metadata.value
@@ -159,13 +126,14 @@ export default {
       })
       this.options = optionList
       this.value = key
-    } else if (!this.isEmptyValue(this.value) && (!this.findLabel(this.value) && this.metadata.displayed)) {
+    } else if (!this.findLabel(this.value) && this.metadata.displayed) {
       if (this.isPanelWindow) {
         if (this.metadata.optionCRUD === 'create-new') {
+          this.value = this.metadata.value
           this.getDataLookupItem()
         }
       } else {
-        this.getDataLookupItem()
+        this.value = this.validateValue(this.metadata.displayColumn)
       }
     }
   },
@@ -178,9 +146,9 @@ export default {
       if (this.isEmptyValue(value)) {
         return undefined
       }
-      if (['TableDirect'].includes(this.metadata.referenceType)) {
-        return parseInt(value, 10)
-      }
+      // if (['TableDirect'].includes(this.metadata.referenceType)) {
+      //   return parseInt(value, 10)
+      // }
       return value
     },
     validateBlanckOption() {
@@ -202,35 +170,39 @@ export default {
     },
     async getDataLookupItem() {
       this.isLoading = true
-      this.$store.dispatch('getLookupItemFromServer', {
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        tableName: this.metadata.reference.tableName,
-        directQuery: this.metadata.reference.directQuery,
-        value: this.value
-      })
-        .then(response => {
-          if (this.isPanelWindow) {
-            this.$store.dispatch('notifyFieldChangeDisplayColumn', {
-              containerUuid: this.metadata.containerUuid,
-              columnName: this.metadata.columnName,
-              displayColumn: response.label
-            })
-          }
-          this.options = this.getterLookupAll
-          if (this.options.length && !this.options[0].key) {
-            this.options.unshift(this.blanckOption)
-          }
+      if (!this.isEmptyValue(this.value)) {
+        this.$store.dispatch('getLookupItemFromServer', {
+          parentUuid: this.metadata.parentUuid,
+          containerUuid: this.metadata.containerUuid,
+          tableName: this.metadata.reference.tableName,
+          directQuery: this.metadata.reference.directQuery,
+          value: this.metadata.value
         })
-        .finally(() => {
-          this.isLoading = false
-        })
+          .then(response => {
+            if (this.isPanelWindow) {
+              this.$store.dispatch('notifyFieldChangeDisplayColumn', {
+                containerUuid: this.metadata.containerUuid,
+                columnName: this.metadata.columnName,
+                displayColumn: response.label
+              })
+            }
+            this.options = this.getterLookupAll
+            if (this.options.length && !this.options[0].key) {
+              this.options.unshift(this.blanckOption)
+            }
+          })
+          .finally(() => {
+            this.isLoading = false
+          })
+      }
     },
     /**
      * @param {boolean} show triggers when the pull-down menu appears or disappears
      */
     getDataLookupList(showList) {
+      console.log(this.getterLookupList.length)
       if (showList) {
+        console.log(this.getterLookupList.length)
         if (this.getterLookupList.length === 0) {
           this.remoteMethod()
         }
@@ -263,7 +235,7 @@ export default {
         tableName: this.metadata.reference.tableName,
         query: this.metadata.reference.query,
         directQuery: this.metadata.reference.directQuery,
-        value: this.value
+        value: this.metadata.value
       })
       // TODO: Evaluate if is number -1 or string '' (or default value)
       this.value = this.blanckOption.key
