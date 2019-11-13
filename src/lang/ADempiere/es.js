@@ -3,7 +3,7 @@ export default {
     dashboard: 'Panel de control',
     documentation: 'Documentación',
     forgotPassword: '¿Olvidó su Contraseña?',
-    userEnrollment: 'Registro de Usuario',
+    userEnrollment: 'Registrarse',
     guide: 'Guía',
     page401: '401',
     page404: '404',

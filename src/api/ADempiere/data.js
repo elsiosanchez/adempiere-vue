@@ -314,7 +314,6 @@ export function runCallOutRequest(parametersCallout) {
 }
 
 export function getDefaultValueFromServer(criteria) {
-
   const criteriaForDefaultValue = getCriteria(criteria.tableName)
   if (criteria.query) {
     criteriaForDefaultValue.setQuery(criteria.query)
