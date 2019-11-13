@@ -103,11 +103,11 @@ export default {
 </script>
 
 <style>
-.el-badge__content.is-fixed {
+  .el-badge__content.is-fixed {
     position: absolute;
     top: 6px;
     right: 10px;
     -webkit-transform: translateY(-50%) translateX(100%);
     transform: translateY(-50%) translateX(100%);
-}
+  }
 </style>

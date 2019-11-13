@@ -76,12 +76,14 @@ const panel = {
             count++
           }
         } else {
-          dispatch('setContext', {
-            parentUuid: params.parentUuid,
-            containerUuid: params.uuid,
-            columnName: itemField.columnName,
-            value: itemField.value
-          })
+          if (params.isParentTab) {
+            dispatch('setContext', {
+              parentUuid: params.parentUuid,
+              containerUuid: params.uuid,
+              columnName: itemField.columnName,
+              value: itemField.value
+            })
+          }
         }
       })
 
