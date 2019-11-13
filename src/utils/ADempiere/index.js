@@ -446,7 +446,6 @@ export function parseContext(context, isBoolToString = false) {
   }
   if (context.isSQL) {
     valueSQL['query'] = outStr
-    // valueSQL['whereClause'] = value.split('WHERE')[1].replace(`@${token}@`, ctxInfo)
     valueSQL['value'] = ctxInfo
     return valueSQL
   }

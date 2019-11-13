@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { getObject, getObjectListFromCriteria, getRecentItems, getDefaultValueFromServer } from '@/api/ADempiere'
+import { getObject, getObjectListFromCriteria, getRecentItems, getDefaultValueFromServer, convertValueFromGRPC } from '@/api/ADempiere'
 import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -200,7 +200,7 @@ const data = {
               // get value from direct Query
               dispatch('getRecordBySQL', valueGetDisplayColumn)
                 .then(response => {
-                  valueGetDisplayColumn = parseInt(response)
+                  valueGetDisplayColumn = response
                   values[itemField.columnName] = valueGetDisplayColumn
                   // add display Column for table
                   dispatch('getLookupItemFromServer', {
@@ -530,10 +530,10 @@ const data = {
       return new Promise((resolve, reject) => {
         getDefaultValueFromServer(criteria)
           .then(response => {
-            resolve(response)
+            const valueConverted = convertValueFromGRPC(response)
+            resolve(valueConverted)
           })
           .catch(error => {
-            console.error(error)
             reject(error)
           })
       })
