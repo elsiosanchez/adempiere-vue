@@ -108,7 +108,7 @@ export default {
     if (!this.isEmptyValue(this.metadata.displayColumn)) {
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
-        key = this.valueModel
+        key = this.metadata.displayColumn
       }
       // verify if exists to add
       if (!this.findLabel(key)) {
@@ -130,7 +130,6 @@ export default {
       if (this.isPanelWindow) {
         if (this.metadata.optionCRUD === 'create-new') {
           this.value = this.metadata.value
-          this.getDataLookupItem()
         }
       } else {
         this.value = this.validateValue(this.metadata.displayColumn)
@@ -200,7 +199,6 @@ export default {
      * @param {boolean} show triggers when the pull-down menu appears or disappears
      */
     getDataLookupList(showList) {
-      console.log(this.getterLookupList.length)
       if (showList) {
         console.log(this.getterLookupList.length)
         if (this.getterLookupList.length === 0) {
