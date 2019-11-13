@@ -16,12 +16,17 @@
       >
         <el-table-column
           type="index"
-          width="20"
+          width="40"
         />
         <el-table-column
           :label="$t('profile.recentItems')"
           prop="displayName"
         />
+        <el-table-column label="" width="40">
+          <template slot-scope="{row}">
+            <svg-icon :icon-class="row.icon" />
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </el-card>
@@ -73,7 +78,11 @@ export default {
       }
     },
     handleClick(row) {
-      this.$router.push({ name: row.menuUuid, query: { action: (row.uuidRecord) ? row.uuidRecord : 'create-new', tabParent: 0 }})
+      if (!this.isEmptyValue(row.uuidRecord)) {
+        this.$router.push({ name: row.menuUuid, query: { action: row.uuidRecord, tabParent: 0 }})
+      } else {
+        this.$router.push({ name: row.menuUuid })
+      }
     },
     subscribeChanges() {
       this.$store.subscribe((mutation, state) => {

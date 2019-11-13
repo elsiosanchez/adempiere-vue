@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { getObject, getObjectListFromCriteria, getRecentItems, getDefaultValueFromServer, convertValueFromGRPC } from '@/api/ADempiere'
-import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
+import { convertValuesMapToObject, isEmptyValue, showMessage, convertAction } from '@/utils/ADempiere'
 import language from '@/lang'
 
 const data = {
@@ -551,6 +551,8 @@ const data = {
           .then(response => {
             const recentItems = response.getRecentitemsList().map(item => {
               return {
+                action: convertAction(item.getAction()).name,
+                icon: convertAction(item.getAction()).icon,
                 displayName: item.getDisplayname(),
                 menuUuid: item.getMenuuuid(),
                 menuName: item.getMenuname(),

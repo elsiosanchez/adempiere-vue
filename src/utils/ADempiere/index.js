@@ -655,7 +655,55 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
   }
   return returnValue
 }
+export function convertAction(action) {
+  var actionAttributes = {
+    name: '',
+    icon: '',
+    hidden: false,
+    isIndex: false
+  }
+  switch (action) {
+    case 'B':
+      actionAttributes.name = 'workbech'
+      actionAttributes.icon = 'peoples'
+      break
+    case 'F':
+      actionAttributes.name = 'workflow'
+      actionAttributes.icon = 'example'
+      break
+    case 'P':
+      actionAttributes.name = 'process'
+      actionAttributes.icon = 'component'
+      break
+    case 'R':
+      actionAttributes.name = 'report'
+      actionAttributes.icon = 'skill'
+      break
+    case 'S':
+      actionAttributes.name = 'browser'
+      actionAttributes.icon = 'search'
+      break
+    case 'T':
+      actionAttributes.name = 'task'
+      actionAttributes.icon = 'size'
+      break
+    case 'W':
+      actionAttributes.name = 'window'
+      actionAttributes.icon = 'tab'
+      break
+    case 'X':
+      actionAttributes.name = 'form'
+      actionAttributes.icon = 'form'
 
+      break
+    default:
+      actionAttributes.name = 'summary'
+      actionAttributes.icon = 'nested'
+      actionAttributes.isIndex = true
+      break
+  }
+  return actionAttributes
+}
 export default evaluator // from '@/utils/ADempiere/evaluator.js'
 export * from '@/utils/ADempiere/auth.js'
 export * from '@/utils/ADempiere/notification.js'
