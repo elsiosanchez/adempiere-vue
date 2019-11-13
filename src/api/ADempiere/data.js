@@ -312,3 +312,7 @@ export function getReferencesList(parameters) {
 export function runCallOutRequest(parametersCallout) {
   return Instance.call(this).runCalloutRequest(parametersCallout)
 }
+
+export function getDefaultValueFromServer(criteria) {
+  return Instance.call(this).getDefaultValue(criteria)
+}

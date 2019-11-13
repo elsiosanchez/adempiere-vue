@@ -16,7 +16,7 @@
   >
     <el-form-item :label="isFieldOnly()" :required="isMandatory()">
       <component
-        :is="afterLoader"
+        :is="componentRender"
         :ref="field.columnName"
         :metadata="{
           ...field,
@@ -34,7 +34,7 @@
     </el-form-item>
   </el-col>
   <component
-    :is="afterLoader"
+    :is="componentRender"
     v-else
     :class="classField"
     :metadata="{
@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     // load the component that is indicated in the attributes of received property
-    afterLoader() {
+    componentRender() {
       return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
     },
     getWidth() {
@@ -180,6 +180,20 @@ export default {
         return sizeField
       }
       return sizeField
+    },
+    getterContextProcessing() {
+      const processing = this.$store.getters.getContextProcessing(this.parentUuid)
+      if (processing === true || processing === 'Y') {
+        return true
+      }
+      return false
+    },
+    getterContextProcessed() {
+      const processed = this.$store.getters.getContextProcessed(this.parentUuid)
+      if (processed === true || processed === 'Y') {
+        return true
+      }
+      return false
     }
   },
   watch: {
@@ -211,15 +225,14 @@ export default {
       if (this.panelType === 'window') {
         if (this.field.isAlwaysUpdateable) {
           return false
-        } else {
-          if (this.$store.getters.getContextProcessing(this.parentUuid) === true ||
-            this.$store.getters.getContextProcessing(this.parentUuid) === 'Y') {
-            return true
-          }
-          if (this.$store.getters.getContextProcessed(this.parentUuid)) {
-            return true
-          }
         }
+        if (this.getterContextProcessing) {
+          return true
+        }
+        if (this.getterContextProcessed) {
+          return true
+        }
+
         // edit mode is diferent to create new
         const editMode = (!this.inTable && this.field.optionCRUD !== 'create-new') || (this.inTable && !this.isEmptyValue(this.field.recordUuid))
         return (!this.field.isUpdateable && editMode) || (isUpdateableAllFields || this.field.isReadOnlyFromForm)

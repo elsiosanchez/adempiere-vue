@@ -95,7 +95,7 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
   var parsedDefaultValue = fieldGRPC.getDefaultvalue()
   if (String(parsedDefaultValue).includes('@')) {
     if (String(parsedDefaultValue).includes('@SQL=')) {
-      parsedDefaultValue = evaluator.parseDepends(parsedDefaultValue)
+      parsedDefaultValue.replace('@SQL=', '')
     }
     parsedDefaultValue = parseContext({
       ...moreAttributes,
@@ -386,8 +386,11 @@ export function getParentFields(fieldGRPC) {
 export function parseContext(context, isBoolToString = false) {
   const store = require('@/store')
   var value = String(context.value)
+  var valueSQL = {}
   if (valueUtil.isEmptyValue(value)) { return '' }
-
+  if (value.includes('@SQL=')) {
+    value = value.replace('@SQL=', '')
+  }
   // var instances = value.length - value.replace('@', '').length
   // if ((instances > 0) && (instances % 2) !== 0) { // could be an email address
   //   return value
@@ -440,6 +443,12 @@ export function parseContext(context, isBoolToString = false) {
   }
   if (typeof ctxInfo !== 'object') {
     outStr = outStr + inStr	// add the rest of the string
+  }
+  if (context.isSQL) {
+    valueSQL['query'] = outStr
+    // valueSQL['whereClause'] = value.split('WHERE')[1].replace(`@${token}@`, ctxInfo)
+    valueSQL['value'] = ctxInfo
+    return valueSQL
   }
   return outStr
 }	//	parseContext
