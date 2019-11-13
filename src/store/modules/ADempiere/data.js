@@ -178,7 +178,10 @@ const data = {
           .filter(itemField => itemField.componentPath === 'FieldSelect')
           .forEach(itemField => {
             var valueGetDisplayColumn = values[itemField.columnName]
-
+            if (typeof valueGetDisplayColumn === 'object') {
+              values[itemField.columnName] = ' '
+              values['DisplayColumn_' + itemField.columnName] = ' '
+            }
             // overwrite value with column link
             if (!isEmptyValue(linkColumnName) && linkColumnName === itemField.columnName) {
               valueGetDisplayColumn = valueLink
@@ -198,26 +201,12 @@ const data = {
             }
             if (!isEmptyValue(valueGetDisplayColumn) && typeof valueGetDisplayColumn === 'object') {
               // get value from direct Query
-              dispatch('getRecordBySQL', valueGetDisplayColumn)
-                .then(response => {
-                  valueGetDisplayColumn = response
-                  values[itemField.columnName] = valueGetDisplayColumn
-                  // add display Column for table
-                  dispatch('getLookupItemFromServer', {
-                    parentUuid: parentUuid,
-                    containerUuid: containerUuid,
-                    tableName: itemField.reference.tableName,
-                    directQuery: itemField.reference.directQuery,
-                    value: valueGetDisplayColumn
-                  })
-                    .then(responseLookup => {
-                      dispatch('addDisplayColumn', {
-                        containerUuid: containerUuid,
-                        columnName: itemField.columnName,
-                        displayColumn: responseLookup.label
-                      })
-                    })
+              dispatch('getRecordBySQL', { query: valueGetDisplayColumn, field: itemField })
+                .then(defaultValue => {
+                  values[itemField.columnName] = defaultValue.key
+                  values['DisplayColumn_' + itemField.columnName] = defaultValue.label
                 })
+              return
             }
             // get label (DisplayColumn) from vuex store
             const options = rootGetters.getLookupAll({
@@ -526,12 +515,30 @@ const data = {
           })
         })
     },
-    getRecordBySQL({ commit }, criteria) {
+    getRecordBySQL({ dispatch }, parameters) {
+      const { query, field } = parameters
       return new Promise((resolve, reject) => {
-        getDefaultValueFromServer(criteria)
+        getDefaultValueFromServer(query)
           .then(response => {
-            const valueConverted = convertValueFromGRPC(response)
-            resolve(valueConverted)
+            var valueToReturn = {}
+            valueToReturn['key'] = convertValueFromGRPC(response)
+            // add display Column for table
+            dispatch('getLookupItemFromServer', {
+              parentUuid: field.parentUuid,
+              containerUuid: field.containerUuid,
+              tableName: field.reference.tableName,
+              directQuery: field.reference.directQuery,
+              value: valueToReturn.key
+            })
+              .then(responseLookup => {
+                valueToReturn['label'] = responseLookup.label
+                dispatch('addDisplayColumn', {
+                  containerUuid: field.containerUuid,
+                  columnName: field.columnName,
+                  displayColumn: responseLookup.label
+                })
+              })
+            resolve(valueToReturn)
           })
           .catch(error => {
             reject(error)
