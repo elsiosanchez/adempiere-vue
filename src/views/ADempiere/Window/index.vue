@@ -186,6 +186,16 @@ export default {
       isShowedRecordNavigation: this.$route.query.action === 'advancedQuery'
     }
   },
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch('setWindowOldRoute', {
+      path: from.path,
+      fullPath: from.fullPath,
+      query: {
+        ...from.query
+      }
+    })
+    next()
+  },
   computed: {
     defaultPorcentSplitPane() {
       // isShowedRecordPanel ? (isShowedRecordNavigation ? 100 : 50) : (isShowedRecordNavigation ? 50 : -1)

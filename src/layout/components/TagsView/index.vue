@@ -198,6 +198,9 @@ export default {
           this.$store.dispatch('deleteRecordContainer', {
             viewUuid: view.meta.uuid
           })
+          if (view.meta.type === 'window') {
+            this.$store.dispatch('setWindowOldRoute')
+          }
         }
       }
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {

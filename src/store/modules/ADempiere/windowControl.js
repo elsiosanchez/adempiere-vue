@@ -8,6 +8,11 @@ const windowControl = {
     inCreate: [],
     references: [],
     windowRoute: {},
+    windowOldRoute: {
+      path: '',
+      fullPath: '',
+      query: {}
+    },
     dataLog: {} // { containerUuid, recordId, tableName, eventType }
   },
   mutations: {
@@ -34,6 +39,9 @@ const windowControl = {
     },
     setDataLog(state, payload) {
       state.dataLog = payload
+    },
+    setWindowOldRoute(state, payload) {
+      state.windowOldRoute = payload
     }
   },
   actions: {
@@ -616,6 +624,9 @@ const windowControl = {
           dispatch('getWindowByUuid', { routes: routeItem.meta.childs, windowUuid: parameters.windowUuid })
         }
       })
+    },
+    setWindowOldRoute({ commit }, oldPath = { path: '', fullPath: '', query: {}}) {
+      commit('setWindowOldRoute', oldPath)
     }
   },
   getters: {

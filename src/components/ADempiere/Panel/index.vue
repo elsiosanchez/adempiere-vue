@@ -187,7 +187,7 @@ import draggable from 'vuedraggable'
 import { fieldIsDisplayed, parsedValueComponent } from '@/utils/ADempiere'
 
 export default {
-  name: 'PanelFields',
+  name: 'MainPanel',
   components: {
     FieldDefinition,
     FilterFields,

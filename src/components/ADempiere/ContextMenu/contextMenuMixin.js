@@ -110,6 +110,15 @@ export const contextMixin = {
     },
     processParametersExecuted() {
       return this.$store.getters.getCachedReport(this.$route.params.instanceUuid).parameters
+    },
+    getterWindowOldRoute() {
+      if (this.panelType === 'window') {
+        const oldRoute = this.$store.state.windowControl.windowOldRoute
+        if (!this.isEmptyValue(oldRoute.query.action) && oldRoute.query.action !== 'create-new' && this.$route.query.action === 'create-new') {
+          return oldRoute
+        }
+      }
+      return false
     }
   },
   watch: {
@@ -224,7 +233,7 @@ export const contextMixin = {
               }
             }
             if (itemAction.action === 'undoModifyData') {
-              itemAction.disabled = Boolean(!this.getterDataLog)
+              itemAction.disabled = Boolean(!this.getterDataLog && !this.getterWindowOldRoute)
             }
           }
         })
@@ -310,13 +319,22 @@ export const contextMixin = {
           })
         }
       } else if (action.type === 'dataAction') {
-        this.$store.dispatch(action.action, {
-          parentUuid: this.parentUuid,
-          containerUuid: this.containerUuid,
-          recordUuid: this.recordUuid,
-          panelType: this.panelType,
-          isNewRecord: action.action === 'resetPanelToNew'
-        })
+        if (action.action === 'undoModifyData' && Boolean(!this.getterDataLog) && this.getterWindowOldRoute) {
+          this.$router.push({
+            path: this.getterWindowOldRoute.path,
+            query: {
+              ...this.getterWindowOldRoute.query
+            }
+          })
+        } else {
+          this.$store.dispatch(action.action, {
+            parentUuid: this.parentUuid,
+            containerUuid: this.containerUuid,
+            recordUuid: this.recordUuid,
+            panelType: this.panelType,
+            isNewRecord: action.action === 'resetPanelToNew'
+          })
+        }
       } else if (action.type === 'reference') {
         this.$store.dispatch('getWindowByUuid', { routes: this.permissionRoutes, windowUuid: action.windowUuid })
         if (action.windowUuid && action.recordUuid) {
