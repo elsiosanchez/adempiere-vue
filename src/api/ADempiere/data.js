@@ -229,12 +229,10 @@ export function runProcess(process) {
  * @param {string} browser.whereClause
  * @param {string} browser.orderByClause
  * @param {array}  browser.parameters
- * [
- *   {
+ * [{
  *     columnName,
  *     value
- *   }
- * ]
+ * }]
  */
 export function getBrowserSearch(browser) {
   var browserRequest = Instance.call(this).getBrowserRequest()

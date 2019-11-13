@@ -41,7 +41,7 @@
                     :metadata-field="{
                       ...fieldAttributes,
                       displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
-                      optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord
+                      optionCRUD: optionCRUD
                     }"
                     :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                     :panel-type="panelType"
@@ -99,7 +99,7 @@
                           :metadata-field="{
                             ...fieldAttributes,
                             displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
-                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord
+                            optionCRUD: optionCRUD
                           }"
                           :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                           :panel-type="panelType"
@@ -152,7 +152,7 @@
                           :metadata-field="{
                             ...fieldAttributes,
                             displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
-                            optionCRUD: isEmptyValue(uuidRecord) ? 'create-new' : uuidRecord
+                            optionCRUD: optionCRUD
                           }"
                           :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
                           :panel-type="panelType"
@@ -240,6 +240,9 @@ export default {
     }
   },
   computed: {
+    optionCRUD() {
+      return this.isEmptyValue(this.uuidRecord) ? 'create-new' : this.uuidRecord
+    },
     isPanelWindow() {
       return this.panelType === 'window'
     },

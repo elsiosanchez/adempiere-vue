@@ -995,7 +995,7 @@ const panel = {
     },
     /**
      * Getter converter selection params with value format
-     * [{ columname: name key, value: value to send } ]
+     * [{ columname: name key, value: value to send }]
      */
     getParametersToServer: (state, getters) => ({
       containerUuid,
@@ -1027,8 +1027,10 @@ const panel = {
 
           const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic)
           // mandatory fields
-          if (isEvaluateMandatory && isMandatory && !isAdvancedQuery) {
-            return true
+          if (isEvaluateMandatory && fieldItem.panelType !== 'browser') {
+            if (isMandatory && !isAdvancedQuery) {
+              return true
+            }
           }
 
           // evaluate displayed fields
