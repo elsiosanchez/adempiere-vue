@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { getObject, getObjectListFromCriteria, getRecentItems } from '@/api/ADempiere'
+import { getObject, getObjectListFromCriteria, getRecentItems, getDefaultValueFromServer } from '@/api/ADempiere'
 import { convertValuesMapToObject, isEmptyValue, showMessage } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -126,7 +126,7 @@ const data = {
       const tabPanel = rootGetters.getPanel(containerUuid)
 
       if (!fieldList.length) {
-        fieldList = tabPanel.fieldList // rootGetters.getFieldsListFromPanel(containerUuid)
+        fieldList = tabPanel.fieldList
       }
 
       var values = {}
@@ -196,7 +196,29 @@ const data = {
                 valueGetDisplayColumn = parseInt(valueGetDisplayColumn, 10)
               }
             }
-
+            if (!isEmptyValue(valueGetDisplayColumn) && typeof valueGetDisplayColumn === 'object') {
+              // get value from direct Query
+              dispatch('getRecordBySQL', valueGetDisplayColumn)
+                .then(response => {
+                  valueGetDisplayColumn = parseInt(response)
+                  values[itemField.columnName] = valueGetDisplayColumn
+                  // add display Column for table
+                  dispatch('getLookupItemFromServer', {
+                    parentUuid: parentUuid,
+                    containerUuid: containerUuid,
+                    tableName: itemField.reference.tableName,
+                    directQuery: itemField.reference.directQuery,
+                    value: valueGetDisplayColumn
+                  })
+                    .then(responseLookup => {
+                      dispatch('addDisplayColumn', {
+                        containerUuid: containerUuid,
+                        columnName: itemField.columnName,
+                        displayColumn: responseLookup.label
+                      })
+                    })
+                })
+            }
             // get label (DisplayColumn) from vuex store
             const options = rootGetters.getLookupAll({
               parentUuid: parentUuid,
@@ -503,6 +525,18 @@ const data = {
             tableName: tableName
           })
         })
+    },
+    getRecordBySQL({ commit }, criteria) {
+      return new Promise((resolve, reject) => {
+        getDefaultValueFromServer(criteria)
+          .then(response => {
+            resolve(response)
+          })
+          .catch(error => {
+            console.error(error)
+            reject(error)
+          })
+      })
     },
     getRecentItemsFromServer({ commit }) {
       return new Promise((resolve, reject) => {

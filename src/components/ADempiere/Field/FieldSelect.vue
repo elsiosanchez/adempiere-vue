@@ -108,7 +108,7 @@ export default {
     if (!this.isEmptyValue(this.metadata.displayColumn)) {
       var key = this.validateValue(this.metadata.value)
       if (this.valueModel !== undefined && this.validateValue !== null) {
-        key = this.metadata.value
+        key = this.valueModel
       }
       // verify if exists to add
       if (!this.findLabel(key)) {

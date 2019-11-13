@@ -837,13 +837,17 @@ const panel = {
       fieldList
         .map(fieldItem => {
           var valueToReturn
-
+          var isSQL = false
           if (String(fieldItem.defaultValue).includes('@')) {
+            if (String(fieldItem.defaultValue).includes('@SQL=')) {
+              isSQL = true
+            }
             valueToReturn = parseContext({
               parentUuid: parentUuid,
               containerUuid: containerUuid,
               columnName: fieldItem.columnName,
-              value: fieldItem.defaultValue
+              value: fieldItem.defaultValue,
+              isSQL: isSQL
             })
           } else {
             valueToReturn = fieldItem.parsedDefaultValue
@@ -858,7 +862,8 @@ const panel = {
 
           return {
             columnName: fieldItem.columnName,
-            value: valueToReturn
+            value: valueToReturn,
+            isSQL: isSQL
           }
         })
       return attributesObject
