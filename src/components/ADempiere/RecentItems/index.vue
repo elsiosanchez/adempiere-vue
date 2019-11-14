@@ -14,17 +14,17 @@
         :data="search.length ? filterResult(search) : recentItems"
         @row-click="handleClick"
       >
-        <el-table-column
-          type="index"
-          width="40"
-        />
-        <el-table-column
-          :label="$t('profile.recentItems')"
-          prop="displayName"
-        />
-        <el-table-column label="" width="40">
+        <el-table-column width="40">
           <template slot-scope="{row}">
-            <svg-icon :icon-class="row.icon" />
+            <svg-icon :icon-class="row.icon" class="icon-window" />
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('profile.recentItems')">
+          <template slot-scope="{row}">
+            <span>{{ row.displayName }}</span>
+            <el-tag class="action-tag">{{ $t(`views.${row.action}`) }}</el-tag>
+            <br>
+            <span class="time">{{ translateDate(row.updated) }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { parseTime } from '@/utils'
 
 export default {
   name: 'RecentItems',
@@ -58,7 +57,6 @@ export default {
     this.subscribeChanges()
   },
   methods: {
-    parseTime,
     checkOpened(uuid) {
       return this.cachedViews.includes(uuid)
     },
@@ -97,6 +95,9 @@ export default {
     ignoreAccent(s) {
       if (!s) { return '' }
       return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    },
+    translateDate(value) {
+      return this.$d(new Date(value), 'long', this.language)
     }
   }
 }
@@ -115,7 +116,7 @@ export default {
 		overflow: auto;
 	}
   .time {
-    float: right;
+    float: left;
     font-size: 11px;
     color: #999;
   }
@@ -124,5 +125,12 @@ export default {
   }
   .card-content {
     font-size: 15px;
+  }
+  .icon-window {
+    font-size: x-large;
+    color: #36a3f7;
+  }
+  .action-tag {
+    float: right;
   }
 </style>

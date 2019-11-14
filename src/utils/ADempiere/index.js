@@ -664,35 +664,35 @@ export function convertAction(action) {
   }
   switch (action) {
     case 'B':
-      actionAttributes.name = 'workbech'
+      actionAttributes.name = 'Workbench'
       actionAttributes.icon = 'peoples'
       break
     case 'F':
-      actionAttributes.name = 'workflow'
+      actionAttributes.name = 'Workflow'
       actionAttributes.icon = 'example'
       break
     case 'P':
-      actionAttributes.name = 'process'
+      actionAttributes.name = 'Process'
       actionAttributes.icon = 'component'
       break
     case 'R':
-      actionAttributes.name = 'report'
+      actionAttributes.name = 'Report'
       actionAttributes.icon = 'skill'
       break
     case 'S':
-      actionAttributes.name = 'browser'
+      actionAttributes.name = 'SmartBrowser'
       actionAttributes.icon = 'search'
       break
     case 'T':
-      actionAttributes.name = 'task'
+      actionAttributes.name = 'Task'
       actionAttributes.icon = 'size'
       break
     case 'W':
-      actionAttributes.name = 'window'
+      actionAttributes.name = 'Window'
       actionAttributes.icon = 'tab'
       break
     case 'X':
-      actionAttributes.name = 'form'
+      actionAttributes.name = 'Form'
       actionAttributes.icon = 'form'
 
       break
