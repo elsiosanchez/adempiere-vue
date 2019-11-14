@@ -1,8 +1,8 @@
 <template>
   <el-container v-if="isLoadPanel" label-position="top" style="height: inherit;">
-    <el-main style="padding: 0px!important; overflow: hidden;">
+    <el-main style="padding: 0px !important; overflow: hidden;">
       <el-container style="height: 100%;">
-        <el-header :style="isAdvancedQuery ? activeName ? { height: '50%',overflow: 'auto' } : { height: '12%',overflow: 'hidden' } : { height: '5%' }">
+        <el-header :style="isAdvancedQuery ? activeName ? { height: '55%', overflow: 'auto' } : { height: '18%', overflow: 'hidden' } : { height: '5%' }">
           <el-collapse
             v-if="isParent && isAdvancedQuery"
             v-show="isAdvancedQuery"
@@ -45,6 +45,12 @@
                   </el-menu-item>
                   <el-menu-item index="optional" @click="optionalPanel()">
                     {{ $t('components.filterableItems') }}
+                  </el-menu-item>
+                  <el-menu-item index="mandatory" @click="showOnlyMandatoryColumns()">
+                    {{ $t('table.dataTable.showOnlyMandatoryColumns') }}
+                  </el-menu-item>
+                  <el-menu-item index="available" @click="showAllAvailableColumns()">
+                    {{ $t('table.dataTable.showAllAvailableColumns') }}
                   </el-menu-item>
                 </el-submenu>
               </el-menu>
@@ -102,6 +108,12 @@
                     <el-menu-item index="fixed" @click="fixedPanel()">
                       {{ $t('components.fixedleItems') }}
                     </el-menu-item>
+                    <el-menu-item index="mandatory" @click="showOnlyMandatoryColumns()">
+                      {{ $t('table.dataTable.showOnlyMandatoryColumns') }}
+                    </el-menu-item>
+                    <el-menu-item index="available" @click="showAllAvailableColumns()">
+                      {{ $t('table.dataTable.showAllAvailableColumns') }}
+                    </el-menu-item>
                     <el-menu-item
                       v-if="!isParent && isPanelWindow"
                       :disabled="isDisabledAddNew"
@@ -123,7 +135,7 @@
                   :panel-type="panelType"
                   class="field-optional"
                 />
-                <div :class="{'show':showTableSearch}" class="table-search">
+                <div :class="{ 'show' :showTableSearch }" class="table-search">
                   <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
                   <el-input
                     ref="headerSearchSelect"
@@ -136,7 +148,7 @@
                 </div>
               </div>
               <div v-else class="panel-expand">
-                <div :class="{'show':showTableSearch}" class="table-search">
+                <div :class="{ 'show': showTableSearch }" class="table-search">
                   <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
                   <el-input
                     ref="headerSearchSelect"
@@ -497,6 +509,16 @@ export default {
     sortFields,
     handleChange(val) {
       val = !val
+    },
+    showOnlyMandatoryColumns() {
+      this.$store.dispatch('showOnlyMandatoryColumns', {
+        containerUuid: this.containerUuid
+      })
+    },
+    showAllAvailableColumns() {
+      this.$store.dispatch('showAllAvailableColumns', {
+        containerUuid: this.containerUuid
+      })
     },
     headerLabel(field) {
       if (field.isMandatory || field.isMandatoryFromLogic) {

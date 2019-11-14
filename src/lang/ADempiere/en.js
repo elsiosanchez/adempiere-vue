@@ -169,7 +169,9 @@ export default {
       records: 'Records',
       selected: 'Selected',
       deleteSelection: 'Delete Selected Records',
-      advancedQuery: 'Advanced Query'
+      advancedQuery: 'Advanced Query',
+      showOnlyMandatoryColumns: 'Show Only Mandatory Columns',
+      showAllAvailableColumns: 'Show All Available Columns'
     },
     recentItems: {
       search: 'Filter by name, description or date',

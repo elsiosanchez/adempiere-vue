@@ -1,6 +1,6 @@
 <template>
   <el-select
-    v-model="columnsShowed"
+    v-model="getterFieldListShowed"
     :filterable="!isMobile"
     :placeholder="$t('components.filterableItems')"
     multiple
@@ -8,10 +8,9 @@
     collapse-tags
     value-key="key"
     class="select"
-    @change="addField"
   >
     <el-option
-      v-for="(item, key) in columnListAvailable"
+      v-for="(item, key) in getterFieldListAvailable"
       :key="key"
       :label="item.name"
       :value="item.columnName"
@@ -28,43 +27,40 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      columnsShowed: [], // columns showed
-      columnListAvailable: [] // available fields
-    }
-  },
   computed: {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
     getterFieldList() {
       return this.$store.getters.getFieldsListFromPanel(this.containerUuid)
-    }
-  },
-  created() {
-    this.getPanel()
-  },
-  methods: {
-    getPanel() {
-      var fieldList = this.getterFieldList
-      if (fieldList && fieldList.length) {
-        this.generatePanel(fieldList)
-      }
     },
-    generatePanel(fieldList) {
-      this.columnListAvailable = fieldList.filter(fieldItem => {
-        return this.isDisplayed(fieldItem)
+    // available fields
+    getterFieldListAvailable() {
+      return this.getterFieldList.filter(fieldItem => {
+        const isDisplayed = fieldItem.isDisplayed || fieldItem.isDisplayedFromLogic
+        return fieldItem.isActive && isDisplayed && !fieldItem.isKey
       })
     },
-    isDisplayed(field) {
-      var isDisplayed = field.isActive && field.isDisplayed && (field.isShowedTableFromUser || field.isDisplayedFromLogic) && !field.isKey
-      if (field.isShowedTableFromUser && field.isDisplayed && !field.isKey) {
-        this.columnsShowed.push(field.columnName)
+    getterFieldListShowed: {
+      get: function() {
+        // columns showed
+        return this.getterFieldList.filter(itemField => {
+          if (itemField.isShowedTableFromUser && (itemField.isDisplayed || itemField.isDisplayedFromLogic) && !itemField.isKey) {
+            return true
+          }
+        }).map(itemField => {
+          return itemField.columnName
+        })
+      },
+      set: function(selecteds) {
+        // set columns to show/hidden in vuex store
+        this.addField(selecteds)
       }
-      return isDisplayed
-    },
+    }
+  },
+  methods: {
     /**
+     * Set columns to hidden/showed in table
      * @param {array} selectedValues
      */
     addField(selectedValues) {

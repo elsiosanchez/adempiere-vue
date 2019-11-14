@@ -169,7 +169,9 @@ export default {
       records: 'Registros',
       selected: 'Seleccionados',
       deleteSelection: 'Eliminar Registros Seleccionados',
-      advancedQuery: 'Consulta Avanzada'
+      advancedQuery: 'Consulta Avanzada',
+      showOnlyMandatoryColumns: 'Mostrar Solo Columnas Obligatorias',
+      showAllAvailableColumns: 'Mostrar Todas Columnas Disponibles'
     },
     recentItems: {
       search: 'Filtrar por nombre, descripción o fecha',

@@ -39,6 +39,9 @@ const panel = {
         return item
       })
     },
+    changeFieldList(state, payload) {
+      payload.fieldList = payload.newFieldList
+    },
     changeFieldValue(state, payload) {
       if (payload.isChangedOldValue) {
         payload.field.oldValue = payload.newValue
@@ -186,31 +189,87 @@ const panel = {
     /**
      * Change some attribute boolean from fields in panel
      * @param {string}  containerUuid
+     * @param {string}  fieldList
      * @param {string}  attribute
      * @param {boolean} valueAttribute
      * @param {array}   fieldsIncludes fields to set valueAttribute
      * @param {array}   fieldsExcludes fields to dont change
      */
     changeFieldAttributesBoolean({ commit, getters }, parameters) {
-      var panel = getters.getPanel(parameters.containerUuid)
-      var newFields = panel.fieldList.map(itemField => {
+      const { containerUuid, attribute, valueAttribute, fieldsIncludes, fieldsExcludes } = parameters
+      var { fieldList = [] } = parameters
+      if (fieldList.length <= 0) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid)
+      }
+
+      var newFields = fieldList.map(itemField => {
         // not change exlude field
-        if (parameters.fieldsExcludes && parameters.fieldsExcludes.length && parameters.fieldsExcludes.includes(itemField.columnName)) {
+        if (fieldsExcludes && fieldsExcludes.length && fieldsExcludes.includes(itemField.columnName)) {
           return itemField
         }
         // if it field is included to change value
-        if (parameters.fieldsIncludes && parameters.fieldsIncludes.length && parameters.fieldsIncludes.includes(itemField.columnName)) {
-          itemField[parameters.attribute] = parameters.valueAttribute
+        if (fieldsIncludes && fieldsIncludes.length && fieldsIncludes.includes(itemField.columnName)) {
+          itemField[attribute] = valueAttribute
           return itemField
         }
         // changed current value by opposite set value
-        itemField[parameters.attribute] = !parameters.valueAttribute
+        itemField[attribute] = !valueAttribute
         return itemField
       })
-      panel.fieldList = newFields
-      commit('changePanel', {
-        containerUuid: parameters.containerUuid,
-        newPanel: panel
+      commit('changeFieldList', {
+        fieldList: fieldList,
+        newFieldList: newFields
+      })
+    },
+    /**
+     * @param {string}  containerUuid
+     * @param {array}   fieldList
+     */
+    showOnlyMandatoryColumns({ dispatch, getters }, parameters) {
+      const { containerUuid } = parameters
+      var { fieldList = [] } = parameters
+      if (fieldList.length <= 0) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid)
+      }
+      const fieldsExcludes = fieldList.filter(fieldItem => {
+        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (isMandatory) {
+          return true
+        }
+      }).map(fieldItem => {
+        return fieldItem.columnName
+      })
+
+      dispatch('changeFieldAttributesBoolean', {
+        containerUuid: containerUuid,
+        fieldsIncludes: fieldsExcludes,
+        attribute: 'isShowedTableFromUser',
+        valueAttribute: true
+      })
+    },
+    /**
+     * @param {string}  containerUuid
+     * @param {array}   fieldList
+     */
+    showAllAvailableColumns({ dispatch, getters }, parameters) {
+      const { containerUuid } = parameters
+      var { fieldList = [] } = parameters
+      if (fieldList.length <= 0) {
+        fieldList = getters.getFieldsListFromPanel(containerUuid)
+      }
+      const fieldsExcludes = fieldList.filter(fieldItem => {
+        const isDisplayed = fieldItem.isDisplayed && fieldItem.isDisplayedFromLogic && !fieldItem.isKey
+        //  Verify for displayed and is active
+        return fieldItem.isActive && isDisplayed
+      }).map(fieldItem => {
+        return fieldItem.columnName
+      })
+
+      dispatch('changeFieldAttributesBoolean', {
+        containerUuid: containerUuid,
+        fieldsIncludes: fieldsExcludes,
+        attribute: 'isShowedTableFromUser',
+        valueAttribute: true
       })
     },
     /**
