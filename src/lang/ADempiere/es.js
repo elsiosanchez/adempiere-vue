@@ -133,7 +133,8 @@ export default {
     fixedleItems: 'Columnas Fijas',
     resetAllFilters: 'Reiniciar todos los filtros',
     switchActiveText: 'Si',
-    switchInactiveText: 'No'
+    switchInactiveText: 'No',
+    contextFieldTitle: 'Información de Contexto'
   },
   views: {
     SmartBrowser: 'Consulta Inteligente',

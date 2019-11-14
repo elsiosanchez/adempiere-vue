@@ -14,7 +14,17 @@
     :xl="sizeFieldResponsive.xl"
     :class="classField"
   >
-    <el-form-item :label="isFieldOnly()" :required="isMandatory()">
+    <el-popover
+      v-if="field.contextInfo.isActive"
+      ref="contextOptions"
+      placement="top"
+      :title="$t('components.contextFieldTitle')"
+      width="400"
+      trigger="click"
+    >
+      <p v-html="field.contextInfo.messageText.msgText" />
+    </el-popover>
+    <el-form-item v-popover:contextOptions :label="isFieldOnly()" :required="isMandatory()">
       <component
         :is="componentRender"
         :ref="field.columnName"

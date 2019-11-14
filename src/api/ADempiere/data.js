@@ -314,3 +314,7 @@ export function runCallOutRequest(parametersCallout) {
 export function getDefaultValueFromServer(query) {
   return Instance.call(this).getDefaultValue(query)
 }
+
+export function getContextInfoValueFromServer({ uuid, query }) {
+  return Instance.call(this).getContextInfoValue({ uuid: uuid, query: query })
+}

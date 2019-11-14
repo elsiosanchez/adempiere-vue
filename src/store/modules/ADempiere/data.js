@@ -1,5 +1,12 @@
 import Vue from 'vue'
-import { getObject, getObjectListFromCriteria, getRecentItems, getDefaultValueFromServer, convertValueFromGRPC } from '@/api/ADempiere'
+import {
+  getObject,
+  getObjectListFromCriteria,
+  getRecentItems,
+  getDefaultValueFromServer,
+  convertValueFromGRPC,
+  getContextInfoValueFromServer
+} from '@/api/ADempiere'
 import { convertValuesMapToObject, isEmptyValue, showMessage, convertAction } from '@/utils/ADempiere'
 import language from '@/lang'
 
@@ -8,7 +15,8 @@ const data = {
     recordSelection: [], // record data and selection
     recordDetail: [],
     recentItems: [],
-    inGetting: []
+    inGetting: [],
+    contextInfoField: []
   },
   mutations: {
     addInGetting(state, payload) {
@@ -78,6 +86,9 @@ const data = {
     },
     addDisplayColumn(state, payload) {
       Vue.set(payload.row, payload.columnName, payload.displayColumn)
+    },
+    setContextInfoField(state, payload) {
+      state.contextInfoField.push(payload)
     }
   },
   actions: {
@@ -727,6 +738,30 @@ const data = {
           }
         }
       }
+    },
+    getContextInfoValueFromServer({ commit, getters }, parameters) {
+      var { sqlStatement, contextInfoUuid } = parameters
+      var contextInforField = getters.getContextInfoField(contextInfoUuid, sqlStatement)
+      if (contextInforField) {
+        return contextInforField
+      }
+      return getContextInfoValueFromServer({ uuid: contextInfoUuid, query: sqlStatement })
+        .then(response => {
+          const contextInfo = {
+            messageText: response.getMessagetext(),
+            messageTip: response.getMessagetip()
+          }
+          commit('setContextInfoField', {
+            contextInfoUuid: contextInfoUuid,
+            sqlStatement: sqlStatement,
+            messageText: contextInfo.messageText,
+            messageTip: contextInfo.messageTip
+          })
+          return contextInfo
+        })
+        .catch(error => {
+          console.warn(`Error ${error.code} getting context info value for field ${error.message}`)
+        })
     }
   },
   getters: {
@@ -846,6 +881,12 @@ const data = {
       return state.recordSelection.find(
         record => record.containerUuid === roleUuid
       ) || []
+    },
+    getContextInfoField: (state) => (contextInfoUuid, sqlStatement) => {
+      return state.contextInfoField.find(info =>
+        info.contextInfoUuid === contextInfoUuid &&
+        info.sqlStatement === sqlStatement
+      )
     }
   }
 }

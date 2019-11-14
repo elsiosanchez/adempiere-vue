@@ -438,6 +438,41 @@ const panel = {
           columnName: columnName,
           value: params.newValue
         })
+
+        // request context info field
+        if (!isEmptyValue(field.value) && !isEmptyValue(field.contextInfo.sqlStatement)) {
+          var isSQL = false
+          var sqlStatement = field.contextInfo.sqlStatement
+          if (sqlStatement.includes('@')) {
+            if (sqlStatement.includes('@SQL=')) {
+              isSQL = true
+            }
+            sqlStatement = parseContext({
+              parentUuid: parentUuid,
+              containerUuid: containerUuid,
+              columnName: columnName,
+              value: sqlStatement,
+              isSQL: isSQL
+            })
+            if (isSQL && String(sqlStatement) === '[object Object]') {
+              sqlStatement = sqlStatement.query
+            }
+          }
+          dispatch('getContextInfoValueFromServer', {
+            parentUuid: parentUuid,
+            containerUuid: containerUuid,
+            contextInfoUuid: field.contextInfo.uuid,
+            columnName: columnName,
+            sqlStatement: sqlStatement
+          })
+            .then(response => {
+              if (!isEmptyValue(response) && !isEmptyValue(response.messageText)) {
+                field.contextInfo.isActive = true
+                field.contextInfo.messageText.msgText = response.messageText
+                field.contextInfo.messageText.msgTip = response.messageTip
+              }
+            })
+        }
       }
 
       // the field has not changed, then the action is broken

@@ -133,7 +133,8 @@ export default {
     fixedleItems: 'Fixed Columns',
     resetAllFilters: 'Reset all filters',
     switchActiveText: 'Yes',
-    switchInactiveText: 'Not'
+    switchInactiveText: 'Not',
+    contextFieldTitle: 'Context Information'
   },
   views: {
     SmartBrowser: 'Smart Browser',

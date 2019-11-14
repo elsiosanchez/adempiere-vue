@@ -186,9 +186,9 @@ export function convertField(fieldGRPC, moreAttributes = {}, typeRange = false) 
     parentFieldsList: getParentFields(fieldGRPC),
     dependentFieldsList: [],
     reference: referenceValue,
-    // contextInfo: convertContextInfoFromGRPC(
-    //   fieldGRPC.getContextinfo()
-    // ),
+    contextInfo: convertContextInfoFromGRPC(
+      fieldGRPC.getContextinfo()
+    ),
     // TODO: Add support on server
     // app attributes
     isShowedFromUser: isShowedFromUser,
