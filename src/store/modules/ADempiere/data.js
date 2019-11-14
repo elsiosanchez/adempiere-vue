@@ -175,12 +175,14 @@ const data = {
       if (fieldList.length) {
         fieldList
           // TODO: Evaluate if is field is read only and FieldSelect
-          .filter(itemField => itemField.componentPath === 'FieldSelect')
+          .filter(itemField => itemField.componentPath === 'FieldSelect' || String(values[itemField.columnName]) === '[object Object]')
           .forEach(itemField => {
             var valueGetDisplayColumn = values[itemField.columnName]
-            if (typeof valueGetDisplayColumn === 'object') {
+            if (String(values[itemField.columnName]) === '[object Object]' && itemField.componentPath === 'FieldSelect') {
               values[itemField.columnName] = ' '
               values['DisplayColumn_' + itemField.columnName] = ' '
+            } else if (String(values[itemField.columnName]) === '[object Object]' && itemField.componentPath === 'FieldNumber') {
+              values[itemField.columnName] = 0
             }
             // overwrite value with column link
             if (!isEmptyValue(linkColumnName) && linkColumnName === itemField.columnName) {
@@ -199,12 +201,23 @@ const data = {
                 valueGetDisplayColumn = parseInt(valueGetDisplayColumn, 10)
               }
             }
-            if (!isEmptyValue(valueGetDisplayColumn) && typeof valueGetDisplayColumn === 'object') {
+            if (!isEmptyValue(valueGetDisplayColumn) && String(valueGetDisplayColumn) === '[object Object]') {
               // get value from direct Query
-              dispatch('getRecordBySQL', { query: valueGetDisplayColumn, field: itemField })
+              dispatch('getRecordBySQL', { query: valueGetDisplayColumn.query, field: itemField })
                 .then(defaultValue => {
-                  values[itemField.columnName] = defaultValue.key
-                  values['DisplayColumn_' + itemField.columnName] = defaultValue.label
+                  if (itemField.componentPath === 'FieldSelect') {
+                    values[itemField.columnName] = defaultValue.key
+                    values['DisplayColumn_' + itemField.columnName] = defaultValue.label
+                  } else {
+                    values[itemField.columnName] = defaultValue.key
+                    dispatch('notifyRowTableChange', {
+                      parentUuid: parentUuid,
+                      containerUuid: containerUuid,
+                      isNew: isNew,
+                      isEdit: isEdit,
+                      values: values
+                    })
+                  }
                 })
               return
             }
@@ -523,21 +536,23 @@ const data = {
             var valueToReturn = {}
             valueToReturn['key'] = convertValueFromGRPC(response)
             // add display Column for table
-            dispatch('getLookupItemFromServer', {
-              parentUuid: field.parentUuid,
-              containerUuid: field.containerUuid,
-              tableName: field.reference.tableName,
-              directQuery: field.reference.directQuery,
-              value: valueToReturn.key
-            })
-              .then(responseLookup => {
-                valueToReturn['label'] = responseLookup.label
-                dispatch('addDisplayColumn', {
-                  containerUuid: field.containerUuid,
-                  columnName: field.columnName,
-                  displayColumn: responseLookup.label
-                })
+            if (field.componentPath === 'FieldSelect') {
+              dispatch('getLookupItemFromServer', {
+                parentUuid: field.parentUuid,
+                containerUuid: field.containerUuid,
+                tableName: field.reference.tableName,
+                directQuery: field.reference.directQuery,
+                value: valueToReturn.key
               })
+                .then(responseLookup => {
+                  valueToReturn['label'] = responseLookup.label
+                  dispatch('addDisplayColumn', {
+                    containerUuid: field.containerUuid,
+                    columnName: field.columnName,
+                    displayColumn: responseLookup.label
+                  })
+                })
+            }
             resolve(valueToReturn)
           })
           .catch(error => {
@@ -584,14 +599,17 @@ const data = {
     notifyRowTableChange({ commit, state, getters, rootGetters }, objectParams) {
       const { parentUuid, containerUuid, isEdit = true } = objectParams
       var currentValues = {}
-
-      currentValues = rootGetters.getColumnNamesAndValues({
-        parentUuid: parentUuid,
-        containerUuid: containerUuid,
-        propertyName: 'value',
-        isObjectReturn: true,
-        isAddDisplayColumn: true
-      })
+      if (objectParams.hasOwnProperty('values')) {
+        currentValues = objectParams.values
+      } else {
+        currentValues = rootGetters.getColumnNamesAndValues({
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          propertyName: 'value',
+          isObjectReturn: true,
+          isAddDisplayColumn: true
+        })
+      }
 
       var row = getters.getRowData(objectParams.containerUuid, currentValues.UUID)
 

@@ -44,16 +44,20 @@ export default {
   },
   watch: {
     valueModel(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
+      if (this.metadata.inTable) {
+        if (typeof value === 'number') {
+          value = new Date(value)
+        }
+        this.value = value
       }
-      this.value = value
     },
     'metadata.value'(value) {
-      if (typeof value === 'number') {
-        value = new Date(value)
+      if (!this.metadata.inTable) {
+        if (typeof value === 'number') {
+          value = new Date(value)
+        }
+        this.value = value
       }
-      this.value = value
     }
   },
   beforeMount() {

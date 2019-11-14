@@ -311,26 +311,6 @@ export function runCallOutRequest(parametersCallout) {
   return Instance.call(this).runCalloutRequest(parametersCallout)
 }
 
-export function getDefaultValueFromServer(criteria) {
-  const criteriaForDefaultValue = getCriteria(criteria.tableName)
-  if (criteria.query) {
-    criteriaForDefaultValue.setQuery(criteria.query)
-  }
-
-  if (criteria.whereClause) {
-    criteriaForDefaultValue.setWhereclause(criteria.whereClause)
-  }
-  if (criteria.orderByClause) {
-    criteriaForDefaultValue.setOrderbyclause(criteria.orderByClause)
-  }
-
-  // add conditions
-  if (criteria.conditions && criteria.conditions.length) {
-    criteria.conditions.forEach(itemCondition => {
-      const convertCondition = Instance.call(this).convertCondition(itemCondition)
-      criteriaForDefaultValue.addConditions(convertCondition)
-    })
-  }
-
-  return Instance.call(this).getDefaultValue(criteriaForDefaultValue)
+export function getDefaultValueFromServer(query) {
+  return Instance.call(this).getDefaultValue(query)
 }

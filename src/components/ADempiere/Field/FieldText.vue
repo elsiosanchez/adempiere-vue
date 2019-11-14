@@ -54,16 +54,20 @@ export default {
   },
   watch: {
     valueModel(value) {
-      if (this.isEmptyValue(value)) {
-        value = ''
+      if (this.metadata.inTable) {
+        if (this.isEmptyValue(value)) {
+          value = ''
+        }
+        this.value = String(value)
       }
-      this.value = String(value)
     },
     'metadata.value'(value) {
-      if (this.isEmptyValue(value)) {
-        value = ''
+      if (!this.metadata.inTable) {
+        if (this.isEmptyValue(value)) {
+          value = ''
+        }
+        this.value = String(value)
       }
-      this.value = String(value)
     }
   },
   beforeMount() {

@@ -603,6 +603,8 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
         if (isMandatory) {
           returnValue = 0
         }
+      } else if (typeof value === 'object' && value.hasOwnProperty('query')) {
+        returnValue = value
       } else {
         returnValue = Number(value)
       }
@@ -612,6 +614,8 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
     case 'FieldYesNo':
       if (value === 'false' || value === 'N') {
         value = false
+      } else if (typeof value === 'object' && value.hasOwnProperty('query')) {
+        returnValue = value
       }
       returnValue = Boolean(value)
       break
@@ -619,6 +623,9 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
     // data type String
     case 'FieldText':
     case 'FieldTextArea':
+      if (typeof value === 'object' && value.hasOwnProperty('query')) {
+        returnValue = value
+      }
       returnValue = String(value)
       break
 
@@ -633,6 +640,9 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
       }
       if (typeof value === 'number') {
         value = new Date(value)
+      }
+      if (typeof value === 'object' && value.hasOwnProperty('query')) {
+        returnValue = value
       }
       returnValue = value
       break

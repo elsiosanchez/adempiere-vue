@@ -61,19 +61,17 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = Number(value)
+      if (this.metadata.inTable) {
+        this.value = Number(value)
+      }
     },
     'metadata.value'(value) {
-      if (value === undefined || value === '') {
-        value = null
+      if (!this.metadata.inTable) {
+        if (value === undefined || value === '') {
+          value = null
+        }
+        this.value = value
       }
-      this.value = value
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = Number(this.valueModel)
     }
   },
   methods: {
