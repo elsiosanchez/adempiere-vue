@@ -200,7 +200,6 @@ export default {
      */
     getDataLookupList(showList) {
       if (showList) {
-        console.log(this.getterLookupList.length)
         if (this.getterLookupList.length === 0) {
           this.remoteMethod()
         }

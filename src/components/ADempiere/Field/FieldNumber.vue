@@ -60,24 +60,22 @@ export default {
     }
   },
   watch: {
+    // enable to dataTable records
     valueModel(value) {
       if (this.metadata.inTable) {
-        this.value = Number(value)
-      }
-    },
-    'metadata.value'(value) {
-      if (!this.metadata.inTable) {
-        if (value === undefined || value === '') {
+        if (this.isEmptyValue(value)) {
           value = null
         }
         this.value = value
       }
-    }
-  },
-  methods: {
-    // validate values before send values to store or server
-    preHandleChange(value) {
-      this.handleChange(value)
+    },
+    'metadata.value'(value) {
+      if (!this.metadata.inTable) {
+        if (this.isEmptyValue(value)) {
+          value = null
+        }
+        this.value = value
+      }
     }
   }
 }

@@ -27,8 +27,6 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      // value: this.metadata.isRange && !this.metadata.inTable ? [this.metadata.value, this.metadata.valueTo] : this.metadata.value,
-      value: this.metadata.value,
       pickerOptionsDate: {
         shortcuts: [{
           text: this.$t('components.date.Today'),
@@ -91,15 +89,13 @@ export default {
             picker.$emit('pick', [monthStartDay, monthEndDay])
           }
         }]
-      },
-      formatView: undefined,
-      formatSend: undefined
+      }
     }
   },
   computed: {
     typePicker() {
-      var range = ''
-      var time = ''
+      let range = ''
+      let time = ''
       if (String(this.metadata.displayType) === String(16)) {
         time = 'time'
       }
@@ -107,51 +103,12 @@ export default {
         range = 'range'
       }
       return 'date' + time + range
-    }
-  },
-  watch: {
-    'metadata.value'(value) {
-      if (typeof value === 'number') {
-        value = new Date(value).toUTCString()
-      }
-      if (value === null) {
-        value = undefined
-      }
-
-      this.value = value
-      if (this.metadata.isRange) {
-        var valueTo = this.metadata.valueTo
-        if (typeof valueTo === 'number') {
-          valueTo = new Date(valueTo).toUTCString()
-        }
-        if (valueTo === null) {
-          valueTo = undefined
-        }
-        this.value = [this.value, valueTo]
-      }
-    }
-  },
-  created() {
-    this.checkValueFormat()
-    // set value to, when field is type range
-    if (this.metadata.isRange && !this.metadata.inTable) {
-      this.value = [this.metadata.value, this.metadata.valueTo]
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel) {
-      this.value = this.valueModel
-    }
-  },
-  methods: {
-    clientDateTime,
+    },
     /**
      * Parse the date format to be compatible with element-ui
      */
-    checkValueFormat() {
-      // Date = 15
-      var format = this.metadata.VFormat
+    formatView() {
+      let format = this.metadata.VFormat
         .replace(/[Y]/gi, 'y')
         .replace(/[m]/gi, 'M')
         .replace(/[D]/gi, 'd')
@@ -162,10 +119,50 @@ export default {
       if (this.typePicker.replace('range', '') === 'datetime') {
         format = format + ' hh:mm:ss A'
       }
-      this.formatView = format
-      // this.formatSend = format
-      //   .replace(/[h]/gi, 'H')
-      //   .replace(/[aA]/gi, '')
+      return format
+    },
+    formatSend() {
+      if (this.formatView) {
+        return this.formatView
+          .replace(/[h]/gi, 'H')
+          .replace(/[aA]/gi, '')
+      }
+      return undefined
+    }
+  },
+  watch: {
+    valueModel(value) {
+      if (this.metadata.inTable) {
+        this.value = this.parsedDateValue(value)
+      }
+    },
+    'metadata.value'(value) {
+      if (!this.metadata.inTable) {
+        this.value = this.parsedDateValue(value)
+      }
+    }
+  },
+  methods: {
+    clientDateTime,
+    parsedDateValue(value) {
+      if (typeof value === 'number') {
+        value = new Date(value).toUTCString()
+      }
+      if (this.isEmptyValue(value)) {
+        value = undefined
+      }
+
+      if (this.metadata.isRange) {
+        let valueTo = this.metadata.valueTo
+        if (typeof valueTo === 'number') {
+          valueTo = new Date(valueTo).toUTCString()
+        }
+        if (this.isEmptyValue(valueTo)) {
+          valueTo = undefined
+        }
+        value = [value, valueTo]
+      }
+      return value
     },
     // validate values before send values to store or server
     preHandleChange(value) {

@@ -20,13 +20,7 @@ export default {
   name: 'FieldYesNo',
   mixins: [fieldMixin],
   data() {
-    let value = this.metadata.value
-    if (this.metadata.inTable) {
-      value = this.valueModel
-    }
-
     return {
-      value: Boolean(value),
       valuesReadOnly: [
         {
           columnName: 'IsActive',

@@ -541,9 +541,8 @@ export default {
         }
         // replace number timestamp value for date
         return formatDate(cell, field.referenceType)
-      } else {
-        return row['DisplayColumn_' + field.columnName] || row[field.columnName]
       }
+      return row['DisplayColumn_' + field.columnName] || row[field.columnName]
     },
     rowCanBeEdited(record, fieldAttributes) {
       if (!this.isParent) {

@@ -2,7 +2,7 @@
   <el-color-picker
     :ref="metadata.columnName"
     v-model="value"
-    :show-alpha="showAlphaColor"
+    show-alpha
     :disabled="isDisabled"
     @change="preHandleChange"
   />
@@ -14,29 +14,22 @@ import { fieldMixin } from '@/components/ADempiere/Field/FieldMixin'
 export default {
   name: 'FieldColor',
   mixins: [fieldMixin],
-  data() {
-    return {
-      showAlphaColor: true
-    }
-  },
   watch: {
     valueModel(value) {
-      this.value = value
+      if (this.metadata.inTable) {
+        if (this.isEmptyValue(value)) {
+          value = ''
+        }
+        this.value = String(value)
+      }
     },
     'metadata.value'(value) {
-      this.value = value
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = String(this.valueModel)
-    }
-  },
-  methods: {
-    // validate values before send values to store or server
-    preHandleChange(value) {
-      this.handleChange(value)
+      if (!this.metadata.inTable) {
+        if (this.isEmptyValue(value)) {
+          value = ''
+        }
+        this.value = String(value)
+      }
     }
   }
 }

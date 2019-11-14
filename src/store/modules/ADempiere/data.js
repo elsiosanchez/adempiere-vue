@@ -141,7 +141,7 @@ const data = {
           fieldList: fieldList
         })
       } else {
-        values = getters.getParsedDefaultValues({
+        values = rootGetters.getParsedDefaultValues({
           parentUuid: parentUuid,
           containerUuid: containerUuid,
           fieldList: fieldList
@@ -417,7 +417,7 @@ const data = {
      * @param {string} orderByClause, criteria to search record data
      * @param {array}  conditions, conditions to criteria
      */
-    getObjectListFromCriteria({ commit, dispatch, getters }, parameters) {
+    getObjectListFromCriteria({ commit, dispatch, getters, rootGetters }, parameters) {
       const { parentUuid, containerUuid, tableName, query, whereClause, orderByClause, conditions = [], isShowNotification = true, isParentTab = true } = parameters
       if (isShowNotification) {
         showMessage({
@@ -446,6 +446,13 @@ const data = {
         tableName: tableName,
         conditions: conditions
       })
+
+      // gets the default value of the fields (including whether it is empty or undefined)
+      const defaultValues = rootGetters.getParsedDefaultValues({
+        parentUuid: parentUuid,
+        containerUuid: containerUuid,
+        isGetServer: false
+      })
       return getObjectListFromCriteria({
         tableName: tableName,
         query: query,
@@ -470,7 +477,13 @@ const data = {
             if (inEdited.find(itemEdit => itemEdit.UUID === values.UUID)) {
               values.isEdit = true
             }
-            return values
+
+            // overwrite default values and sets the values obtained from the
+            // server (empty fields are not brought from the server)
+            return {
+              ...defaultValues,
+              ...values
+            }
           })
 
           var token = response.getNextPageToken()

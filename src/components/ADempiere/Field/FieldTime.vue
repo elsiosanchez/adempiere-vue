@@ -45,35 +45,24 @@ export default {
   watch: {
     valueModel(value) {
       if (this.metadata.inTable) {
-        if (typeof value === 'number') {
-          value = new Date(value)
-        }
-        this.value = value
+        this.value = this.parsedDateValue(value)
       }
     },
     'metadata.value'(value) {
       if (!this.metadata.inTable) {
-        if (typeof value === 'number') {
-          value = new Date(value)
-        }
-        this.value = value
+        this.value = this.parsedDateValue(value)
       }
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = this.valueModel
     }
   },
   methods: {
-    // validate values before send values to store or server
-    preHandleChange(value) {
-      if (typeof value !== 'object') {
-        value = new Date(value)
+    parsedDateValue(value) {
+      if (typeof value === 'number') {
+        value = new Date(value).toUTCString()
       }
-
-      this.handleChange(value)
+      if (this.isEmptyValue(value)) {
+        value = undefined
+      }
+      return value
     }
   }
 }

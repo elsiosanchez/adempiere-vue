@@ -26,16 +26,14 @@ export default {
   },
   watch: {
     valueModel(value) {
-      this.value = value
+      if (this.metadata.inTable) {
+        this.value = value
+      }
     },
     'metadata.value'(value) {
-      this.value = value
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = this.valueModel
+      if (!this.metadata.inTable) {
+        this.value = value
+      }
     }
   },
   methods: {
@@ -43,12 +41,6 @@ export default {
       this.value = URL.createObjectURL(file.raw)
       // TODO: define one method to control change value
       this.handleChange(this.value)
-      /* this.$store.dispatch('notifyFieldChange', {
-        parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
-        columnName: this.metadata.columnName,
-        newValue: this.value
-      }) */
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'

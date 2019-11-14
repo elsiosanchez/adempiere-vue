@@ -28,23 +28,17 @@ export default {
   mixins: [fieldMixin],
   watch: {
     valueModel(value) {
-      this.value = value
+      if (this.metadata.inTable) {
+        this.value = value
+      }
     },
     'metadata.value'(value) {
-      this.value = value
-    }
-  },
-  beforeMount() {
-    // enable to dataTable records
-    if (this.metadata.inTable && this.valueModel !== undefined) {
-      this.value = this.valueModel
+      if (!this.metadata.inTable) {
+        this.value = value
+      }
     }
   },
   methods: {
-    // validate values before send values to store or server
-    preHandleChange(value) {
-      this.handleChange(value)
-    },
     handleRemove(file) {
       this.$message.success(`The previously uploaded file has been deleted.`)
     },

@@ -363,22 +363,20 @@ const panel = {
         if (!newValues.hasOwnProperty(actionField.columnName)) {
           return
         }
-        if (!isEmptyValue(newValues[actionField.columnName]) && newValues[actionField.columnName] !== actionField.value) {
-          dispatch('notifyFieldChange', {
-            isSendToServer: isSendToServer,
-            isSendCallout: isSendCallout,
-            parentUuid: parentUuid,
-            containerUuid: containerUuid,
-            columnName: actionField.columnName,
-            displayColumn: newValues['DisplayColumn_' + actionField.columnName],
-            newValue: newValues[actionField.columnName],
-            valueTo: newValues[actionField.columnName + '_To'],
-            fieldList: fieldList,
-            field: actionField,
-            withOutColumnNames: withOutColumnNames,
-            isChangedOldValue: true // defines if set oldValue with newValue instead of current value
-          })
-        }
+        dispatch('notifyFieldChange', {
+          isSendToServer: isSendToServer,
+          isSendCallout: isSendCallout,
+          parentUuid: parentUuid,
+          containerUuid: containerUuid,
+          columnName: actionField.columnName,
+          displayColumn: newValues['DisplayColumn_' + actionField.columnName],
+          newValue: newValues[actionField.columnName],
+          valueTo: newValues[actionField.columnName + '_To'],
+          fieldList: fieldList,
+          field: actionField,
+          withOutColumnNames: withOutColumnNames,
+          isChangedOldValue: true // defines if set oldValue with newValue instead of current value
+        })
       })
       if (isShowedField && Object.keys(newValues).length) {
         // join column names without duplicating it
@@ -886,6 +884,7 @@ const panel = {
     getParsedDefaultValues: (state, getters) => ({
       parentUuid,
       containerUuid,
+      isGetServer = true,
       fieldList = []
     }) => {
       if (!fieldList.length) {
@@ -898,7 +897,7 @@ const panel = {
           var valueToReturn
           var isSQL = false
           if (String(fieldItem.defaultValue).includes('@')) {
-            if (String(fieldItem.defaultValue).includes('@SQL=')) {
+            if (String(fieldItem.defaultValue).includes('@SQL=') && isGetServer) {
               isSQL = true
             }
             valueToReturn = parseContext({

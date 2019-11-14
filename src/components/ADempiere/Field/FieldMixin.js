@@ -12,8 +12,13 @@ export const fieldMixin = {
     }
   },
   data() {
+    // value render
+    let value = this.metadata.value
+    if (this.metadata.inTable) {
+      value = this.valueModel
+    }
     return {
-      value: this.metadata.value
+      value: value
     }
   },
   computed: {
@@ -33,6 +38,14 @@ export const fieldMixin = {
       if (this.metadata.isUpdateable) {
         this.$refs[this.metadata.columnName].focus()
       }
+    },
+    /**
+     * Overwrite component method if necessary
+     * validate values before send values to store or server
+     * @param {mixed} value
+     */
+    preHandleChange(value) {
+      this.handleChange(value)
     },
     handleChange(value, valueTo = undefined, label = undefined) {
       const sendParameters = {
