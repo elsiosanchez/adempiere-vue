@@ -4,7 +4,7 @@ export default {
     documentation: 'Documentation',
     guide: 'Guide',
     forgotPassword: 'Forgot Password?',
-    userEnrollment: 'User Enrollment',
+    userEnrollment: 'Check in',
     page401: '401',
     page404: '404',
     profile: 'Profile',
