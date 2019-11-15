@@ -30,7 +30,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      value: this.validateValue(this.metadata.displayColumn),
+      value: this.metadata.displayColumn,
       isLoading: false,
       baseNumber: 10,
       options: [{
@@ -49,10 +49,10 @@ export default {
     isPanelWindow() {
       return this.metadata.panelType === 'window'
     },
-    getterValue() {
+    getterValueSelec() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
       if (field) {
-        return this.validateValue(field.value)
+        return this.validateValue(field.displayColumn)
       }
       return undefined
     },
@@ -97,12 +97,21 @@ export default {
         this.value = this.metadata.value
         this.getDataLookupItem()
       } else {
-        this.value = this.validateValue(this.metadata.displayColumn)
+        if (this.isEmptyValue(this.metadata.displayColumn)) {
+          this.value = this.getterValueSelec
+        } else {
+          this.value = this.validateValue(this.metadata.displayColumn)
+        }
       }
     }
   },
   beforeMount() {
     this.options = this.getterLookupAll
+    if (this.isEmptyValue(this.metadata.displayColumn)) {
+      this.value = this.getterValueSelec
+    } else {
+      this.value = this.validateValue(this.metadata.displayColumn)
+    }
     // enable to dataTable records
     // Evaluate values of the displayColumn with empty string or number at 0
     if (!this.isEmptyValue(this.metadata.displayColumn)) {

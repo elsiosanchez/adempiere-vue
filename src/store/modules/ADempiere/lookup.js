@@ -50,7 +50,7 @@ const lookup = {
             parsedDirectQuery: directQuery,
             tableName: tableName,
             roleUuid: getCurrentRole(),
-            clientId: rootGetters.getContextClientId
+            clientId: parseInt(rootGetters.getContextClientId)
           })
           return option
         })
@@ -95,7 +95,7 @@ const lookup = {
             tableName: tableName,
             parsedQuery: parsedQuery,
             roleUuid: getCurrentRole(),
-            clientId: rootGetters.getContextClientId
+            clientId: parseInt(rootGetters.getContextClientId)
           })
           return options
         })
@@ -154,7 +154,7 @@ const lookup = {
         return itemLookup.parsedDirectQuery === parsedDirectQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
-          itemLookup.clientId === rootGetters.getContextClientId &&
+          itemLookup.clientId === parseInt(rootGetters.getContextClientId) &&
           itemLookup.value === params.value
       })
       if (lookupItem) {
@@ -175,7 +175,7 @@ const lookup = {
         return itemLookup.parsedQuery === parsedQuery &&
           itemLookup.tableName === params.tableName &&
           itemLookup.roleUuid === getCurrentRole() &&
-          itemLookup.clientId === rootGetters.getContextClientId
+          itemLookup.clientId === parseInt(rootGetters.getContextClientId)
       })
       if (lookupList) {
         const resultLookup = lookupList.list.filter(lookup => {
