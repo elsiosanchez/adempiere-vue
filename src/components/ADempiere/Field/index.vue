@@ -15,7 +15,7 @@
     :class="classField"
   >
     <el-popover
-      v-if="field.contextInfo.isActive"
+      v-if="field.contextInfo && field.contextInfo.isActive"
       ref="contextOptions"
       placement="top"
       :title="$t('components.contextFieldTitle')"

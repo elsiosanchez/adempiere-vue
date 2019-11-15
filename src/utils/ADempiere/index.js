@@ -467,11 +467,11 @@ export function convertRoleFromGRPC(roleGRPC) {
 export function convertContextInfoFromGRPC(contextInfoGRPC) {
   var contextInfo = {
     id: '',
-    // uuid: '',
+    uuid: '',
     name: '',
     description: '',
     sqlStatement: '',
-    isActive: '',
+    isActive: false,
     messageText: convertMessageTextFromGRPC(undefined)
   }
   if (contextInfoGRPC !== undefined) {
@@ -498,7 +498,7 @@ export function convertMessageTextFromGRPC(messageTextGRPC) {
     msgType: '',
     msgText: '',
     msgTip: '',
-    isActive: ''
+    isActive: false
   }
   if (messageTextGRPC !== undefined) {
     messageText = {
