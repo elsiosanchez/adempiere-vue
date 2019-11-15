@@ -30,7 +30,7 @@ export default {
   mixins: [fieldMixin],
   data() {
     return {
-      value: this.metadata.displayColumn,
+      value: this.metadata.value,
       isLoading: false,
       baseNumber: 10,
       options: [{
@@ -47,14 +47,24 @@ export default {
   },
   computed: {
     isPanelWindow() {
-      return this.metadata.panelType === 'window'
+      if (this.metadata.panelType === 'window' || this.metadata.panelType === 'table') {
+        return true
+      }
+      return false
     },
     getterValueSelec() {
       var field = this.$store.getters.getFieldFromColumnName(this.metadata.containerUuid, this.metadata.columnName)
-      if (field) {
-        return this.validateValue(field.displayColumn)
+      if (this.isPanelWindow) {
+        if (field) {
+          return this.validateValue(field.displayColumn)
+        }
+        return undefined
+      } else {
+        if (field) {
+          return this.validateValue(field.value)
+        }
+        return undefined
       }
-      return undefined
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -109,9 +119,34 @@ export default {
     this.options = this.getterLookupAll
     if (this.isEmptyValue(this.metadata.displayColumn)) {
       this.value = this.getterValueSelec
+    }
+    if (!this.isPanelWindow && !this.isEmptyValue(this.metadata.value)) {
+      // console.log(this.isPanelWindow)
+      // console.log(this.metadata.value)
+      this.getDataLookupItem()
+    }
+    if (this.isEmptyValue(this.metadata.displayColumn)) {
+      this.value = this.getterValueSelec
     } else {
       this.value = this.validateValue(this.metadata.displayColumn)
     }
+    // if (!this.isEmptyValue(this.metadata.value)) {
+    //   console.log(this.value)
+    //   if (!this.isEmptyValue(this.metadata.displayColumn)) {
+    //     // verify if exists to add
+    //     if (!this.findLabel(this.value)) {
+    //       this.options.push({
+    //         key: this.value,
+    //         label: this.metadata.displayColumn
+    //       })
+    //     }
+    //   } else {
+    //     console.log(this.value)
+    //     if ((this.isPanelWindow && this.metadata.optionCRUD === 'create-new') || (!this.isPanelWindow)) {
+    //       this.getDataLookupItem()
+    //     }
+    //   }
+    // }
     // enable to dataTable records
     // Evaluate values of the displayColumn with empty string or number at 0
     if (!this.isEmptyValue(this.metadata.displayColumn)) {
