@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/badge/element--ui-2.7.0-brightgreen.svg" alt="element-ui">
   </a>
   <a href="https://travis-ci.org/adempiere/adempiere-vue" rel="nofollow">
-    <img src="https://travis-ci.org/adempiere/adempiere=vue.svg?branch=develop-i18n" alt="Build Status">
+    <img src="https://travis-ci.org/adempiere/adempiere=vue.svg?branch=develop" alt="Build Status">
   </a>
   <a href="https://github.com/adempiere/adempiere-vue/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="license">
@@ -23,7 +23,7 @@
   </a>
 </p>
 
-English | [Español](./README.es.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
+English | [Spanish](./README.es.md)
 
 ## Introduction
 
@@ -54,13 +54,18 @@ It is a great UI for [ADempiere ERP, CRM & SCM](https://github.com/adempiere/ade
 You need to install [node](https://nodejs.org/) and [git](https://git-scm.com/) locally. The project is based on [ES2015+](https://es6.ruanyifeng.com/), [vue](https://cn.vuejs.org/index.html), [vuex](https://vuex.vuejs.org/zh-cn/), [vue-router](https://router.vuejs.org/zh-cn/), [vue-cli](https://github.com/vuejs/vue-cli) , [gRPC](https://grpc.io/) and [element-ui](https://github.com/ElemeFE/element).
 Understanding and learning this knowledge in advance will greatly help the use of this project.
 
- <p align="center">
+<p align="center">
   <img width="900" src="https://wpimg.wallstcn.com/a5894c1b-f6af-456e-82df-1151da0839bf.png">
 </p>
 
 ## Sponsors
 
-Become a sponsor and get your logo on our README on GitHub with a link to your site. [[Become a sponsor]](https://www.paypal.me/?)
+<a href="http://erpya.com/"><img width="250px" src="https://i0.wp.com/spin-suite.com/erpya/wp-content/uploads/sites/28/2017/11/ERP-logotipo-H-color.png" /></a>
+<a href="http://www.e-evolution.com/"><img width="250px" src="https://i0.wp.com/mysmart.business/evolution/wp-content/uploads/sites/29/2017/10/e-evolution-logo-v2.png?fit=150%2C92" /></a>
+<a href="http://westfalia-it.com/"><img width="150px" src="https://i1.wp.com/spin-suite.com/westfalia/wp-content/uploads/sites/30/2017/12/logo_copy.jpg?fit=265%2C357" /></a>
+<a href="http://erpya.com/"><img width="250px" src="https://i0.wp.com/spin-suite.com/openupsolutions/wp-content/uploads/sites/32/2017/05/Openup-Solutions-Logo-2017-80x200px.png" /></a>
+
+Become a sponsor and get your logo on our README on GitHub with a link to your site. [Become a sponsor](https://www.paypal.me/?)
 
 ## Features
 
@@ -119,6 +124,11 @@ Become a sponsor and get your logo on our README on GitHub with a link to your s
   - Dropzone
   - Sticky
   - CountTo
+- ADempiere supported
+  - Window
+  - Process
+  - Report
+  - Smart Browser
 
 - Advanced Example
 - Error Log
@@ -135,7 +145,7 @@ Use [gRPC ADempiere Server](https://github.com/erpcya/adempiere-gRPC-Server) as 
 
 ```bash
 # clone the project
-git clone -b develop-i18n git@github.com:adempiere/vue-element-admin.git
+git clone -b develop git@github.com:adempiere/vue-element-admin.git
 
 # enter the project directory
 cd adempiere-vue
@@ -202,3 +212,13 @@ Modern browsers and Internet Explorer 10+.
 ## License
 
 [GNU/GPL v3](https://github.com/adempiere/adempiere-vue/blob/master/LICENSE)
+
+## Previous License
+[MIT](./PREVIOUS-LICENSE)
+
+## Initial Contributors
+
+- [Yamel Senih](https://github.com/yamelsenih)
+- [Edwin Betancourt](https://github.com/EdwinBetanc0urt)
+- [Leonel Matos](https://github.com/leonel1524)
+- [Elsio Sanchez](https://github.com/elsiosanchez)
