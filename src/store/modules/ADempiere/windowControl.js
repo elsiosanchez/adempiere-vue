@@ -384,7 +384,13 @@ const windowControl = {
                   })
                 } else {
                   // else display first record of table in panel
-                  router.push({ name: oldRoute.name, query: { ...oldRoute.query, action: response[0].UUID }})
+                  router.push({
+                    name: oldRoute.name,
+                    query: {
+                      ...oldRoute.query,
+                      action: response[0].UUID
+                    }
+                  })
                 }
               })
             showMessage({

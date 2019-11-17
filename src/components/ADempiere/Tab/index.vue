@@ -54,7 +54,12 @@ export default {
     },
     currentTab(newValue, oldValue) {
       if (newValue !== oldValue) {
-        this.$router.push({ query: { ...this.$route.query, tabParent: String(newValue) }})
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            tabParent: String(newValue)
+          }
+        })
         this.$route.meta.tabUuid = this.tabUuid
       }
     }

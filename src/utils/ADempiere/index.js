@@ -652,7 +652,7 @@ export function parsedValueComponent({ fieldType, value, referenceType, isMandat
         value = undefined
       }
       if (referenceType === 'TableDirect') {
-        if ((value)) {
+        if (value !== '' && value !== null && value !== undefined) {
           value = Number(value)
         }
       } // Search or List

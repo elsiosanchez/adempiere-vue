@@ -40,7 +40,6 @@
                     :container-uuid="containerUuid"
                     :metadata-field="{
                       ...fieldAttributes,
-                      displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
                       optionCRUD: optionCRUD
                     }"
                     :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
@@ -98,7 +97,6 @@
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...fieldAttributes,
-                            displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
                             optionCRUD: optionCRUD
                           }"
                           :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
@@ -151,7 +149,6 @@
                           :container-uuid="containerUuid"
                           :metadata-field="{
                             ...fieldAttributes,
-                            displayColumn: dataRecords['DisplayColumn_' + fieldAttributes.columnName],
                             optionCRUD: optionCRUD
                           }"
                           :record-data-fields="isAdvancedQuery ? undefined : dataRecords[fieldAttributes.columnName]"
@@ -235,7 +232,8 @@ export default {
       firstGroup: {},
       groupsView: 0,
       tagTitle: {
-        base: this.$route.meta.title, action: ''
+        base: this.$route.meta.title,
+        action: ''
       }
     }
   },
@@ -299,12 +297,11 @@ export default {
         this.setTagsViewTitle(this.uuidRecord)
       }
     },
-
     '$route.query.action'(newValue, oldValue) {
       // used in field, if uuid record or different create-new, field is read only
       this.uuidRecord = newValue
 
-      if (newValue !== oldValue) {
+      if (newValue !== oldValue && this.isPanelWindow) {
         this.changePanelRecord(newValue)
       }
     },
@@ -336,7 +333,7 @@ export default {
         this.$store.dispatch('getPanelAndFields', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
-          type: this.isAdvancedQuery ? 'table' : this.panelType,
+          type: this.panelType,
           isAdvancedQuery: this.isAdvancedQuery
         }).then(() => {
           this.generatePanel(this.getterFieldList)

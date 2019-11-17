@@ -14,8 +14,8 @@
                 :container-uuid="containerUuid"
                 :parent-uuid="parentUuid"
                 :metadata="getterPanel"
-                :panel-type="'table'"
-                :is-advanced-query="true"
+                panel-type="table"
+                is-advanced-query
                 :class="!activeName ? 'collapse_item' : 'collapse_item_wrap'"
               />
             </el-collapse-item>
@@ -747,10 +747,12 @@ export default {
           // disabled rollback when change route
           this.$store.dispatch('setDataLog', {})
         }
-        this.$router.push({ query: {
-          ...this.$route.query,
-          action: row.UUID
-        }})
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            action: row.UUID
+          }
+        })
       } else {
         if (!row.isEdit) {
           row.isEdit = true
@@ -857,11 +859,21 @@ export default {
       this.isAdvancedQuery = value
       if (value) {
         this.$store.dispatch('setOldAction', this.$route.query.action)
-        this.$router.push({ query: { ...this.$route.query, action: 'advancedQuery' }})
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            action: 'advancedQuery'
+          }
+        })
       }
       if (!value) {
         var oldAction = this.$store.getters.getOldAction
-        this.$router.push({ query: { ...this.$route.query, action: oldAction }})
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            action: oldAction
+          }
+        })
       }
     }
   }

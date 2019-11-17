@@ -43,12 +43,12 @@ const panel = {
       payload.fieldList = payload.newFieldList
     },
     changeFieldValue(state, payload) {
+      payload.field.value = payload.newValue
+      payload.field.oldValue = payload.field.value
       if (payload.isChangedOldValue) {
         payload.field.oldValue = payload.newValue
-      } else {
-        payload.field.oldValue = payload.field.value
       }
-      payload.field.value = payload.newValue
+
       payload.field.valueTo = payload.valueTo
       payload.field.displayColumn = payload.displayColumn
     },
@@ -405,12 +405,17 @@ const panel = {
      * @param {string} params.containerUuid
      * @param {string} params.columnName
      * @param {string} params.newValue
+     * @param {string} displayColumn, only used for lookup
      * @param {string} params.panelType
      * @param {string} params.isSendToServer
      * @param {string} params.isAdvancedQuery
      */
     notifyFieldChange({ commit, dispatch, getters }, params) {
-      const { parentUuid, containerUuid, columnName, isSendToServer = true, isAdvancedQuery = false, panelType = 'window', withOutColumnNames = [], isSendCallout = true } = params
+      const {
+        parentUuid, containerUuid, columnName, displayColumn, isSendToServer = true,
+        isAdvancedQuery = false, panelType = 'window', withOutColumnNames = [],
+        isSendCallout = true
+      } = params
       const panel = getters.getPanel(containerUuid, isAdvancedQuery)
       var fieldList = panel.fieldList
       // get field
@@ -483,7 +488,7 @@ const panel = {
         field: field,
         newValue: params.newValue,
         valueTo: params.valueTo,
-        displayColumn: params.displayColumn,
+        displayColumn: displayColumn,
         isChangedOldValue: params.isChangedOldValue
       })
       //  Change Dependents
@@ -827,7 +832,7 @@ const panel = {
     },
     /**
      * @param {string}  containerUuid, unique identifier of the panel to search your list of fields
-     * @param {string}  propertyName, property name to return its value (value, oldValue and parsedDefaultValue)
+     * @param {string}  propertyName, property name to return its value (value, oldValue)
      * @param {boolean} isObjectReturn, define if is an object to return, else arraylist return
      * @param {boolean} isEvaluateValues, define if evaluate emty values
      * @param {boolean} isAddDisplayColumn, define if return display columns
@@ -929,8 +934,8 @@ const panel = {
 
       fieldList
         .map(fieldItem => {
-          var valueToReturn
-          var isSQL = false
+          let isSQL = false
+          let valueToReturn = fieldItem.parsedDefaultValue
           if (String(fieldItem.defaultValue).includes('@')) {
             if (String(fieldItem.defaultValue).includes('@SQL=') && isGetServer) {
               isSQL = true
@@ -942,9 +947,8 @@ const panel = {
               value: fieldItem.defaultValue,
               isSQL: isSQL
             })
-          } else {
-            valueToReturn = fieldItem.parsedDefaultValue
           }
+
           valueToReturn = parsedValueComponent({
             fieldType: fieldItem.componentPath,
             referenceType: fieldItem.referenceType,
@@ -952,6 +956,11 @@ const panel = {
             value: valueToReturn
           })
           attributesObject[fieldItem.columnName] = valueToReturn
+
+          // add display column to default
+          if (fieldItem.componentPath === 'FieldSelect' && fieldItem.value === valueToReturn) {
+            attributesObject['DisplayColumn_' + fieldItem.columnName] = fieldItem.displayColumn
+          }
 
           return {
             columnName: fieldItem.columnName,
