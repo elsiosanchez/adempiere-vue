@@ -9,7 +9,7 @@
   "adempiereStore": {
     "images": {
       "protocol": "http:",
-      "baseUrl": "//20.12.0.23:",
+      "baseUrl": "//0.0.0.0:",
       "port": 8085
     }
   },

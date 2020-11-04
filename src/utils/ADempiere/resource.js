@@ -57,7 +57,7 @@ export function getImagePath({
   operation = 'fit'
 }) {
   // TODO: Evaluate path url 'http://domain:port/adempiere-api', 'adempiere-api' is part of urn
-  const config = require('@/api/ADempiere/local.json')
+  const config = require('@/api/ADempiere/config.json')
   const url = config.adempiereStore.images.protocol + config.adempiereStore.images.baseUrl + config.adempiereStore.images.port + config.service
   const urn = `/img?action=${operation}&width=${width}&height=${height}&url=${file}`
   const uri = `${url}${urn}`

@@ -23,7 +23,7 @@ export function ApiRest({
     })
     return request.interceptors
   }
-  const config = require('@/api/ADempiere/local.json')
+  const config = require('@/api/ADempiere/config.json')
   const apiRestAddress = config.adempiereStore.images.protocol + config.adempiereStore.images.baseUrl + config.adempiereStore.images.port + config.service
   const axios = require('axios')
   const request = axios.create({
