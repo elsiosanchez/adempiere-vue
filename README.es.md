@@ -31,17 +31,17 @@ Español | [Inglés](./README.md)
 
 Este es una gran UI para [ADempiere ERP, CRM & SCM](https://github.com/adempiere/adempiere)] basada en lo último desarrollado por vue, construido con i18n para manejo multi-idioma, plantillas para aplicaciones de negocio y muchas características asombrosas. Este proyecto es derivado de [Vue-Element-Admin](https://github.com/PanJiaChen/vue-element-admin) originalmente escrito por [PanJiaChen / 花裤衩](https://github.com/PanJiaChen) sobre [licencia MIT](https://github.com/PanJiaChen/vue-element-admin/blob/master/LICENSE) y cambiado a [licencia GNU/GPL v3](https://github.com/adempiere/adempiere-vue/blob/master/LICENSE) por [Yamel Senih](https://github.com/yamelsenih) después de derivar el proyecto y con permisos del autor original [PanJiaChen / 花裤衩](https://github.com/PanJiaChen) en el reporte ["Extend as GNU/Gpl v3 License #1434"](https://github.com/PanJiaChen/vue-element-admin/issues/1434).
 
-[adempiere-vue](https://github.com/adempiere/adempiere-vue) usa como RPC (Llamado a Procedimientos Remostos)[gRPC](https://grpc.io/) como [server](https://github.com/erpcya/adempiere-gRPC-Server).
+[adempiere-vue](https://github.com/adempiere/adempiere-vue) usa como RPC (Llamado a Procedimientos Remostos)[gRPC](https://grpc.io/) como [server](https://github.com/adempiere/adempiere-gRPC-Server).
 
 - [Vista Prévia de la Aplicación](http://adempiere-ui.erpya.com:9526/)
 
-- [Documentación](https://panjiachen.github.io/vue-element-admin-site/)
+- [Documentación](https://adempiere.github.io/adempiere-vue-site/)
 
 - [Canal de Gitter](https://gitter.im/adempiere/adempiere-vue)
 
 - [Para Donaciones](https://www.paypal.me/YamelSenih)
 
-- [Enlace de Wiki](http://wiki.adempiere.net/ADempiere_ERP)
+- [Enlace de Wiki](http://wiki.adempiere.io/ADempiere_ERP)
 
 - [Derivado De](https://github.com/PanJiaChen/vue-element-admin)
 
@@ -60,9 +60,23 @@ Entendiendo y aprendiendo acerca de lo anterior le ayudará a conocer el proyect
   <img width="900" src="https://wpimg.wallstcn.com/a5894c1b-f6af-456e-82df-1151da0839bf.png">
 </p>
 
+### Para todo el entorno puede descargar las siguientes imágenes:
+- ADempiere gRPC: https://hub.docker.com/r/erpya/adempiere-grpc-all-in-one
+```shell
+docker pull erpya/adempiere-grpc-all-in-one
+```
+- Proxy ADempiere API: https://hub.docker.com/r/erpya/proxy-adempiere-api
+```shell
+docker pull erpya/proxy-adempiere-api
+```
+- ADempiere Vue: https://hub.docker.com/r/erpya/adempiere-vue
+```shell
+docker pull erpya/adempiere-vue
+```
+
 ## Patrocinantes
 
-<a href="http://erpya.com/"><img width="250px" src="https://i0.wp.com/spin-suite.com/erpya/wp-content/uploads/sites/28/2017/11/ERP-logotipo-H-color.png" /></a>
+<a href="http://erpya.com/"><img width="250px" src="https://erpya.com/wp-content/uploads/2017/11/ERP-logotipo-H-color.png" /></a>
 <a href="http://www.e-evolution.com/"><img width="250px" src="https://i0.wp.com/mysmart.business/evolution/wp-content/uploads/sites/29/2017/10/e-evolution-logo-v2.png?fit=150%2C92" /></a>
 <a href="http://westfalia-it.com/"><img width="150px" src="https://i1.wp.com/spin-suite.com/westfalia/wp-content/uploads/sites/30/2017/12/logo_copy.jpg?fit=265%2C357" /></a>
 <a href="http://erpya.com/"><img width="250px" src="https://i0.wp.com/spin-suite.com/openupsolutions/wp-content/uploads/sites/32/2017/05/Openup-Solutions-Logo-2017-80x200px.png" /></a>
@@ -148,7 +162,7 @@ Sea un patrocinante y coloque su logo en nuestro LEEME en GitHub con un enlace d
 
 ## Iniciando
 
-Use [gRPC ADempiere Server](https://github.com/erpcya/adempiere-gRPC-Server) como proveedor de gRPC.
+Use [gRPC ADempiere Server](https://github.com/adempiere/adempiere-gRPC-Server) como proveedor de gRPC.
 
 ```bash
 # clone el proyecto

@@ -31,17 +31,17 @@ English | [Spanish](./README.es.md)
 
 It is a great UI for [ADempiere ERP, CRM & SCM](https://github.com/adempiere/adempiere)] based on the newest development stack of vue, built-in i18n solution, typical templates for enterprise applications, lots of awesome features. This project was forked from [Vue-Element-Admin](https://github.com/PanJiaChen/vue-element-admin) originally write by [PanJiaChen / 花裤衩](https://github.com/PanJiaChen) over [MIT license](https://github.com/PanJiaChen/vue-element-admin/blob/master/LICENSE) and was changed to [GNU/GPL v3](https://github.com/adempiere/adempiere-vue/blob/master/LICENSE) by [Yamel Senih](https://github.com/yamelsenih) after forked granted by [PanJiaChen / 花裤衩](https://github.com/PanJiaChen) on issue ["Extend as GNU/Gpl v3 License #1434"](https://github.com/PanJiaChen/vue-element-admin/issues/1434).
 
-[adempiere-vue](https://github.com/adempiere/adempiere-vue) use the modern open source high performance RPC framework that can run in any environment [gRPC](https://grpc.io/) as [server](https://github.com/erpcya/adempiere-gRPC-Server).
+[adempiere-vue](https://github.com/adempiere/adempiere-vue) use the modern open source high performance RPC framework that can run in any environment [gRPC](https://grpc.io/) as [server](https://github.com/adempiere/adempiere-gRPC-Server).
 
 - [Preview](http://adempiere-ui.erpya.com:9526/)
 
-- [Documentation](https://panjiachen.github.io/vue-element-admin-site/)
+- [Documentation](https://adempiere.github.io/adempiere-vue-site/)
 
 - [Gitter](https://gitter.im/adempiere/adempiere-vue)
 
-- [Donate](https://www.paypal.me/?)
+- [Donate](https://www.paypal.me/YamelSenih)
 
-- [Wiki](http://wiki.adempiere.net/ADempiere_ERP)
+- [Wiki](http://wiki.adempiere.io/ADempiere_ERP)
 
 - [Forked From](https://github.com/PanJiaChen/vue-element-admin)
 
@@ -60,9 +60,23 @@ Understanding and learning this knowledge in advance will greatly help the use o
   <img width="900" src="https://wpimg.wallstcn.com/a5894c1b-f6af-456e-82df-1151da0839bf.png">
 </p>
 
+### For all enviroment you should run the follow images:
+- ADempiere gRPC: https://hub.docker.com/r/erpya/adempiere-grpc-all-in-one
+```shell
+docker pull erpya/adempiere-grpc-all-in-one
+```
+- Proxy ADempiere API: https://hub.docker.com/r/erpya/proxy-adempiere-api
+```shell
+docker pull erpya/proxy-adempiere-api
+```
+- ADempiere Vue: https://hub.docker.com/r/erpya/adempiere-vue
+```shell
+docker pull erpya/adempiere-vue
+```
+
 ## Sponsors
 
-<a href="http://erpya.com/"><img width="250px" src="https://i0.wp.com/spin-suite.com/erpya/wp-content/uploads/sites/28/2017/11/ERP-logotipo-H-color.png" /></a>
+<a href="http://erpya.com/"><img width="250px" src="https://erpya.com/wp-content/uploads/2017/11/ERP-logotipo-H-color.png" /></a>
 <a href="http://www.e-evolution.com/"><img width="250px" src="https://i0.wp.com/mysmart.business/evolution/wp-content/uploads/sites/29/2017/10/e-evolution-logo-v2.png?fit=150%2C92" /></a>
 <a href="http://westfalia-it.com/"><img width="150px" src="https://i1.wp.com/spin-suite.com/westfalia/wp-content/uploads/sites/30/2017/12/logo_copy.jpg?fit=265%2C357" /></a>
 <a href="http://openupsolutions.com/"><img width="250px" src="https://i0.wp.com/spin-suite.com/openupsolutions/wp-content/uploads/sites/32/2017/05/Openup-Solutions-Logo-2017-80x200px.png" /></a>
@@ -147,7 +161,7 @@ Become a sponsor and get your logo on our README on GitHub with a link to your s
 
 ## Getting started
 
-Use [gRPC ADempiere Server](https://github.com/erpcya/adempiere-gRPC-Server) as gRPC provider.
+Use [gRPC ADempiere Server](https://github.com/adempiere/adempiere-gRPC-Server) as gRPC provider.
 
 ```bash
 # clone the project
