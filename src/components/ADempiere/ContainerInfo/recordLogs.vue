@@ -26,7 +26,7 @@
               </div>
               <el-collapse-transition>
                 <div v-show="(currentKey === key)">
-                  <span v-for="(list, index) in listLogs.changeLogs" :key="index">
+                  <span v-for="(list, index) in listLogs.changeLogsList" :key="index">
                     <p v-if="list.columnName === 'DocStatus'">
                       <b> {{ list.displayColumnName }} :</b>
                       <strike>
@@ -70,8 +70,9 @@ export default {
   ],
   data() {
     return {
-      currentKey: 100,
-      typeAction: 0
+      currentKey: 0,
+      typeAction: 0,
+      epa: false
     }
   },
   computed: {
