@@ -8,7 +8,7 @@ import Layout from '@/layout'
 export function loadMainMenu({
   sessionUuid,
   clientId = 0,
-  organizationId = 0
+  organizationUuid = 0
 }) {
   return new Promise(resolve => {
     requestMenu({
@@ -20,7 +20,7 @@ export function loadMainMenu({
         const optionMenu = getRouteFromMenuItem({
           menu: menuElement,
           clientId,
-          organizationId
+          organizationUuid
         })
 
         if (optionMenu.meta.isSummary) {
@@ -29,7 +29,7 @@ export function loadMainMenu({
               menu,
               index: 0,
               clientId,
-              organizationId
+              organizationUuid
             })
             optionMenu.children.push(childsSumaryConverted)
             optionMenu.children[0].meta.childs.push(childsSumaryConverted)
@@ -40,7 +40,7 @@ export function loadMainMenu({
             menu: menuElement,
             index: undefined,
             clientId,
-            organizationId
+            organizationUuid
           })
 
           optionMenu.children.push(childsConverted)
@@ -61,14 +61,14 @@ export function loadMainMenu({
  * @param {object} menu
  * @param {number} index
  * @param {number} clientId
- * @param {number} organizationId
+ * @param {number} organizationUuid
  */
-function getChildFromAction({ menu, index, clientId, organizationId }) {
+function getChildFromAction({ menu, index, clientId, organizationUuid }) {
   const { component, icon, name, isIndex } = convertAction(menu.action)
   const routeIdentifier = name + '/' + menu.id
 
   const option = {
-    path: '/' + clientId + '/' + organizationId + '/' + routeIdentifier,
+    path: '/' + clientId + '/' + organizationUuid + '/' + routeIdentifier,
     component,
     name: menu.uuid,
     hidden: index > 0,
@@ -98,7 +98,7 @@ function getChildFromAction({ menu, index, clientId, organizationId }) {
         menu: child,
         index: 1,
         clientId,
-        organizationId
+        organizationUuid
       })
       option.children.push(menuConverted)
       option.meta.childs.push(menuConverted)
@@ -112,13 +112,13 @@ function getChildFromAction({ menu, index, clientId, organizationId }) {
  * Convert menu item from server to Route
  * @param {object} menu
  * @param {number} clientId
- * @param {number} organizationId
+ * @param {number} organizationUuid
  */
-function getRouteFromMenuItem({ menu, clientId, organizationId }) {
+function getRouteFromMenuItem({ menu, clientId, organizationUuid }) {
   const { component, icon, name, isIndex } = convertAction(menu.action)
 
   const optionMenu = {
-    path: '/' + clientId + '/' + organizationId + '/' + menu.id,
+    path: '/' + clientId + '/' + organizationUuid + '/' + menu.id,
     redirect: '/' + menu.id + '/index',
     component: Layout,
     name: menu.uuid,
