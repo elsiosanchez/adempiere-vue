@@ -71,8 +71,7 @@ export default {
   data() {
     return {
       currentKey: 0,
-      typeAction: 0,
-      epa: false
+      typeAction: 0
     }
   },
   computed: {
