@@ -58,7 +58,6 @@ export default {
   mixins: [MixinInfo],
   computed: {
     gettersListWorkflow() {
-      console.log(this.$store.getters.getNodeWorkflow)
       return this.$store.getters.getNodeWorkflow
     },
     getIsWorkflowLog() {
