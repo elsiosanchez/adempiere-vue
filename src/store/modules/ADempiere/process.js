@@ -330,6 +330,17 @@ const processControl = {
                       option: 'reportView'
                     }
                     reportViewList.childs = getters.getReportViewList(processResult.processUuid)
+                    dispatch('getReportViewsFromServer', {
+                      processUuid: processResult.processUuid,
+                      instanceUuid,
+                      processId: processDefinition.id,
+                      tableName: output.tableName,
+                      printFormatUuid: output.printFormatUuid,
+                      reportViewUuid: output.reportViewUuid
+                    })
+                      .then(responseReportView => {
+                        console.log(2, responseReportView)
+                      })
                     if (reportViewList && isEmptyValue(reportViewList.childs)) {
                       dispatch('getReportViewsFromServer', {
                         processUuid: processResult.processUuid,
