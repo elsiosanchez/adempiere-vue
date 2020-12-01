@@ -143,7 +143,6 @@ export default {
     listWithPrice() {
       const { productPricesList } = this.productPrice
       if (!this.isEmptyValue(productPricesList)) {
-        console.log(productPricesList)
         return productPricesList
       }
       return []
@@ -180,7 +179,6 @@ export default {
   methods: {
     formatPrice,
     srcImage(keyValue) {
-      console.log(keyValue)
       if (this.isEmptyValue(keyValue)) {
         return this.defaultImage
       }
@@ -196,7 +194,6 @@ export default {
       this.$refs.singleTable.setCurrentRow(row)
     },
     handleCurrentChange(val) {
-      console.log(this.currentRow)
       this.currentRow = val
       this.setCurrent(this.currentRow)
     },
