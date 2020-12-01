@@ -97,6 +97,22 @@ const staticRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/ProductInfo',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: '/ProductInfo',
+        component: () => import('@/views/ADempiere/Form'),
+        name: 'ProductInfo',
+        meta: {
+          title: 'ProductInfo',
+          isIndex: true
+        }
+      }
+    ]
   }
 ]
 
