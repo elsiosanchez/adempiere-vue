@@ -163,7 +163,7 @@ function hidenStactiRoutes({ staticRoutes, permiseRole }) {
     if (route.path === '/ProductInfo') {
       return {
         ...route,
-        hidden: !permiseRole.is_allow_info_product
+        hidden: !permiseRole.isAllowInfoProduct
       }
     }
     return {
