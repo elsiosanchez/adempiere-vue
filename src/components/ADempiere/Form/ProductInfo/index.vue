@@ -63,11 +63,11 @@ export default {
       }
     }
   },
-  beforeMount() {
-    if (this.isEmptyValue(this.currentPos)) {
-      this.$store.dispatch('listPointOfSalesFromServer')
-    }
-  },
+  // beforeMount() {
+  //   if (this.isEmptyValue(this.currentPos)) {
+  //     this.$store.dispatch('listPointOfSalesFromServer')
+  //   }
+  // },
   created() {
     if (this.isEmptyValue(this.currentPos)) {
       this.$store.dispatch('listPointOfSalesFromServer')
@@ -149,11 +149,11 @@ export default {
       })
     },
     findProcess(procces) {
-      if (this.isEmptyValue(this.currentPos)) {
-        procces.forEach(report => {
-          this.$store.dispatch('getProcessFromServer', { containerUuid: report.uuid })
-        })
-      }
+      // if (this.isEmptyValue(this.currentPos)) {
+      procces.forEach(report => {
+        this.$store.dispatch('getProcessFromServer', { containerUuid: report.uuid })
+      })
+      // }
     }
   }
 }
