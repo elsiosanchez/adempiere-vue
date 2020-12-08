@@ -15,7 +15,6 @@
         :metadata-field="field"
       />
     </el-form>
-
     <el-table
       ref="singleTable"
       v-loading="!productPrice.isLoaded"
@@ -30,6 +29,7 @@
       <el-table-column
         prop="product.value"
         :label="$t('form.productInfo.code')"
+        width="300"
       />
       <el-table-column
         :label="$t('form.productInfo.product')"
@@ -72,7 +72,6 @@
       <el-table-column
         :label="$t('form.productInfo.taxAmount')"
         align="right"
-        width="150"
       >
         <template slot-scope="scope">
           {{ formatPrice(getTaxAmount(scope.row.priceStandard, scope.row.taxRate.rate), scope.row.currency.iSOCode) }}
@@ -85,6 +84,28 @@
       >
         <template slot-scope="scope">
           {{ formatPrice(getTaxAmount(scope.row.priceStandard, scope.row.taxRate.rate) + scope.row.priceStandard, scope.row.currency.iSOCode) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label=""
+        width="120"
+      >
+        <template slot-scope="scope">
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">
+              {{ $t('form.pos.tableProduct.options') }}
+              <i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown" style="padding-bottom: 0px;">
+              <span v-show="!isEmptyValue(process)">
+                <el-dropdown-item v-for="(report, key) in process" :key="key" icon="el-icon-document">
+                  <span @click="associatedprocesses(scope.row.product.id, report)">
+                    {{ report.name }}
+                  </span>
+                </el-dropdown-item>
+              </span>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -127,6 +148,12 @@ export default {
     popoverName: {
       type: String,
       default: 'isShowPopoverField'
+    },
+    reportAsociated: {
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   data() {
@@ -135,7 +162,8 @@ export default {
       resource: {},
       fieldsList: fieldsListProductPrice,
       isCustomForm: true,
-      timeOut: null
+      timeOut: null,
+      indexTable: 0
     }
   },
   computed: {
@@ -160,13 +188,38 @@ export default {
     },
     shortsKey() {
       return {
-        closeProductList: ['esc'],
-        refreshList: ['enter']
+        options: ['enter'],
+        up: ['arrowup'],
+        down: ['arrowdown']
       }
     },
     isReadyFromGetData() {
       const { isLoaded, isReload } = this.productPrice
       return (!isLoaded || isReload) // && this.isShowProductsPriceList
+    },
+    listPrice() {
+      const pos = this.$store.getters.getCurrentPOS
+      if (!this.isEmptyValue(pos)) {
+        return pos.id
+      }
+      return 0
+    },
+    process() {
+      if (!this.isEmptyValue(this.reportAsociated)) {
+        const process = this.reportAsociated.map(element => {
+          const findProcess = this.$store.getters.getProcess(element.uuid)
+          if (!this.isEmptyValue(findProcess)) {
+            return {
+              ...element,
+              name: findProcess.name,
+              id: findProcess.id
+            }
+          }
+          return []
+        })
+        return process
+      }
+      return []
     }
   },
   watch: {
@@ -174,6 +227,9 @@ export default {
       if (isToLoad) {
         this.loadProductsPricesList()
       }
+    },
+    indexTable(value) {
+      this.setCurrent(this.listWithPrice[value])
     }
   },
   created() {
@@ -206,6 +262,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentRow = val
+      this.findPosition(val)
       this.setCurrent(this.currentRow)
     },
     keyAction(event) {
@@ -223,6 +280,16 @@ export default {
             attribute: this.popoverName,
             isShowed: false
           })
+          break
+        case 'down':
+          if (this.indexTable < (this.listWithPrice.length - 1)) {
+            this.indexTable++
+          }
+          break
+        case 'up':
+          if (this.indexTable > 0) {
+            this.indexTable--
+          }
           break
       }
     },
@@ -258,6 +325,38 @@ export default {
         return 0
       }
       return (basePrice * taxRate) / 100
+    },
+    associatedprocesses(product, report) {
+      const today = new Date()
+      let parametersList
+      switch (report.id) {
+        case 54451:
+          parametersList = [{ columnName: 'M_PriceList_ID', value: 1000013 }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
+          break
+        case 54467:
+          parametersList = [{ columnName: 'M_Product_ID', value: product }, { columnName: 'ValidFrom', value: today }]
+          break
+        case 54471:
+          parametersList = [{ columnName: 'M_PriceList_ID', value: 1000013 }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }, { columnName: 'MustBeStocked', value: false }]
+          break
+        case 54290:
+          parametersList = [{ columnName: 'M_PriceList_ID', value: 1000013 }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
+          break
+      }
+      this.$store.dispatch('processOption', {
+        action: report,
+        parametersList,
+        reportFormat: 'pdf',
+        routeToDelete: this.$route
+      })
+    },
+    findPosition(current) {
+      const epa = this.listWithPrice.findIndex(e => {
+        if (e.product.id === current.product.id) {
+          return e
+        }
+      })
+      this.indexTable = epa
     },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
