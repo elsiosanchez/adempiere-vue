@@ -25,13 +25,11 @@
           <el-col :span="size">
             <el-card shadow="hover">
               <el-popover
-                v-model="isShowOrdersList"
                 placement="right"
                 width="800"
                 trigger="click"
               >
                 <orders-list
-                  v-if="isShowOrdersList"
                   :parent-metadata="metadata"
                 />
                 <p
