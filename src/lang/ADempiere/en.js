@@ -345,7 +345,7 @@ export default {
           completePreparedOrder: 'Complete Prepared Order',
           cancelSaleTransaction: 'Cancel Sale Transaction',
           createPos: 'Create Point of Sale Withdrawal',
-          toPrint: 'To Print',
+          toPrint: 'Print Document',
           cancelOrder: 'Cancel Order'
         },
         cashManagement: {
