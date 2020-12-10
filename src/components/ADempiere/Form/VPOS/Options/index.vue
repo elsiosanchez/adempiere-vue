@@ -121,6 +121,18 @@
               </p>
             </el-card>
           </el-col>
+          <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
+                @click="deleteOrder"
+              >
+                <i class="el-icon-close" />
+                <br>
+                {{ $t('form.pos.optionsPoinSales.salesOrder.cancelOrder') }}
+              </p>
+            </el-card>
+          </el-col>
         </el-row>
       </el-collapse-item>
 
@@ -257,7 +269,8 @@ import {
   requestReverseSalesTransaction,
   requestCreateWithdrawal,
   requestCreateNewCustomerReturnOrder,
-  requestCashClosing
+  requestCashClosing,
+  requestDeleteOrder
 } from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
@@ -426,6 +439,12 @@ export default {
         posId,
         posUuid
       })
+    },
+    deleteOrder() {
+      requestDeleteOrder({
+        orderUuid: this.$route.query.action
+      })
+      this.newOrder()
     }
   }
 }
