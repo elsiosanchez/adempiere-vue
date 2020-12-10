@@ -104,7 +104,7 @@
               >
                 <i class="el-icon-printer" />
                 <br>
-                {{ $t('form.pos.optionsPoinSales.salesOrder.toPrint') }}
+                {{ $t('form.pos.optionsPoinSales.salesOrder.print') }}
               </p>
             </el-card>
           </el-col>

@@ -320,7 +320,7 @@ export default {
           completePreparedOrder: 'Completar Orden Preparada',
           cancelSaleTransaction: 'Anular Transacción de Venta',
           createPos: 'Crear Retiro de Punto de Venta',
-          toPrint: 'Imprimir',
+          print: 'Imprimir Documento',
           cancelOrder: 'Cancelar Orden'
         },
         cashManagement: {
