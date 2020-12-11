@@ -29,7 +29,6 @@
       <el-table-column
         prop="product.value"
         :label="$t('form.productInfo.code')"
-        width="300"
       />
       <el-table-column
         :label="$t('form.productInfo.product')"
@@ -54,7 +53,7 @@
       <el-table-column
         :label="$t('form.productInfo.quantityOnHand')"
         align="right"
-        width="200"
+        width="100"
       >
         <template slot-scope="scope">
           {{ formatQuantity(scope.row.quantityOnHand) }}
@@ -63,7 +62,6 @@
       <el-table-column
         :label="$t('form.productInfo.price')"
         align="right"
-        width="200"
       >
         <template slot-scope="scope">
           {{ formatPrice(scope.row.priceStandard, scope.row.currency.iSOCode) }}
@@ -72,6 +70,7 @@
       <el-table-column
         :label="$t('form.productInfo.taxAmount')"
         align="right"
+        width="200"
       >
         <template slot-scope="scope">
           {{ formatPrice(getTaxAmount(scope.row.priceStandard, scope.row.taxRate.rate), scope.row.currency.iSOCode) }}
@@ -200,7 +199,7 @@ export default {
     listPrice() {
       const pos = this.$store.getters.getCurrentPOS
       if (!this.isEmptyValue(pos)) {
-        return pos.id
+        return pos.priceList.id
       }
       return 0
     },
@@ -291,6 +290,9 @@ export default {
             this.indexTable--
           }
           break
+        case 'options':
+          this.$store.commit('setIsReloadProductPrice')
+          break
       }
     },
     loadProductsPricesList() {
@@ -331,16 +333,16 @@ export default {
       let parametersList
       switch (report.id) {
         case 54451:
-          parametersList = [{ columnName: 'M_PriceList_ID', value: 1000013 }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
+          parametersList = [{ columnName: 'M_PriceList_ID', value: this.listPrice }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
           break
         case 54467:
           parametersList = [{ columnName: 'M_Product_ID', value: product }, { columnName: 'ValidFrom', value: today }]
           break
         case 54471:
-          parametersList = [{ columnName: 'M_PriceList_ID', value: 1000013 }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }, { columnName: 'MustBeStocked', value: false }]
+          parametersList = [{ columnName: 'M_PriceList_ID', value: this.listPrice }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }, { columnName: 'MustBeStocked', value: false }]
           break
         case 54290:
-          parametersList = [{ columnName: 'M_PriceList_ID', value: 1000013 }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
+          parametersList = [{ columnName: 'M_PriceList_ID', value: this.listPrice }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
           break
       }
       this.$store.dispatch('processOption', {
@@ -369,7 +371,9 @@ export default {
           clearTimeout(this.timeOut)
           this.timeOut = setTimeout(() => {
             this.$store.dispatch('updateSearch', mutation.payload.value)
-            this.$store.commit('setIsReloadProductPrice')
+            if (this.productPrice.isLoaded) {
+              this.$store.commit('setIsReloadProductPrice')
+            }
           }, 1000)
         }
       })

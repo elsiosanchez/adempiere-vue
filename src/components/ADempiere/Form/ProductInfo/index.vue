@@ -69,10 +69,10 @@ export default {
   //   }
   // },
   created() {
-    if (this.isEmptyValue(this.currentPos)) {
-      this.$store.dispatch('listPointOfSalesFromServer')
-      this.findProcess(this.process)
-    }
+    // if (this.isEmptyValue(this.currentPos)) {
+    this.$store.dispatch('listPointOfSalesFromServer')
+    this.findProcess(this.process)
+    // }
   },
   methods: {
     formatPrice,
