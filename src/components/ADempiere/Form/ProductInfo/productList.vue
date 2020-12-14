@@ -329,25 +329,10 @@ export default {
       return (basePrice * taxRate) / 100
     },
     associatedprocesses(product, report) {
-      const today = new Date()
-      let parametersList
-      switch (report.id) {
-        case 54451:
-          parametersList = [{ columnName: 'M_PriceList_ID', value: this.listPrice }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
-          break
-        case 54467:
-          parametersList = [{ columnName: 'M_Product_ID', value: product }, { columnName: 'ValidFrom', value: today }]
-          break
-        case 54471:
-          parametersList = [{ columnName: 'M_PriceList_ID', value: this.listPrice }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }, { columnName: 'MustBeStocked', value: false }]
-          break
-        case 54290:
-          parametersList = [{ columnName: 'M_PriceList_ID', value: this.listPrice }, { columnName: 'ValidFrom', value: today }, { columnName: 'M_Product_ID', value: product }]
-          break
-      }
+      report.parametersList.push({ columnName: 'M_Product_ID', value: product }, { columnName: 'M_PriceList_ID', value: this.listPrice })
       this.$store.dispatch('processOption', {
         action: report,
-        parametersList,
+        parametersList: report.parametersList,
         reportFormat: 'pdf',
         routeToDelete: this.$route
       })
