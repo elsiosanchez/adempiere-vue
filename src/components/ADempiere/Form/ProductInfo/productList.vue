@@ -338,12 +338,12 @@ export default {
       })
     },
     findPosition(current) {
-      const epa = this.listWithPrice.findIndex(e => {
-        if (e.product.id === current.product.id) {
-          return e
+      const arrow = this.listWithPrice.findIndex(element => {
+        if (element.product.id === current.product.id) {
+          return element
         }
       })
-      this.indexTable = epa
+      this.indexTable = arrow
     },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
