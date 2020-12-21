@@ -30,7 +30,7 @@
 
     <el-form-item>
       <template slot="label">
-        Business Partner
+        {{ $t('form.pos.order.businessPartner') }}
         <i
           v-popover:businessPartnerCreate
           class="el-icon-circle-plus"

@@ -379,7 +379,8 @@ export default {
         itemQuantity: 'Item Quantity',
         numberLines: 'Number of Lines',
         pointSale: 'Point of Sale',
-        collect: 'Collect'
+        collect: 'Collect',
+        businessPartner: 'Business Partner'
       },
       collect: {
         orderTotal: 'Order Total',

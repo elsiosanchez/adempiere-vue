@@ -354,7 +354,8 @@ export default {
         itemQuantity: 'Cantidad de Árticulo',
         numberLines: 'Cantidad de Lineas',
         pointSale: 'Punto de Venta',
-        collect: 'Cobrar'
+        collect: 'Cobrar',
+        businessPartner: 'Socio de negocios'
       },
       collect: {
         orderTotal: 'Total de Orden',
