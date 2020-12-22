@@ -28,7 +28,6 @@
               type="danger"
               class="custom-button-create-bp"
               icon="el-icon-close"
-              :disabled="!emptyMandatoryFields"
               @click="clearValues"
             />
           </samp>
@@ -76,7 +75,7 @@ export default {
       const field = this.$store.getters.getFieldsListEmptyMandatory({
         containerUuid: this.containerUuid
       })
-      return this.isEmptyValue(field)
+      return field
     }
   },
   beforeDestroy() {
@@ -93,7 +92,7 @@ export default {
         return
       }
       values = this.convertValuesToSend(values)
-      if (this.emptyMandatoryFields) {
+      if (this.isEmptyValue(this.emptyMandatoryFields)) {
         this.isLoadingRecord = true
         requestCreateBusinessPartner(values)
           .then(responseBPartner => {
@@ -102,7 +101,7 @@ export default {
             this.clearValues()
             this.$message({
               type: 'success',
-              message: 'Socio de negocio creado exitosamente',
+              message: this.$t('form.pos.order.BusinessPartnerCreate.businessPartner'),
               duration: 1500,
               showClose: true
             })
@@ -120,6 +119,13 @@ export default {
           .finally(() => {
             this.isLoadingRecord = false
           })
+      } else {
+        this.$message({
+          type: 'warn',
+          message: this.$t('notifications.mandatoryFieldMissing') + this.emptyMandatoryFields,
+          duration: 1500,
+          showClose: true
+        })
       }
     },
     clearValues() {

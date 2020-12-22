@@ -380,7 +380,10 @@ export default {
         numberLines: 'Number of Lines',
         pointSale: 'Point of Sale',
         collect: 'Collect',
-        businessPartner: 'Business Partner'
+        BusinessPartnerCreate: {
+          businessPartner: 'Business Partner',
+          successfullyCreated: 'Successful Business Partner'
+        }
       },
       collect: {
         orderTotal: 'Order Total',

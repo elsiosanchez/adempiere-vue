@@ -355,7 +355,10 @@ export default {
         numberLines: 'Cantidad de Lineas',
         pointSale: 'Punto de Venta',
         collect: 'Cobrar',
-        businessPartner: 'Socio de negocios'
+        BusinessPartnerCreate: {
+          businessPartner: 'Socio de Negocios',
+          successfullyCreated: 'Socio de Negocio Creado Exitosamente'
+        }
       },
       collect: {
         orderTotal: 'Total de Orden',
