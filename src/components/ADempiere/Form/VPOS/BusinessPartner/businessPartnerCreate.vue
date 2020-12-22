@@ -28,6 +28,7 @@
               type="danger"
               class="custom-button-create-bp"
               icon="el-icon-close"
+              :disabled="!emptyMandatoryFields"
               @click="clearValues"
             />
           </samp>
