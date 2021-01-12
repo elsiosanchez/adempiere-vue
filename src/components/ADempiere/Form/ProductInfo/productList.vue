@@ -190,7 +190,6 @@ export default {
     listWithPrice() {
       const { productPricesList } = this.productPrice
       if (!this.isEmptyValue(productPricesList)) {
-        console.log(productPricesList)
         return productPricesList
       }
       return []
