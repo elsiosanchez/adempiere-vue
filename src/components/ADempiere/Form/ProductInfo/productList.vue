@@ -65,7 +65,7 @@
         width="100"
       >
         <template slot-scope="scope">
-          {{ scope.row.quantityAvailable }}
+          {{ formatQuantity(scope.row.quantityAvailable) }}
         </template>
       </el-table-column>
       <el-table-column
