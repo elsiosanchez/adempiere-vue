@@ -60,6 +60,15 @@
         </template>
       </el-table-column>
       <el-table-column
+        :label="$t('form.productInfo.quantityAvailable')"
+        align="right"
+        width="100"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.quantityAvailable }}
+        </template>
+      </el-table-column>
+      <el-table-column
         :label="$t('form.productInfo.price')"
         align="right"
       >
@@ -87,7 +96,7 @@
       </el-table-column>
       <el-table-column
         label=""
-        width="120"
+        width="100"
       >
         <template slot-scope="scope">
           <el-dropdown trigger="click">
@@ -181,6 +190,7 @@ export default {
     listWithPrice() {
       const { productPricesList } = this.productPrice
       if (!this.isEmptyValue(productPricesList)) {
+        console.log(productPricesList)
         return productPricesList
       }
       return []
