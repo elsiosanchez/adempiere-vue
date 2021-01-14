@@ -390,7 +390,8 @@ export default {
         pending: 'Pending',
         payment: 'Payment',
         change: 'Change',
-        convertAmount: 'Convert Quantity'
+        convertAmount: 'Convert Quantity',
+        completeCopper: 'Complete Copper'
       },
       keyLayout: {
         noProducto: 'No product available. Back to top'

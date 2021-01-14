@@ -365,7 +365,8 @@ export default {
         pending: 'Pendiente',
         payment: 'Pago',
         change: 'Cambio',
-        convertAmount: 'Convertir Cantidad'
+        convertAmount: 'Convertir Cantidad',
+        completeCopper: 'Cobre Completo'
       },
       keyLayout: {
         noProducto: 'No hay producto disponible Regresar al Principio'

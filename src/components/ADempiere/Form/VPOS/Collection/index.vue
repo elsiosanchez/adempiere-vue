@@ -63,8 +63,19 @@
             </div>
           </el-card>
           <samp style="float: right;padding-right: 10px;">
+            <el-checkbox v-show="fullCopper" v-model="checked">
+              <el-link
+                type="danger"
+                class="styleCompleteCopper"
+              >
+                <b>
+                  {{ $t('form.pos.collect.completeCopper') }}
+                </b>
+              </el-link>
+            </el-checkbox>
             <el-button type="danger" icon="el-icon-close" @click="cancel" />
-            <el-button type="primary" :disabled="isValidForPay || validateConvertion" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
+            <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
+            <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />
           </samp>
         </el-header>
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
@@ -211,6 +222,7 @@ export default {
   data() {
     return {
       isCustomForm: true,
+      checked: false,
       currencyConversion: 1,
       convertAllPayment: 1,
       allPayCurrency: 0,
@@ -218,8 +230,34 @@ export default {
     }
   },
   computed: {
+    validateCompleteCollection() {
+      if (this.order.grandTotal === this.pay) {
+        return false
+      } else if (this.isCashAmt >= this.change) {
+        return false
+      } else if (this.pay >= this.order.grandTotal && this.checked) {
+        return false
+      }
+      return true
+    },
+    fullCopper() {
+      if ((this.change > this.isCashAmt) && this.pay > this.order.grandTotal) {
+        return true
+      }
+      return false
+    },
     isPaymentBox() {
       return this.$store.getters.getPaymentBox
+    },
+    addPay() {
+      const amount = this.$store.getters.getValueOfField({
+        containerUuid: this.containerUuid,
+        columnName: 'PayAmt'
+      })
+      if (amount <= 0) {
+        return true
+      }
+      return false
     },
     paymentBox() {
       const payment = this.isPaymentBox.filter(pay => {
@@ -253,7 +291,7 @@ export default {
         }
         return false
       }
-      const cash = this.pending === 0 ? true : this.isMandatory
+      const cash = this.isMandatory
       return cash
     },
     turned() {
@@ -325,6 +363,14 @@ export default {
       }
       return true
     },
+    validPay() {
+      const containerUuid = this.containerUuid
+      const fieldsEmpty = this.$store.getters.getFieldsListEmptyMandatory({
+        containerUuid,
+        fieldsList: this.fieldsList
+      })
+      return !this.isEmptyValue(fieldsEmpty)
+    },
     change() {
       const missing = this.pay - this.order.grandTotal
       if (this.pay > 0 && this.pay > this.order.grandTotal) {
@@ -392,20 +438,19 @@ export default {
         return false
       }
       return true
+    },
+    fieldpending() {
+      return this.pending * this.multiplyRate
     }
-    // fieldpending() {
-    //   return this.pending / this.divideRate
-    // }
-
   },
   watch: {
-    // fieldpending(value) {
-    //   this.$store.commit('updateValueOfField', {
-    //     containerUuid: this.containerUuid,
-    //     columnName: 'PayAmt',
-    //     value: value
-    //   })
-    // },
+    fieldpending(value) {
+      this.$store.commit('updateValueOfField', {
+        containerUuid: this.containerUuid,
+        columnName: 'PayAmt',
+        value: value
+      })
+    },
     pending(value) {
       this.$store.commit('updateValueOfField', {
         containerUuid: this.containerUuid,
@@ -418,9 +463,17 @@ export default {
         this.$store.dispatch('conversionDivideRate', {
           conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
-          currencyToUuid: value,
-          conversionDate: this.currentOrder.dateOrdered
+          currencyToUuid: value
         })
+      }
+      if (!this.isEmptyValue(value)) {
+        this.$store.dispatch('conversionMultiplyRate', {
+          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          currencyFromUuid: this.currencyPoint.uuid,
+          currencyToUuid: value
+        })
+      } else {
+        this.$store.commit('currencyMultiplyRate', 1)
       }
     },
     convertAllPayment(value) {
@@ -434,8 +487,7 @@ export default {
         this.$store.dispatch('conversionMultiplyRate', {
           conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
-          currencyToUuid: value,
-          conversionDate: this.currentOrder.dateOrdered
+          currencyToUuid: value
         })
       } else {
         this.$store.commit('currencyMultiplyRate', 1)
@@ -574,6 +626,7 @@ export default {
       })
       this.defaultValueCurrency()
       this.$store.dispatch('conversionDivideRate', 1)
+      this.$store.commit('currencyMultiplyRate', 1)
     },
     cancel() {
       this.fieldsList.forEach(element => {
@@ -600,6 +653,7 @@ export default {
       })
       this.defaultValueCurrency()
       this.$store.dispatch('conversionDivideRate', 1)
+      this.$store.commit('currencyMultiplyRate', 1)
     },
     getPriceApplyingDiscount(price, discount) {
       if (this.isEmptyValue(price)) {
@@ -645,6 +699,10 @@ export default {
 </script>
 
 <style scoped>
+  .styleCompleteCopper {
+    font-size: 15px;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif
+  }
   .el-button--text {
     border-color: transparent;
     color: #1890ff;

@@ -1,3 +1,4 @@
+import { isEmptyValue } from '../valueUtils'
 
 export function convertContextInfo(contextInfoToConvert) {
   if (contextInfoToConvert) {
@@ -154,6 +155,23 @@ export function convertBusinessPartner(businessPartnerToConvert) {
 
 export function convertConversionRate(conversionRateToConvert) {
   const { id, uuid } = conversionRateToConvert
+  if (isEmptyValue(conversionRateToConvert.currency_from) && isEmptyValue(conversionRateToConvert.currency_from)) {
+    return {
+      uuid,
+      id,
+      conversionTypeUuid: conversionRateToConvert.conversion_type_uuid,
+      validFrom: conversionRateToConvert.valid_from,
+      validTo: conversionRateToConvert.valid_to,
+      // currencyFrom: convertCurrency(
+      //   conversionRateToConvert.currency_from
+      // ),
+      // currencyTo: convertCurrency(
+      //   conversionRateToConvert.currency_to
+      // ),
+      multiplyRate: conversionRateToConvert.multiply_rate,
+      divideRate: conversionRateToConvert.divide_rate
+    }
+  }
   return {
     uuid,
     id,

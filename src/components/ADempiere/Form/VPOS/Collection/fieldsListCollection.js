@@ -24,7 +24,7 @@ export default [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       isActiveLogics: true,
       isMandatory: true
     }
@@ -39,7 +39,7 @@ export default [
       handleActionPerformed: true,
       handleContentSelection: true,
       displayLogic: `@TenderType@=='D'`,
-      size: 8,
+      size: 24,
       isActiveLogics: true,
       isMandatory: true
     }
@@ -52,7 +52,7 @@ export default [
     overwriteDefinition: {
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: `@TenderType@=='K'`,
       isActiveLogics: true,
       isMandatory: true
@@ -64,7 +64,7 @@ export default [
     columnName: 'C_Currency_ID',
     isFromDictionary: true,
     overwriteDefinition: {
-      size: 8,
+      size: 24,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       validationCode: 'C_Currency.C_Currency_ID = 100',
@@ -82,7 +82,7 @@ export default [
       handleContentSelection: true,
       handleActionPerformed: true,
       displayLogic: `@TenderType@<>'X'&@TenderType@<>'C' `,
-      size: 8,
+      size: 24,
       isActiveLogics: true,
       isMandatory: true
     }
@@ -97,7 +97,7 @@ export default [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: `@TenderType@=='C'`,
       isActiveLogics: true,
       isMandatory: true
@@ -112,7 +112,7 @@ export default [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: `@TenderType@=='C'`,
       isActiveLogics: true,
       isMandatory: true
@@ -127,7 +127,7 @@ export default [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: `@TenderType@=='M'`,
       isActiveLogics: true,
       isMandatory: true
