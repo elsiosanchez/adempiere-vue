@@ -366,7 +366,18 @@ export default {
         payment: 'Pago',
         change: 'Cambio',
         convertAmount: 'Convertir Cantidad',
-        completeCopper: 'Cobre Completo'
+        completeCopper: 'Cobre Completo',
+        TenderType: {
+          directDeposit: 'Depósito Directo',
+          creditCard: 'Tarjeta de Crédito',
+          directDebit: 'Débito Directo',
+          check: 'Cheque',
+          creditNote: 'Nota de crédito',
+          mobilePayment: 'Pago Móvil Interbancario',
+          account: 'Cuenta',
+          cash: 'Efectivo',
+          zelle: 'Zelle'
+        }
       },
       keyLayout: {
         noProducto: 'No hay producto disponible Regresar al Principio'

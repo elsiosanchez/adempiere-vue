@@ -391,7 +391,18 @@ export default {
         payment: 'Payment',
         change: 'Change',
         convertAmount: 'Convert Quantity',
-        completeCopper: 'Complete Copper'
+        completeCopper: 'Cobre Completo',
+        TenderType: {
+          directDeposit: 'Direct Deposit',
+          creditCard: 'Credit Card',
+          directDebit: 'Direct Debit',
+          check: 'Check',
+          creditNote: 'Credit Note',
+          mobilePayment: 'Interbank mobile payment',
+          account: 'Account',
+          cash: 'Cash',
+          zelle: 'Zelle'
+        }
       },
       keyLayout: {
         noProducto: 'No product available. Back to top'

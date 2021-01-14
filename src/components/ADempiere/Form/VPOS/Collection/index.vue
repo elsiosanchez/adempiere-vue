@@ -524,31 +524,31 @@ export default {
       let label
       switch (type) {
         case 'A':
-          label = 'Depósito directo'
+          label = this.$t('form.pos.collect.directDeposit')
           break
         case 'C':
-          label = 'Tarjeta de crédito'
+          label = this.$t('form.pos.collect.creditCard')
           break
         case 'D':
-          label = 'Débito directo'
+          label = this.$t('form.pos.collect.directDebit')
           break
         case 'K':
-          label = 'Cheque'
+          label = this.$t('form.pos.collect.check')
           break
         case 'M':
-          label = 'Nota de crédito'
+          label = this.$t('form.pos.collect.creditNote')
           break
         case 'P':
-          label = 'Pago móvil interbancario'
+          label = this.$t('form.pos.collect.mobilePayment')
           break
         case 'T':
-          label = 'Cuenta'
+          label = this.$t('form.pos.collect.account')
           break
         case 'X':
-          label = 'Efectivo'
+          label = this.$t('form.pos.collect.cash')
           break
         case 'Z':
-          label = 'Zelle'
+          label = this.$t('form.pos.collect.zelle')
           break
       }
       return label
