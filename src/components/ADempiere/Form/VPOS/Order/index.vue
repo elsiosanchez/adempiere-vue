@@ -48,7 +48,6 @@
       <el-main style="background: white; padding: 0px; height: 100% !important; overflow: hidden">
         <el-container style="background: white; padding: 0px; height: 100% !important;">
           <el-main style="padding-top: 0px; padding-right: 10px; padding-bottom: 0px; padding-left: 10px;">
-            {{ visible }}
             <el-table
               ref="linesTable"
               v-shortkey="shortsKey"
