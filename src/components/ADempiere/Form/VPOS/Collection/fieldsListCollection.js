@@ -64,11 +64,11 @@ export default [
   // Currency
   {
     tableName: 'C_Order',
-    elementColumnName: 'C_Currency_ID',
     columnName: 'C_Currency_ID',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      name: 'Moneda',
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       validationCode: 'C_Currency.C_Currency_ID = 100',
