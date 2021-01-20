@@ -48,6 +48,7 @@
       <el-main style="background: white; padding: 0px; height: 100% !important; overflow: hidden">
         <el-container style="background: white; padding: 0px; height: 100% !important;">
           <el-main style="padding-top: 0px; padding-right: 10px; padding-bottom: 0px; padding-left: 10px;">
+            {{ visible }}
             <el-table
               ref="linesTable"
               v-shortkey="shortsKey"
@@ -242,18 +243,31 @@
                 </b>
                 <b style="float: right;">
                   <el-popover
+                    :v-model="visible"
                     placement="top-start"
-                    trigger="click"
                   >
                     <convert-amount
+                      v-show="visible"
                       :convert="multiplyRate"
                       :amount="order.grandTotal"
                       :currency="currencyPoint"
                     />
-                    <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
+                    <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="visible = !visible">
                       {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
                     </el-button>
                   </el-popover>
+                  <!-- <transition name="el-zoom-in-bottom">
+                    <div v-show="visible" class="transition-box">
+                      <convert-amount
+                        :convert="multiplyRate"
+                        :amount="order.grandTotal"
+                        :currency="currencyPoint"
+                      />
+                    </div>
+                  </transition>
+                  <el-button type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="visible = !visible">
+                    {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
+                  </el-button> -->
                   <!-- {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }} -->
                 </b>
               </p>
@@ -326,18 +340,19 @@ export default {
   ],
   data() {
     return {
-      fieldsList: fieldsListOrder
+      fieldsList: fieldsListOrder,
+      visible: false
     }
   },
   computed: {
     shortsKey() {
       return {
-        options: ['enter'],
-        up: ['arrowup'],
-        down: ['arrowdown'],
-        epale: ['ctrl', 'x'],
-        plus: ['+'],
-        minus: ['-']
+        // options: ['enter'],
+        // up: ['arrowup'],
+        // down: ['arrowdown'],
+        popoverConvet: ['ctrl', 'x']
+        // plus: ['+'],
+        // minus: ['-']
       }
     },
     isShowedPOSKeyLayout: {
@@ -496,6 +511,11 @@ export default {
 
         this.$store.dispatch('listOrderLine', [])
       })
+    },
+    open() {
+      if (!this.visible) {
+        this.visible = true
+      }
     }
   }
 }
@@ -648,5 +668,12 @@ export default {
   .order-info {
     float: right;
     padding-left: 9px;
+  }
+  .transition-box {
+    z-index: 1;
+    width: auto;
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
   }
 </style>

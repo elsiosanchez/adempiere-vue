@@ -4,6 +4,7 @@ export default [
   // Amont
   {
     tableName,
+    elementColumnName: 'PayAmt',
     columnName: 'PayAmt',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -17,6 +18,7 @@ export default [
   // TenderType
   {
     tableName,
+    elementColumnName: 'TenderType',
     columnName: 'TenderType',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -32,6 +34,7 @@ export default [
   // Bank
   {
     tableName,
+    elementColumnName: 'C_Bank_ID',
     columnName: 'C_Bank_ID',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -61,6 +64,7 @@ export default [
   // Currency
   {
     tableName: 'C_Order',
+    elementColumnName: 'C_Currency_ID',
     columnName: 'C_Currency_ID',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -75,6 +79,7 @@ export default [
   // ReferenceNo
   {
     tableName: 'HR_Attribute',
+    elementColumnName: 'ReferenceNo',
     columnName: 'ReferenceNo',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -90,6 +95,7 @@ export default [
   // type credit card
   {
     tableName,
+    elementColumnName: 'creditcardtype',
     columnName: 'creditcardtype',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -106,6 +112,7 @@ export default [
   // number credit card
   {
     tableName,
+    elementColumnName: 'creditcardnumber',
     columnName: 'creditcardnumber',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -121,6 +128,7 @@ export default [
   // accountno
   {
     tableName,
+    elementColumnName: 'accountno',
     columnName: 'accountno',
     isFromDictionary: true,
     overwriteDefinition: {

@@ -163,7 +163,6 @@ export default {
       return false
     },
     arrowTop() {
-      console.log(this.containerUuid)
       if (this.currentTable > 0) {
         this.currentTable--
         this.$refs.linesTable.setCurrentRow(this.listOrderLine[this.currentTable])
@@ -450,10 +449,14 @@ export default {
       this.$refs.linesTable.setCurrentRow(this.listOrderLine[0])
     },
     shortcutKeyMethod(event) {
+      console.log(event.srcKey)
       switch (event.srcKey) {
         // case 'options':
         case 'up':
           this.arrowTop()
+          break
+        case 'popoverConvet':
+          this.visible = !this.visible
           break
         case 'down':
           this.arrowBottom()
@@ -461,7 +464,7 @@ export default {
         case 'plus':
           requestUpdateOrderLine({
             orderLineUuid: this.currentOrderLine.uuid,
-            quantity: this.listOrderLine[this.currentTable].quantity++
+            quantity: this.listOrderLine[this.currentTable].quantity + 1
           })
             .then(response => {
               this.fillOrderLine(response)
@@ -480,7 +483,7 @@ export default {
         case 'minus':
           requestUpdateOrderLine({
             orderLineUuid: this.currentOrderLine.uuid,
-            quantity: this.listOrderLine[this.currentTable].quantity--
+            quantity: this.listOrderLine[this.currentTable].quantity - 1
           })
             .then(response => {
               this.fillOrderLine(response)
