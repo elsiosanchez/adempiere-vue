@@ -2,7 +2,8 @@ import {
   findProduct,
   requestCreateOrder,
   requestGetOrder,
-  requestUpdateOrder
+  requestUpdateOrder,
+  requestUpdateOrderLine
 } from '@/api/ADempiere/form/point-of-sales.js'
 import {
   formatDate,
@@ -162,6 +163,7 @@ export default {
       return false
     },
     arrowTop() {
+      console.log(this.containerUuid)
       if (this.currentTable > 0) {
         this.currentTable--
         this.$refs.linesTable.setCurrentRow(this.listOrderLine[this.currentTable])
@@ -440,6 +442,60 @@ export default {
           }
         }
       })
+    },
+    mas() {
+      this.$refs.linesTable.setCurrentRow(this.listOrderLine[1])
+    },
+    menos() {
+      this.$refs.linesTable.setCurrentRow(this.listOrderLine[0])
+    },
+    shortcutKeyMethod(event) {
+      switch (event.srcKey) {
+        // case 'options':
+        case 'up':
+          this.arrowTop()
+          break
+        case 'down':
+          this.arrowBottom()
+          break
+        case 'plus':
+          requestUpdateOrderLine({
+            orderLineUuid: this.currentOrderLine.uuid,
+            quantity: this.listOrderLine[this.currentTable].quantity++
+          })
+            .then(response => {
+              this.fillOrderLine(response)
+              this.reloadOrder(true)
+            })
+            .catch(error => {
+              console.error(error.message)
+              this.$message({
+                type: 'error',
+                message: error.message,
+                showClose: true
+              })
+            })
+
+          break
+        case 'minus':
+          requestUpdateOrderLine({
+            orderLineUuid: this.currentOrderLine.uuid,
+            quantity: this.listOrderLine[this.currentTable].quantity--
+          })
+            .then(response => {
+              this.fillOrderLine(response)
+              this.reloadOrder(true)
+            })
+            .catch(error => {
+              console.error(error.message)
+              this.$message({
+                type: 'error',
+                message: error.message,
+                showClose: true
+              })
+            })
+          break
+      }
     }
   }
 }

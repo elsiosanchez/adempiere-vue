@@ -50,12 +50,14 @@
           <el-main style="padding-top: 0px; padding-right: 10px; padding-bottom: 0px; padding-left: 10px;">
             <el-table
               ref="linesTable"
+              v-shortkey="shortsKey"
               :data="allOrderLines"
               border
               style="width: 100%; max-width: 100%; background-color: #FFFFFF; font-size: 14px; overflow: auto; color: #606266;"
               highlight-current-row
               fit
               @current-change="handleCurrentLineChange"
+              @shortkey.native="shortcutKeyMethod"
             >
               <el-table-column
                 v-for="(valueOrder, item, key) in orderLineDefinition"
@@ -328,6 +330,16 @@ export default {
     }
   },
   computed: {
+    shortsKey() {
+      return {
+        options: ['enter'],
+        up: ['arrowup'],
+        down: ['arrowdown'],
+        epale: ['ctrl', 'x'],
+        plus: ['+'],
+        minus: ['-']
+      }
+    },
     isShowedPOSKeyLayout: {
       get() {
         return this.$store.getters.getShowPOSKeyLayout

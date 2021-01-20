@@ -89,6 +89,7 @@ export default {
       }
     },
     updateOrderLine(line) {
+      console.log(line)
       let {
         currentPrice: price,
         discount: discountRate,
@@ -106,6 +107,7 @@ export default {
           discountRate = line.value
           break
       }
+      console.log(this.currentOrderLine)
 
       requestUpdateOrderLine({
         orderLineUuid: this.currentOrderLine.uuid,
