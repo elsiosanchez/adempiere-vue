@@ -10,7 +10,7 @@
     </el-collapse-transition>
     <el-form-item>
       <template slot="label">
-        Código Producto
+        {{ $t('form.productInfo.codeProduct') }}
         <!-- Ver Lista de Productos Y Precios -->
         <el-button
           v-popover:productsList

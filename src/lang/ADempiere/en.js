@@ -382,7 +382,8 @@ export default {
         collect: 'Collect',
         BusinessPartnerCreate: {
           businessPartner: 'Business Partner',
-          successfullyCreated: 'Successful Business Partner'
+          successfullyCreated: 'Socio de Negocio Creado Exitosamente',
+          taxId: 'Tax Identification'
         }
       },
       collect: {
@@ -414,9 +415,12 @@ export default {
     },
     productInfo: {
       product: 'Product',
+      codeProduct: 'Códe Product',
       productInformation: 'Product information',
       code: 'Code',
       name: 'Name',
+      lastName: 'Nombre2',
+      id: 'ID',
       description: 'Description',
       price: 'Price',
       quantityOnHand: 'Quantity On Hand',

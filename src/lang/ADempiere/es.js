@@ -345,7 +345,7 @@ export default {
       order: {
         order: 'Orden',
         seller: 'Vendedor',
-        date: 'Date',
+        date: 'Fecha',
         subTotal: 'Sub-Total',
         type: 'Tipo',
         discount: 'Descuento',
@@ -357,7 +357,8 @@ export default {
         collect: 'Cobrar',
         BusinessPartnerCreate: {
           businessPartner: 'Socio de Negocios',
-          successfullyCreated: 'Socio de Negocio Creado Exitosamente'
+          successfullyCreated: 'Socio de Negocio Creado Exitosamente',
+          taxId: 'Identificación Fiscal'
         }
       },
       collect: {
@@ -389,9 +390,12 @@ export default {
     },
     productInfo: {
       product: 'Producto',
+      codeProduct: 'Código de Producto',
       productInformation: 'Información de Producto',
       code: 'Código',
       name: 'Nombre',
+      id: 'ID',
+      lastName: 'Nombre2',
       description: 'Descripción',
       quantityOnHand: 'Existencia',
       price: 'Precio',
