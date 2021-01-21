@@ -7,6 +7,7 @@ import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
 import language from '@/lang'
 import router from '@/router'
 import { getToken } from '@/utils/auth'
+import ProcessStructure from '@/utils/ADempiere/processStructure'
 
 const initStateProcessControl = {
   inExecution: [], // process not response from server
@@ -477,6 +478,8 @@ const processControl = {
             }
           })
         } else {
+          const result = new ProcessStructure({ action, containerUuid, parentUuid, isError: false, isProcessing: true, processIdPath: routeToDelete.path, parametersList, lastRun: timeInitialized })
+          result.findProcess(action)
           requestRunProcess({
             uuid: processDefinition.uuid,
             id: processDefinition.id,
@@ -487,28 +490,22 @@ const processControl = {
             recordId
           })
             .then(runProcessResponse => {
-              const { instanceUuid, output } = runProcessResponse
-              let logList = []
-              if (!isEmptyValue(runProcessResponse.logsList)) {
-                logList = runProcessResponse.logsList
-              }
-
+              result.runProcess(runProcessResponse)
               let link = {
                 href: undefined,
                 download: undefined
               }
-              if ((runProcessResponse.isReport || processDefinition.isReport) && output.outputStream) {
-                const reportObject = Object.values(output.outputStream)
+              if (result.ProcessResult.isReport && result.ProcessResult.output.outputStream) {
+                const reportObject = Object.values(result.ProcessResult.output.outputStream)
                 const blob = new Blob([Uint8Array.from(reportObject)], {
-                  type: output.mimeType
+                  type: result.ProcessResult.output.mimeType
                 })
                 link = document.createElement('a')
                 link.href = window.URL.createObjectURL(blob)
-                link.download = output.fileName
+                link.download = result.ProcessResult.output.fileName
                 if (reportType !== 'pdf' && reportType !== 'html') {
                   link.click()
                 }
-                const contextMenuMetadata = rootGetters.getContextMenu(processResult.processUuid)
                 // Report views List to context menu
                 const reportViewList = {
                   name: language.t('views.reportView'),
@@ -517,25 +514,7 @@ const processControl = {
                   childs: [],
                   option: 'reportView'
                 }
-                reportViewList.childs = getters.getReportViewList(processResult.processUuid)
-                if (reportViewList && !reportViewList.childs.length) {
-                  dispatch('getReportViewsFromServer', {
-                    processUuid: processResult.processUuid,
-                    instanceUuid,
-                    processId: processDefinition.id,
-                    tableName: output.tableName,
-                    printFormatUuid: output.printFormatUuid,
-                    reportViewUuid: output.reportViewUuid
-                  })
-                    .then(responseReportView => {
-                      reportViewList.childs = responseReportView
-                      if (reportViewList.childs.length) {
-                        // Get contextMenu metadata and concat print report views with contextMenu actions
-                        contextMenuMetadata.actions.push(reportViewList)
-                      }
-                    })
-                }
-
+                result.reportListContextMenu(reportViewList)
                 // Print formats to context menu
                 const printFormatList = {
                   name: language.t('views.printFormat'),
@@ -544,30 +523,7 @@ const processControl = {
                   childs: [],
                   option: 'printFormat'
                 }
-                printFormatList.childs = rootGetters.getPrintFormatList(processResult.processUuid)
-                if (printFormatList && !printFormatList.childs.length) {
-                  dispatch('getListPrintFormats', {
-                    processUuid: processResult.processUuid,
-                    instanceUuid,
-                    processId: processDefinition.id,
-                    tableName: output.tableName,
-                    printFormatUuid: output.printFormatUuid,
-                    reportViewUuid: output.reportViewUuid
-                  })
-                    .then(printFormarResponse => {
-                      printFormatList.childs = printFormarResponse
-                      if (printFormatList.childs.length) {
-                        // Get contextMenu metadata and concat print Format List with contextMenu actions
-                        contextMenuMetadata.actions.push(printFormatList)
-                      }
-                    })
-                } else {
-                  const index = contextMenuMetadata.actions.findIndex(action => action.option === 'printFormat')
-                  if (index !== -1) {
-                    contextMenuMetadata.actions[index] = printFormatList
-                  }
-                }
-
+                result.printFormat(printFormatList)
                 // Drill Tables to context menu
                 const drillTablesList = {
                   name: language.t('views.drillTable'),
@@ -576,42 +532,21 @@ const processControl = {
                   childs: [],
                   option: 'drillTable'
                 }
-                if (!isEmptyValue(output.tableName)) {
-                  drillTablesList.childs = rootGetters.getDrillTablesList(processResult.processUuid)
-                  if (drillTablesList && isEmptyValue(drillTablesList.childs)) {
-                    dispatch('getDrillTablesFromServer', {
-                      processUuid: processResult.processUuid,
-                      instanceUuid,
-                      processId: processDefinition.id,
-                      tableName: output.tableName,
-                      printFormatUuid: output.printFormatUuid,
-                      reportViewUuid: output.reportViewUuid
-                    })
-                      .then(drillTablesResponse => {
-                        drillTablesList.childs = drillTablesResponse
-                        if (drillTablesList.childs.length) {
-                          // Get contextMenu metadata and concat print Format List with contextMenu actions
-                          contextMenuMetadata.actions.push(drillTablesList)
-                        }
-                      })
-                  }
-                }
+                result.drillTable(drillTablesList)
               }
-              // assign new attributes
-              Object.assign(processResult, {
-                ...runProcessResponse,
+              result.addAssignAttributes({
                 url: link.href,
                 download: link.download,
-                logs: logList,
-                output
+                output: runProcessResponse.output
               })
+
               resolve(processResult)
-              if (!isEmptyValue(processResult.output)) {
-                dispatch('setReportTypeToShareLink', processResult.output.reportType)
+              if (!isEmptyValue(result.ProcessResult.output)) {
+                dispatch('setReportTypeToShareLink', result.ProcessResult.output.reportType)
               }
             })
             .catch(error => {
-              Object.assign(processResult, {
+              result.addError({
                 isError: true,
                 message: error.message,
                 isProcessing: false
@@ -620,7 +555,7 @@ const processControl = {
               reject(error)
             })
             .finally(() => {
-              if (!processResult.isError) {
+              if (!result.ProcessResult.isError) {
                 if (panelType === 'window') {
                   // TODO: Add conditional to indicate when update record
                   dispatch('updateRecordAfterRunProcess', {
@@ -636,10 +571,9 @@ const processControl = {
                   }
                 }
               }
-
-              commit('addNotificationProcess', processResult)
+              commit('addNotificationProcess', result.ProcessResult)
               dispatch('finishProcess', {
-                processOutput: processResult,
+                processOutput: result.ProcessResult,
                 procesingMessage,
                 routeToDelete
               })
