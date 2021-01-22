@@ -66,10 +66,10 @@
             <el-checkbox v-show="fullCopper" v-model="checked">
               <el-link
                 type="danger"
-                class="styleCompleteCopper"
+                class="stylefullPayment"
               >
                 <b>
-                  {{ $t('form.pos.collect.completeCopper') }}
+                  {{ $t('form.pos.collect.fullPayment') }}
                 </b>
               </el-link>
             </el-checkbox>
@@ -226,8 +226,8 @@ export default {
       currencyConversion: 1,
       convertAllPayment: 1,
       allPayCurrency: 0,
-      labelTender: '',
-      defaultLabel: 'Efectivo',
+      labelTenderType: '',
+      defaultLabel: '',
       fieldsList: fieldsListCollection
     }
   },
@@ -553,7 +553,7 @@ export default {
         currency = this.currencyPoint.iSOCode
       }
 
-      const displayType = this.labelTender
+      const displayType = this.labelTenderType
       this.$store.dispatch('setPaymentBox', {
         isVisible: true,
         quantityCahs: amount,
@@ -676,14 +676,14 @@ export default {
         parentUuid: '',
         containerUuid: 'Collection',
         columnName: 'DisplayColumn_TenderType',
-        value: this.defaultLabel
+        value: this.$t('form.pos.collect.TenderType.cash')
       })
     },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
         if (mutation.type === 'updateValueOfField') {
           if (mutation.payload.columnName === 'DisplayColumn_TenderType') {
-            this.labelTender = mutation.payload.value
+            this.labelTenderType = mutation.payload.value
           }
         }
       })
@@ -693,7 +693,7 @@ export default {
 </script>
 
 <style scoped>
-  .styleCompleteCopper {
+  .stylefullPayment {
     font-size: 15px;
     font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif
   }

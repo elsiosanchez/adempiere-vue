@@ -9,7 +9,6 @@ export default [
     overwriteDefinition: {
       size: 24,
       handleActionKeyPerformed: true,
-      name: 'Moneda',
       handleActionPerformed: true,
       validationCode: 'C_Currency.C_Currency_ID = 100',
       isActiveLogics: true,

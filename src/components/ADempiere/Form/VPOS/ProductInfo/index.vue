@@ -11,7 +11,6 @@
     <el-form-item>
       <template slot="label">
         {{ $t('form.productInfo.codeProduct') }}
-        <!-- Ver Lista de Productos Y Precios -->
         <el-button
           v-popover:productsList
           type="text"

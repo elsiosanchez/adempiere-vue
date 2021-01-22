@@ -367,7 +367,7 @@ export default {
         payment: 'Pago',
         change: 'Cambio',
         convertAmount: 'Convertir Cantidad',
-        completeCopper: 'Cobre Completo',
+        fullPayment: 'Cobro Completo',
         TenderType: {
           directDeposit: 'Depósito Directo',
           creditCard: 'Tarjeta de Crédito',

@@ -392,7 +392,7 @@ export default {
         payment: 'Payment',
         change: 'Change',
         convertAmount: 'Convert Quantity',
-        completeCopper: 'Cobre Completo',
+        fullPayment: 'Full Payment',
         TenderType: {
           directDeposit: 'Direct Deposit',
           creditCard: 'Credit Card',
