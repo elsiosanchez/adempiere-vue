@@ -68,7 +68,6 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
-      name: 'Moneda',
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       validationCode: 'C_Currency.C_Currency_ID = 100',
@@ -95,8 +94,8 @@ export default [
   // type credit card
   {
     tableName,
-    elementColumnName: 'creditcardtype',
-    columnName: 'creditcardtype',
+    elementColumnName: 'CreditCardType',
+    columnName: 'CreditCardType',
     isFromDictionary: true,
     overwriteDefinition: {
       defaultValue: 'M',
@@ -112,8 +111,8 @@ export default [
   // number credit card
   {
     tableName,
-    elementColumnName: 'creditcardnumber',
-    columnName: 'creditcardnumber',
+    elementColumnName: 'CreditCardNumber',
+    columnName: 'CreditCardNumber',
     isFromDictionary: true,
     overwriteDefinition: {
       handleActionKeyPerformed: true,
@@ -128,8 +127,8 @@ export default [
   // accountno
   {
     tableName,
-    elementColumnName: 'accountno',
-    columnName: 'accountno',
+    elementColumnName: 'AccountNo',
+    columnName: 'AccountNo',
     isFromDictionary: true,
     overwriteDefinition: {
       handleActionKeyPerformed: true,
