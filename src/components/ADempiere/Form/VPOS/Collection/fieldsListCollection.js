@@ -50,6 +50,12 @@ export default [
     elementColumnName: 'DateTrx',
     isFromDictionary: true,
     overwriteDefinition: {
+      // handleActionKeyPerformed: true,
+      // handleActionPerformed: true,
+      handleFocusGained: true,
+      handleFocusLost: true,
+      handleKeyPressed: true,
+      handleKeyReleased: true,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       size: 24,

@@ -226,6 +226,8 @@ export default {
       currencyConversion: 1,
       convertAllPayment: 1,
       allPayCurrency: 0,
+      labelTender: '',
+      defaultLabel: 'Efectivo',
       fieldsList: fieldsListCollection
     }
   },
@@ -504,6 +506,7 @@ export default {
     }
   },
   created() {
+    this.unsubscribe = this.subscribeChanges()
     this.defaultValueCurrency()
   },
   methods: {
@@ -519,39 +522,6 @@ export default {
     notSubmitForm(event) {
       event.preventDefault()
       return false
-    },
-    displayTenderType(type) {
-      let label
-      switch (type) {
-        case 'A':
-          label = this.$t('form.pos.collect.directDeposit')
-          break
-        case 'C':
-          label = this.$t('form.pos.collect.creditCard')
-          break
-        case 'D':
-          label = this.$t('form.pos.collect.directDebit')
-          break
-        case 'K':
-          label = this.$t('form.pos.collect.check')
-          break
-        case 'M':
-          label = this.$t('form.pos.collect.creditNote')
-          break
-        case 'P':
-          label = this.$t('form.pos.collect.mobilePayment')
-          break
-        case 'T':
-          label = this.$t('form.pos.collect.account')
-          break
-        case 'X':
-          label = this.$t('form.pos.collect.cash')
-          break
-        case 'Z':
-          label = this.$t('form.pos.collect.zelle')
-          break
-      }
-      return label
     },
     addCollectToList() {
       const containerUuid = this.containerUuid
@@ -583,7 +553,7 @@ export default {
         currency = this.currencyPoint.iSOCode
       }
 
-      const displayType = this.displayTenderType(typePay)
+      const displayType = this.labelTender
       this.$store.dispatch('setPaymentBox', {
         isVisible: true,
         quantityCahs: amount,
@@ -619,6 +589,12 @@ export default {
           value: this.currencyPoint.id
         })
         this.$store.commit('updateValueOfField', {
+          parentUuid: '',
+          containerUuid: 'Collection',
+          columnName: 'DisplayColumn_TenderType',
+          value: this.defaultLabel
+        })
+        this.$store.commit('updateValueOfField', {
           containerUuid: this.containerUuid,
           columnName: 'PayAmt',
           value: this.pending
@@ -627,6 +603,7 @@ export default {
       this.defaultValueCurrency()
       this.$store.dispatch('conversionDivideRate', 1)
       this.$store.commit('currencyMultiplyRate', 1)
+      this.cancel()
     },
     cancel() {
       this.fieldsList.forEach(element => {
@@ -692,6 +669,23 @@ export default {
         containerUuid: this.containerUuid,
         columnName: 'C_Currency_ID_UUID',
         value: this.currencyPoint.uuid
+      })
+    },
+    defaulTenderType() {
+      this.$store.commit('updateValueOfField', {
+        parentUuid: '',
+        containerUuid: 'Collection',
+        columnName: 'DisplayColumn_TenderType',
+        value: this.defaultLabel
+      })
+    },
+    subscribeChanges() {
+      return this.$store.subscribe((mutation, state) => {
+        if (mutation.type === 'updateValueOfField') {
+          if (mutation.payload.columnName === 'DisplayColumn_TenderType') {
+            this.labelTender = mutation.payload.value
+          }
+        }
       })
     }
   }
