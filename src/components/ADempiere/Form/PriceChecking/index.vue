@@ -177,7 +177,6 @@ export default {
     formatPrice,
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        console.log(this.currentPoint)
         if ((mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
           // cleans all values except column name 'ProductValue'
           this.search = mutation.payload.value

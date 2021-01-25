@@ -723,9 +723,9 @@ export default {
       })
     },
     handleChangeShowedRecordNavigation(valueToChange) {
-      const heightPanel = document.getElementById('PanelRight')
-      const height = heightPanel.clientHeight + 50
-      this.$store.dispatch('setHeight', height)
+      const panelRight = document.getElementById('PanelRight')
+      const heightPanel = panelRight.clientHeight + 50
+      this.$store.dispatch('setHeight', heightPanel)
       this.$store.dispatch('changeWindowAttribute', {
         parentUuid: this.windowUuid, // act as parentUuid
         window: this.windowMetadata,
