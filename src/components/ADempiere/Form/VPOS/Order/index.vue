@@ -242,32 +242,19 @@
                 </b>
                 <b style="float: right;">
                   <el-popover
-                    :v-model="visible"
+                    :v-model="seeConversion"
                     placement="top-start"
                   >
                     <convert-amount
-                      v-show="visible"
+                      v-show="seeConversion"
                       :convert="multiplyRate"
                       :amount="order.grandTotal"
                       :currency="currencyPoint"
                     />
-                    <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="visible = !visible">
+                    <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="seeConversion = !seeConversion">
                       {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
                     </el-button>
                   </el-popover>
-                  <!-- <transition name="el-zoom-in-bottom">
-                    <div v-show="visible" class="transition-box">
-                      <convert-amount
-                        :convert="multiplyRate"
-                        :amount="order.grandTotal"
-                        :currency="currencyPoint"
-                      />
-                    </div>
-                  </transition>
-                  <el-button type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="visible = !visible">
-                    {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
-                  </el-button> -->
-                  <!-- {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }} -->
                 </b>
               </p>
             </span>
@@ -340,18 +327,13 @@ export default {
   data() {
     return {
       fieldsList: fieldsListOrder,
-      visible: false
+      seeConversion: false
     }
   },
   computed: {
     shortsKey() {
       return {
-        // options: ['enter'],
-        // up: ['arrowup'],
-        // down: ['arrowdown'],
         popoverConvet: ['ctrl', 'x']
-        // plus: ['+'],
-        // minus: ['-']
       }
     },
     isShowedPOSKeyLayout: {
@@ -512,8 +494,8 @@ export default {
       })
     },
     open() {
-      if (!this.visible) {
-        this.visible = true
+      if (!this.seeConversion) {
+        this.seeConversion = true
       }
     }
   }

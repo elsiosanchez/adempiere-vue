@@ -456,7 +456,7 @@ export default {
           this.arrowTop()
           break
         case 'popoverConvet':
-          this.visible = !this.visible
+          this.seeConversion = !this.seeConversion
           break
         case 'down':
           this.arrowBottom()
