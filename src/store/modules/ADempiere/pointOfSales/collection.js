@@ -25,11 +25,6 @@ const collection = {
      * creating boxes with the payment list
      */
     setPaymentBox({ state, commit, getters }, params) {
-      // const payments = getters.getPaymentBox.find(element => {
-      //   if (element.tenderType === params.tenderType && element.currency.id === params.currency.id) {
-      //     return element
-      //   }
-      // })
       const payments = undefined
       if (isEmptyValue(payments)) {
         commit('addPaymentBox', params)

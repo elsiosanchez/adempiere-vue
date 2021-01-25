@@ -159,15 +159,6 @@ export function convertConversionRate(conversionRateToConvert) {
     return {
       uuid,
       id,
-      conversionTypeUuid: conversionRateToConvert.conversion_type_uuid,
-      validFrom: conversionRateToConvert.valid_from,
-      validTo: conversionRateToConvert.valid_to,
-      // currencyFrom: convertCurrency(
-      //   conversionRateToConvert.currency_from
-      // ),
-      // currencyTo: convertCurrency(
-      //   conversionRateToConvert.currency_to
-      // ),
       multiplyRate: conversionRateToConvert.multiply_rate,
       divideRate: conversionRateToConvert.divide_rate
     }
@@ -177,7 +168,6 @@ export function convertConversionRate(conversionRateToConvert) {
     id,
     conversionTypeUuid: conversionRateToConvert.conversion_type_uuid,
     validFrom: conversionRateToConvert.valid_from,
-    validTo: conversionRateToConvert.valid_to,
     currencyFrom: convertCurrency(
       conversionRateToConvert.currency_from
     ),
