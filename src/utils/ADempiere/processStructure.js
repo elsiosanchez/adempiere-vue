@@ -183,16 +183,25 @@ class ProcessStructure {
       reportViewUuid: this.output.reportViewUuid
     }
   }
-  findProcess(uuid) {
-    if (!isEmptyValue(uuid)) {
-      // const processDefinition = store.getters.getProcess(uuid)
-      this.action = uuid.processName
-      this.name = uuid.processName
-      this.description = uuid.description
-      this.processUuid = uuid.uuid
-      this.processId = uuid.id
-      this.processName = uuid.processName
-      this.isReport = uuid.isReport
+  get paramsProcess() {
+    return {
+      uuid: this.processUuid,
+      id: this.processId,
+      parametersList: this.parametersList,
+      reportType: this.output.reportType
+    }
+  }
+
+  findProcess({ isActionDocument, action }) {
+    const processDefinition = !isEmptyValue(isActionDocument) ? action : store.getters.getProcess(action.uuid)
+    if (!isEmptyValue(processDefinition)) {
+      this.action = processDefinition.processName
+      this.name = processDefinition.processName
+      this.description = processDefinition.description
+      this.processUuid = processDefinition.uuid
+      this.processId = processDefinition.id
+      this.processName = processDefinition.processName
+      this.isReport = processDefinition.isReport
     }
   }
   runProcess(process) {

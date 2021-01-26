@@ -599,6 +599,14 @@ export default {
       value: true
     })
   },
+  beforeMount() {
+    this.$router.push({
+      params: {
+        tableName: this.tableName,
+        recordId: this.recordId
+      }
+    })
+  },
   methods: {
     handleResize() {
       const panelRight = document.getElementById('PanelRight')

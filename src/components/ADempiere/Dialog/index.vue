@@ -149,11 +149,11 @@ export default {
           const porcesTabla = this.$store.getters.getProcessSelect.processTablaSelection
           const selection = this.$store.getters.getProcessSelect
           if (porcesTabla) {
-            // selection.forEach(element => {
             this.$store.dispatch('selectionProcess', {
               action: action, // process metadata
               parentUuid: this.parentUuid,
               containerUuid: this.containerUuid,
+              recordSelection: this.getterDataRecordsAndSelection.selection,
               panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
               reportFormat: this.reportExportType,
               recordUuidSelection: selection,
