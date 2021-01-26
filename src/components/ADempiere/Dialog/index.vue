@@ -86,10 +86,10 @@ export default {
       return 50
     },
     isVisibleDialog() {
-      return this.$store.state.process.isVisibleDialog
+      return this.$store.state['process/index'].isVisibleDialog
     },
     modalMetadata() {
-      return this.$store.state.process.metadata
+      return this.$store.state['process/index'].metadata
     },
     windowRecordSelected() {
       return this.$store.state.window.recordSelected
@@ -149,11 +149,11 @@ export default {
           const porcesTabla = this.$store.getters.getProcessSelect.processTablaSelection
           const selection = this.$store.getters.getProcessSelect
           if (porcesTabla) {
-            // selection.forEach(element => {
             this.$store.dispatch('selectionProcess', {
               action: action, // process metadata
               parentUuid: this.parentUuid,
               containerUuid: this.containerUuid,
+              recordSelection: this.getterDataRecordsAndSelection.selection,
               panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
               reportFormat: this.reportExportType,
               recordUuidSelection: selection,
