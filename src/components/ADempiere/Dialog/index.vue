@@ -86,10 +86,10 @@ export default {
       return 50
     },
     isVisibleDialog() {
-      return this.$store.state['process/index'].isVisibleDialog
+      return this.$store.state.process.isVisibleDialog
     },
     modalMetadata() {
-      return this.$store.state['process/index'].metadata
+      return this.$store.state.process.metadata
     },
     windowRecordSelected() {
       return this.$store.state.window.recordSelected
