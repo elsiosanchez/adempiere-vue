@@ -81,11 +81,11 @@ export default {
               recordId = contextMenu.valueRecord
             } else {
               tableName = tab.tableName
-              const field = rootGetters.getFieldFromColumnName({
-                containerUuid,
-                columnName: `${tableName}_ID`
-              })
-              recordId = field.value
+              // const field = rootGetters.getFieldFromColumnName({
+              //   containerUuid,
+              //   columnName: `${tableName}_ID`
+              // })
+              recordId = routeToDelete.params.recordId
             }
           }
         }
@@ -109,13 +109,11 @@ export default {
       })
       // get info metadata process
       addProcess.findProcess({ action })
-      console.log(addProcess.ProcessResult)
       if (isEmptyValue(parametersList)) {
         parametersList = rootGetters.getParametersToServer({
           containerUuid: addProcess.ProcessResult.processUuid
         })
       }
-      console.log(addProcess.ProcessResult.name)
       const isSession = !isEmptyValue(getToken())
       let procesingMessage = {
         close: () => false

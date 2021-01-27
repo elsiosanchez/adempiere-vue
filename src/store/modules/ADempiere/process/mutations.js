@@ -1,5 +1,6 @@
 
 import initStateProcessControl from './state.js'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
 
 /**
  * Process Mutations
@@ -16,7 +17,11 @@ export default {
   },
   // Delete process in execution afther some response from server
   deleteInExecution(state, payload) {
-    state.inExecution = state.inExecution.filter(item => item.containerUuid !== payload.containerUuid)
+    state.inExecution = state.inExecution.filter(item => {
+      if ((!isEmptyValue(item)) && (item.containerUuid !== payload.containerUuid)) {
+        return item
+      }
+    })
   },
   // Add process in request metadata from server
   addInRequestMetadata(state, payload) {
