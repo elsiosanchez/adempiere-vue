@@ -174,7 +174,7 @@ export default {
       return imageBuffer
     },
     focusProductValue() {
-      if (!this.isEmptyValue(this.$refs.ProductValue[0].$children[0].$children[0].$children[1].$children[0])) {
+      if (!this.isEmptyValue(this.$refs.ProductValue[0])) {
         this.$refs.ProductValue[0].$children[0].$children[0].$children[1].$children[0].focus()
       }
     },
