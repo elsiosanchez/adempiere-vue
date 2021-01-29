@@ -449,7 +449,7 @@ export default {
       this.newOrder()
     },
     openCollectionPanel() {
-      this.$store.commit('setShowPOSCollection', !this.$store.getters.getShowCollectionPos)
+      this.$store.commit('setShowPOSCollection', true)
       this.isShowedPOSKeyLayout = true
       this.$store.commit('setShowPOSOptions', false)
     },
