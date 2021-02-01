@@ -7,12 +7,10 @@ import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
 import language from '@/lang'
 import router from '@/router'
 import { getToken } from '@/utils/auth'
-import ProcessStructure from '@/utils/ADempiere/processStructure'
-
+import ProcessBuilder from '@/utils/ADempiere/processBuilder'
 /**
  * Process Actions
  * @author Edwin Betancourt <EdwinBetanc0urt@outlook.com>
- * @author Elsio Sanchez <elsiosanches@gmail.com>
  */
 export default {
   processActionPerformed({ commit }, {
@@ -81,39 +79,29 @@ export default {
               recordId = contextMenu.valueRecord
             } else {
               tableName = tab.tableName
-              // const field = rootGetters.getFieldFromColumnName({
-              //   containerUuid,
-              //   columnName: `${tableName}_ID`
-              // })
-              recordId = routeToDelete.params.recordId
+              const field = rootGetters.getFieldFromColumnName({
+                containerUuid,
+                columnName: `${tableName}_ID`
+              })
+              recordId = field.value
             }
           }
         }
       }
-      // get info metadata process
+      const processDefinition = !isEmptyValue(isActionDocument) ? action : rootGetters.getProcess(action.uuid)
       let reportType = reportFormat
-      const addProcess = new ProcessStructure({
-        action,
-        containerUuid,
-        isError: false,
-        isProcessing: true,
-        lastRun: (new Date()).getTime(),
-        menuParentUuid,
-        output: {
-          reportType: 'pdf'
-        },
-        panelType,
-        parametersList,
-        parentUuid,
-        processIdPath: routeToDelete.path
-      })
-      // get info metadata process
-      addProcess.findProcess({ action })
+
       if (isEmptyValue(parametersList)) {
         parametersList = rootGetters.getParametersToServer({
-          containerUuid: addProcess.ProcessResult.processUuid
+          containerUuid: processDefinition.uuid
         })
       }
+      let processResult
+      // add process builder
+      const Process = new ProcessBuilder.ProcessBuilder(processResult)
+      // get info metadata process
+      Process.findProcess({ action })
+      // show Notification
       const isSession = !isEmptyValue(getToken())
       let procesingMessage = {
         close: () => false
@@ -121,12 +109,13 @@ export default {
       if (isSession) {
         procesingMessage = showNotification({
           title: language.t('notifications.processing'),
-          message: addProcess.ProcessResult.name,
-          summary: addProcess.ProcessResult.description,
+          message: Process.name,
+          summary: Process.description,
           type: 'info'
         })
       }
-      commit('addInExecution', addProcess.ProcessResul)
+      // Add Process in Execution
+      commit('addInExecution', Process)
       if (panelType === 'window') {
         reportType = 'pdf'
       } else if (panelType === 'browser') {
@@ -149,37 +138,40 @@ export default {
         dispatch('tagsView/delView', routeToDelete)
 
         // reset panel and set defalt isShowedFromUser
-        if (!addProcess.ProcessResul.isReport) {
+        if (!Process.isReport) {
           dispatch('setDefaultValues', {
             containerUuid,
             panelType
           })
         }
       }
+      // Add Params to Process
+      Process.addParametersList({ parameters: parametersList })
       requestRunProcess({
-        uuid: addProcess.ProcessResult.processUuid,
-        id: addProcess.ProcessResult.processId,
+        uuid: Process.processUuid,
+        id: Process.processId,
         reportType,
-        parametersList,
+        parametersList: Process.parameters,
         selectionsList: selection,
         tableName,
         recordId
       })
         .then(runProcessResponse => {
-          addProcess.runProcess(runProcessResponse)
+          // Add Response Process Run
+          Process.runProcess(runProcessResponse)
 
           let link = {
             href: undefined,
             download: undefined
           }
-          if ((addProcess.ProcessResult.isReport || addProcess.ProcessResult.isReport) && addProcess.ProcessResult.output.outputStream) {
-            const reportObject = Object.values(addProcess.ProcessResult.output.outputStream)
+          if ((runProcessResponse.isReport || Process.isReport) && Process.output.outputStream) {
+            const reportObject = Object.values(Process.output.outputStream)
             const blob = new Blob([Uint8Array.from(reportObject)], {
-              type: addProcess.ProcessResult.output.mimeType
+              type: Process.output.mimeType
             })
             link = document.createElement('a')
             link.href = window.URL.createObjectURL(blob)
-            link.download = addProcess.ProcessResult.output.fileName
+            link.download = Process.output.fileName
             // download report file
             if (!['pdf', 'html'].includes(reportType)) {
               link.click()
@@ -192,7 +184,7 @@ export default {
               childs: [],
               option: 'reportView'
             }
-            addProcess.reportListContextMenu(reportViewList)
+            Process.reportListContextMenu(reportViewList)
             // Print formats to context menu
             const printFormatList = {
               name: language.t('views.printFormat'),
@@ -201,7 +193,7 @@ export default {
               childs: [],
               option: 'printFormat'
             }
-            addProcess.printFormat(printFormatList)
+            Process.printFormat(printFormatList)
             // Drill Tables to context menu
             const drillTablesList = {
               name: language.t('views.drillTable'),
@@ -210,19 +202,26 @@ export default {
               childs: [],
               option: 'drillTable'
             }
-            addProcess.drillTable(drillTablesList)
+            Process.drillTable(drillTablesList)
           }
-          addProcess.addAssignAttributes({
+          // assign new attributes
+          Process.addAssignAttributes({
             url: link.href,
-            download: link.download,
-            output: runProcessResponse.output
+            download: link.download
           })
-          if (!isEmptyValue(addProcess.ProcessResult.output)) {
-            dispatch('setReportTypeToShareLink', addProcess.ProcessResult.output.reportType)
+          resolve(processResult)
+          if (!isEmptyValue(Process.output)) {
+            dispatch('setReportTypeToShareLink', Process.output.reportType)
           }
         })
         .catch(error => {
-          addProcess.addError({
+          Object.assign(processResult, {
+            isError: true,
+            message: error.message,
+            isProcessing: false
+          })
+          // Add Error
+          Process.addError({
             isError: true,
             message: error.message,
             isProcessing: false
@@ -231,7 +230,7 @@ export default {
           reject(error)
         })
         .finally(() => {
-          if (!addProcess.ProcessResult.isError) {
+          if (!Process.isError) {
             if (panelType === 'window') {
               // TODO: Add conditional to indicate when update record
               dispatch('updateRecordAfterRunProcess', {
@@ -242,21 +241,21 @@ export default {
             } else if (panelType === 'browser') {
               if (allData.record.length >= 100) {
                 dispatch('getBrowserSearch', {
-                  containerUuid: addProcess.ProcessResult.containerUuid
+                  containerUuid
                 })
               }
             }
           }
 
-          commit('addNotificationProcess', addProcess.ProcessResult)
+          commit('addNotificationProcess', Process)
           dispatch('finishProcess', {
-            processOutput: addProcess.ProcessResult,
+            processOutput: Process,
             procesingMessage,
             routeToDelete
           })
 
           commit('deleteInExecution', {
-            containerUuid: addProcess.ProcessResult.containerUuid
+            containerUuid
           })
 
           dispatch('setProcessTable', {
@@ -268,7 +267,6 @@ export default {
             finish: true
           })
         })
-      // }
     })
   },
   processOption({ commit, dispatch, getters, rootGetters }, {
@@ -507,118 +505,186 @@ export default {
     containerUuid,
     panelType,
     action,
+    isProcessTableSelection,
     parametersList = [],
     menuParentUuid,
     routeToDelete
   }) {
-    const addProcess = new ProcessStructure({
-      action,
-      containerUuid,
-      isError: false,
-      isProcessing: true,
-      lastRun: (new Date()).getTime(),
-      menuParentUuid,
-      output: {
-        reportType: 'pdf'
-      },
-      panelType,
-      parametersList,
-      parentUuid,
-      processIdPath: routeToDelete.path
-    })
     // get info metadata process
-    addProcess.findProcess({ action })
+    const processDefinition = rootGetters.getProcess(action.uuid)
+    const reportType = 'pdf'
     if (isEmptyValue(parametersList)) {
       parametersList = rootGetters.getParametersToServer({
-        containerUuid: addProcess.ProcessResult.uuid
+        containerUuid: processDefinition.uuid
       })
     }
     const isSession = !isEmptyValue(getToken())
     if (isSession) {
       showNotification({
         title: language.t('notifications.processing'),
-        message: addProcess.ProcessResult.name,
-        summary: addProcess.ProcessResult.description,
+        message: processDefinition.name,
+        summary: processDefinition.description,
         type: 'info'
       })
     }
+    const timeInitialized = (new Date()).getTime()
     // Run process on server and wait for it for notify
-    const windowSelectionProcess = getters.getProcessSelect
-    windowSelectionProcess.selection.forEach(selection => {
-      // parameters to execute the process
-      const params = addProcess.paramsProcess
-      // by adding extra parameters
-      params.tableSelectedId = selection[windowSelectionProcess.tableName]
-      params.tableName = windowSelectionProcess.tableName
-      commit('addInExecution', addProcess.ProcessResult)
-      if (state.totalRequest === state.totalResponse) {
-        return requestRunProcess(
-          params
-        )
-          .then(response => {
-            const countRequest = state.totalRequest + 1
-            commit('setTotalRequest', countRequest)
-            addProcess.runProcess(response)
-            // assign new attributes
-            addProcess.addAssignAttributes({
-              output: response.output
-            })
-            if (!isEmptyValue(addProcess.ProcessResult.output)) {
-              dispatch('setReportTypeToShareLink', addProcess.ProcessResult.output.reportType)
-            }
-            if (addProcess.ProcessResult.isError) {
-              const countError = state.errorSelection + 1
-              commit('setErrorSelection', countError)
-            } else {
-              const countSuccess = state.successSelection + 1
-              commit('setSuccessSelection', countSuccess)
-            }
-            const countResponse = state.totalResponse + 1
-            commit('setTotalResponse', countResponse)
-            if (state.totalResponse === state.totalRequest) {
-              if (isSession) {
-                const message = `
-                  ${language.t('notifications.totalProcess')}
-                  ${countResponse}
-                  ${language.t('notifications.error')}
-                  ${state.errorSelection}
-                  ${language.t('notifications.succesful')}
-                  ${state.successSelection}
-                  ${language.t('notifications.processExecuted')}
-                `
-                showNotification({
-                  title: language.t('notifications.succesful'),
-                  message,
-                  type: 'success'
+    if (isProcessTableSelection) {
+      const windowSelectionProcess = getters.getProcessSelect
+      windowSelectionProcess.selection.forEach(selection => {
+        const processResult = {
+          // panel attributes from where it was executed
+          parentUuid,
+          containerUuid,
+          panelType,
+          menuParentUuid,
+          processIdPath: routeToDelete.path,
+          // process attributes
+          lastRun: timeInitialized,
+          action: processDefinition.name,
+          name: processDefinition.name,
+          description: processDefinition.description,
+          instanceUuid: '',
+          processUuid: processDefinition.uuid,
+          processId: processDefinition.id,
+          processName: processDefinition.processName,
+          parameters: parametersList,
+          isError: false,
+          isProcessing: true,
+          isReport: processDefinition.isReport,
+          summary: '',
+          resultTableName: '',
+          logs: [],
+          selection: selection.UUID,
+          record: selection[windowSelectionProcess.tableName],
+          output: {
+            uuid: '',
+            name: '',
+            description: '',
+            fileName: '',
+            output: '',
+            outputStream: '',
+            reportType: ''
+          }
+        }
+        const countRequest = state.totalRequest + 1
+        commit('addInExecution', processResult)
+        commit('setTotalRequest', countRequest)
+        if (!windowSelectionProcess.finish) {
+          return requestRunProcess({
+            uuid: processDefinition.uuid,
+            id: processDefinition.id,
+            reportType,
+            parametersList,
+            selectionsList: selection,
+            tableName: windowSelectionProcess.tableName,
+            recordId: selection[windowSelectionProcess.tableName]
+          })
+            .then(response => {
+              let output = {
+                uuid: '',
+                name: '',
+                description: '',
+                fileName: '',
+                mimeType: '',
+                output: '',
+                outputStream: '',
+                reportType: ''
+              }
+              if (isEmptyValue(response.output)) {
+                const responseOutput = response.output
+                output = {
+                  uuid: responseOutput.uuid,
+                  name: responseOutput.name,
+                  description: responseOutput.description,
+                  fileName: responseOutput.filename,
+                  mimeType: responseOutput.mimeType,
+                  output: responseOutput.output,
+                  outputStream: responseOutput.outputstream,
+                  reportType: responseOutput.reporttype
+                }
+              }
+              let logList = []
+              if (response.getLogsList) {
+                logList = response.getLogsList.map(itemLog => {
+                  return {
+                    log: itemLog.log,
+                    recordId: itemLog.recordid
+                  }
                 })
               }
-              commit('setTotalRequest', 0)
-              commit('setTotalResponse', 0)
-              commit('setSuccessSelection', 0)
-              commit('setErrorSelection', 0)
-            }
-            commit('addNotificationProcess', addProcess.ProcessResult)
-            commit('deleteInExecution', {
-              containerUuid
+
+              // assign new attributes
+              Object.assign(processResult, {
+                instanceUuid: response.instanceUuid,
+                isError: response.isError,
+                isProcessing: response.isProcessing,
+                summary: response.summary,
+                ResultTableName: response.resulttablename,
+                lastRun: response.lastRun,
+                logs: logList,
+                output
+              })
+              if (!isEmptyValue(processResult.output)) {
+                dispatch('setReportTypeToShareLink', processResult.output.reportType)
+              }
+              if (processResult.isError) {
+                const countError = state.errorSelection + 1
+                commit('setErrorSelection', countError)
+              } else {
+                const countSuccess = state.successSelection + 1
+                commit('setSuccessSelection', countSuccess)
+              }
+              const countResponse = state.totalResponse + 1
+              commit('setTotalResponse', countResponse)
+              if (state.totalResponse === state.totalRequest) {
+                if (isSession) {
+                  const message = `
+                    ${language.t('notifications.totalProcess')}
+                    ${countResponse}
+                    ${language.t('notifications.error')}
+                    ${state.errorSelection}
+                    ${language.t('notifications.succesful')}
+                    ${state.successSelection}
+                    ${language.t('notifications.processExecuted')}
+                  `
+                  showNotification({
+                    title: language.t('notifications.succesful'),
+                    message,
+                    type: 'success'
+                  })
+                }
+                commit('setTotalRequest', 0)
+                commit('setTotalResponse', 0)
+                commit('setSuccessSelection', 0)
+                commit('setErrorSelection', 0)
+              }
+              dispatch('setProcessSelect', {
+                selection: 0,
+                finish: true,
+                tableName: ''
+              })
+              commit('addNotificationProcess', processResult)
+              commit('addStartedProcess', processResult)
+              commit('deleteInExecution', {
+                containerUuid
+              })
             })
-          })
-          .catch(error => {
-            const countError = state.errorSelection + 1
-            commit('setErrorSelection', countError)
-            addProcess.addError({
-              isError: true,
-              message: error.message,
-              isProcessing: false
+            .catch(error => {
+              Object.assign(processResult, {
+                isError: true,
+                message: error.message,
+                isProcessing: false
+              })
+              console.warn(`Error running the process. Code ${error.code}: ${error.message}.`)
             })
-            console.warn(`Error running the process. Code ${error.code}: ${error.message}.`)
-          })
-      }
-    })
+        }
+      })
+    }
   },
   /**
    * List log of process/reports executed
    * @author Edwin Betancourt <EdwinBetanc0urt@outlook.com>
- * @author Elsio Sanchez <elsiosanches@gmail.com>
    * @param {string} pageToken
    * @param {number} pageSize default 50
    */
