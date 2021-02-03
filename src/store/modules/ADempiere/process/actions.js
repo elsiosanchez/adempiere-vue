@@ -11,6 +11,7 @@ import ProcessBuilder from '@/utils/ADempiere/processBuilder'
 /**
  * Process Actions
  * @author Edwin Betancourt <EdwinBetanc0urt@outlook.com>
+ * @author Elsio Sanchez <elsiosanches@gmail.com>
  */
 export default {
   processActionPerformed({ commit }, {
@@ -90,7 +91,6 @@ export default {
       }
       const processDefinition = !isEmptyValue(isActionDocument) ? action : rootGetters.getProcess(action.uuid)
       let reportType = reportFormat
-
       if (isEmptyValue(parametersList)) {
         parametersList = rootGetters.getParametersToServer({
           containerUuid: processDefinition.uuid
@@ -101,6 +101,8 @@ export default {
       const Process = new ProcessBuilder.ProcessBuilder(processResult)
       // get info metadata process
       Process.findProcess({ action })
+      // Parent Menu
+      Process.withMenuParent({ menuParentUuid })
       // show Notification
       const isSession = !isEmptyValue(getToken())
       let procesingMessage = {
@@ -146,7 +148,7 @@ export default {
         }
       }
       // Add Params to Process
-      Process.addParametersList({ parameters: parametersList })
+      Process.withParametersList({ parameters: parametersList })
       requestRunProcess({
         uuid: Process.processUuid,
         id: Process.processId,
@@ -205,9 +207,10 @@ export default {
             Process.drillTable(drillTablesList)
           }
           // assign new attributes
-          Process.addAssignAttributes({
+          Process.withAssignAttributes({
             url: link.href,
-            download: link.download
+            download: link.download,
+            output: runProcessResponse.output
           })
           resolve(processResult)
           if (!isEmptyValue(Process.output)) {
@@ -215,13 +218,8 @@ export default {
           }
         })
         .catch(error => {
-          Object.assign(processResult, {
-            isError: true,
-            message: error.message,
-            isProcessing: false
-          })
           // Add Error
-          Process.addError({
+          Process.withError({
             isError: true,
             message: error.message,
             isProcessing: false

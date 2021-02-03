@@ -1,9 +1,23 @@
 import store from '@/store'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
-
+/**
+ * Process Builder
+ * @author Edwin Betancourt <EdwinBetanc0urt@outlook.com>
+ * @author Elsio Sanchez <elsiosanches@gmail.com>
+ */
 class ProcessBuilder {
   static ProcessBuilder() {
     return new ProcessBuilder()
+  }
+  get reportParameters() {
+    return {
+      processUuid: this.processUuid,
+      instanceUuid: this.instanceUuid,
+      processId: this.processId,
+      tableName: this.output.tableName,
+      printFormatUuid: this.output.printFormatUuid,
+      reportViewUuid: this.output.reportViewUuid
+    }
   }
   // get info metadata process
   findProcess({ isActionDocument, action }) {
@@ -29,14 +43,18 @@ class ProcessBuilder {
     this.summary = process.summary
     return this
   }
+  // Parent Menu
+  withMenuParent({ menuParentUuid }) {
+    this.menuParentUuid = menuParentUuid
+  }
   // assign new attributes
-  addAssignAttributes({ url, download, output }) {
+  withAssignAttributes({ url, download, output }) {
     this.url = url
     this.download = download
     this.output = output
   }
-  // add list the Parameters
-  addParametersList({ parameters }) {
+  // with list the Parameters
+  withParametersList({ parameters }) {
     if (isEmptyValue(parameters)) {
       this.parameters = store.getters.getParametersToServer({
         containerUuid: this.processUuid
@@ -45,8 +63,8 @@ class ProcessBuilder {
       this.parameters = parameters
     }
   }
-  // add Error
-  addError({ isError, message, isProcessing }) {
+  // with Error
+  withError({ isError, message, isProcessing }) {
     this.isError = isError
     this.message = message
     this.isProcessing = isProcessing
