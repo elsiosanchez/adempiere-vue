@@ -17,7 +17,8 @@ const collection = {
     multiplyRateCollection: 1,
     divideRateCollection: 1,
     listPayments: [],
-    tenderTypeDisplaye: []
+    tenderTypeDisplaye: [],
+    currency: []
   },
   mutations: {
     addPaymentBox(state, paymentBox) {
@@ -40,6 +41,9 @@ const collection = {
     },
     setTenderTypeDisplaye(state, tenderTypeDisplaye) {
       state.tenderTypeDisplaye = tenderTypeDisplaye
+    },
+    setCurrencyDisplaye(state, currency) {
+      state.currency = currency
     }
   },
   actions: {
@@ -85,6 +89,38 @@ const collection = {
         })
         state.paymentBox = addPayment
       }
+    },
+    // upload orders to theServer
+    uploadOrdersToServer({ dispatch }, {
+      listPaymentsLocal,
+      posUuid,
+      orderUuid
+    }) {
+      listPaymentsLocal.forEach(payment => {
+        requestCreatePayment({
+          posUuid,
+          orderUuid,
+          bankUuid: payment.bankUuid,
+          referenceNo: payment.referenceNo,
+          description: payment.description,
+          amount: payment.amount,
+          paymentDate: payment.paymentDate,
+          tenderTypeCode: payment.tenderTypeCode,
+          currencyUuid: payment.currencyUuid
+        })
+          .then(response => {
+            const orderUuid = response.order_uuid
+            dispatch('listPayments', { orderUuid })
+          })
+          .catch(error => {
+            console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
+            showMessage({
+              type: 'error',
+              message: error.message,
+              showClose: true
+            })
+          })
+      })
     },
     deleteCollectBox({ state }, key) {
       const payment = state.paymentBox
@@ -224,12 +260,10 @@ const collection = {
       orderUuid,
       paymentUuid
     }) {
-      console.log(paymentUuid, orderUuid)
       requestDeletePayment({
         paymentUuid
       })
         .then(response => {
-          console.log(response.listPayments)
           dispatch('listPayments', { orderUuid })
         })
         .catch(error => {
@@ -241,13 +275,12 @@ const collection = {
           })
         })
     },
-    listPayments({ commit }, { posUuid, orderUuid }) {
+    listPayments({ commit, rootGetters }, { posUuid, orderUuid }) {
       requestListPayments({
         posUuid,
         orderUuid
       })
         .then(response => {
-          console.log(response.listPayments)
           commit('setListPayments', response.listPayments)
         })
         .catch(error => {
@@ -267,6 +300,15 @@ const collection = {
         }
       })
       commit('setTenderTypeDisplaye', displayTenderType)
+    },
+    currencyDisplaye({ commit }, currency) {
+      const displaycurrency = currency.map(item => {
+        return {
+          codeCurrency: item.uuid,
+          displayCurrency: item.label
+        }
+      })
+      commit('setCurrencyDisplaye', displaycurrency)
     }
   },
   getters: {
@@ -286,11 +328,13 @@ const collection = {
       return state.divideRateCollection
     },
     getListPayments: (state) => {
-      console.log(state.listPayments)
       return state.listPayments
     },
     getTenderTypeDisplaye: (state) => {
       return state.tenderTypeDisplaye
+    },
+    getCurrencyDisplaye: (state) => {
+      return state.currency
     }
   }
 }

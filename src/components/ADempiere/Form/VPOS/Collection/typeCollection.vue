@@ -18,7 +18,7 @@
                   />
                   <div style="padding-right: 10px; padding-top: 10%;">
                     <div class="top clearfix">
-                      <span>{{ tenderTypeDisplay(value.tenderTypeCode) }}</span>
+                      <span>{{ tenderTypeºDisplay(value.tenderTypeCode) }}</span>
                     </div>
                     <div class="bottom clearfix" style="margin-top: 0px !important!">
                       <el-button
@@ -37,11 +37,10 @@
                       >
                         {{ formatDate(value.paymentDate) }}
                       </el-button>
-
                       <div slot="header" class="clearfix">
                         <p class="total" :style="value.currencyUuid === currency.id ? 'padding-top: 5%;' : ''">
                           <b style="float: right; padding-bottom: 10px">
-                            {{ formatPrice(value.amount, currency.iSOCode) }}
+                            {{ formatPrice(value.amount, currencyDisplay(value.currencyUuid)) }}
                           </b>
                         </p>
                         <br>
@@ -81,9 +80,17 @@ export default {
       default: undefined
     }
   },
+  data() {
+    return {
+      conevertion: 0
+    }
+  },
   computed: {
     label() {
       return this.$store.getters.getTenderTypeDisplaye
+    },
+    displayCurrency() {
+      return this.$store.getters.getCurrencyDisplaye
     }
   },
   methods: {

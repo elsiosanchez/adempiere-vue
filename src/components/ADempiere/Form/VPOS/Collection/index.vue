@@ -228,7 +228,8 @@ export default {
       allPayCurrency: 0,
       labelTenderType: '',
       defaultLabel: '',
-      fieldsList: fieldsListCollection
+      fieldsList: fieldsListCollection,
+      sendToServer: false
     }
   },
   computed: {
@@ -265,7 +266,12 @@ export default {
       return false
     },
     listPayments() {
-      return this.$store.getters.getListPayments
+      const listLocal = this.$store.getters.getPaymentBox
+      const listServer = this.$store.getters.getListPayments
+      if (!this.sendToServer) {
+        return listServer
+      }
+      return listLocal
     },
     paymentBox() {
       const payment = this.isPaymentBox.filter(pay => {
@@ -451,7 +457,7 @@ export default {
       return true
     },
     fieldpending() {
-      return this.pending * this.multiplyRateCollection
+      return this.pending
     }
   },
   watch: {
@@ -523,6 +529,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.tenderTypeDisplaye()
+      this.currencyDisplaye()
     }, 1000)
   },
   methods: {
@@ -567,18 +574,36 @@ export default {
         containerUuid,
         columnName: 'C_Currency_ID_UUID'
       })
-
-      this.$store.dispatch('createPayments', {
-        posUuid,
-        orderUuid,
-        bankUuid,
-        referenceNo,
-        amount,
-        paymentDate,
-        tenderTypeCode,
-        currencyUuid
-      })
+      if (this.sendToServer) {
+        this.$store.dispatch('setPaymentBox', {
+          posUuid,
+          orderUuid,
+          bankUuid,
+          referenceNo,
+          amount,
+          paymentDate,
+          tenderTypeCode,
+          currencyUuid
+        })
+      } else {
+        this.$store.dispatch('createPayments', {
+          posUuid,
+          orderUuid,
+          bankUuid,
+          referenceNo,
+          amount,
+          paymentDate,
+          tenderTypeCode,
+          currencyUuid
+        })
+      }
       this.addCollect()
+    },
+    updateServer(listPaymentsLocal) {
+      // const listLocal = this.$store.getters.getPaymentBox
+      const posUuid = this.$store.getters.getCurrentPOS.uuid
+      const orderUuid = this.$route.query.action
+      this.$store.dispatch('uploadOrdersToServer', { listPaymentsLocal, posUuid, orderUuid })
     },
     addCollect() {
       this.fieldsList.forEach(element => {
@@ -702,6 +727,18 @@ export default {
         })
           .then(response => {
             this.$store.dispatch('tenderTypeDisplaye', response)
+          })
+      }
+    },
+    currencyDisplaye() {
+      if (!this.isEmptyValue(this.fieldsList)) {
+        const currency = this.fieldsList[4].reference
+        this.$store.dispatch('getLookupListFromServer', {
+          tableName: currency.tableName,
+          query: currency.query
+        })
+          .then(response => {
+            this.$store.dispatch('currencyDisplaye', response)
           })
       }
     },
