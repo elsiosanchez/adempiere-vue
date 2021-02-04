@@ -48,5 +48,34 @@ export default [
       handleContentSelection: true,
       handleActionKeyPerformed: true
     }
+  },
+  {
+    tableName: 'C_Order',
+    columnName: 'C_Currency_ID',
+    isFromDictionary: true,
+    overwriteDefinition: {
+      size: 24,
+      handleActionKeyPerformed: true,
+      handleActionPerformed: true,
+      validationCode: 'C_Currency.C_Currency_ID = 100',
+      isActiveLogics: false,
+      isMandatory: true
+    }
+  },
+  // TenderType
+  {
+    tableName: 'C_Payment',
+    elementColumnName: 'TenderType',
+    columnName: 'TenderType',
+    isFromDictionary: true,
+    overwriteDefinition: {
+      defaultValue: 'X',
+      handleActionKeyPerformed: true,
+      handleContentSelection: true,
+      handleActionPerformed: true,
+      size: 24,
+      isActiveLogics: false,
+      isMandatory: true
+    }
   }
 ]

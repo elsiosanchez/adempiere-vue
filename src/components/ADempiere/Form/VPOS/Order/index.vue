@@ -444,6 +444,12 @@ export default {
       }
     }
   },
+  mounted() {
+    setTimeout(() => {
+      this.tenderTypeDisplaye()
+      this.currencyDisplaye()
+    }, 2000)
+  },
   methods: {
     changePos(posElement) {
       this.$store.dispatch('setCurrentPOS', posElement)
@@ -502,6 +508,30 @@ export default {
     open() {
       if (!this.seeConversion) {
         this.seeConversion = true
+      }
+    },
+    tenderTypeDisplaye() {
+      if (!this.isEmptyValue(this.fieldsList)) {
+        const tenderType = this.fieldsList[5].reference
+        this.$store.dispatch('getLookupListFromServer', {
+          tableName: tenderType.tableName,
+          query: tenderType.query
+        })
+          .then(response => {
+            this.$store.dispatch('tenderTypeDisplaye', response)
+          })
+      }
+    },
+    currencyDisplaye() {
+      if (!this.isEmptyValue(this.fieldsList)) {
+        const currency = this.fieldsList[4].reference
+        this.$store.dispatch('getLookupListFromServer', {
+          tableName: currency.tableName,
+          query: currency.query
+        })
+          .then(response => {
+            this.$store.dispatch('currencyDisplaye', response)
+          })
       }
     }
   }

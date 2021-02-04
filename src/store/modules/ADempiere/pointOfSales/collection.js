@@ -17,8 +17,14 @@ const collection = {
     multiplyRateCollection: 1,
     divideRateCollection: 1,
     listPayments: [],
-    tenderTypeDisplaye: [],
-    currency: []
+    tenderTypeDisplaye: [
+      {
+        tenderTypeCode: 0,
+        tenderTypeDisplay: ''
+      }
+    ],
+    currency: [],
+    convertion: {}
   },
   mutations: {
     addPaymentBox(state, paymentBox) {
@@ -44,6 +50,9 @@ const collection = {
     },
     setCurrencyDisplaye(state, currency) {
       state.currency = currency
+    },
+    setConvertionPayment(state, convertion) {
+      state.convertion = convertion
     }
   },
   actions: {
@@ -304,11 +313,34 @@ const collection = {
     currencyDisplaye({ commit }, currency) {
       const displaycurrency = currency.map(item => {
         return {
-          codeCurrency: item.uuid,
-          displayCurrency: item.label
+          currencyUuid: item.uuid,
+          currencyId: item.id,
+          currencyDisplay: item.label
         }
       })
       commit('setCurrencyDisplaye', displaycurrency)
+    },
+    convertionPayment({ commit }, {
+      conversionTypeUuid,
+      currencyFromUuid,
+      currencyToUuid
+    }) {
+      requestGetConversionRate({
+        conversionTypeUuid,
+        currencyFromUuid,
+        currencyToUuid
+      })
+        .then(response => {
+          commit('setConvertionPayment', response)
+        })
+        .catch(error => {
+          console.warn(`ConvertionPayment: ${error.message}. Code: ${error.code}.`)
+          showMessage({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
     }
   },
   getters: {
@@ -335,6 +367,9 @@ const collection = {
     },
     getCurrencyDisplaye: (state) => {
       return state.currency
+    },
+    getConvertionPayment: (state) => {
+      return state.convertion
     }
   }
 }
