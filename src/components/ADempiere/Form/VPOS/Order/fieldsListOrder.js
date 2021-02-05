@@ -3,10 +3,12 @@ export default [
   {
     elementColumnName: 'ProductValue',
     columnName: 'ProductValue',
+    tabindex: '1',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
       sequence: 10,
+      handleFocusGained: true,
       handleActionPerformed: true,
       handleActionKeyPerformed: true
     }
@@ -14,6 +16,7 @@ export default [
   {
     elementColumnName: 'QtyEntered',
     columnName: 'QtyEntered',
+    tabindex: '2',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
@@ -26,6 +29,7 @@ export default [
   {
     elementColumnName: 'PriceEntered',
     columnName: 'PriceEntered',
+    tabindex: '3',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
@@ -39,6 +43,7 @@ export default [
   {
     elementColumnName: 'Discount',
     columnName: 'Discount',
+    tabindex: '4',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,

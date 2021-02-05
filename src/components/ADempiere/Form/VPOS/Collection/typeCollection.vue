@@ -18,7 +18,14 @@
                   />
                   <div style="padding-right: 10px; padding-top: 10%;">
                     <div class="top clearfix">
-                      <span>{{ tenderTypeDisplay(value.tenderTypeCode) }}</span>
+                      <span>
+                        {{
+                          tenderTypeFind({
+                            currentPayment: value.tenderTypeCode,
+                            listTypePayment: typesPayment
+                          })
+                        }}
+                      </span>
                     </div>
                     <div class="bottom clearfix" style="margin-top: 0px !important!">
                       <el-button
@@ -37,7 +44,16 @@
                       >
                         {{ formatDate(value.paymentDate) }}
                       </el-button>
-                      <div v-if="currencyDisplay(value.currencyUuid).currencyDisplay === 'USD'" slot="header" class="clearfix" style="padding-bottom: 20px;">
+                      <div
+                        v-if="currencyFind({
+                          currencyCurrent: value.currencyUuid,
+                          listCurrency: listCurrency,
+                          defaultCurrency: currency
+                        }).currencyDisplay !== currency.iSOCode"
+                        slot="header"
+                        class="clearfix"
+                        style="padding-bottom: 20px;"
+                      >
                         <p class="total">
                           <b style="float: right;">
                             {{ formatPrice(value.amount, currency.iSOCode) }}
@@ -46,7 +62,16 @@
                         <br>
                         <p class="total">
                           <b style="float: right;">
-                            {{ formatPrice((amountConvertion(value)), currencyDisplay(value.currencyUuid).currencyDisplay) }}
+                            {{
+                              formatPrice(
+                                (amountConvertion(value)),
+                                currencyFind({
+                                  currencyCurrent: value.currencyUuid,
+                                  listCurrency: listCurrency,
+                                  defaultCurrency: currency
+                                }).currencyDisplay
+                              )
+                            }}
                           </b>
                         </p>
                       </div>
@@ -93,11 +118,11 @@ export default {
     }
   },
   computed: {
-    label() {
-      return this.$store.getters.getTenderTypeDisplaye
+    typesPayment() {
+      return this.$store.getters.getListsPaymentTypes
     },
-    displayCurrency() {
-      return this.$store.getters.getCurrencyDisplaye
+    listCurrency() {
+      return this.$store.getters.getListCurrency
     },
     conevertionAmount() {
       return this.$store.getters.getConvertionPayment
@@ -155,30 +180,6 @@ export default {
         orderUuid,
         paymentUuid
       })
-    },
-    tenderTypeDisplay(payments) {
-      const display = this.label.find(item => {
-        if (item.tenderTypeCode === payments) {
-          return item.tenderTypeDisplay
-        }
-      })
-      if (display) {
-        return display.tenderTypeDisplay
-      }
-      return payments
-    },
-    currencyDisplay(currency) {
-      if (!this.isEmptyValue(this.displayCurrency)) {
-        const display = this.displayCurrency.find(item => {
-          if (item.currencyUuid === currency) {
-            return item
-          }
-        })
-        if (display) {
-          return display
-        }
-      }
-      return this.currency.iSOCode
     },
     amountConvertion(payment) {
       return payment.amount * this.conevertionAmount.multiplyRate

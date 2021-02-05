@@ -74,6 +74,7 @@
               </el-link>
             </el-checkbox>
             <el-button type="danger" icon="el-icon-close" @click="exit" />
+            <el-button type="info" icon="el-icon-refresh-left" @click="undoPatment" />
             <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
             <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />
           </samp>
@@ -270,7 +271,7 @@ export default {
       const listLocal = this.$store.getters.getPaymentBox
       const listServer = this.$store.getters.getListPayments
       if (!this.sendToServer) {
-        return listServer
+        return listServer.reverse()
       }
       return listLocal
     },
@@ -461,7 +462,7 @@ export default {
       return this.pending
     },
     displayCurrency() {
-      return this.$store.getters.getCurrencyDisplaye
+      return this.$store.getters.getListCurrency
     },
     convert() {
       return this.$store.getters.getConvertionPayment
@@ -580,7 +581,12 @@ export default {
         containerUuid,
         columnName: 'C_Currency_ID_UUID'
       })
-      if (this.currencyDisplay(currencyUuid).currencyDisplay === 'USD') {
+      const currencyId = this.$store.getters.getValueOfField({
+        containerUuid,
+        columnName: 'C_Currency_ID'
+      })
+      const currencyToPay = this.isEmptyValue(currencyUuid) ? currencyId : currencyUuid
+      if (this.currencyDisplay(currencyToPay).currencyUuid !== this.currencyPoint.uuid) {
         this.amontSend = this.convert.divideRate * this.amontSend
       }
       if (this.sendToServer) {
@@ -603,7 +609,7 @@ export default {
           amount: this.amontSend,
           paymentDate,
           tenderTypeCode,
-          currencyUuid
+          currencyUuid: this.currencyDisplay(currencyToPay).currencyUuid
         })
       }
       this.amontSend = 0
@@ -745,6 +751,15 @@ export default {
         conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: convertCurrency.currencyUuid
+      })
+    },
+    undoPatment() {
+      const list = this.listPayments[this.listPayments.length - 1]
+      const orderUuid = list.orderUuid
+      const paymentUuid = list.uuid
+      this.$store.dispatch('deletetPayments', {
+        orderUuid,
+        paymentUuid
       })
     },
     subscribeChanges() {

@@ -448,7 +448,7 @@ export default {
     setTimeout(() => {
       this.tenderTypeDisplaye()
       this.currencyDisplaye()
-    }, 2000)
+    }, 1500)
   },
   methods: {
     changePos(posElement) {

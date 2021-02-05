@@ -362,10 +362,10 @@ const collection = {
     getListPayments: (state) => {
       return state.listPayments
     },
-    getTenderTypeDisplaye: (state) => {
+    getListsPaymentTypes: (state) => {
       return state.tenderTypeDisplaye
     },
-    getCurrencyDisplaye: (state) => {
+    getListCurrency: (state) => {
       return state.currency
     },
     getConvertionPayment: (state) => {
