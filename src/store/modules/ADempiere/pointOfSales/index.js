@@ -136,7 +136,17 @@ const pointOfSales = {
       return currentPOS.uuid
     },
     // current pos info
-    getCurrentPOS: (state) => {
+    getCurrentPOS: (state, getters) => {
+      const userUuid = getters['user/getUserUuid']
+      const sellingPointsList = state.pointOfSales.sellingPointsList.length
+      if (sellingPointsList > 1) {
+        const currentPOS = state.pointOfSales.sellingPointsList.find(elem => {
+          if (elem.salesRepresentative.uuid === userUuid) {
+            return elem
+          }
+        })
+        return currentPOS
+      }
       if (isEmptyValue(state.pointOfSales)) {
         return undefined
       }
