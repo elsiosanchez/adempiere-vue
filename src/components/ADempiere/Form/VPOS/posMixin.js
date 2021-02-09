@@ -10,6 +10,7 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
+import posProcess from '@/utils/ADempiere/constants/posProcess'
 
 export default {
   name: 'POSMixin',
@@ -51,7 +52,8 @@ export default {
         quantityAvailable: 0
       },
       edit: false,
-      displayType: ''
+      displayType: '',
+      process: posProcess
     }
   },
   computed: {
@@ -449,7 +451,6 @@ export default {
       this.$refs.linesTable.setCurrentRow(this.listOrderLine[0])
     },
     shortcutKeyMethod(event) {
-      console.log(event.srcKey)
       switch (event.srcKey) {
         // case 'options':
         case 'up':
@@ -499,6 +500,11 @@ export default {
             })
           break
       }
+    },
+    findProcess(process) {
+      process.forEach(item => {
+        this.$store.dispatch('getProcessFromServer', { containerUuid: item.uuid })
+      })
     }
   }
 }

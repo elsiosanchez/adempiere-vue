@@ -5,7 +5,6 @@
       <br>
       {{ $t('form.pos.optionsPoinSales.title') }}
     </div>
-
     <el-collapse v-model="activeName" accordion>
       <el-collapse-item :title="$t('form.pos.optionsPoinSales.salesOrder.title')" name="salesOrder">
         <el-row :gutter="12" style="padding-right: 10px;">
@@ -266,12 +265,13 @@ import {
   requestPrintOrder,
   requestGenerateImmediateInvoice,
   requestCompletePreparedOrder,
-  requestReverseSalesTransaction,
+  // requestReverseSalesTransaction,
   requestCreateWithdrawal,
   requestCreateNewCustomerReturnOrder,
   requestCashClosing,
   requestDeleteOrder
 } from '@/api/ADempiere/form/point-of-sales.js'
+import posProcess from '@/utils/ADempiere/constants/posProcess'
 
 export default {
   name: 'Options',
@@ -319,6 +319,9 @@ export default {
     },
     currentPOS() {
       return this.$store.getters.getCurrentPOS
+    },
+    order() {
+      return this.$store.getters.getFindOrder
     },
     pointOfSalesId() {
       const currentPOS = this.currentPOS
@@ -417,9 +420,38 @@ export default {
       })
     },
     reverseSalesTransaction() {
-      // TODO: Add BPartner
-      requestReverseSalesTransaction({
-        orderUuid: this.$route.query.action
+      const process = this.$store.getters.getProcess(posProcess[1].uuid)
+      const order = this.$store.getters.getListOrder.ordersList.find(item => {
+        if (item.uuid === this.$route.query.action) {
+          return item
+        }
+      })
+      this.$store.dispatch('startProcess', {
+        action: process,
+        isProcessTableSelection: false,
+        containerUuid: process.containerUuid,
+        parametersList: [
+          {
+            columnName: 'C_Order_ID',
+            value: order.id
+          },
+          {
+            columnName: 'Bill_BPartner_ID',
+            value: order.businessPartner.id
+          },
+          {
+            columnName: 'IsCancelled',
+            value: false
+          },
+          {
+            columnName: 'IsShipConfirm',
+            value: true
+          },
+          {
+            columnName: 'C_DocTypeRMA_ID',
+            value: 'VO'
+          }
+        ]
       })
     },
     createWithdrawal() {

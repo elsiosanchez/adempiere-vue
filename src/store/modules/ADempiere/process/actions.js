@@ -147,7 +147,7 @@ export default {
         processResult = {
           ...processResult,
           menuParentUuid,
-          processIdPath: routeToDelete.path,
+          processIdPath: isEmptyValue(routeToDelete) ? '' : routeToDelete.path,
           printFormatUuid: action.printFormatUuid,
           // process attributes
           action: processDefinition.name,
