@@ -140,12 +140,7 @@ const pointOfSales = {
       const userUuid = getters['user/getUserUuid']
       const sellingPointsList = state.pointOfSales.sellingPointsList.length
       if (sellingPointsList > 1) {
-        const currentPOS = state.pointOfSales.sellingPointsList.find(elem => {
-          if (elem.salesRepresentative.uuid === userUuid) {
-            return elem
-          }
-        })
-        return currentPOS
+        return state.pointOfSales.sellingPointsList.find(elem => elem.salesRepresentative.uuid === userUuid)
       }
       if (isEmptyValue(state.pointOfSales)) {
         return undefined
