@@ -135,6 +135,7 @@ export default {
   },
   created() {
     this.getPanel()
+    this.reloadOrder(true)
   },
   beforeMount() {
     if (!this.isEmptyValue(this.currentPoint)) {
@@ -143,7 +144,7 @@ export default {
         this.listOrderLines(this.currentOrder)
       }
     }
-
+    this.findProcess(this.process)
     this.unsubscribe = this.subscribeChanges()
   },
   beforeDestroy() {
@@ -348,8 +349,8 @@ export default {
         if (!this.isEmptyValue(orderUuid)) {
           requestGetOrder(orderUuid)
             .then(orderResponse => {
-              this.fillOrder(orderResponse)
               this.$store.dispatch('currentOrder', orderResponse)
+              this.fillOrder(orderResponse)
               this.listOrderLines(orderResponse)
             })
             .catch(error => {
@@ -501,8 +502,8 @@ export default {
           break
       }
     },
-    findProcess(process) {
-      process.forEach(item => {
+    findProcess(processPos) {
+      processPos.forEach(item => {
         this.$store.dispatch('getProcessFromServer', { containerUuid: item.uuid })
       })
     }

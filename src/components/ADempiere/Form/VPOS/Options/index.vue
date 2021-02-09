@@ -421,11 +421,6 @@ export default {
     },
     reverseSalesTransaction() {
       const process = this.$store.getters.getProcess(posProcess[1].uuid)
-      const order = this.$store.getters.getListOrder.ordersList.find(item => {
-        if (item.uuid === this.$route.query.action) {
-          return item
-        }
-      })
       this.$store.dispatch('startProcess', {
         action: process,
         isProcessTableSelection: false,
@@ -433,11 +428,11 @@ export default {
         parametersList: [
           {
             columnName: 'C_Order_ID',
-            value: order.id
+            value: this.currentPOS.id
           },
           {
             columnName: 'Bill_BPartner_ID',
-            value: order.businessPartner.id
+            value: this.currentPOS.businessPartner.id
           },
           {
             columnName: 'IsCancelled',
