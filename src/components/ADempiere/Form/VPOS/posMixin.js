@@ -135,7 +135,6 @@ export default {
   },
   created() {
     this.getPanel()
-    this.reloadOrder(true)
   },
   beforeMount() {
     if (!this.isEmptyValue(this.currentPoint)) {
@@ -149,6 +148,11 @@ export default {
   },
   beforeDestroy() {
     this.unsubscribe()
+  },
+  mounted() {
+    if (this.isEmptyValue(this.currentOrder)) {
+      this.reloadOrder(true, this.$route.query.action)
+    }
   },
   methods: {
     formatDate,
@@ -298,7 +302,6 @@ export default {
 
         // user session
         const salesRepresentativeUuid = this.$store.getters['user/getUserUuid']
-
         requestCreateOrder({
           posUuid,
           customerUuid,
@@ -345,7 +348,6 @@ export default {
             orderUuid = this.$store.getters.getOrder.uuid // this.currentOrder.uuid
           }
         }
-
         if (!this.isEmptyValue(orderUuid)) {
           requestGetOrder(orderUuid)
             .then(orderResponse => {

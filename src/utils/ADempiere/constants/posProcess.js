@@ -18,6 +18,10 @@ const posProcess = [
   {
     name: 'C_POS Bank Statement Close',
     uuid: 'a42ce118-fb40-11e8-a479-7a0060f0aa01'
+  },
+  {
+    name: 'C_Order CopyFrom',
+    uuid: 'a42ad0c6-fb40-11e8-a479-7a0060f0aa01'
   }
 ]
 export default posProcess

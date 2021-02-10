@@ -124,6 +124,18 @@
             <el-card shadow="hover">
               <p
                 :style="blockOption"
+                @click="copyOrder "
+              >
+                <i class="el-icon-document-copy" />
+                <br>
+                Copiar Orden
+              </p>
+            </el-card>
+          </el-col>
+          <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
                 @click="deleteOrder"
               >
                 <i class="el-icon-close" />
@@ -267,7 +279,8 @@ import {
   requestCompletePreparedOrder,
   // requestReverseSalesTransaction,
   requestCreateWithdrawal,
-  requestCreateNewCustomerReturnOrder,
+  requestCreateOrder,
+  // requestCreateNewCustomerReturnOrder,
   requestCashClosing,
   requestDeleteOrder
 } from '@/api/ADempiere/form/point-of-sales.js'
@@ -318,10 +331,10 @@ export default {
       return this.$store.getters.getSellingPointsList
     },
     currentPOS() {
-      return this.$store.getters.getCurrentPOS
+      return this.$store.getters.getOrder
     },
-    order() {
-      return this.$store.getters.getFindOrder
+    currentPoint() {
+      return this.$store.getters.getCurrentPOS
     },
     pointOfSalesId() {
       const currentPOS = this.currentPOS
@@ -458,9 +471,39 @@ export default {
       })
     },
     createNewCustomerReturnOrder() {
-      requestCreateNewCustomerReturnOrder({
-        orderUuid: this.$route.query.action
+
+    },
+    copyOrder() {
+      const posUuid = this.currentPoint.uuid
+      requestCreateOrder({
+        posUuid,
+        customerUuid: this.currentPOS.businessPartner.uuid,
+        salesRepresentativeUuid: this.currentPOS.salesRepresentative.uuid
       })
+        .then(order => {
+          this.$store.dispatch('currentOrder', order)
+
+          this.$router.push({
+            params: {
+              ...this.$route.params
+            },
+            query: {
+              ...this.$route.query,
+              action: order.uuid
+            }
+          }).then(() => {
+          }).catch(() => {})
+
+          this.$store.commit('setIsReloadListOrders')
+        })
+        .catch(error => {
+          console.error(error.message)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
     },
     cashClosing() {
       const { uuid: posUuid, id: posId } = this.getCurrentPOS
