@@ -347,6 +347,7 @@ export default {
           createPos: 'Create Point of Sale Withdrawal',
           print: 'Print Document',
           cancelOrder: 'Cancel Order',
+          copyOrderLine: 'Copy Order Lines',
           copyOrder: 'Copy Order'
         },
         cashManagement: {

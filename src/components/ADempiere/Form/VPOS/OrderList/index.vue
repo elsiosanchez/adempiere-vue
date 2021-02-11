@@ -45,7 +45,8 @@
       :highlight-current-row="highlightRow"
       :height="heightTable"
       @shortkey.native="keyAction"
-      @current-change="handleCurrentChange"
+      @current-change="orderPrpcess"
+      @row-dblclick="handleCurrentChange"
     >
       <el-table-column
         prop="documentNo"
@@ -245,11 +246,6 @@ export default {
       // close popover
       this.$store.commit('showListOrders', false)
       this.$store.dispatch('currentOrder', row)
-      const parametersList = [{
-        columnName: 'C_Order_ID',
-        value: row.id
-      }]
-      this.$store.dispatch('addParametersProcessPos', parametersList)
       if (!this.isEmptyValue(row)) {
         this.$store.dispatch('deleteAllCollectBox')
         this.$router.push({

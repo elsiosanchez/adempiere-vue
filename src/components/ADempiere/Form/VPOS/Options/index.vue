@@ -129,6 +129,18 @@
             <el-card shadow="hover">
               <p
                 :style="blockOption"
+                @click="copyLineOrder "
+              >
+                <i class="el-icon-document-copy" />
+                <br>
+                {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrderLine') }}
+              </p>
+            </el-card>
+          </el-col>
+          <!-- <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
                 @click="copyOrder "
               >
                 <i class="el-icon-document-copy" />
@@ -136,7 +148,7 @@
                 {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrder') }}
               </p>
             </el-card>
-          </el-col>
+          </el-col> -->
           <el-col :span="size">
             <el-card shadow="hover">
               <p
@@ -286,8 +298,7 @@ import {
   requestCreateWithdrawal,
   requestCreateNewCustomerReturnOrder,
   requestCashClosing,
-  requestDeleteOrder,
-  requestCreateOrder
+  requestDeleteOrder
 } from '@/api/ADempiere/form/point-of-sales.js'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import posProcess from '@/utils/ADempiere/constants/posProcess'
@@ -496,41 +507,14 @@ export default {
       })
     },
     copyOrder() {
-      const posUuid = this.currentPoint.uuid
-      requestCreateOrder({
-        posUuid,
-        customerUuid: this.currentPOS.businessPartner.uuid,
-        salesRepresentativeUuid: this.currentPOS.salesRepresentative.uuid
-      })
-        .then(order => {
-          this.$store.dispatch('currentOrder', order)
-
-          this.$router.push({
-            params: {
-              ...this.$route.params
-            },
-            query: {
-              ...this.$route.query,
-              action: order.uuid
-            }
-          }).then(() => {
-          }).catch(() => {})
-
-          this.$store.commit('setIsReloadListOrders')
-        })
-        .catch(error => {
-          console.error(error.message)
-          this.$message({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
-        })
-        .finally(() => {
-          this.processPos = posProcess[5].uuid
-          const process = this.$store.getters.getProcess(posProcess[5].uuid)
-          this.showModal(process)
-        })
+      this.processPos = posProcess[5].uuid
+      const process = this.$store.getters.getProcess(posProcess[5].uuid)
+      this.showModal(process)
+    },
+    copyLineOrder() {
+      this.processPos = posProcess[5].uuid
+      const process = this.$store.getters.getProcess(posProcess[5].uuid)
+      this.showModal(process)
     },
     cashClosing() {
       const { uuid: posUuid, id: posId } = this.getCurrentPOS

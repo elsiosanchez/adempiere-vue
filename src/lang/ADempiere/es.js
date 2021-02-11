@@ -322,6 +322,7 @@ export default {
           createPos: 'Crear Retiro de Punto de Venta',
           print: 'Imprimir Documento',
           cancelOrder: 'Cancelar Orden',
+          copyOrderLine: 'Copiar Lineas de la Orden',
           copyOrder: 'Copiar Orden'
         },
         cashManagement: {
