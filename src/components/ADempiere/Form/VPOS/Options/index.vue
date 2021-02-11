@@ -129,14 +129,26 @@
             <el-card shadow="hover">
               <p
                 :style="blockOption"
+                @click="copyLineOrder "
+              >
+                <i class="el-icon-document-copy" />
+                <br>
+                {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrderLine') }}
+              </p>
+            </el-card>
+          </el-col>
+          <!-- <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
                 @click="copyOrder "
               >
                 <i class="el-icon-document-copy" />
                 <br>
-                Copiar Lineas Orden
+                {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrder') }}
               </p>
             </el-card>
-          </el-col>
+          </el-col> -->
           <el-col :span="size">
             <el-card shadow="hover">
               <p
@@ -284,7 +296,7 @@ import {
   requestCompletePreparedOrder,
   // requestReverseSalesTransaction,
   requestCreateWithdrawal,
-  // requestCreateNewCustomerReturnOrder,
+  requestCreateNewCustomerReturnOrder,
   requestCashClosing,
   requestDeleteOrder
 } from '@/api/ADempiere/form/point-of-sales.js'
@@ -481,7 +493,9 @@ export default {
       })
     },
     createNewCustomerReturnOrder() {
-
+      requestCreateNewCustomerReturnOrder({
+        orderUuid: this.$route.query.action
+      })
     },
     showModal(action) {
       this.$store.dispatch('setShowDialog', {
@@ -493,6 +507,11 @@ export default {
       })
     },
     copyOrder() {
+      this.processPos = posProcess[5].uuid
+      const process = this.$store.getters.getProcess(posProcess[5].uuid)
+      this.showModal(process)
+    },
+    copyLineOrder() {
       this.processPos = posProcess[5].uuid
       const process = this.$store.getters.getProcess(posProcess[5].uuid)
       this.showModal(process)
