@@ -170,7 +170,7 @@ export default {
     this.unsubscribe()
   },
   mounted() {
-    if (this.isEmptyValue(this.currentOrder)) {
+    if (!this.isEmptyValue(this.$route.query)) {
       this.reloadOrder(true, this.$route.query.action)
     }
   },
