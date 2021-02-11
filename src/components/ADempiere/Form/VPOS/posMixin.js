@@ -82,7 +82,18 @@ export default {
         }
       }
 
-      return this.$store.getters.getFindOrder
+      return {
+        documentType: {},
+        documentStatus: {
+          value: ''
+        },
+        totalLines: 0,
+        grandTotal: 0,
+        salesRepresentative: {},
+        businessPartner: {
+          value: ''
+        }
+      }
     },
     currentPoint() {
       return this.$store.getters.getCurrentPOS
@@ -105,6 +116,9 @@ export default {
         return currentPOS.templateBusinessPartner
       }
       return false
+    },
+    updateOrderProcessPos() {
+      return this.$store.getters.getUpdateOrderPos
     }
   },
   watch: {
@@ -130,6 +144,12 @@ export default {
     isSetTemplateBP(bPartnerToSet) {
       if (bPartnerToSet) {
         this.setBusinessPartner(bPartnerToSet)
+      }
+    },
+    updateOrderProcessPos(value) {
+      if (value) {
+        this.reloadOrder(true)
+        this.$store.dispatch('updateOrderPos', false)
       }
     }
   },

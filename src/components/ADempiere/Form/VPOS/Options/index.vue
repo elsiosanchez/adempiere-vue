@@ -5,6 +5,11 @@
       <br>
       {{ $t('form.pos.optionsPoinSales.title') }}
     </div>
+    <modal-dialog
+      :parent-uuid="processPos"
+      :container-uuid="processPos"
+      panel-type="From"
+    />
     <el-collapse v-model="activeName" accordion>
       <el-collapse-item :title="$t('form.pos.optionsPoinSales.salesOrder.title')" name="salesOrder">
         <el-row :gutter="12" style="padding-right: 10px;">
@@ -128,7 +133,7 @@
               >
                 <i class="el-icon-document-copy" />
                 <br>
-                Copiar Orden
+                Copiar Lineas Orden
               </p>
             </el-card>
           </el-col>
@@ -279,19 +284,24 @@ import {
   requestCompletePreparedOrder,
   // requestReverseSalesTransaction,
   requestCreateWithdrawal,
-  requestCreateOrder,
   // requestCreateNewCustomerReturnOrder,
   requestCashClosing,
   requestDeleteOrder
 } from '@/api/ADempiere/form/point-of-sales.js'
+import ModalDialog from '@/components/ADempiere/Dialog'
 import posProcess from '@/utils/ADempiere/constants/posProcess'
+import orderLineMixin from '@/components/ADempiere/Form/VPOS/Order/orderLineMixin.js'
 
 export default {
   name: 'Options',
   components: {
     ListProductPrice,
-    OrdersList
+    OrdersList,
+    ModalDialog
   },
+  mixins: [
+    orderLineMixin
+  ],
   props: {
     metadata: {
       type: Object,
@@ -300,7 +310,8 @@ export default {
   },
   data() {
     return {
-      activeName: ''
+      activeName: '',
+      processPos: ''
     }
   },
   computed: {
@@ -377,8 +388,7 @@ export default {
       }).catch(error => {
         console.info(`VPOS/Options component (New Order): ${error.message}`)
       }).finally(() => {
-        const { templateBusinessPartner } = this.currentPOS
-
+        // const { templateBusinessPartner } = this.currentPOS
         this.$store.commit('updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
           attributes: [{
@@ -391,15 +401,15 @@ export default {
           },
           {
             columnName: 'C_BPartner_ID',
-            value: templateBusinessPartner.id
+            value: 1000006
           },
           {
             columnName: 'DisplayColumn_C_BPartner_ID',
-            value: templateBusinessPartner.name
+            value: 'Cliente Unico'
           },
           {
             columnName: ' C_BPartner_ID_UUID',
-            value: templateBusinessPartner.uuid
+            value: '9f6cf428-9209-11e9-8046-0242ac140002'
           }]
         })
 
@@ -473,37 +483,19 @@ export default {
     createNewCustomerReturnOrder() {
 
     },
-    copyOrder() {
-      const posUuid = this.currentPoint.uuid
-      requestCreateOrder({
-        posUuid,
-        customerUuid: this.currentPOS.businessPartner.uuid,
-        salesRepresentativeUuid: this.currentPOS.salesRepresentative.uuid
+    showModal(action) {
+      this.$store.dispatch('setShowDialog', {
+        type: action.type,
+        action: {
+          ...action,
+          containerUuid: action.uuid
+        }
       })
-        .then(order => {
-          this.$store.dispatch('currentOrder', order)
-
-          this.$router.push({
-            params: {
-              ...this.$route.params
-            },
-            query: {
-              ...this.$route.query,
-              action: order.uuid
-            }
-          }).then(() => {
-          }).catch(() => {})
-
-          this.$store.commit('setIsReloadListOrders')
-        })
-        .catch(error => {
-          console.error(error.message)
-          this.$message({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
-        })
+    },
+    copyOrder() {
+      this.processPos = posProcess[5].uuid
+      const process = this.$store.getters.getProcess(posProcess[5].uuid)
+      this.showModal(process)
     },
     cashClosing() {
       const { uuid: posUuid, id: posId } = this.getCurrentPOS
@@ -516,7 +508,19 @@ export default {
       requestDeleteOrder({
         orderUuid: this.$route.query.action
       })
-      this.newOrder()
+        .then(response => {
+          this.changePos(this.$store.getters.getCurrentPOS)
+        })
+        .finally(() => {
+          this.$store.dispatch('listOrdersFromServer', {
+            posUuid: this.$store.getters.getCurrentPOS.uuid
+          })
+          this.$message({
+            type: 'success',
+            message: 'Orden Cancelada',
+            showClose: true
+          })
+        })
     }
   }
 }
