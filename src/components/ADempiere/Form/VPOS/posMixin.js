@@ -147,9 +147,8 @@ export default {
       }
     },
     updateOrderProcessPos(value) {
-      if (value) {
+      if (!value && !this.isEmptyValue(this.$route.query)) {
         this.reloadOrder(true)
-        this.$store.dispatch('updateOrderPos', false)
       }
     }
   },
@@ -170,7 +169,7 @@ export default {
     this.unsubscribe()
   },
   mounted() {
-    if (this.isEmptyValue(this.currentOrder)) {
+    if (!this.isEmptyValue(this.$route.query)) {
       this.reloadOrder(true, this.$route.query.action)
     }
   },
