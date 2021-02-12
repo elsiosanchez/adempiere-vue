@@ -10,7 +10,7 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
-import posProcess from '@/utils/ADempiere/constants/posProcess'
+// import posProcess from '@/utils/ADempiere/constants/posProcess'
 
 export default {
   name: 'POSMixin',
@@ -52,8 +52,7 @@ export default {
         quantityAvailable: 0
       },
       edit: false,
-      displayType: '',
-      process: posProcess
+      displayType: ''
     }
   },
   computed: {
@@ -162,13 +161,13 @@ export default {
         this.listOrderLines(this.currentOrder)
       }
     }
-    this.findProcess(this.process)
     this.unsubscribe = this.subscribeChanges()
   },
   beforeDestroy() {
     this.unsubscribe()
   },
   mounted() {
+    // this.findProcess()
     if (!this.isEmptyValue(this.$route.query)) {
       this.reloadOrder(true, this.$route.query.action)
     }
@@ -522,11 +521,6 @@ export default {
             })
           break
       }
-    },
-    findProcess(processPos) {
-      processPos.forEach(item => {
-        this.$store.dispatch('getProcessFromServer', { containerUuid: item.uuid })
-      })
     }
   }
 }

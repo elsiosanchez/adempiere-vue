@@ -341,6 +341,9 @@ export default {
       return 24 / size
     }
   },
+  created() {
+    this.findProcess()
+  },
   methods: {
     notSubmitForm(event) {
       event.preventDefault()
@@ -419,7 +422,7 @@ export default {
       })
     },
     reverseSalesTransaction() {
-      const process = this.$store.getters.getProcess(posProcess[1].uuid)
+      const process = this.$store.getters.getProcess(posProcess[0].uuid)
       this.showModal(process)
       const parametersList = [
         {
@@ -468,7 +471,7 @@ export default {
       })
     },
     copyOrder() {
-      this.processPos = posProcess[5].uuid
+      this.processPos = posProcess[1].uuid
       const posUuid = this.currentPoint.uuid
       const parametersList = [{
         columnName: 'C_Order_ID',
@@ -505,13 +508,13 @@ export default {
           })
         })
         .finally(() => {
-          const process = this.$store.getters.getProcess(posProcess[5].uuid)
+          const process = this.$store.getters.getProcess(posProcess[1].uuid)
           this.showModal(process)
         })
     },
     copyLineOrder() {
-      this.processPos = posProcess[5].uuid
-      const process = this.$store.getters.getProcess(posProcess[5].uuid)
+      this.processPos = posProcess[1].uuid
+      const process = this.$store.getters.getProcess(posProcess[1].uuid)
       this.showModal(process)
     },
     cashClosing() {
@@ -544,6 +547,14 @@ export default {
     seeOrderList() {
       if (this.$store.getters.getListOrder.recordCount <= 0) {
         this.$store.dispatch('listOrdersFromServer', {})
+      }
+    },
+    findProcess() {
+      const findServer = this.$store.getters.getProcess('a42ad0c6-fb40-11e8-a479-7a0060f0aa01')
+      if (this.isEmptyValue(findServer)) {
+        posProcess.forEach(item => {
+          this.$store.dispatch('getProcessFromServer', { containerUuid: item.uuid, processId: item.id })
+        })
       }
     }
   }
