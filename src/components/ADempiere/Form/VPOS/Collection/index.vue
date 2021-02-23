@@ -576,7 +576,6 @@ export default {
         columnName: 'C_Currency_ID'
       })
       const currencyToPay = this.isEmptyValue(currencyUuid) ? currencyId : currencyUuid
-      console.log(this.currencyDisplay(currencyToPay).currencyUuid, this.currencyPoint.uuid, this.amontSend)
       if (this.currencyDisplay(currencyToPay).currencyUuid !== this.currencyPoint.uuid) {
         this.amontSend = this.convert.divideRate * this.amontSend
       }
@@ -592,11 +591,6 @@ export default {
           currencyUuid
         })
       } else {
-        const epale = this.$store.getters.getValueOfField({
-          containerUuid,
-          columnName: 'PayAmt'
-        })
-        console.log(epale)
         this.$store.dispatch('createPayments', {
           posUuid,
           orderUuid,
