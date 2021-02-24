@@ -174,7 +174,6 @@ export default {
       if (!this.isEmptyValue(order)) {
         return order
       }
-      this.$store.dispatch('listOrderLine', [])
       return null
     },
     isReadyFromGetData() {
@@ -202,12 +201,12 @@ export default {
     }
   },
   mounted() {
-    const listOrder = this.$store.getters.getListOrderLine
-    if (this.isEmptyValue(listOrder) && !this.isEmptyValue(this.$store.getters.getCurrentPOS.uuid)) {
-      this.$store.dispatch('listOrdersFromServer', {
-        posUuid: this.$store.getters.getCurrentPOS.uuid
-      })
-    }
+    // const listOrder = this.$store.getters.getListOrderLine
+    // if (this.isEmptyValue(listOrder) && !this.isEmptyValue(this.$store.getters.getCurrentPOS.uuid)) {
+    //   this.$store.dispatch('listOrdersFromServer', {
+    //     posUuid: this.$store.getters.getCurrentPOS.uuid
+    //   })
+    // }
   },
   beforeDestroy() {
     this.unsubscribe()

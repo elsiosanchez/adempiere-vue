@@ -1,8 +1,8 @@
 import {
   findProduct,
-  requestCreateOrder,
-  requestGetOrder,
-  requestUpdateOrder,
+  // requestCreateOrder,
+  // requestGetOrder,
+  // requestUpdateOrder,
   requestUpdateOrderLine
 } from '@/api/ADempiere/form/point-of-sales.js'
 import {
@@ -23,18 +23,18 @@ export default {
   data() {
     return {
       product: {},
-      order: {
-        documentType: {},
-        documentStatus: {
-          value: ''
-        },
-        totalLines: 0,
-        grandTotal: 0,
-        salesRepresentative: {},
-        businessPartner: {
-          value: ''
-        }
-      },
+      // order: {
+      //   documentType: {},
+      //   documentStatus: {
+      //     value: ''
+      //   },
+      //   totalLines: 0,
+      //   grandTotal: 0,
+      //   salesRepresentative: {},
+      //   businessPartner: {
+      //     value: ''
+      //   }
+      // },
       currentTable: 0,
       currentOrderLine: {
         product: {
@@ -57,9 +57,6 @@ export default {
   },
   computed: {
     allOrderLines() {
-      if (this.isEmptyValue(this.listOrderLine)) {
-        return []
-      }
       return this.listOrderLine
     },
     listOrderLine() {
@@ -75,10 +72,7 @@ export default {
     currentOrder() {
       const action = this.$route.query.action
       if (!this.isEmptyValue(action)) {
-        const order = this.ordersList.find(item => item.uuid === action)
-        if (!this.isEmptyValue(order)) {
-          return order
-        }
+        return this.$store.getters.getOrder
       }
 
       return {
@@ -90,7 +84,8 @@ export default {
         grandTotal: 0,
         salesRepresentative: {},
         businessPartner: {
-          value: ''
+          value: '',
+          uuid: ''
         }
       }
     },
@@ -118,21 +113,47 @@ export default {
     },
     updateOrderProcessPos() {
       return this.$store.getters.getUpdateOrderPos
+    },
+    getOrder() {
+      return this.$store.getters.getOrder
     }
   },
   watch: {
+    getOrder(value) {
+      if (!this.isEmptyValue(value)) {
+        // this.order = value
+        this.$store.commit('updateValuesOfContainer', {
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          attributes: [{
+            columnName: 'C_BPartner_ID',
+            value: value.businessPartner.id
+          },
+          {
+            columnName: 'DisplayColumn_C_BPartner_ID',
+            value: value.businessPartner.name
+          },
+          {
+            columnName: ' C_BPartner_ID_UUID',
+            value: value.businessPartner.uuid
+          }]
+        })
+      }
+    },
     currentOrder(value) {
       if (this.isEmptyValue(value)) {
         this.orderLines = []
-        this.order = {
-          documentType: {},
-          documentStatus: {},
-          salesRepresentative: {}
-        }
+        // this.order = {
+        //   documentType: {},
+        //   documentStatus: {},
+        //   salesRepresentative: {}
+        // }
         this.$store.dispatch('listOrderLine', [])
         this.listOrderLines({})
       } else {
-        this.fillOrder(value)
+        // this.$store.dispatch('fillOrde', {
+        //   attribute: value
+        // })
         this.listOrderLines(value)
       }
     },
@@ -157,7 +178,10 @@ export default {
   beforeMount() {
     if (!this.isEmptyValue(this.currentPoint)) {
       if (!this.isEmptyValue(this.currentOrder)) {
-        this.fillOrder(this.currentOrder)
+        // this.$store.dispatch('fillOrde', {
+        //   attribute: this.currentOrder
+        // })
+        // this.fillOrder(this.currentOrder)
         this.listOrderLines(this.currentOrder)
       }
     }
@@ -203,44 +227,45 @@ export default {
       }
     },
     updateOrder(update) {
-      if (this.withoutPOSTerminal()) {
-        return
-      }
-      if (!this.$route.query || this.isEmptyValue(this.$route.query.action)) {
-        return
-      }
-
-      const { uuid: posUuid } = this.currentPoint
-
-      let customerUuid
-      if (update.columnName === 'C_BPartner_ID_UUID') {
-        customerUuid = update.value
-        if (this.isEmptyValue(customerUuid) && !this.isEmptyValue(this.currentPoint)) {
-          customerUuid = this.currentPoint.templateBusinessPartner.uuid
-        }
-      }
-
-      requestUpdateOrder({
-        orderUuid: this.$route.query.action,
-        posUuid,
-        customerUuid
-        // documentTypeUuid: value.value,
-        // description
-      })
-        .then(response => {
-          // this.reloadOrder(true)
+      // if (this.withoutPOSTerminal()) {
+      //   return
+      // }
+      // if (!this.$route.query || this.isEmptyValue(this.$route.query.action)) {
+      //   return
+      // }
+      // const customerUuid = this.$store.getters.getValueOfField({
+      //   containerUuid: this.containerUuid,
+      //   columnName: 'C_BPartner_ID_UUID'
+      // })
+      // const name = this.$store.getters.getValueOfField({
+      //   containerUuid: this.containerUuid,
+      //   columnName: 'DisplayColumn_C_BPartner_ID'
+      // })
+      // const id = this.$store.getters.getValueOfField({
+      //   containerUuid: this.containerUuid,
+      //   columnName: 'C_BPartner_ID'
+      // })
+      // user session
+      if (update.value !== this.getOrder.businessPartner.uuid) {
+        console.log(this.currentPoint)
+        // const { uuid: posUuid } = this.currentPoint
+        // let customerUuid
+        // if (update.columnName === 'C_BPartner_ID_UUID') {
+        //   customerUuid = update.value
+        //   if (this.isEmptyValue(customerUuid) && !this.isEmptyValue(this.currentPoint)) {
+        //     customerUuid = this.currentPoint.templateBusinessPartner.uuid
+        //   }
+        // }
+        this.$store.dispatch('updateOrder', {
+          orderUuid: this.$route.query.action,
+          posUuid: this.currentPoint.uuid,
+          customerUuid: update.value
         })
-        .catch(error => {
-          console.error(error.message)
-          this.$message({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
-        })
+      }
     },
     setBusinessPartner({ name, id, uuid }) {
       // Use update values of container (without subscription)
+      console.log({ name, id, uuid })
       this.$store.commit('updateValuesOfContainer', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
@@ -271,6 +296,7 @@ export default {
       })
         .then(productPrice => {
           this.product = productPrice.product
+          console.log(this.currentPoint)
           this.createOrder(true)
         })
         .catch(error => {
@@ -309,50 +335,43 @@ export default {
       const orderUuid = this.$route.query.action
       if (this.isEmptyValue(orderUuid)) {
         const posUuid = this.currentPoint.uuid
-
         let customerUuid = this.$store.getters.getValueOfField({
           containerUuid: this.containerUuid,
           columnName: 'C_BPartner_ID_UUID'
         })
-        if (this.isEmptyValue(customerUuid)) {
+        const id = this.$store.getters.getValueOfField({
+          containerUuid: this.containerUuid,
+          columnName: 'C_BPartner_ID'
+        })
+        if (this.isEmptyValue(customerUuid) || id === 1000006) {
           customerUuid = this.currentPoint.templateBusinessPartner.uuid
         }
-
         // user session
-        const salesRepresentativeUuid = this.$store.getters['user/getUserUuid']
-        requestCreateOrder({
+        // alert(name)
+        this.$store.dispatch('createOrder', {
           posUuid,
           customerUuid,
-          salesRepresentativeUuid
+          salesRepresentativeUuid: this.currentPoint.templateBusinessPartner.uuid
         })
-          .then(order => {
-            this.$store.dispatch('currentOrder', order)
-            this.fillOrder(order)
-
+          .then(response => {
+            // this.order = response
+            this.reloadOrder(true, response.uuid)
             this.$router.push({
               params: {
                 ...this.$route.params
               },
               query: {
                 ...this.$route.query,
-                action: order.uuid
+                action: response.uuid
               }
             }).then(() => {
               if (withLine) {
-                this.createOrderLine(order.uuid)
+                this.createOrderLine(response.uuid)
               }
+              this.$store.dispatch('listOrdersFromServer', {
+                posUuid: this.$store.getters.getCurrentPOS.uuid
+              })
             }).catch(() => {})
-
-            // update orders list
-            this.$store.commit('setIsReloadListOrders')
-          })
-          .catch(error => {
-            console.error(error.message)
-            this.$message({
-              type: 'error',
-              message: error.message,
-              showClose: true
-            })
           })
       } else {
         this.createOrderLine(orderUuid)
@@ -367,22 +386,32 @@ export default {
           }
         }
         if (!this.isEmptyValue(orderUuid)) {
-          requestGetOrder(orderUuid)
-            .then(orderResponse => {
-              this.$store.dispatch('currentOrder', orderResponse)
-              this.fillOrder(orderResponse)
-              this.listOrderLines(orderResponse)
-            })
-            .catch(error => {
-              this.$message({
-                type: 'error',
-                message: error.message,
-                showClose: true
-              })
-            })
+          this.$store.dispatch('reloadOrder', { orderUuid })
+          // requestGetOrder(orderUuid)
+          //   .then(orderResponse => {
+          //     this.order = orderResponse
+          //     this.$store.dispatch('currentOrder', orderResponse)
+          //     this.$store.dispatch('fillOrde', {
+          //       attribute: orderResponse,
+          //       setToStore: false
+          //     })
+          //     // this.fillOrder(orderResponse)
+          //     this.listOrderLines(orderResponse)
+          //   })
+          //   .catch(error => {
+          //     this.$message({
+          //       type: 'error',
+          //       message: error.message,
+          //       showClose: true
+          //     })
+          //   })
         }
       } else {
-        this.fillOrder(this.currentOrder, false)
+        // this.$store.dispatch('fillOrde', {
+        //   attribute: this.currentOrder,
+        //   setToStore: false
+        // })
+        // this.fillOrder(this.currentOrder, false)
       }
     },
     fillOrder(order, setToStore = true) {
@@ -404,10 +433,11 @@ export default {
         })
       }
       if (!this.isEmptyValue(order.businessPartner)) {
+        console.log({ order }, this.setBusinessPartner(businessPartner))
         const { businessPartner } = order
         this.setBusinessPartner(businessPartner)
       }
-      this.order = orderToPush
+      // this.order = orderToPush
     },
     getOrderTax(currency) {
       if (this.isEmptyValue(this.order)) {
@@ -434,9 +464,9 @@ export default {
               }
               break
             //
-            case 'C_DocType_ID':
-              this.updateOrder(mutation.payload)
-              break
+            // case 'C_DocType_ID':
+            //   this.updateOrder(mutation.payload)
+            //   break
           }
         } else if (mutation.type === 'updateValueOfField') {
           // if (this.metadata.containerUuid === mutation.payload.containerUuid &&
