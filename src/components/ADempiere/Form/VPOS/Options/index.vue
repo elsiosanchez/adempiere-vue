@@ -370,7 +370,6 @@ export default {
         const { templateBusinessPartner } = this.$store.getters.getCurrentPOS
         // TODO: Set order with POS Terminal default values
         this.$store.commit('setListPayments', [])
-        console.log(this.currentPoint)
         this.$store.dispatch('setOrder', {
           documentType: {},
           documentStatus: {
