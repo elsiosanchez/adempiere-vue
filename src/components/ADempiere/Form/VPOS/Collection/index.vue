@@ -384,9 +384,6 @@ export default {
       }
       return 0
     },
-    // order() {
-    //   return this.$store.getters.getFindOrder
-    // },
     currencyPoint() {
       const currency = this.$store.getters.getCurrentPOS
       if (!this.isEmptyValue(currency)) {
