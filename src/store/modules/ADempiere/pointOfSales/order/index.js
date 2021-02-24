@@ -6,6 +6,11 @@ import getters from './getters.js'
 
 /**
  * Order Vuex Module
+ * Create Order
+ * Update Order
+ * List Order
+ * Delete Order
+ * Reload Order
  * @author Elsio Sanchez <elsiosanches@gmail.com>
  */
 const ordes = {

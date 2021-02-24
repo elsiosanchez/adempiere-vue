@@ -468,14 +468,12 @@ export default {
     openCollectionPanel() {
       this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
       this.$store.commit('setShowPOSCollection', true)
-      // this.isShowedPOSKeyLayout = true
       const orderUuid = this.$route.query.action
       this.$store.dispatch('listPayments', { orderUuid })
       this.isShowedPOSKeyLaout = !this.isShowedPOSKeyLaout
       this.$store.commit('setShowPOSOptions', false)
     },
     newOrder() {
-      // this.$store.dispatch('findOrderServer', {})
       this.$router.push({
         params: {
           ...this.$route.params
@@ -533,25 +531,29 @@ export default {
     tenderTypeDisplaye() {
       if (!this.isEmptyValue(this.fieldsList)) {
         const tenderType = this.fieldsList[5].reference
-        this.$store.dispatch('getLookupListFromServer', {
-          tableName: tenderType.tableName,
-          query: tenderType.query
-        })
-          .then(response => {
-            this.$store.dispatch('tenderTypeDisplaye', response)
+        if (!this.isEmptyValue(tenderType)) {
+          this.$store.dispatch('getLookupListFromServer', {
+            tableName: tenderType.tableName,
+            query: tenderType.query
           })
+            .then(response => {
+              this.$store.dispatch('tenderTypeDisplaye', response)
+            })
+        }
       }
     },
     currencyDisplaye() {
       if (!this.isEmptyValue(this.fieldsList)) {
         const currency = this.fieldsList[4].reference
-        this.$store.dispatch('getLookupListFromServer', {
-          tableName: currency.tableName,
-          query: currency.query
-        })
-          .then(response => {
-            this.$store.dispatch('currencyDisplaye', response)
+        if (!this.isEmptyValue(currency)) {
+          this.$store.dispatch('getLookupListFromServer', {
+            tableName: currency.tableName,
+            query: currency.query
           })
+            .then(response => {
+              this.$store.dispatch('currencyDisplaye', response)
+            })
+        }
       }
     }
   }

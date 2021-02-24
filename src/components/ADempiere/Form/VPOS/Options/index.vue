@@ -354,8 +354,6 @@ export default {
       this.newOrder()
     },
     newOrder() {
-      // this.$store.dispatch('findOrderServer', {})
-
       const pos = this.pointOfSalesId || this.$route.query.pos
       this.$router.push({
         params: {

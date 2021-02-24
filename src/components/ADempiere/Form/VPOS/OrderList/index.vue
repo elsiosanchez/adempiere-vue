@@ -200,14 +200,6 @@ export default {
       this.loadOrdersList()
     }
   },
-  mounted() {
-    // const listOrder = this.$store.getters.getListOrderLine
-    // if (this.isEmptyValue(listOrder) && !this.isEmptyValue(this.$store.getters.getCurrentPOS.uuid)) {
-    //   this.$store.dispatch('listOrdersFromServer', {
-    //     posUuid: this.$store.getters.getCurrentPOS.uuid
-    //   })
-    // }
-  },
   beforeDestroy() {
     this.unsubscribe()
   },
