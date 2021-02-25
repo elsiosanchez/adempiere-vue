@@ -357,7 +357,10 @@ export default {
       if (currentPOS && !this.isEmptyValue(currentPOS.name)) {
         return currentPOS
       }
-      return undefined
+      return {
+        name: '',
+        uuid: ''
+      }
     },
     sellingPointsList() {
       return this.$store.getters.getSellingPointsList
