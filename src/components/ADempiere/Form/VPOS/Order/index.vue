@@ -459,7 +459,6 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.tenderTypeDisplaye()
       this.currencyDisplaye()
     }, 1500)
   },
