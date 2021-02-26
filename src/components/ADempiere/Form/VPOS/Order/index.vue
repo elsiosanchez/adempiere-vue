@@ -429,7 +429,7 @@ export default {
     currencyUuid(value) {
       if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPoint)) {
         this.$store.dispatch('conversionDivideRate', {
-          converCurrency: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
