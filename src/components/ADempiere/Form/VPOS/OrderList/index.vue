@@ -9,7 +9,7 @@
           Ver Histórico de Órdenes
         </template>
         <el-form
-          v-if="showField"
+          v-if="!isEmptyValue(metadataList)"
           label-position="top"
           label-width="10px"
           @submit.native.prevent="notSubmitForm"
@@ -26,7 +26,7 @@
         <div
           v-else
           key="form-loading"
-          v-loading="!showField"
+          v-loading="isEmptyValue(metadataList)"
           :element-loading-text="$t('notifications.loading')"
           element-loading-spinner="el-icon-loading"
           element-loading-background="rgba(255, 255, 255, 0.8)"
@@ -183,8 +183,8 @@ export default {
       return null
     },
     isReadyFromGetData() {
-      const { showField, isReload } = this.tableOrder
-      return !showField || isReload
+      const { isReload } = this.tableOrder
+      return isReload
     },
     shortsKey() {
       return {
@@ -195,7 +195,6 @@ export default {
   },
   watch: {
     showField(value) {
-      console.log(value)
       if (value && this.isEmptyValue(this.metadataList)) {
         this.setFieldsList()
       }

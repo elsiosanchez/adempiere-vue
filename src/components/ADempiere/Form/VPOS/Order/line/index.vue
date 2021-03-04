@@ -87,9 +87,6 @@ export default {
       this.fieldsListLine.forEach(element => {
         this.createFieldFromDictionary(element)
           .then(metadata => {
-            console.log({
-              metadata
-            })
             const data = metadata
             fieldsList.push({
               ...data,

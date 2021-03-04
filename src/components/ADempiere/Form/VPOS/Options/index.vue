@@ -39,19 +39,19 @@
                   :parent-metadata="metadata"
                   :show-field="showFieldListOrder"
                 />
-                <el-button
+                <p
                   slot="reference"
-                  type="text"
-                  @click="showFieldList = !showFieldList"
+                  :style="blockOption"
                 >
-                  <p
-                    :style="blockOption"
+                  <el-button
+                    type="text"
+                    @click="showFieldListOrder = !showFieldListOrder"
                   >
                     <svg-icon icon-class="list" />
                     <br>
                     {{ $t('form.pos.optionsPoinSales.salesOrder.ordersHistory') }}
-                  </p>
-                </el-button>
+                  </el-button>
+                </p>
                 <!-- <p
                   slot="reference"
                   :style="blockOption"
