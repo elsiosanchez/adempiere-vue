@@ -107,17 +107,45 @@ export default {
     createFieldFromDictionary,
     // TODO: Get locations values.
     createBusinessParter() {
-      let values = this.$store.getters.getValuesView({
-        containerUuid: this.containerUuid,
-        format: 'object'
+      const value = this.$store.getters.getValueOfField({
+        containerUuid: 'Business-Partner-Create',
+        columnName: 'Value'
       })
+      const name = this.$store.getters.getValueOfField({
+        containerUuid: 'Business-Partner-Create',
+        columnName: 'Name'
+      })
+      const name2 = this.$store.getters.getValueOfField({
+        containerUuid: 'Business-Partner-Create',
+        columnName: 'Name2'
+      })
+      const eMail = this.$store.getters.getValueOfField({
+        containerUuid: 'Business-Partner-Create',
+        columnName: 'EMail'
+      })
+      const phone = this.$store.getters.getValueOfField({
+        containerUuid: 'Business-Partner-Create',
+        columnName: 'Phone'
+      })
+      // let values = this.$store.getters.getValuesView({
+      //   containerUuid: this.containerUuid,
+      //   format: 'object'
+      // })
+      // this.convertValuesToSend(values)
       // if (this.isEmptyValue(values)) {
       //   return
       // }
-      values = this.convertValuesToSend(values)
+      // values = this.convertValuesToSend(values)
       if (this.isEmptyValue(this.emptyMandatoryFields)) {
         this.isLoadingRecord = true
-        requestCreateBusinessPartner(values)
+        requestCreateBusinessPartner({
+          value,
+          name,
+          name2,
+          eMail,
+          phone,
+          posUuid: this.$store.getters.getCurrentPOS.uuid
+        })
           .then(responseBPartner => {
             // TODO: Add new record into vuex store.
             this.setBusinessPartner(responseBPartner)
