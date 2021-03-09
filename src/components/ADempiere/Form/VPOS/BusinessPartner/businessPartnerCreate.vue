@@ -111,9 +111,9 @@ export default {
         containerUuid: this.containerUuid,
         format: 'object'
       })
-      if (this.isEmptyValue(values)) {
-        return
-      }
+      // if (this.isEmptyValue(values)) {
+      //   return
+      // }
       values = this.convertValuesToSend(values)
       if (this.isEmptyValue(this.emptyMandatoryFields)) {
         this.isLoadingRecord = true
