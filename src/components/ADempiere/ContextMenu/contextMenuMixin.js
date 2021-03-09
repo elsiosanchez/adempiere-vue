@@ -272,7 +272,8 @@ export default {
       } else if (this.panelType === 'browser') {
         const fieldsEmpty = this.$store.getters.getFieldsListEmptyMandatory({
           containerUuid: this.containerUuid,
-          fieldsList: this.getterFieldsList
+          fieldsList: this.getterFieldsList,
+          isValidate: true
         })
         if (fieldsEmpty.length) {
           this.$message({
@@ -482,7 +483,8 @@ export default {
         containerParams = this.lastParameter
       }
       const fieldsNotReady = this.$store.getters.getFieldsListEmptyMandatory({
-        containerUuid: containerParams
+        containerUuid: containerParams,
+        isValidate: true
       })
 
       // run process or report
