@@ -28,26 +28,14 @@ const actions = {
     return new Promise(resolve => {
       const organization = rootGetters['user/getOrganization']
       let organizationUuid
-      console.log({
-        organizationUuid
-      })
       if (!isEmptyValue(organization)) {
         organizationUuid = organization.uuid
       }
-      console.log({
-        organizationUuid
-      }, 2)
       const role = rootGetters['user/getRole']
       let roleUuid
-      console.log({
-        roleUuid
-      })
       if (!isEmptyValue(role)) {
         roleUuid = role.uuid
       }
-      console.log({
-        roleUuid
-      }, 2)
       const sessionUuid = getToken()
 
       loadMainMenu({
@@ -74,9 +62,6 @@ const actions = {
       resetRouter()
       dispatch('generateRoutes')
         .then(accessRoutes => {
-          console.log({
-            accessRoutes
-          })
           router.addRoutes(accessRoutes)
         })
         .finally(() => {
