@@ -196,10 +196,27 @@ export default {
         deleteRecord2: ['ctrl', 'd'],
         refreshData: ['f5']
       }
+    },
+    getCurrentRecord() {
+      return this.getAllDataRecords.record.find(fieldItem => {
+        if (this.recordUuid === fieldItem.UUID) {
+          return fieldItem
+        }
+      })
+    },
+    tableNameCurrentTab() {
+      const current = this.$store.getters.getWindow(this.getterContextMenu.actions[0].uuidParent).tabs[0]
+      if (!this.isEmptyValue(current)) {
+        return current.tableName
+      }
+      return ''
     }
   },
   watch: {
     '$route.query.action'(actionValue) {
+      console.log({
+        actionValue
+      })
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
       if (this.panelType === 'window') {
@@ -354,12 +371,16 @@ export default {
       let isChangePrivateAccess = true
       if (this.isReferecesContent) {
         isChangePrivateAccess = false
-        if (!this.isEmptyValue(this.$route.params.tableName)) {
+        if (!this.isEmptyValue(this.$route.params.tableName) || (!this.isEmptyValue(this.getCurrentRecord) && !this.isEmptyValue(this.tableNameCurrentTab))) {
           this.$store.dispatch('getPrivateAccessFromServer', {
             tableName: this.$route.params.tableName,
-            recordId: this.$route.params.recordId
+            recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
+            recordUuid: this.$route.query.action
           })
             .then(privateAccessResponse => {
+              console.log({
+                privateAccessResponse
+              })
               if (!this.isEmptyValue(privateAccessResponse)) {
                 this.$nextTick(() => {
                   this.validatePrivateAccess(privateAccessResponse)
@@ -439,6 +460,7 @@ export default {
       }
     },
     runAction(action) {
+      console.log({ action })
       if (action.type === 'action') {
         this.executeAction(action)
       } else if (action.type === 'process') {
@@ -463,13 +485,26 @@ export default {
             recordUuid: this.recordUuid,
             panelType: this.panelType,
             isNewRecord: action.action === 'setDefaultValues',
-            tableName: action.tableName,
-            recordId: action.recordId
+            tableName: this.$route.params.tableName,
+            recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID']
           })
             .then(response => {
+              this.$message({
+                type: 'success',
+                message: this.$t('data.lockRecord'),
+                showClose: true
+              })
               if (response && response.isPrivateAccess) {
                 this.validatePrivateAccess(response)
               }
+            })
+            .catch(error => {
+              console.log(error)
+              this.$message({
+                type: 'error',
+                message: this.$t('notifications.error'),
+                showClose: true
+              })
             })
         }
       } else if (action.type === 'updateReport') {
@@ -684,7 +719,6 @@ export default {
         if (isLocked) {
           isHiddenLock = true
         }
-
         this.actions = this.actions.map(actionItem => {
           if (actionItem.action === 'lockRecord') {
             return {
