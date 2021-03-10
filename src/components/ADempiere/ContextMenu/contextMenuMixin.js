@@ -198,11 +198,15 @@ export default {
       }
     },
     getCurrentRecord() {
-      return this.getAllDataRecords.record.find(fieldItem => {
+      const record = this.getAllDataRecords.record.find(fieldItem => {
         if (this.recordUuid === fieldItem.UUID) {
           return fieldItem
         }
       })
+      if (!this.isEmptyValue(record)) {
+        return record
+      }
+      return {}
     },
     tableNameCurrentTab() {
       const current = this.$store.getters.getWindow(this.getterContextMenu.actions[0].uuidParent).tabs[0]
@@ -214,9 +218,6 @@ export default {
   },
   watch: {
     '$route.query.action'(actionValue) {
-      console.log({
-        actionValue
-      })
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
       if (this.panelType === 'window') {
@@ -378,14 +379,7 @@ export default {
             recordUuid: this.$route.query.action
           })
             .then(privateAccessResponse => {
-              console.log({
-                privateAccessResponse
-              })
-              if (!this.isEmptyValue(privateAccessResponse)) {
-                this.$nextTick(() => {
-                  this.validatePrivateAccess(privateAccessResponse)
-                })
-              }
+              this.validatePrivateAccess(privateAccessResponse)
             })
         }
 
@@ -460,7 +454,6 @@ export default {
       }
     },
     runAction(action) {
-      console.log({ action })
       if (action.type === 'action') {
         this.executeAction(action)
       } else if (action.type === 'process') {
@@ -499,10 +492,9 @@ export default {
               }
             })
             .catch(error => {
-              console.log(error)
               this.$message({
                 type: 'error',
-                message: this.$t('notifications.error'),
+                message: this.$t('notifications.error') + error.message,
                 showClose: true
               })
             })
@@ -714,7 +706,7 @@ export default {
       }, () => {})
     },
     validatePrivateAccess({ isLocked, tableName, recordId }) {
-      if (this.isPersonalLock) {
+      if (!this.isPersonalLock) {
         let isHiddenLock = false
         if (isLocked) {
           isHiddenLock = true
