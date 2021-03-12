@@ -15,6 +15,10 @@
 
 <script>
 import fieldMixin from '@/components/ADempiere/Field/mixin/mixinField.js'
+import {
+  requestGetBinary,
+  requestUpdateBinary
+} from '@/api/ADempiere/field/binary.js'
 
 export default {
   name: 'FieldImage',
@@ -29,6 +33,8 @@ export default {
     }
   },
   methods: {
+    requestGetBinary,
+    requestUpdateBinary,
     handleAvatarSuccess(res, file) {
       this.value = URL.createObjectURL(file.raw)
       // TODO: define one method to control change value
