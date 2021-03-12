@@ -53,6 +53,7 @@
           <preference
             :field-attributes="fieldAttributes"
             :field-value="recordDataFields"
+            :panel-type="field.panelType"
           />
         </template>
 

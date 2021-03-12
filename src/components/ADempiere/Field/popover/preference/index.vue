@@ -86,6 +86,7 @@
 import filelistPreference from './filelistPreference.js'
 import { requestFieldPreference } from '@/api/ADempiere/field/preference.js'
 import { createFieldFromDictionary } from '@/utils/ADempiere/lookupFactory'
+import { attributePreference } from '@/utils/ADempiere/valueUtils'
 
 export default {
   name: 'Preference',
@@ -103,6 +104,10 @@ export default {
     containerUuid: {
       type: String,
       default: 'fiel-reference'
+    },
+    panelType: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -116,20 +121,12 @@ export default {
   },
   watch: {
     isActive(value) {
+      const preferenceValue = this.isEmptyValue(this.fieldValue) ? this.fieldAttributes.value : this.fieldValue
       if (value && this.isEmptyValue(this.metadataList)) {
         this.setFieldsList()
       }
-      if (typeof this.fieldValue !== 'string') {
-        this.code = this.fieldValue.toString()
-      } else {
-        this.code = this.fieldValue
-      }
-    },
-    fieldValue(value) {
-      if (typeof value !== 'string') {
-        this.code = value.toString()
-      } else {
-        this.code = value
+      if (!this.isEmptyValue(preferenceValue)) {
+        this.code = (typeof preferenceValue !== 'string') ? preferenceValue.toString() : preferenceValue
       }
     }
   },
@@ -141,6 +138,7 @@ export default {
   },
   methods: {
     createFieldFromDictionary,
+    attributePreference,
     notSubmitForm(event) {
       event.preventDefault()
       return false
@@ -154,7 +152,7 @@ export default {
             const data = metadata
             fieldsList.push({
               ...data,
-              containerUuid: this.containerUuid
+              containerUuid: 'fiel-reference'
             })
           }).catch(error => {
             console.warn(`LookupFactory: Get Field From Server (State) - Error ${error.code}: ${error.message}.`)
@@ -162,32 +160,15 @@ export default {
       })
       this.metadataList = fieldsList
     },
-    sendValue(row, column) {
-      const client = this.$store.getters.getValueOfField({
+    sendValue(list) {
+      const preference = this.attributePreference({
         containerUuid: this.containerUuid,
-        columnName: 'AD_Client_ID'
+        panelType: this.panelType,
+        attribute: this.fieldAttributes.columnName,
+        value: this.code,
+        level: list
       })
-      const org = this.$store.getters.getValueOfField({
-        containerUuid: this.containerUuid,
-        columnName: 'AD_Org_ID'
-      })
-      const user = this.$store.getters.getValueOfField({
-        containerUuid: this.containerUuid,
-        columnName: 'AD_User_ID'
-      })
-      const window = this.$store.getters.getValueOfField({
-        containerUuid: this.containerUuid,
-        columnName: 'AD_Window_ID'
-      })
-      const attributes = {
-        client,
-        org,
-        user,
-        window
-      }
-      requestFieldPreference({
-        attributes
-      })
+      requestFieldPreference(preference)
     },
     changeValue(value) {
       switch (value.columName) {
