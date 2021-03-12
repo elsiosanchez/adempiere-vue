@@ -2,9 +2,8 @@
   <el-color-picker
     :ref="metadata.columnName"
     v-model="value"
-    show-alpha
-    :disabled="isDisabled"
     :class="cssClassStyle"
+    :disabled="isDisabled"
     @change="preHandleChange"
   />
 </template>
