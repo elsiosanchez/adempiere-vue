@@ -148,7 +148,12 @@ export default {
     resetAllFilters: 'Reiniciar todos los filtros',
     switchActiveText: 'Si',
     switchInactiveText: 'No',
-    contextFieldTitle: 'Información de Contexto'
+    contextFieldTitle: 'Información de Contexto',
+    preference: {
+      title: 'Valor de Preferencia',
+      attribute: 'Atributo',
+      code: 'Codigo'
+    }
   },
   views: {
     browser: 'Consulta Inteligente',

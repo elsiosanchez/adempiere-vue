@@ -148,7 +148,12 @@ export default {
     resetAllFilters: 'Reset all filters',
     switchActiveText: 'Yes',
     switchInactiveText: 'Not',
-    contextFieldTitle: 'Context Information'
+    contextFieldTitle: 'Context Information',
+    preference: {
+      title: 'Preference Value',
+      attribute: 'Attribute',
+      code: 'Code'
+    }
   },
   views: {
     browser: 'Smart Browser',

@@ -50,6 +50,10 @@
             :field-attributes="fieldAttributes"
             :field-value="recordDataFields"
           />
+          <preference
+            :field-attributes="fieldAttributes"
+            :field-value="recordDataFields"
+          />
         </template>
 
         <component
@@ -75,6 +79,7 @@
 <script>
 import contextInfo from '@/components/ADempiere/Field/popover/contextInfo'
 import documentStatus from '@/components/ADempiere/Field/popover/documentStatus'
+import preference from '@/components/ADempiere/Field/popover/preference/index'
 import operatorComparison from '@/components/ADempiere/Field/popover/operatorComparison'
 import translated from '@/components/ADempiere/Field/popover/translated'
 import calculator from '@/components/ADempiere/Field/popover/calculator'
@@ -93,7 +98,8 @@ export default {
     documentStatus,
     operatorComparison,
     translated,
-    calculator
+    calculator,
+    preference
   },
   props: {
     // receives the property that is an object with all the attributes
