@@ -1,16 +1,19 @@
 <template>
-  <el-upload
-    :ref="metadata.columnName"
-    action="https://jsonplaceholder.typicode.com/posts/"
-    :show-file-list="false"
-    :on-success="handleAvatarSuccess"
-    :before-upload="beforeAvatarUpload"
-    :disabled="isDisabled"
-    :class="cssClassStyle"
-  >
-    <img v-if="value" :src="value" class="avatar">
-    <i v-else class="el-icon-plus avatar-uploader-icon" />
-  </el-upload>
+  <div>
+    {{ value }}
+    <el-upload
+      :ref="metadata.columnName"
+      :action="getImage()"
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload"
+      :disabled="isDisabled"
+      :class="cssClassStyle"
+    >
+      <img v-if="value" :src="value" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
+    </el-upload>
+  </div>
 </template>
 
 <script>
@@ -19,10 +22,21 @@ import {
   requestGetBinary,
   requestUpdateBinary
 } from '@/api/ADempiere/field/binary.js'
+import { requestImage } from '@/api/ADempiere/persistence.js'
+import { buildImageFromArrayBuffer } from '@/utils/ADempiere/resource.js'
 
 export default {
   name: 'FieldImage',
   mixins: [fieldMixin],
+  data() {
+    return {
+      valuesImage: [{
+        identifier: 'undefined',
+        value: '',
+        isLoaded: true
+      }]
+    }
+  },
   computed: {
     cssClassStyle() {
       let styleClass = ' custom-field-image '
@@ -32,9 +46,22 @@ export default {
       return styleClass
     }
   },
+  created() {
+    console.log(this.value, this.metadata)
+  },
   methods: {
     requestGetBinary,
     requestUpdateBinary,
+    imageServer() {
+      requestGetBinary({
+        uuid: this.metadata.recordUuid,
+        tableName: this.metadata.tableName,
+        attributesList: this.metadata
+      })
+        .then(resource => {
+          this.getImage(resource)
+        })
+    },
     handleAvatarSuccess(res, file) {
       this.value = URL.createObjectURL(file.raw)
       // TODO: define one method to control change value
@@ -51,6 +78,54 @@ export default {
         this.$message.error(this.$t('components.imageError'))
       }
       return isJPG + isPNG + isLt2M
+    },
+    getImage(resource) {
+      if (this.isEmptyValue(resource)) {
+        return 'https://jsonplaceholder.typicode.com/posts/'
+      }
+      const { fileName, contentType } = resource
+      if (!this.valuesImage.some(item => item.identifier === fileName)) {
+        this.valuesImage.push({
+          identifier: fileName,
+          value: '',
+          isLoaded: false
+        })
+      }
+      if (resource[fileName]) {
+        this.valuesImage.forEach(item => {
+          if (item.identifier === fileName) {
+            item.value = resource[fileName]
+            item.isLoaded = true
+          }
+        })
+      } else { // Reload
+        if (!this.valuesImage.some(item => item.identifier === fileName)) {
+          this.valuesImage.push({
+            identifier: fileName,
+            value: '',
+            isLoaded: false
+          })
+        }
+        // the name of the image plus the height and width of the container is sent
+        requestImage({
+          file: fileName,
+          width: 50,
+          height: 50
+        }).then(responseImage => {
+          const arrayBufferAsImage = buildImageFromArrayBuffer({
+            arrayBuffer: responseImage,
+            contentType
+          })
+
+          resource[fileName] = arrayBufferAsImage
+          this.valuesImage.forEach(item => {
+            if (item.identifier === fileName) {
+              item.value = arrayBufferAsImage
+              item.isLoaded = true
+            }
+          })
+        })
+      }
     }
   }
 }
