@@ -18,12 +18,6 @@
             class="demo-form-inline"
           >
             <el-form-item :label="$t('components.preference.attribute')">
-              <el-input
-                v-model="fieldAttributes.name"
-                :disabled="true"
-              />
-            </el-form-item>
-            <el-form-item>
               {{ fieldAttributes.columnName }}
             </el-form-item>
           </el-form>
@@ -34,12 +28,6 @@
             <el-form-item
               :label="$t('components.preference.code')"
             >
-              <el-input
-                v-model="code"
-                :disabled="true"
-              />
-            </el-form-item>
-            <el-form-item>
               {{ code }}
             </el-form-item>
           </el-form>
