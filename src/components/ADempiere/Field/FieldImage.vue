@@ -19,9 +19,8 @@
 <script>
 import fieldMixin from '@/components/ADempiere/Field/mixin/mixinField.js'
 import {
-  requestGetBinary,
-  requestUpdateBinary
-} from '@/api/ADempiere/field/binary.js'
+  requestResourceReference
+} from '@/api/ADempiere/user-interface.js'
 import { requestImage } from '@/api/ADempiere/persistence.js'
 import { buildImageFromArrayBuffer } from '@/utils/ADempiere/resource.js'
 
@@ -46,17 +45,11 @@ export default {
       return styleClass
     }
   },
-  created() {
-    console.log(this.value, this.metadata)
-  },
   methods: {
-    requestGetBinary,
-    requestUpdateBinary,
+    requestResourceReference,
     imageServer() {
-      requestGetBinary({
-        uuid: this.metadata.recordUuid,
-        tableName: this.metadata.tableName,
-        attributesList: this.metadata
+      requestResourceReference({
+        recordUuid: this.metadata.recordUuid
       })
         .then(resource => {
           this.getImage(resource)

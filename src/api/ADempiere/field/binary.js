@@ -3,13 +3,12 @@
  * @param {number} recordId
  * @param {string} recordUuid
  * @param {object} binary
- * @param {array} attributesList
  */
 export function requestGetBinary({
   id,
   uuid,
   tableName,
-  attributesList
+  binary
 }) {
   const { requestGetEntity } = require('@/api/ADempiere/persistence.js')
 
@@ -17,7 +16,7 @@ export function requestGetBinary({
     recordId: id,
     recordUuid: uuid,
     tableName,
-    binary: attributesList
+    binary
   })
 }
 
