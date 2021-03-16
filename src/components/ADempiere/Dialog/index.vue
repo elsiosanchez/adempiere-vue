@@ -13,6 +13,7 @@
     <div
       v-if="panelType !== 'From'"
     >
+      <record-access />
       <sequence-order
         v-if="modalMetadata.isSortTab"
         key="order"
@@ -53,13 +54,17 @@
 <script>
 import MainPanel from '@/components/ADempiere/Panel'
 import SequenceOrder from '@/components/ADempiere/SequenceOrder'
+import RecordAccess from '@/components/ADempiere/recordAccess'
 import { showNotification } from '@/utils/ADempiere/notification'
-
+import {
+  requestUpdateAccessRecord
+} from '@/api/ADempiere/private-access'
 export default {
   name: 'ModalProcess',
   components: {
     MainPanel,
-    SequenceOrder
+    SequenceOrder,
+    RecordAccess
   },
   props: {
     parentUuid: {
@@ -201,6 +206,10 @@ export default {
             })
           }
         }
+      }
+      if (action.action === undefined) {
+        const list = this.$store.getters.getListRecordAcces
+        requestUpdateAccessRecord(list)
       }
     }
   }

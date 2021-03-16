@@ -275,6 +275,13 @@ export default {
     deleteRecordError: 'Error al eliminar el regitro',
     exportRecord: 'Exportar Registro',
     lockRecord: 'Bloquear Registro',
+    recordAccess: {
+      actions: 'Acceso a registros',
+      exclude: 'Excluir',
+      include: 'Incluir',
+      isReadonly: 'Solo  Lectura',
+      isDependentEntities: 'Entidades Dependientes'
+    },
     selectionRequired: 'Debe seleccionar un registro',
     undo: 'Deshacer',
     unlockRecord: 'Desbloquear Registro'

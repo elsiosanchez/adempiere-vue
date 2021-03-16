@@ -300,6 +300,13 @@ export default {
     deleteRecordError: 'Error deleting record',
     exportRecord: 'Export Record',
     lockRecord: 'Lock Record',
+    recordAccess: {
+      actions: 'Record Access',
+      exclude: 'Excluir',
+      include: 'Incluir',
+      isReadonly: 'Reading Only',
+      isDependentEntities: 'Dependent Entities'
+    },
     selectionRequired: 'You must select a record',
     undo: 'Undo',
     unlockRecord: 'Unlock Record'
