@@ -24,9 +24,6 @@ export default {
       commit('setListRecordAcces', recordAccess)
     },
     addAttribute({ commit }, params) {
-      console.log({
-        params
-      })
       commit('setAttribute', params)
     }
   },

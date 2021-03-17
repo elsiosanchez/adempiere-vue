@@ -37,16 +37,15 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button
+        type="danger"
+        icon="el-icon-close"
         @click="closeDialog"
-      >
-        {{ $t('components.dialogCancelButton') }}
-      </el-button>
+      />
       <el-button
         type="primary"
+        icon="el-icon-check"
         @click="runAction(modalMetadata)"
-      >
-        {{ $t('components.dialogConfirmButton') }}
-      </el-button>
+      />
     </span>
   </el-dialog>
 </template>
