@@ -52,7 +52,7 @@
           />
           <preference
             :field-attributes="fieldAttributes"
-            :field-value="recordDataFields"
+            :field-value="isEmptyValue(recordDataFields) ? field.value : recordDataFields"
             :panel-type="field.panelType"
           />
         </template>

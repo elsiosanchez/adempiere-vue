@@ -18,7 +18,7 @@
             class="demo-form-inline"
           >
             <el-form-item :label="$t('components.preference.attribute')">
-              {{ fieldAttributes.columnName }}
+              {{ fieldAttributes.name }}
             </el-form-item>
           </el-form>
           <el-form
@@ -28,7 +28,20 @@
             <el-form-item
               :label="$t('components.preference.code')"
             >
-              {{ code }}
+              <el-switch
+                v-if="fieldAttributes.componentPath === 'FieldYesNo'"
+                v-model="code"
+                :active-text="$t('components.preference.yes')"
+                :inactive-text="$t('components.preference.no')"
+                :disabled="true"
+              />
+              <div
+                v-else
+              >
+                {{
+                  code
+                }}
+              </div>
             </el-form-item>
           </el-form>
           <el-form
@@ -55,11 +68,13 @@
                 type="danger"
                 class="custom-button-address-location"
                 icon="el-icon-close"
+                @click="close()"
               />
               <el-button
                 type="primary"
                 class="custom-button-address-location"
                 icon="el-icon-check"
+                @click="close()"
               />
             </samp>
           </el-col>
@@ -109,12 +124,16 @@ export default {
   },
   watch: {
     isActive(value) {
-      const preferenceValue = this.isEmptyValue(this.fieldValue) ? this.fieldAttributes.value : this.fieldValue
+      const preferenceValue = this.fieldValue
       if (value && this.isEmptyValue(this.metadataList)) {
         this.setFieldsList()
       }
       if (!this.isEmptyValue(preferenceValue)) {
-        this.code = (typeof preferenceValue !== 'string') ? preferenceValue.toString() : preferenceValue
+        if ((typeof preferenceValue !== 'string') && (this.fieldAttributes.componentPath !== 'FieldYesNo')) {
+          this.code = preferenceValue.toString()
+        } else {
+          this.code = preferenceValue
+        }
       }
     }
   },
@@ -127,6 +146,9 @@ export default {
   methods: {
     createFieldFromDictionary,
     attributePreference,
+    close() {
+      this.$children[0].visible = false
+    },
     notSubmitForm(event) {
       event.preventDefault()
       return false

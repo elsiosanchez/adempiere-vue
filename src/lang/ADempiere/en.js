@@ -152,7 +152,9 @@ export default {
     preference: {
       title: 'Preference Value',
       attribute: 'Attribute',
-      code: 'Code'
+      code: 'Code',
+      yes: 'Yes',
+      no: 'No'
     }
   },
   views: {
