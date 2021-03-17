@@ -1,19 +1,16 @@
 <template>
-  <div>
-    {{ value }}
-    <el-upload
-      :ref="metadata.columnName"
-      :action="getImage()"
-      :show-file-list="false"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload"
-      :disabled="isDisabled"
-      :class="cssClassStyle"
-    >
-      <img v-if="value" :src="value" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon" />
-    </el-upload>
-  </div>
+  <el-upload
+    :ref="metadata.columnName"
+    :action="getImage(metadata.value)"
+    :show-file-list="false"
+    :on-success="handleAvatarSuccess"
+    :before-upload="beforeAvatarUpload"
+    :disabled="isDisabled"
+    :class="cssClassStyle"
+  >
+    <img v-if="value" :src="value" class="avatar">
+    <i v-else class="el-icon-plus avatar-uploader-icon" />
+  </el-upload>
 </template>
 
 <script>
@@ -47,7 +44,7 @@ export default {
   },
   methods: {
     requestResourceReference,
-    imageServer() {
+    srcImage() {
       requestResourceReference({
         recordUuid: this.metadata.recordUuid
       })
