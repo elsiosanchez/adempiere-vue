@@ -1,4 +1,4 @@
-export function requestFieldPreference({
+export function getPreference({
   parentUuid,
   containerUuid,
   panelType,
@@ -6,9 +6,25 @@ export function requestFieldPreference({
   value,
   level
 }) {
-  const { requestUpdateEntity } = require('@/api/ADempiere/persistence.js')
+  return getPreference({
+    parentUuid,
+    containerUuid,
+    panelType,
+    attribute,
+    value,
+    level
+  })
+}
 
-  return requestUpdateEntity({
+export function updatePreference({
+  parentUuid,
+  containerUuid,
+  panelType,
+  attribute,
+  value,
+  level
+}) {
+  return updatePreference({
     parentUuid,
     containerUuid,
     panelType,

@@ -87,7 +87,7 @@
 <script>
 // import { ID, INTEGER } from '@/utils/ADempiere/references'
 import filelistPreference from './filelistPreference.js'
-import { requestFieldPreference } from '@/api/ADempiere/field/preference.js'
+import { getPreference } from '@/api/ADempiere/field/preference.js'
 import { createFieldFromDictionary } from '@/utils/ADempiere/lookupFactory'
 import { attributePreference } from '@/utils/ADempiere/valueUtils'
 
@@ -178,7 +178,7 @@ export default {
         value: this.code,
         level: list
       })
-      requestFieldPreference(preference)
+      getPreference(preference)
     },
     changeValue(value) {
       switch (value.columName) {
