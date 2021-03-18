@@ -277,8 +277,8 @@ export default {
     lockRecord: 'Bloquear Registro',
     recordAccess: {
       actions: 'Acceso a registros',
-      exclude: 'Excluir',
-      include: 'Incluir',
+      hideRecord: 'Ocultar Registro',
+      recordDisplay: 'Permitir Visualización del Registro',
       isReadonly: 'Solo  Lectura',
       isDependentEntities: 'Entidades Dependientes'
     },

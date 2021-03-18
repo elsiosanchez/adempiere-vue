@@ -302,8 +302,8 @@ export default {
     lockRecord: 'Lock Record',
     recordAccess: {
       actions: 'Record Access',
-      exclude: 'Excluir',
-      include: 'Incluir',
+      hideRecord: 'Hide Record',
+      recordDisplay: 'Allow Record Display',
       isReadonly: 'Reading Only',
       isDependentEntities: 'Dependent Entities'
     },

@@ -7,7 +7,7 @@
     >
       <div class="board-column">
         <div class="board-column-header">
-          {{ $t('data.recordAccess.exclude') }} ({{ getterListExclude.length }})
+          {{ $t('data.recordAccess.hideRecord') }} ({{ getterListExclude.length }})
         </div>
         <draggable
           v-model="getterListExclude"
@@ -33,7 +33,7 @@
     >
       <div class="board-column">
         <div class="board-column-header">
-          {{ $t('data.recordAccess.include') }} {{ getterListInclude.length }}
+          {{ $t('data.recordAccess.recordDisplay') }} {{ getterListInclude.length }}
         </div>
         <draggable
           v-model="getterListInclude"
