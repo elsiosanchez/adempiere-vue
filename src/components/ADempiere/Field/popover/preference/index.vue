@@ -9,25 +9,31 @@
         <div slot="header" class="clearfix">
           <span>
             {{ $t('components.preference.title') }}
-            {{ fieldAttributes.name }}
+            <b>
+              {{ fieldAttributes.name }}
+            </b>
           </span>
         </div>
+        <div v-if="!isEmptyValue(description)" class="text item">
+          <span v-if="description[0] === 'Usuario'">
+            {{ $t('components.preference.defaulMessageUser') }}
+          </span>
+          <span v-else>
+            {{ $t('components.preference.defaulMessage') }}
+          </span>
+          {{
+            description.join(', ')
+          }}
+        </div>
+        <br>
         <div class="text item">
           <el-form
             :inline="true"
-            class="demo-form-inline"
           >
-            <el-form-item :label="$t('components.preference.attribute')">
-              {{ fieldAttributes.name }}
-            </el-form-item>
-          </el-form>
-          <el-form
-            :inline="true"
-            class="demo-form-inline"
-          >
-            <el-form-item
-              :label="$t('components.preference.code')"
-            >
+            <el-form-item>
+              <el-button slot="label" class="title" type="text">
+                {{ fieldAttributes.name }}
+              </el-button>
               <el-switch
                 v-if="fieldAttributes.componentPath === 'FieldYesNo'"
                 v-model="code"
@@ -38,9 +44,11 @@
               <div
                 v-else
               >
-                {{
-                  code
-                }}
+                <el-button class="value" type="text">
+                  {{
+                    code
+                  }}
+                </el-button>
               </div>
             </el-form-item>
           </el-form>
@@ -48,6 +56,7 @@
             label-position="top"
             :inline="true"
             class="demo-form-inline"
+            size="medium"
           >
             <el-form-item
               v-for="(field) in metadataList"
@@ -56,7 +65,11 @@
             >
               <el-switch
                 v-model="field.value"
+                @change="displaye(field.value, field.name)"
               />
+              {{
+                field.columnNam
+              }}
             </el-form-item>
           </el-form>
         </div>
@@ -118,6 +131,7 @@ export default {
       filelistPreference,
       metadataList: [],
       code: '',
+      description: [],
       isActive: false,
       unsubscribe: () => {}
     }
@@ -130,7 +144,7 @@ export default {
       }
       if (!this.isEmptyValue(preferenceValue)) {
         if ((typeof preferenceValue !== 'string') && (this.fieldAttributes.componentPath !== 'FieldYesNo')) {
-          this.code = preferenceValue.toString()
+          this.code = preferenceValue
         } else {
           this.code = preferenceValue
         }
@@ -146,6 +160,15 @@ export default {
   methods: {
     createFieldFromDictionary,
     attributePreference,
+    displaye(value, label) {
+      if (value) {
+        const index = this.metadataList.findIndex(item => item.name === label)
+        this.description.splice((index + 1), 0, label)
+      } else {
+        const index = this.description.findIndex(item => item === label)
+        this.description.splice(index, 1)
+      }
+    },
     close() {
       this.$children[0].visible = false
     },
@@ -164,6 +187,9 @@ export default {
               ...data,
               containerUuid: 'fiel-reference'
             })
+            if (data.value) {
+              this.description.push(data.name)
+            }
           }).catch(error => {
             console.warn(`LookupFactory: Get Field From Server (State) - Error ${error.code}: ${error.message}.`)
           })
@@ -229,48 +255,18 @@ export default {
 </script>
 
 <style>
-  .calculator-input > .el-input__inner,
-  .calculator-input .el-input__inner {
-    border-radius: 0px !important;
+ .title {
+    color: #000000;
+    text-size-adjust: 20px;
+    font-size: 120%;
+    /* font-weight: 605!important;
+    left: 50%; */
   }
-
-  .calculator-input {
-    width: 202px;
-    font-size: 16px;
-    padding-left: 4px;
-  }
-
-  /* row color with hover */
-	.el-table--enable-row-hover .el-table__body tr:hover > td {
-		background-color: #ffffff !important;
-	}
-
-  .calculator-table .el-table__body-wrapper > table {
-    border-spacing: 5px;
-  }
-
-  /* Button shadow and border */
-  .calculator-table .el-table__body tr > td {
-    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.5);
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .calculator-table th, .calculator-table td,
-  .calculator-table > th, .calculator-table > td {
-    padding: 0px !important;
-    height: 0px !important;
-    padding-left: 0px !important;
-  }
-
-  .calculator-table .el-table .cell {
-    padding-right: 5px !important;
-    padding-left: 5px !important;
-  }
-  .calculator-table .el-table > .cell, .calculator-table .el-table .cell {
-    padding-left: 0px !important;
-  }
-  .calculator-table .el-table th.is-leaf, .el-table td {
-    border-bottom: 0px solid #dfe6ec !important;
+  .value {
+    color: #606266;
+    text-size-adjust: 20px;
+    font-size: 120%;
+    /* font-weight: 605!important;
+    left: 50%; */
   }
 </style>

@@ -154,7 +154,9 @@ export default {
       attribute: 'Attribute',
       code: 'Code',
       yes: 'Yes',
-      no: 'No'
+      no: 'No',
+      defaulMessage: 'For This ',
+      defaulMessageUser: 'For This '
     }
   },
   views: {
