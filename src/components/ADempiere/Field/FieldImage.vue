@@ -1,9 +1,10 @@
 <template>
   <el-upload
     :ref="metadata.columnName"
-    :action="getImage(metadata.value)"
+    action="https://jsonplaceholder.typicode.com/posts/"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
+    :on-change="handleChange"
     :before-upload="beforeAvatarUpload"
     :disabled="isDisabled"
     :class="cssClassStyle"
@@ -15,15 +16,18 @@
 
 <script>
 import fieldMixin from '@/components/ADempiere/Field/mixin/mixinField.js'
-import {
-  requestResourceReference
-} from '@/api/ADempiere/user-interface.js'
-import { requestImage } from '@/api/ADempiere/persistence.js'
-import { buildImageFromArrayBuffer } from '@/utils/ADempiere/resource.js'
+import { getResource, updateResource } from '@/api/ADempiere/field/binary.js'
 
 export default {
   name: 'FieldImage',
   mixins: [fieldMixin],
+  props: {
+    // receives the property that is an object with all the attributes
+    binary: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       valuesImage: [{
@@ -43,19 +47,46 @@ export default {
     }
   },
   methods: {
-    requestResourceReference,
-    srcImage() {
-      requestResourceReference({
-        recordUuid: this.metadata.recordUuid
+    updateResource,
+    getResource,
+    handleChange(file, fileList) {
+      let message, type
+      this.binary.push({
+        columnName: this.metadata.columnName,
+        value: file
       })
-        .then(resource => {
-          this.getImage(resource)
-        })
+      switch (file.status) {
+        case 'success':
+          message = 'succesful'
+          type = file.status
+          break
+        case 'ready':
+          message = 'loading'
+          type = 'loading'
+          break
+        case 'error':
+          message = file.status
+          type = file.status
+          break
+      }
+      this.$message({
+        type: type,
+        showClose: true,
+        message: this.$t('notifications.' + message)
+      })
+      updateResource({
+        uuid: this.metadata.recordUuid,
+        tableName: this.$route.params.tableName,
+        binaryFile: this.binary
+      })
     },
     handleAvatarSuccess(res, file) {
       this.value = URL.createObjectURL(file.raw)
-      // TODO: define one method to control change value
       this.handleFieldChange({ value: this.value })
+      getResource({
+        uuid: this.metadata.recordUuid,
+        tableName: this.$route.params.tableName
+      })
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
@@ -68,54 +99,6 @@ export default {
         this.$message.error(this.$t('components.imageError'))
       }
       return isJPG + isPNG + isLt2M
-    },
-    getImage(resource) {
-      if (this.isEmptyValue(resource)) {
-        return 'https://jsonplaceholder.typicode.com/posts/'
-      }
-      const { fileName, contentType } = resource
-      if (!this.valuesImage.some(item => item.identifier === fileName)) {
-        this.valuesImage.push({
-          identifier: fileName,
-          value: '',
-          isLoaded: false
-        })
-      }
-      if (resource[fileName]) {
-        this.valuesImage.forEach(item => {
-          if (item.identifier === fileName) {
-            item.value = resource[fileName]
-            item.isLoaded = true
-          }
-        })
-      } else { // Reload
-        if (!this.valuesImage.some(item => item.identifier === fileName)) {
-          this.valuesImage.push({
-            identifier: fileName,
-            value: '',
-            isLoaded: false
-          })
-        }
-        // the name of the image plus the height and width of the container is sent
-        requestImage({
-          file: fileName,
-          width: 50,
-          height: 50
-        }).then(responseImage => {
-          const arrayBufferAsImage = buildImageFromArrayBuffer({
-            arrayBuffer: responseImage,
-            contentType
-          })
-
-          resource[fileName] = arrayBufferAsImage
-          this.valuesImage.forEach(item => {
-            if (item.identifier === fileName) {
-              item.value = arrayBufferAsImage
-              item.isLoaded = true
-            }
-          })
-        })
-      }
     }
   }
 }

@@ -1,17 +1,15 @@
 /**
  * Get entity with binary by identifier
- * @param {number} recordId
+ * @param {string} tableName
  * @param {string} recordUuid
  */
-export function requestgetResource({
-  id,
+export function getResource({
   uuid,
   tableName
 }) {
   const { requestGetEntity } = require('@/api/ADempiere/persistence.js')
 
   return requestGetEntity({
-    recordId: id,
     recordUuid: uuid,
     tableName
   })
@@ -19,21 +17,20 @@ export function requestgetResource({
 
 /**
  * Update an existing binary by id or uuid
- * @param {number} recordId
+ * @param {string} tableName
  * @param {string} recordUuid
- * @param {object} binary
- * @param {array} attributesList
+ * @param {object} binaryFile
  */
-export function requestUpdateResource({
-  recordId: id,
-  recordUuid: uuid,
-  tableName
+export function updateResource({
+  uuid,
+  tableName,
+  binaryFile
 }) {
   const { requestUpdateEntity } = require('@/api/ADempiere/persistence.js')
 
   return requestUpdateEntity({
-    recordId: id,
     recordUuid: uuid,
-    tableName
+    tableName,
+    attributesList: binaryFile
   })
 }
