@@ -155,8 +155,8 @@ export default {
       code: 'Codigo',
       yes: 'Si',
       no: 'No',
-      defaulMessage: 'Para Esta ',
-      defaulMessageUser: 'Para Este '
+      defaulMessage: 'Aplica para Esta ',
+      defaulMessageUser: 'Aplica para Este '
     }
   },
   views: {

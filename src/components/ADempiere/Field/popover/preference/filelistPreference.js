@@ -5,7 +5,7 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
-      sequence: 8,
+      sequence: 0,
       isReadOnly: true,
       handleActionPerformed: true,
       handleContentSelection: true,
@@ -20,7 +20,7 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
-      sequence: 9,
+      sequence: 1,
       handleActionPerformed: true,
       handleContentSelection: true,
       handleActionKeyPerformed: true,
@@ -34,7 +34,7 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
-      sequence: 10,
+      sequence: 2,
       isReadOnly: true,
       handleActionPerformed: true,
       handleContentSelection: true,
@@ -49,7 +49,7 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
-      sequence: 10,
+      sequence: 3,
       isReadOnly: true,
       handleActionPerformed: true,
       handleContentSelection: true,

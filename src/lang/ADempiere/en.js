@@ -155,8 +155,8 @@ export default {
       code: 'Code',
       yes: 'Yes',
       no: 'No',
-      defaulMessage: 'For This ',
-      defaulMessageUser: 'For This '
+      defaulMessage: 'Applies for this ',
+      defaulMessageUser: 'Applies for this '
     }
   },
   views: {

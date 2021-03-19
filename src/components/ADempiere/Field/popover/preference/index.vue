@@ -3,9 +3,11 @@
     <el-button type="text" :disabled="fieldAttributes.readonly">
       <i class="el-icon-notebook-2 el-icon--right" @click="isActive = !isActive" />
     </el-button>
-
     <el-dropdown-menu slot="dropdown" class="dropdown-calc">
-      <el-card class="box-card">
+      <el-card
+        v-if="!isEmptyValue(metadataList)"
+        class="box-card"
+      >
         <div slot="header" class="clearfix">
           <span>
             {{ $t('components.preference.title') }}
@@ -14,16 +16,22 @@
             </b>
           </span>
         </div>
-        <div v-if="!isEmptyValue(description)" class="text item">
-          <span v-if="description[0] === 'Usuario'">
-            {{ $t('components.preference.defaulMessageUser') }}
-          </span>
-          <span v-else>
-            {{ $t('components.preference.defaulMessage') }}
-          </span>
+        <div v-if="!isEmptyValue(descriptionOfPreference)" class="text item">
           {{
-            description.join(', ')
+            descriptionOfPreference
           }}
+          <template
+            v-for="(index) in fieldsListPreference"
+          >
+            <span
+              v-if="index.value"
+              :key="index.sequence"
+            >
+              {{
+                index.label
+              }}
+            </span>
+          </template>
         </div>
         <br>
         <div class="text item">
@@ -31,24 +39,25 @@
             :inline="true"
           >
             <el-form-item>
-              <el-button slot="label" class="title" type="text">
+              <p slot="label">
                 {{ fieldAttributes.name }}
-              </el-button>
+              </p>
               <el-switch
                 v-if="fieldAttributes.componentPath === 'FieldYesNo'"
                 v-model="code"
                 :active-text="$t('components.preference.yes')"
                 :inactive-text="$t('components.preference.no')"
                 :disabled="true"
+                style="padding-top: 30%"
               />
               <div
                 v-else
               >
-                <el-button class="value" type="text">
+                <p>
                   {{
                     code
                   }}
-                </el-button>
+                </p>
               </div>
             </el-form-item>
           </el-form>
@@ -60,16 +69,14 @@
           >
             <el-form-item
               v-for="(field) in metadataList"
-              :key="field.columnName"
-              :label="field.name"
+              :key="field.sequence"
             >
+              <p slot="label">
+                {{ field.name }}
+              </p>
               <el-switch
                 v-model="field.value"
-                @change="displaye(field.value, field.name)"
               />
-              {{
-                field.columnNam
-              }}
             </el-form-item>
           </el-form>
         </div>
@@ -93,6 +100,13 @@
           </el-col>
         </el-row>
       </el-card>
+      <div
+        v-else
+        v-loading="isEmptyValue(metadataList)"
+        :element-loading-text="$t('notifications.loading')"
+        element-loading-background="rgba(255, 255, 255, 0.8)"
+        class="loading-window"
+      />
     </el-dropdown-menu>
   </el-dropdown>
 </template>
@@ -136,6 +150,30 @@ export default {
       unsubscribe: () => {}
     }
   },
+  computed: {
+    fieldsListPreference() {
+      return this.metadataList.map(item => {
+        return {
+          label: item.name,
+          value: item.value,
+          columnName: item.columnName,
+          sequence: item.sequence
+        }
+      })
+    },
+    descriptionOfPreference() {
+      const label = this.fieldsListPreference.filter(element => {
+        return element.value
+      })
+      if (!this.isEmptyValue(label)) {
+        if (label[0].columnName === 'AD_User_ID') {
+          return this.$t('components.preference.defaulMessageUser')
+        }
+        return this.$t('components.preference.defaulMessage')
+      }
+      return []
+    }
+  },
   watch: {
     isActive(value) {
       const preferenceValue = this.fieldValue
@@ -160,15 +198,6 @@ export default {
   methods: {
     createFieldFromDictionary,
     attributePreference,
-    displaye(value, label) {
-      if (value) {
-        const index = this.metadataList.findIndex(item => item.name === label)
-        this.description.splice((index + 1), 0, label)
-      } else {
-        const index = this.description.findIndex(item => item === label)
-        this.description.splice(index, 1)
-      }
-    },
     close() {
       this.$children[0].visible = false
     },
