@@ -1,19 +1,5 @@
 <template>
   <div>
-    <el-collapse-transition name="el-fade-in">
-      <el-card
-        v-show="isShowProductsPriceList"
-        class="transition-box"
-      >
-        <el-button
-          type="text"
-          icon="el-icon-close"
-          style="color: black; float: right; position: absolute; right: 3%; top: 3%;"
-          @click="isShowProductsPriceList = !isShowProductsPriceList"
-        />
-        <product-info-list />
-      </el-card>
-    </el-collapse-transition>
     <el-form-item>
       <template slot="label">
         {{ $t('form.productInfo.codeProduct') }}
