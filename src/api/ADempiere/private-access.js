@@ -72,7 +72,7 @@ export function requestUnlockPrivateAccess({
  * @param {string}  recordUuid
  * @param {string}  sessionUuid
  */
-export function requestListAccessRecord({
+export function getAccessList({
   tableName,
   recordId,
   recordUuid,
