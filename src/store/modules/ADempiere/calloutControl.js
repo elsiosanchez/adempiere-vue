@@ -35,8 +35,8 @@ const callOutControl = {
     }) {
       // Validate callout
       if (isEmptyValue(callout)) {
-        const notifiChange = inTable ? 'notifyRowTableChange' : 'notifyPanelChange'
-        dispatch(notifiChange, {
+        const notifyChange = inTable ? 'notifyRowTableChange' : 'notifyPanelChange'
+        dispatch(notifyChange, {
           parentUuid,
           containerUuid,
           row: value,
