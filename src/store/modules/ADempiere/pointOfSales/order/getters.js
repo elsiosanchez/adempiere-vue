@@ -15,6 +15,14 @@ export default {
   getOrder: (state) => {
     return state.order
   },
+  getIsProcessed: (state) => {
+    const order = state.order
+    if (!isEmptyValue(order.documentStatus.value) &&
+     (order.documentStatus.value === 'CO' || order.documentStatus.value === 'VO' || order.documentStatus.value === 'IP' || order.documentStatus.value === 'IP')) {
+      return true
+    }
+    return false
+  },
   getListOrder: (state) => {
     if (isEmptyValue(state.listOrder)) {
       return {

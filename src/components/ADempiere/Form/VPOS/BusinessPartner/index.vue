@@ -3,20 +3,27 @@
     <el-form-item>
       <template slot="label">
         {{ $t('form.pos.order.BusinessPartnerCreate.businessPartner') }}
+        {{
+          showCreate
+        }}
         <el-popover
+          v-model="showCreate"
           placement="right"
           width="400"
           trigger="click"
-          @hide="showFieldCreate = !showFieldCreate"
         >
+          {{
+            showCreate
+          }}
           <business-partner-create
             :parent-metadata="parentMetadata"
-            :show-field="showFieldCreate"
+            :show-field="showCreate"
           />
           <el-button
             slot="reference"
             type="text"
-            @click="showFieldCreate = !showFieldCreate"
+            :disabled="isDisabled"
+            @click="popoverOpen"
           >
             <i
               class="el-icon-circle-plus"
@@ -27,6 +34,7 @@
           placement="right"
           width="800"
           trigger="click"
+          :disabled="isDisabled"
           @hide="showFieldList = !showFieldList"
         >
           <business-partners-list
@@ -54,6 +62,7 @@
         value-key="name"
         style="width: 100%;"
         popper-class="custom-field-bpartner-info"
+        :disabled="isDisabled"
         @clear="setBusinessPartner(blankBPartner, false)"
         @keyup.enter.native="getBPartnerWithEnter"
         @select="handleSelect"
@@ -116,6 +125,10 @@ export default {
           isShowList: false
         }
       }
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -123,7 +136,8 @@ export default {
       controlDisplayed: this.displayedValue,
       timeOut: null,
       showFieldCreate: false,
-      showFieldList: false
+      showFieldList: false,
+      showCreate: false
     }
   },
   computed: {
@@ -168,6 +182,14 @@ export default {
         id: undefined,
         name: undefined
       }
+    },
+    popoverCreateBusinessParnet() {
+      return this.$store.getters.getPopoverCreateBusinessParnet
+    }
+  },
+  watch: {
+    popoverCreateBusinessParnet(value) {
+      this.showCreate = value
     }
   },
   methods: {
@@ -370,6 +392,9 @@ export default {
           })
           console.info(`Error get Business Partner. Message: ${error.message}, code ${error.code}.`)
         })
+    },
+    popoverOpen(value) {
+      this.$store.dispatch('changePopover', true)
     }
   }
 }
