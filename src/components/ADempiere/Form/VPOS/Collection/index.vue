@@ -266,7 +266,7 @@ export default {
     },
     listPayments() {
       const listLocal = this.$store.getters.getPaymentBox
-      const listServer = this.$store.getters.getListPayments
+      const listServer = this.$store.getters.getPos.listPayments
       if (!this.sendToServer) {
         return listServer.reverse()
       }
@@ -407,7 +407,7 @@ export default {
       }
     },
     currentOrder() {
-      return this.$store.getters.getOrder
+      return this.$store.getters.getPos.currentOrder
     },
     typeCurrency() {
       return this.$store.getters.getValueOfField({
@@ -468,7 +468,7 @@ export default {
       return this.$store.getters.getUpdatePaymentPos
     },
     isDisabled() {
-      return this.$store.getters.getIsProcessed
+      return this.$store.getters.getPos.isProcessed
     }
   },
   watch: {
@@ -797,7 +797,6 @@ export default {
             message: error.message,
             showClose: true
           })
-          console.log(error)
         })
         .finally(() => {
           this.$store.dispatch('listOrdersFromServer', {

@@ -3,18 +3,12 @@
     <el-form-item>
       <template slot="label">
         {{ $t('form.pos.order.BusinessPartnerCreate.businessPartner') }}
-        {{
-          showCreate
-        }}
         <el-popover
           v-model="showCreate"
           placement="right"
           width="400"
           trigger="click"
         >
-          {{
-            showCreate
-          }}
           <business-partner-create
             :parent-metadata="parentMetadata"
             :show-field="showCreate"

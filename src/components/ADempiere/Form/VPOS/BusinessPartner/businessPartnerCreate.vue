@@ -87,7 +87,7 @@ export default {
     showField(value) {
       if (value) {
         setTimeout(() => {
-          this.focusProductValue()
+          this.focusValue()
         }, 1500)
       }
     }
@@ -96,7 +96,7 @@ export default {
     this.unsubscribe()
   },
   methods: {
-    focusProductValue() {
+    focusValue() {
       this.$refs.Value[0].$children[0].$children[0].$children[1].$children[0].focus()
     },
     // TODO: Get locations values.

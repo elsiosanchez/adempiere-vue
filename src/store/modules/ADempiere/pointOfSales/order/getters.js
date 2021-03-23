@@ -15,6 +15,16 @@ export default {
   getOrder: (state) => {
     return state.order
   },
+  getPos: (state, getters) => {
+    const OrderPos = {
+      currentOrder: state.order,
+      listOrder: getters.getListOrder,
+      lineOrder: getters.getListOrderLine,
+      listPayments: getters.getListPayments,
+      isProcessed: getters.getIsProcessed
+    }
+    return OrderPos
+  },
   getIsProcessed: (state) => {
     const order = state.order
     if (!isEmptyValue(order.documentStatus.value) &&
@@ -31,9 +41,6 @@ export default {
       }
     }
     return state.listOrder
-  },
-  getCurrentOrder: (state) => {
-    return state.currentOrder
   },
   getFindOrder: (state) => {
     return state.findOrder
