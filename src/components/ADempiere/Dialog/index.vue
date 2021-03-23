@@ -56,7 +56,7 @@ import SequenceOrder from '@/components/ADempiere/SequenceOrder'
 import RecordAccess from '@/components/ADempiere/recordAccess'
 import { showNotification } from '@/utils/ADempiere/notification'
 import {
-  requestUpdateAccessRecord
+  updateAccessRecord
 } from '@/api/ADempiere/private-access'
 export default {
   name: 'ModalProcess',
@@ -208,7 +208,7 @@ export default {
       }
       if (action.action === undefined) {
         const list = this.$store.getters.getListRecordAcces
-        requestUpdateAccessRecord(list)
+        updateAccessRecord(list)
       }
     }
   }

@@ -97,7 +97,7 @@ export function getAccessList({
  * @param {string}  recordUuid
  * @param {array}  listRol
  */
-export function requestUpdateAccessRecord({
+export function updateAccessRecord({
   tableName,
   recordId,
   recordUuid,
