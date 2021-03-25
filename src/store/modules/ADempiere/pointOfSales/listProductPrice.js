@@ -51,11 +51,12 @@ const listProductPrice = {
       // Not reload, watch in component to reload
       // dispatch('listProductPriceFromServer', {})
     },
-    listProductPriceFromServer({ state, commit, rootGetters }, {
+    listProductPriceFromServer({ state, commit, dispatch, rootGetters }, {
       containerUuid = 'Products-Price-List',
       pageNumber, // 1
       searchValue
     }) {
+      // dispatch('line', 'epale')
       const posUuid = rootGetters.getPointOfSalesUuid
       if (isEmptyValue(posUuid)) {
         const message = language.t('notifications.errorPointOfSale')
@@ -131,7 +132,7 @@ const listProductPrice = {
     }) {
       const posUuid = rootGetters.getPointOfSalesUuid
       if (isEmptyValue(posUuid)) {
-        const message = 'Sin punto de venta seleccionado'
+        const message = language.t('notifications.errorPointOfSale')
         showMessage({
           type: 'info',
           message

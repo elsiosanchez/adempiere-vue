@@ -141,11 +141,13 @@ export default {
       this.loadProductsPricesList()
     }
     if (this.isEmptyValue(this.listWithPrice)) {
-      this.$store.dispatch('listProductPriceFromServer', {
-        containerUuid: 'Products-Price-List',
-        pageNumber: 1,
-        searchValue: ''
-      })
+      if (!this.isEmptyValue(this.currentPoint)) {
+        this.$store.dispatch('listProductPriceFromServer', {
+          containerUuid: 'Products-Price-List',
+          pageNumber: 1,
+          searchValue: ''
+        })
+      }
     }
   },
   beforeDestroy() {
@@ -172,7 +174,9 @@ export default {
       }
     },
     loadProductsPricesList() {
-      this.$store.dispatch('listProductPriceFromServer', {})
+      if (!this.isEmptyValue(this.currentPoint)) {
+        this.$store.dispatch('listProductPriceFromServer', {})
+      }
     },
     /**
      * @param {number} newPage

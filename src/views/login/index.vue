@@ -133,7 +133,7 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      default: 'dashboard'
+      default: 10
     }
   },
   watch: {
@@ -213,7 +213,7 @@ export default {
     },
     clientIdRedirect(query, expr) {
       const redirect = query.split(expr)
-      if (redirect[1] === this.default) {
+      if (redirect[1].length <= this.default) {
         return
       }
       return redirect[1]

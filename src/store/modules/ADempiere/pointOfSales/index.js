@@ -4,7 +4,7 @@ import {
   requestListPointOfSales
 } from '@/api/ADempiere/form/point-of-sales.js'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
-import { showMessage } from '@/utils/ADempiere/notification.js'
+// import { showMessage } from '@/utils/ADempiere/notification.js'
 
 const withoutResponse = {
   isLoaded: false,
@@ -27,7 +27,7 @@ const pointOfSales = {
     resetStatePointOfSales(state) {
       state = {}
     },
-    setPontOfSales(state, pos) {
+    setPointOfSales(state, pos) {
       state.pointOfSales = pos
     },
     setCurrentPOS(state, pos) {
@@ -50,12 +50,21 @@ const pointOfSales = {
      */
     listPointOfSalesFromServer({ commit, getters, dispatch }, posToSet = null) {
       const userUuid = getters['user/getUserUuid']
+      console.log({
+        userUuid
+      })
+      // dispatch('listPointOfSales', {
+      //   currentPOS: {
+      //     userUuid,
+      //     posToSet
+      //   }
+      // })
       requestListPointOfSales({
         userUuid
       })
         .then(response => {
           // TODO: Add organization
-          commit('setPontOfSales', {
+          commit('setPointOfSales', {
             ...response,
             userUuid
           })
@@ -88,11 +97,11 @@ const pointOfSales = {
         })
         .catch(error => {
           console.warn(`listPointOfSalesFromServer: ${error.message}. Code: ${error.code}.`)
-          showMessage({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
+          // showMessage({
+          //   type: 'error',
+          //   message: error.message,
+          //   showClose: true
+          // })
         })
     },
     setCurrentPOS({ commit, dispatch }, posToSet) {
