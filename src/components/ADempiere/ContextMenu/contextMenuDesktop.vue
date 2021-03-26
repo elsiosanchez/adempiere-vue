@@ -3,7 +3,6 @@
     <el-menu
       ref="contextMenu"
       v-shortkey="shorcutKey"
-      :default-active="activeMenu"
       :router="false"
       class="el-menu-demo"
       mode="horizontal"
@@ -136,6 +135,8 @@ import contextMixin from './contextMenuMixin.js'
 
 export default {
   name: 'ContextMenuDesktop',
-  mixins: [contextMixin]
+  mixins: [
+    contextMixin
+  ]
 }
 </script>

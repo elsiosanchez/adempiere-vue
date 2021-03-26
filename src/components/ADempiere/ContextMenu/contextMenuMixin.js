@@ -75,14 +75,6 @@ export default {
     }
   },
   computed: {
-    activeMenu() {
-      const { meta, path } = this.$route
-      // if set path, the sidebar will highlight the path you set
-      if (meta.activeMenu) {
-        return meta.activeMenu
-      }
-      return path
-    },
     getterContextMenu() {
       return this.$store.getters.getContextMenu(this.containerUuid)
     },

@@ -1,17 +1,17 @@
 <template>
   <div class="container-submenu-mobile container-context-menu">
     <el-button
-      type="text"
-      style="right: 70%;position: absolute;"
+      style="right: 70%; position: absolute;"
+      size="small"
       @click="runAction(actions[0])"
     >
-      {{ $t('components.RunProcess') }}
+      <b>{{ $t('components.RunProcess') }}</b>
     </el-button>
     <right-menu>
       <el-menu
         ref="contextMenu"
         v-shortkey="shorcutKey"
-        :default-active="activeMenu"
+        :default-openeds="openedsMenu"
         :router="false"
         class="el-menu-demo"
         mode="vertical"
@@ -139,7 +139,16 @@ export default {
   components: {
     RightMenu
   },
-  mixins: [contextMixin],
+  mixins: [
+    contextMixin
+  ],
+  data() {
+    return {
+      openedsMenu: [
+        'actions'
+      ]
+    }
+  },
   computed: {
     isPanelTypeMobile() {
       if (['process', 'report'].includes(this.$route.meta.type)) {
