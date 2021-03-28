@@ -5,7 +5,7 @@
       size="small"
       @click="runAction(actions[0])"
     >
-      <b>{{ $t('components.RunProcess') }}</b>
+      <b>{{ defaultActionName }}</b>
     </el-button>
     <right-menu>
       <el-menu
@@ -132,7 +132,7 @@
 
 <script>
 import contextMixin from './contextMenuMixin.js'
-import RightMenu from '@/components/RightPanel/menu'
+import RightMenu from '@/components/ADempiere/RightPanel'
 
 export default {
   name: 'ContextMenuMobile',
@@ -155,6 +155,12 @@ export default {
         return true
       }
       return false
+    },
+    defaultActionName() {
+      if (this.isWindow) {
+        return this.$t('window.newRecord')
+      }
+      return this.$t('components.RunProcess')
     },
     iconDefault() {
       if (this.isPanelTypeMobile) {
