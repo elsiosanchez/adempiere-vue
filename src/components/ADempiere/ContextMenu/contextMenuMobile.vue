@@ -3,7 +3,7 @@
     <el-button
       style="right: 70%; position: absolute;"
       size="small"
-      @click="runAction(actions[0])"
+      @click="runAction(defaultActionToRun)"
     >
       <b>{{ defaultActionName }}</b>
     </el-button>
@@ -156,9 +156,20 @@ export default {
       }
       return false
     },
+    defaultActionToRun() {
+      if (this.isWindow) {
+        if (!this.isWithRecord) {
+          return this.actions[2]
+        }
+      }
+      return this.actions[0]
+    },
     defaultActionName() {
       if (this.isWindow) {
-        return this.$t('window.newRecord')
+        if (this.isWithRecord) {
+          return this.$t('window.newRecord')
+        }
+        return this.$t('data.undo')
       }
       return this.$t('components.RunProcess')
     },

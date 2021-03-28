@@ -81,8 +81,11 @@ export default {
     isWindow() {
       return this.panelType === 'window'
     },
+    isWithRecord() {
+      return !this.isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new'
+    },
     isReferecesContent() {
-      if (this.isWindow && !this.isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new') {
+      if (this.isWindow && this.isWithRecord) {
         return true
       }
       return false
@@ -441,7 +444,7 @@ export default {
             // rollback
             if (itemAction.action === 'undoModifyData') {
               itemAction.disabled = Boolean(!this.getDataLog && !this.getOldRouteOfWindow)
-            } else if (this.recordUuid === 'create-new' || !this.isInsertRecord) {
+            } else if (!this.isWithRecord || !this.isInsertRecord) {
               itemAction.disabled = true
             }
           }
