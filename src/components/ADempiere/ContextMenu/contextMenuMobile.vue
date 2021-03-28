@@ -4,6 +4,7 @@
       style="right: 70%; position: absolute;"
       size="small"
       :type="typeOfAction"
+      :plain="isPlain"
       @click="runAction(defaultActionToRun)"
     >
       <b>{{ defaultActionName }}</b>
@@ -167,9 +168,15 @@ export default {
     },
     typeOfAction() {
       if (this.isUndoAction) {
-        return 'danger'
+        return 'warning'
       }
       return 'default'
+    },
+    isPlain() {
+      if (this.isUndoAction) {
+        return true
+      }
+      return false
     },
     defaultActionToRun() {
       if (this.isUndoAction) {
