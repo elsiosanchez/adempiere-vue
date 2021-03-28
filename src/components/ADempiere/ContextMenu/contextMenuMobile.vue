@@ -3,6 +3,7 @@
     <el-button
       style="right: 70%; position: absolute;"
       size="small"
+      :type="typeOfAction"
       @click="runAction(defaultActionToRun)"
     >
       <b>{{ defaultActionName }}</b>
@@ -156,11 +157,23 @@ export default {
       }
       return false
     },
-    defaultActionToRun() {
+    isUndoAction() {
       if (this.isWindow) {
         if (!this.isWithRecord) {
-          return this.actions[2]
+          return true
         }
+      }
+      return false
+    },
+    typeOfAction() {
+      if (this.isUndoAction) {
+        return 'danger'
+      }
+      return 'default'
+    },
+    defaultActionToRun() {
+      if (this.isUndoAction) {
+        return this.actions[2]
       }
       return this.actions[0]
     },
