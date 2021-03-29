@@ -9,7 +9,9 @@
           :key="index"
           :command="action"
         >
-          {{ action.name }}
+          <b>
+            {{ action.name }}
+          </b>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -24,7 +26,14 @@
           :key="index"
           :command="relation"
         >
-          {{ relation.meta.title }}
+          <b>
+            {{ relation.meta.title }}
+          </b>
+          <p
+            style="margin: 0px; margin-bottom: 10px;"
+          >
+            {{ relation.meta.description }}
+          </p>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
