@@ -269,7 +269,6 @@ export default {
   methods: {
     showNotification,
     actionContextMenu(event) {
-      console.log(event)
       switch (event.srcKey) {
         case 'defaultValues':
           this.$store.dispatch('setDefaultValues', {
