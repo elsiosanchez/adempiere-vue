@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isListRecord" class="container-submenu-mobile container-context-menu">
+  <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
     <!-- actions or process on container -->
     <el-dropdown size="mini" split-button @click="runAction(defaultActionToRun)" @command="clickRunAction">
       {{ defaultActionName }}
