@@ -60,6 +60,10 @@ export default {
     isDisplayed: {
       type: Boolean,
       default: false
+    },
+    isListRecord: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
