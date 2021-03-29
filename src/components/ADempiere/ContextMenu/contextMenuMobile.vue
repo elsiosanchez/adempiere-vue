@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
     <!-- actions or process on container -->
-    <el-dropdown size="mini" split-button @click="runAction(defaultActionToRun)" @command="clickRunAction">
+    <el-dropdown size="mini" split-button @command="clickRunAction">
       {{ defaultActionName }}
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item
@@ -9,9 +9,14 @@
           :key="index"
           :command="action"
         >
-          <b>
-            {{ action.name }}
-          </b>
+          <span style="display: inline-flex;">
+            <i v-if="action.type === 'dataAction'" :class="iconAction(action)" />
+            <svg-icon v-else icon-class="component" />
+            <b style="font-size: 8px;margin-top: 9% !important;margin-left: 5px;">
+              {{ action.name }}
+            </b>
+          </span>
+
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -21,20 +26,26 @@
         {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          v-for="(relation, index) in relationsList"
-          :key="index"
-          :command="relation"
-        >
-          <b>
-            {{ relation.meta.title }}
-          </b>
-          <p
-            style="margin: 0px; margin-bottom: 10px;"
+        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 200px;">
+          <el-dropdown-item
+            v-for="(relation, index) in relationsList"
+            :key="index"
+            :command="relation"
+            :divided="true"
           >
-            {{ relation.meta.description }}
-          </p>
-        </el-dropdown-item>
+            <span style="display: inline-flex;">
+              <svg-icon :icon-class="relation.meta.icon" />
+              <b style="font-size: 8px;margin-top: 9% !important;margin-left: 5px;">
+                {{ relation.meta.title }}
+              </b>
+            </span>
+            <p
+              style="margin: 0px;font-size: 7px;"
+            >
+              {{ relation.meta.description }}
+            </p>
+          </el-dropdown-item>
+        </el-scrollbar>
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown size="mini">
@@ -128,6 +139,27 @@ export default {
     },
     clickRunAction(action) {
       this.runAction(action)
+    },
+    iconAction(action) {
+      let icon
+      switch (action.action) {
+        case 'setDefaultValues':
+          icon = 'el-icon-news'
+          break
+        case 'deleteEntity':
+          icon = 'el-icon-delete'
+          break
+        case 'undoModifyData':
+          icon = 'el-icon-refresh-left'
+          break
+        case 'lockRecord':
+          icon = 'el-icon-lock'
+          break
+        case 'unlockRecord':
+          icon = 'el-icon-unlock'
+          break
+      }
+      return icon
     }
   }
 }
@@ -136,6 +168,16 @@ export default {
 <style scoped>
   .el-dropdown .el-button-group {
     display: flex;
+  }
+  .el-dropdown-menu--mini .el-dropdown-menu__item {
+    line-height: 14px;
+    padding: 0px 15px;
+    font-size: 10px;
+  }
+  .el-dropdown-menu__item--divided {
+    position: relative;
+    /* margin-top: 6px; */
+    border-top: 1px solid #e6ebf5;
   }
   .svg-icon {
     width: 1em;
