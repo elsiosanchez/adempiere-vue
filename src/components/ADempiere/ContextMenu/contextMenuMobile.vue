@@ -1,25 +1,61 @@
 <template>
   <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
     <!-- actions or process on container -->
-    <el-dropdown size="mini" split-button @command="clickRunAction">
+    <el-dropdown
+      size="mini"
+      :hide-on-click="true"
+      split-button
+      trigger="click"
+      @command="clickRunAction"
+      @click="runAction(defaultActionToRun)"
+    >
       {{ defaultActionName }}
       <el-dropdown-menu slot="dropdown">
-        <el-scrollbar wrap-class="scroll" style="max-height: 250px;max-width: 200px;">
-          <el-dropdown-item
-            v-for="(action, index) in actions"
-            :key="index"
-            :command="action"
-            :divided="true"
-          >
-            <span style="display: inline-flex;margin-top: 2%;margin-bottom: 2%;">
-              <i :class="iconAction(action)" />
-              <b :style="styleLabelAction(action.type === 'dataAction')">
-                {{ action.name }}
-              </b>
-            </span>
-
-          </el-dropdown-item>
-        </el-scrollbar>
+        <el-dropdown-item
+          command="refreshData"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i class="el-icon-refresh" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ $t('components.contextMenuRefresh') }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.noDescription') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
+        <el-dropdown-item
+          v-for="(action, index) in actions"
+          :key="index"
+          :command="action"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i :class="iconAction(action)" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ action.name }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.noDescription') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <!-- menu relations -->
@@ -28,32 +64,30 @@
         {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 220px;">
-          <el-dropdown-item
-            v-for="(relation, index) in relationsList"
-            :key="index"
-            :command="relation"
-            :divided="true"
-          >
-            <div class="contents">
-              <div style="margin-right: 5%;margin-top: 10%;">
-                <svg-icon :icon-class="relation.meta.icon" />
-              </div>
-              <div>
-                <span class="contents">
-                  <b class="label">
-                    {{ relation.meta.title }}
-                  </b>
-                </span>
-                <p
-                  class="description"
-                >
-                  {{ relation.meta.description }}
-                </p>
-              </div>
+        <el-dropdown-item
+          v-for="(relation, index) in relationsList"
+          :key="index"
+          :command="relation"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <svg-icon :icon-class="relation.meta.icon" />
             </div>
-          </el-dropdown-item>
-        </el-scrollbar>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ relation.meta.title }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ relation.meta.description }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown size="mini" @command="clickReferences">
@@ -61,29 +95,27 @@
         {{ $t('components.contextMenuReferences') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 220px;">
-          <el-dropdown-item
-            v-for="(reference, index) in references.referencesList"
-            :key="index"
-            :command="reference"
-            :divided="true"
-          >
-            <div class="contents">
-              <div>
-                <span class="contents">
-                  <b class="label">
-                    {{ reference.displayName }}
-                  </b>
-                </span>
-                <p
-                  class="description"
-                >
-                  {{ reference.whereClause }}
-                </p>
-              </div>
+        <el-dropdown-item
+          v-for="(reference, index) in references.referencesList"
+          :key="index"
+          :command="reference"
+          :divided="true"
+        >
+          <div class="contents">
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ reference.displayName }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ reference.whereClause }}
+              </p>
             </div>
-          </el-dropdown-item>
-        </el-scrollbar>
+          </div>
+        </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -163,7 +195,11 @@ export default {
       }, () => {})
     },
     clickRunAction(action) {
-      this.runAction(action)
+      if (action === 'refreshData') {
+        this.refreshData()
+      } else {
+        this.runAction(action)
+      }
     },
     clickReferences(reference) {
       this.openReference(reference)
@@ -210,6 +246,22 @@ export default {
 <style scoped>
   .el-dropdown .el-button-group {
     display: flex;
+  }
+  .el-dropdown-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 10px 0;
+    margin: 5px 0;
+    background-color: #FFFFFF;
+    border: 1px solid #e6ebf5;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    max-height: 250px;
+    max-width: 220px;
+    overflow: auto;
   }
   .el-dropdown-menu--mini .el-dropdown-menu__item {
     line-height: 14px;
