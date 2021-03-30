@@ -229,6 +229,8 @@ export default {
         }
       } else if (action.type === 'process') {
         icon = 'el-icon-setting'
+      } else {
+        icon = 'el-icon-setting'
       }
       return icon
     },
@@ -244,6 +246,12 @@ export default {
 </script>
 
 <style scoped>
+  .el-tree-node__children {
+    overflow: hidden;
+    background-color: transparent;
+    max-width: 99%;
+    overflow: auto;
+  }
   .el-dropdown .el-button-group {
     display: flex;
   }
