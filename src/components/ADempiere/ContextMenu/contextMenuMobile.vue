@@ -111,7 +111,7 @@
               <p
                 class="description"
               >
-                {{ reference.whereClause }}
+                {{ $t('data.noDescription') }}
               </p>
             </div>
           </div>
