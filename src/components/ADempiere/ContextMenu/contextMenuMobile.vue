@@ -4,20 +4,22 @@
     <el-dropdown size="mini" split-button @command="clickRunAction">
       {{ defaultActionName }}
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          v-for="(action, index) in actions"
-          :key="index"
-          :command="action"
-        >
-          <span style="display: inline-flex;">
-            <i v-if="action.type === 'dataAction'" :class="iconAction(action)" />
-            <svg-icon v-else icon-class="component" />
-            <b style="font-size: 12px;margin-top: 0% !important;margin-left: 0px;margin-bottom: 10%;">
-              {{ action.name }}
-            </b>
-          </span>
+        <el-scrollbar wrap-class="scroll" style="max-height: 250px;max-width: 200px;">
+          <el-dropdown-item
+            v-for="(action, index) in actions"
+            :key="index"
+            :command="action"
+            :divided="true"
+          >
+            <span style="display: inline-flex;margin-top: 2%;margin-bottom: 2%;">
+              <i :class="iconAction(action)" />
+              <b :style="styleLabelAction(action.type === 'dataAction')">
+                {{ action.name }}
+              </b>
+            </span>
 
-        </el-dropdown-item>
+          </el-dropdown-item>
+        </el-scrollbar>
       </el-dropdown-menu>
     </el-dropdown>
     <!-- menu relations -->
@@ -26,39 +28,62 @@
         {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 350px;">
+        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 220px;">
           <el-dropdown-item
             v-for="(relation, index) in relationsList"
             :key="index"
             :command="relation"
             :divided="true"
           >
-            <span style="display: inline-flex;">
-              <svg-icon :icon-class="relation.meta.icon" />
-              <b style="font-size: 14px;margin-top: 0% !important;margin-left: 5px;">
-                {{ relation.meta.title }}
-              </b>
-            </span>
-            <p
-              style="margin: 0px;font-size: 12px;"
-            >
-              {{ relation.meta.description }}
-            </p>
+            <div class="contents">
+              <div style="margin-right: 5%;margin-top: 10%;">
+                <svg-icon :icon-class="relation.meta.icon" />
+              </div>
+              <div>
+                <span class="contents">
+                  <b class="label">
+                    {{ relation.meta.title }}
+                  </b>
+                </span>
+                <p
+                  class="description"
+                >
+                  {{ relation.meta.description }}
+                </p>
+              </div>
+            </div>
           </el-dropdown-item>
         </el-scrollbar>
       </el-dropdown-menu>
     </el-dropdown>
-    <el-dropdown size="mini">
+    <el-dropdown size="mini" @command="clickReferences">
       <el-button size="mini" :disabled="!(isReferecesContent && isLoadedReferences)">
         {{ $t('components.contextMenuReferences') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          v-for="(reference, index) in references.referencesList"
-          :key="index"
-        >
-          {{ reference.displayName }}
-        </el-dropdown-item>
+        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 220px;">
+          <el-dropdown-item
+            v-for="(reference, index) in references.referencesList"
+            :key="index"
+            :command="reference"
+            :divided="true"
+          >
+            <div class="contents">
+              <div>
+                <span class="contents">
+                  <b class="label">
+                    {{ reference.displayName }}
+                  </b>
+                </span>
+                <p
+                  class="description"
+                >
+                  {{ reference.whereClause }}
+                </p>
+              </div>
+            </div>
+          </el-dropdown-item>
+        </el-scrollbar>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -140,26 +165,43 @@ export default {
     clickRunAction(action) {
       this.runAction(action)
     },
+    clickReferences(reference) {
+      this.openReference(reference)
+    },
     iconAction(action) {
       let icon
-      switch (action.action) {
-        case 'setDefaultValues':
-          icon = 'el-icon-news'
-          break
-        case 'deleteEntity':
-          icon = 'el-icon-delete'
-          break
-        case 'undoModifyData':
-          icon = 'el-icon-refresh-left'
-          break
-        case 'lockRecord':
-          icon = 'el-icon-lock'
-          break
-        case 'unlockRecord':
-          icon = 'el-icon-unlock'
-          break
+      if (action.type === 'dataAction') {
+        switch (action.action) {
+          case 'setDefaultValues':
+            icon = 'el-icon-news'
+            break
+          case 'deleteEntity':
+            icon = 'el-icon-delete'
+            break
+          case 'undoModifyData':
+            icon = 'el-icon-refresh-left'
+            break
+          case 'lockRecord':
+            icon = 'el-icon-lock'
+            break
+          case 'unlockRecord':
+            icon = 'el-icon-unlock'
+            break
+          case 'recordAccess':
+            icon = 'el-icon-c-scale-to-original'
+            break
+        }
+      } else if (action.type === 'process') {
+        icon = 'el-icon-setting'
       }
       return icon
+    },
+    styleLabelAction(value) {
+      if (value) {
+        return 'font-size: 14px;margin-top: 0% !important;margin-left: 0px;margin-bottom: 10%;display: contents;'
+      } else {
+        return 'font-size: 14px;margin-top: 1.5% !important;margin-left: 2%;margin-bottom: 5%;display: contents;'
+      }
     }
   }
 }
@@ -185,5 +227,19 @@ export default {
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
+  }
+  .label {
+    font-size: 14px;
+    margin-top: 0% !important;
+    margin-left: 0px;
+    text-align: initial;
+  }
+  .description {
+    margin: 0px;
+    font-size: 12px;
+    text-align: initial;
+  }
+  .contents {
+    display: inline-flex;
   }
 </style>
