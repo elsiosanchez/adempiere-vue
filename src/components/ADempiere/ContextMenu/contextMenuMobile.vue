@@ -12,7 +12,7 @@
           <span style="display: inline-flex;">
             <i v-if="action.type === 'dataAction'" :class="iconAction(action)" />
             <svg-icon v-else icon-class="component" />
-            <b style="font-size: 8px;margin-top: 9% !important;margin-left: 5px;">
+            <b style="font-size: 12px;margin-top: 9% !important;margin-left: 5px;">
               {{ action.name }}
             </b>
           </span>
@@ -26,7 +26,7 @@
         {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 200px;">
+        <el-scrollbar wrap-class="scroll" style="max-height: 200px;max-width: 350px;">
           <el-dropdown-item
             v-for="(relation, index) in relationsList"
             :key="index"
@@ -35,12 +35,12 @@
           >
             <span style="display: inline-flex;">
               <svg-icon :icon-class="relation.meta.icon" />
-              <b style="font-size: 8px;margin-top: 9% !important;margin-left: 5px;">
+              <b style="font-size: 12px;margin-top: 2% !important;margin-left: 5px;">
                 {{ relation.meta.title }}
               </b>
             </span>
             <p
-              style="margin: 0px;font-size: 7px;"
+              style="margin: 0px;font-size: 10px;"
             >
               {{ relation.meta.description }}
             </p>
