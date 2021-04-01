@@ -189,6 +189,7 @@ export default {
     createFieldFromDictionary,
     close() {
       this.$children[0].visible = false
+      this.$store.commit('changeShowRigthPanel', false)
     },
     remove() {
       const isForCurrentUser = this.metadataList.find(field => field.columnName === 'AD_User_ID').value
@@ -269,6 +270,7 @@ export default {
           })
           console.warn(`setPreference error: ${error.message}.`)
         })
+      this.$store.commit('changeShowRigthPanel', false)
     }
   }
 }
