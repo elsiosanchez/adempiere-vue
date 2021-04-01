@@ -243,12 +243,14 @@ export default {
     advancedQuery: 'Consulta Avanzada'
   },
   settings: {
-    title: 'Configuración de estilo de página',
+    title: 'Configuración',
     theme: 'Color del tema',
     tagsView: 'Habilitar Tags-View',
     fixedHeader: 'Encabezado fijo',
     sidebarLogo: 'Logotipo de la barra lateral',
-    showContextMenu: 'Mostrar Menu de Contexto'
+    showContextMenu: 'Mostrar Menu de Contexto',
+    isShowTitle: 'Mostrar Título',
+    isShowMenu: 'Mostrar Menu'
   },
   profile: {
     aboutMe: 'Sobre Mi',
@@ -291,6 +293,7 @@ export default {
     info: 'Informacion',
     calculator: 'Calculadora',
     preference: 'Preferencia',
+    codeTranslation: 'Traduccion de Codigo',
     container: {
       help: 'Ayuda',
       description: 'Descripción'

@@ -268,9 +268,9 @@ export default {
             message: error.message,
             type: 'error'
           })
+          this.close()
           console.warn(`setPreference error: ${error.message}.`)
         })
-      this.$store.commit('changeShowRigthPanel', false)
     }
   }
 }

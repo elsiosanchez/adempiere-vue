@@ -14,10 +14,21 @@
         {{ fieldAttributes.help }}
       </el-form-item>
     </el-form>
+    <template v-for="(zoomItem, index) in fieldAttributes.reference.zoomWindows">
+      <el-button
+        :key="index"
+        type="text"
+        @click="redirect({ window: zoomItem })"
+      >
+        {{ $t('table.ProcessActivity.zoomIn') }}
+        {{ zoomItem.name }}
+      </el-button>
+    </template>
   </el-card>
 </template>
 
 <script>
+import { recursiveTreeSearch } from '@/utils/ADempiere/valueUtils.js'
 
 export default {
   name: 'FieldContextInfo',
@@ -36,6 +47,11 @@ export default {
       value: this.fieldValue
     }
   },
+  computed: {
+    permissionRoutes() {
+      return this.$store.getters.permission_routes
+    }
+  },
   watch: {
     fieldValue(value) {
       this.value = value
@@ -45,6 +61,32 @@ export default {
     notSubmitForm(event) {
       event.preventDefault()
       return false
+    },
+    redirect({ window }) {
+      const viewSearch = recursiveTreeSearch({
+        treeData: this.permissionRoutes,
+        attributeValue: window.uuid,
+        attributeName: 'meta',
+        secondAttribute: 'uuid',
+        attributeChilds: 'children'
+      })
+
+      if (viewSearch) {
+        this.$router.push({
+          name: viewSearch.name,
+          query: {
+            action: 'advancedQuery',
+            tabParent: 0,
+            [this.fieldAttributes.columnName]: this.value
+          }
+        }, () => {})
+      } else {
+        this.$message({
+          type: 'error',
+          showClose: true,
+          message: this.$t('notifications.noRoleAccess')
+        })
+      }
     }
   }
 }

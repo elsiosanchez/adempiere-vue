@@ -41,7 +41,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="Translated Value:"
+          :label="$t('field.container.codeTranslation')"
           :required="true"
         >
           <el-input
