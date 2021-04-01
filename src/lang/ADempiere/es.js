@@ -286,6 +286,16 @@ export default {
       error: 'Error En Callout'
     }
   },
+  field: {
+    field: 'Campo',
+    info: 'Informacion',
+    calculator: 'Calculadora',
+    preference: 'Preferencia',
+    container: {
+      help: 'Ayuda',
+      description: 'Descripción'
+    }
+  },
   data: {
     createRecordSuccessful: 'Nuevo registro creado con exito',
     createNewRecord: 'Modo nuevo registro',
