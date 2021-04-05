@@ -5,31 +5,22 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>
-              {{ $t('documentation.documentation') }}
+              <b> {{ $t('documentation.documentation') }} </b>
             </span>
-            <a class="document-btn" target="_blank" href="//adempiere.github.io/adempiere-vue-site/" style="float: right; padding: 3px 0">
+            <a target="_blank" :href="readmeDocument.href">
               <svg-icon icon-class="link" />
             </a>
           </div>
           <div>
-            <p align="center">
-              <img width="220" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Adempiere-logo.png">
-            </p>
+            <div v-if="!isEmptyValue(readmeDocument)" style="display: inline-flex;width: 100%;">
+              <img width="100" height="100" :src="readmeDocument.avatar" style="margin-left: 20%;">
+              <p style="font-size: 30px;padding-top: 1%;color: #008fd3;"> {{ readmeDocument.title }} </p>
+            </div>
 
             <p align="center">
-              <a href="https://github.com/vuejs/vue">
-                <img src="https://img.shields.io/badge/vue-2.6.10-brightgreen.svg" alt="vue">
-              </a>
-              <a href="https://github.com/ElemeFE/element">
-                <img src="https://img.shields.io/badge/element--ui-2.7.0-brightgreen.svg" alt="element-ui">
-              </a>
-              <a href="https://travis-ci.org/adempiere/adempiere-vue" rel="nofollow">
-                <img src="https://travis-ci.org/adempiere/adempiere=vue.svg?branch=develop" alt="Build Status">
-              </a>
-              <a href="https://github.com/adempiere/adempiere-vue/blob/master/LICENSE">
-                <img src="https://img.shields.io/badge/license-GNU/GPL%20(v3)-blue" alt="license">
-              </a>
+              <tags />
             </p>
+            <div v-if="!isEmptyValue(readmeDocument)" id="markdown" v-markdown="readmeDocument.description" />
           </div>
         </el-card>
       </el-col>
@@ -37,41 +28,29 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>
-              {{ $t('documentation.github') }}
+              <b> {{ $t('documentation.github') }} </b>
             </span>
-            <a class="document-btn" target="_blank" href="https://github.com/adempiere/adempiere-vue" style="float: right; padding: 3px 0">
+            <a target="_blank" :href="readmeRepositoryGithub.href">
               <svg-icon icon-class="link" />
             </a>
           </div>
-          <div>
-            <p align="center">
-              <img width="220" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Adempiere-logo.png">
-            </p>
-
-            <p align="center">
-              <a href="https://github.com/vuejs/vue">
-                <img src="https://img.shields.io/badge/vue-2.6.10-brightgreen.svg" alt="vue">
-              </a>
-              <a href="https://github.com/ElemeFE/element">
-                <img src="https://img.shields.io/badge/element--ui-2.7.0-brightgreen.svg" alt="element-ui">
-              </a>
-              <a href="https://travis-ci.org/adempiere/adempiere-vue" rel="nofollow">
-                <img src="https://travis-ci.org/adempiere/adempiere=vue.svg?branch=develop" alt="Build Status">
-              </a>
-              <a href="https://github.com/adempiere/adempiere-vue/blob/master/LICENSE">
-                <img src="https://img.shields.io/badge/license-GNU/GPL%20(v3)-blue" alt="license">
-              </a>
-            </p>
+          <div v-if="!isEmptyValue(readmeRepositoryGithub)" style="display: inline-flex;width: 100%;">
+            <img width="100" height="100" :src="readmeRepositoryGithub.avatar" style="margin-left: 20%;">
+            <p style="font-size: 30px;padding-top: 1%;color: #008fd3;"> {{ readmeRepositoryGithub.title }} </p>
           </div>
+          <p align="center">
+            <tags />
+          </p>
+          <div v-if="!isEmptyValue(readmeRepositoryGithub)" id="markdown" v-markdown="readmeRepositoryGithub.description" />
         </el-card>
       </el-col>
       <el-col :span="defaultSize" :style="style">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>
-              {{ releasesLabel }}
+              <b> {{ releasesLabel }} </b>
             </span>
-            <a class="document-btn" target="_blank" href="https://github.com/adempiere/adempiere-vue/releases" style="float: right; padding: 3px 0">
+            <a target="_blank" :href="releasesList.href">
               <svg-icon icon-class="link" />
             </a>
           </div>
@@ -94,7 +73,7 @@
                   }}
                 </b>
               </template>
-              <a class="document-btn" target="_blank" :href="releases.download" style="float: right; padding: 3px 0">
+              <a target="_blank" :href="releases.download">
                 <i class="el-icon-download" />
               </a>
               <div v-if="!isEmptyValue(releases)" id="markdown" v-markdown="releases.body" />
@@ -107,13 +86,13 @@
 </template>
 
 <script>
-// import DropdownMenu from '@/components/Share/DropdownMenu'
-import { fetchReleasesList } from '@/api/documentation/releases'
+import { fetchReleasesList, fetchReadme } from '@/api/documentation/documentation'
 import { config } from '@/utils/ADempiere/config'
+import tags from './tags'
 
 export default {
   name: 'Documentation',
-  // components: { DropdownMenu },
+  components: { tags },
   data() {
     return {
       releasesList: [],
@@ -122,7 +101,9 @@ export default {
       releaseNotes: {
         body: ''
       },
-      releasesLabel: this.$t('documentation.releases')
+      releasesLabel: this.$t('documentation.releases'),
+      readmeRepositoryGithub: {},
+      readmeDocument: {}
     }
   },
   computed: {
@@ -136,7 +117,7 @@ export default {
       return 8
     },
     style() {
-      return 'margin-top: 2%;padding: 1%;'
+      return 'margin-top: 2%;padding: 0.5%;'
     },
     stopper() {
       return this.releasesList.length - 1
@@ -146,7 +127,33 @@ export default {
     this.loadReleasesList()
   },
   methods: {
-    loadReleasesList() {
+    fetchDocument() {
+      fetchReadme({
+        repository: 'adempiere-vue-site'
+      })
+        .then(response => {
+          this.readmeDocument = {
+            title: response.name,
+            href: response.html_url,
+            description: response.description,
+            avatar: response.organization.avatar_url
+          }
+        })
+    },
+    fetchRepository() {
+      fetchReadme({
+        repository: 'adempiere-vue'
+      })
+        .then(response => {
+          this.readmeRepositoryGithub = {
+            title: response.name,
+            href: response.html_url,
+            description: response.description,
+            avatar: response.organization.avatar_url
+          }
+        })
+    },
+    fechReleases() {
       fetchReleasesList()
         .then(response => {
           if (response) {
@@ -170,6 +177,11 @@ export default {
             }
           }
         })
+    },
+    loadReleasesList() {
+      this.fetchDocument()
+      this.fetchRepository()
+      this.fechReleases()
     }
   }
 }
@@ -198,6 +210,11 @@ export default {
   .el-col {
     margin-top: 2%;
     padding: 1%;
+  }
+  .a {
+    background-color: transparent;
+    float: right;
+    padding: 3px 0px;
   }
 }
 </style>
