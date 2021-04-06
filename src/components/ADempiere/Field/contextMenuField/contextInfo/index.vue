@@ -87,6 +87,7 @@ export default {
           message: this.$t('notifications.noRoleAccess')
         })
       }
+      this.$store.commit('changeShowRigthPanel', false)
     }
   }
 }
