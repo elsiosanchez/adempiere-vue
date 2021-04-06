@@ -250,16 +250,11 @@ export default {
   },
   created() {
     this.unsubscribe = this.subscribeChanges()
+    this.$store.commit('setListProductPrice', {
+      isLoaded: false
+    })
     this.timeOut = setTimeout(() => {
-      if (this.isEmptyValue(this.currentPoint)) {
-        const message = this.$t('notifications.errorPointOfSale')
-        this.$message({
-          type: 'info',
-          message,
-          duration: 1500,
-          showClose: true
-        })
-      }
+      this.validatePos(this.currentPoint)
     }, 3000)
   },
   beforeDestroy() {
@@ -386,6 +381,25 @@ export default {
           }, 1000)
         }
       })
+    },
+    /**
+     * @param {object} PointOfSales
+     */
+    validatePos(PointOfSales) {
+      console.log(this.isEmptyValue(PointOfSales), this.isReadyFromGetData)
+      if (this.isEmptyValue(PointOfSales)) {
+        const message = this.$t('notifications.errorPointOfSale')
+        this.$store.commit('setListProductPrice', {
+          isLoaded: true,
+          productPricesList: []
+        })
+        this.$message({
+          type: 'info',
+          message,
+          duration: 1500,
+          showClose: true
+        })
+      }
     }
   }
 }
