@@ -132,21 +132,26 @@ export default {
       if (isToLoad) {
         this.loadProductsPricesList()
       }
+    },
+    currentPoint(value) {
+      if (!this.isEmptyValue(value)) {
+        this.loadProductsPricesList()
+      }
     }
   },
   created() {
     this.unsubscribe = this.subscribeChanges()
-
-    if (this.isReadyFromGetData) {
-      this.loadProductsPricesList()
-    }
-    if (this.isEmptyValue(this.listWithPrice)) {
-      this.$store.dispatch('listProductPriceFromServer', {
-        containerUuid: 'Products-Price-List',
-        pageNumber: 1,
-        searchValue: ''
-      })
-    }
+    this.timeOut = setTimeout(() => {
+      if (this.isEmptyValue(this.currentPoint)) {
+        const message = this.$t('notifications.errorPointOfSale')
+        this.$message({
+          type: 'info',
+          message,
+          duration: 1500,
+          showClose: true
+        })
+      }
+    }, 3000)
   },
   beforeDestroy() {
     this.unsubscribe()
