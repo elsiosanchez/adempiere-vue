@@ -54,8 +54,9 @@
               <svg-icon icon-class="link" />
             </a>
           </div>
+          {{ activeListReleases }}
           <el-collapse
-            v-model="activeNames"
+            v-model="activeListReleases"
             accordion
           >
             <el-collapse-item
@@ -73,9 +74,11 @@
                   }}
                 </b>
               </template>
-              <a target="_blank" :href="releases.download">
-                <i class="el-icon-download" />
-              </a>
+              <el-button type="text" style="float: right;">
+                <a target="_blank" :href="releases.download">
+                  {{ $t('components.contextMenuDownload') }} <i class="el-icon-download" />
+                </a>
+              </el-button>
               <div v-if="!isEmptyValue(releases)" id="markdown" v-markdown="releases.body" />
             </el-collapse-item>
           </el-collapse>
@@ -121,6 +124,10 @@ export default {
     },
     stopper() {
       return this.releasesList.length - 1
+    },
+    activeListReleases() {
+      const active = this.releasesList.findIndex(releases => this.releaseNotes.title === releases.title)
+      return active
     }
   },
   created() {
