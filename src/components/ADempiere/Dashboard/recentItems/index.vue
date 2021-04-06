@@ -120,10 +120,6 @@ export default {
 </script>
 
 <style scoped>
-  .el-table {
-    background-color: #FFFFFF;
-    cursor: pointer;
-  }
   .search_recent {
     width: 50% !important;
     float: right;
