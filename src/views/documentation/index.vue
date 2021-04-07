@@ -50,11 +50,10 @@
             <span>
               <b> {{ releasesLabel }} </b>
             </span>
-            <a target="_blank" :href="releasesList.href">
+            <a target="_blank" :href="releases">
               <svg-icon icon-class="link" />
             </a>
           </div>
-          {{ activeListReleases }}
           <el-collapse
             v-model="activeListReleases"
             accordion
@@ -76,7 +75,7 @@
               </template>
               <el-button type="text" style="float: right;">
                 <a target="_blank" :href="releases.download">
-                  {{ $t('components.contextMenuDownload') }} <i class="el-icon-download" />
+                  {{ releases.titleDownload }} <i class="el-icon-download" />
                 </a>
               </el-button>
               <div v-if="!isEmptyValue(releases)" id="markdown" v-markdown="releases.body" />
@@ -104,6 +103,7 @@ export default {
       releaseNotes: {
         body: ''
       },
+      releases: 'https://github.com/adempiere/adempiere-vue/releases',
       releasesLabel: this.$t('documentation.releases'),
       readmeRepositoryGithub: {},
       readmeDocument: {}
@@ -171,7 +171,8 @@ export default {
                 author: release.author.login,
                 body: release.body,
                 created_at: release.created_at,
-                download: release.assets[0].browser_download_url
+                download: release.assets[0].browser_download_url,
+                titleDownload: release.assets[0].name
               })
             })
             if (config.repository.releaseNo !== undefined && this.releasesList.length > 0) {
