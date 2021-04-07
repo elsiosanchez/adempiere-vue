@@ -50,7 +50,7 @@
             <span>
               <b> {{ releasesLabel }} </b>
             </span>
-            <a target="_blank" :href="releasesLink">
+            <a target="_blank" :href="releases">
               <svg-icon icon-class="link" />
             </a>
           </div>
@@ -103,7 +103,6 @@ export default {
       releaseNotes: {
         body: ''
       },
-      releasesLink: 'https://github.com/adempiere/adempiere-vue/releases',
       releasesLabel: this.$t('documentation.releases'),
       readmeRepositoryGithub: {},
       readmeDocument: {}
