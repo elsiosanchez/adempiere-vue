@@ -10,10 +10,10 @@
         <div class="rightMenu">
           <div
             class="handle-button"
-            :style="{ 'top': buttonTop+'%' }"
+            :style="{'top':buttonTop+'px','background-color':theme}"
             @click="isShowRightPanel=!isShowRightPanel"
           >
-            <i :class="icon" style="color: gray;" />
+            <i :class="icon" style="color: white;" />
           </div>
 
           <div class="rightMenu-items">
