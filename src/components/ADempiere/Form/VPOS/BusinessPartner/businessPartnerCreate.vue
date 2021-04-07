@@ -22,7 +22,6 @@
               type="primary"
               class="custom-button-create-bp"
               icon="el-icon-check"
-              :loading="isLoadingRecord"
               @click="createBusinessParter"
             />
             <el-button
@@ -105,16 +104,14 @@ export default {
         containerUuid: this.containerUuid,
         format: 'object'
       })
-      if (this.isEmptyValue(values)) {
-        return
-      }
       const name2 = this.$store.getters.getValueOfField({
         containerUuid: this.containerUuid,
         columnName: 'Name2'
       })
       values = this.convertValuesToSend(values)
       values.name2 = name2
-      if (this.isEmptyValue(this.emptyMandatoryFields)) {
+      // const epa = this.validateFieldMandatory()
+      if (this.isEmptyValue(this.validateFieldMandatory())) {
         this.isLoadingRecord = true
         requestCreateBusinessPartner(values)
           .then(responseBPartner => {
@@ -132,7 +129,7 @@ export default {
             this.showsPopovers.isShowCreate = true
             this.$message({
               type: 'warning',
-              message: error.message,
+              message: error.message + 'Name',
               duration: 1500,
               showClose: true
             })
@@ -144,7 +141,7 @@ export default {
       } else {
         this.$message({
           type: 'warn',
-          message: this.$t('notifications.mandatoryFieldMissing') + this.emptyMandatoryFields,
+          message: this.$t('notifications.mandatoryFieldMissing') + this.validateFieldMandatory(),
           duration: 1500,
           showClose: true
         })
@@ -209,6 +206,22 @@ export default {
           columnName: 'Address4',
           value: undefined
         }]
+      })
+    },
+    validateFieldMandatory() {
+      const fieldsNameEmpty = this.fieldsList.filter(fieldItem => {
+        const value = this.$store.getters.getValueOfField({
+          parentUuid: fieldItem.parentUuid,
+          containerUuid: this.containerUuid,
+          columnName: fieldItem.columnName
+        })
+        if (this.isEmptyValue(value) && fieldItem.isMandatory) {
+          return fieldItem.name
+        }
+      })
+
+      return fieldsNameEmpty.map(field => {
+        return field.name
       })
     }
   }

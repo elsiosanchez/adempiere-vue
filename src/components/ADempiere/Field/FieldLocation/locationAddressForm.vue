@@ -237,15 +237,11 @@ export default {
       // })
     },
     sendValuesToServer() {
-      const fieldsNotReady = this.$store.getters.getFieldsListEmptyMandatory({
-        containerUuid: this.containerUuid,
-        isValidate: true
-      })
-      if (!this.isEmptyValue(fieldsNotReady)) {
+      if (!this.isEmptyValue(this.validateFieldMandatory())) {
         showNotification({
           type: 'warning',
           title: this.$t('notifications.emptyValues'),
-          name: '<b>' + fieldsNotReady + '.</b> ',
+          name: '<b>' + this.validateFieldMandatory() + '.</b> ',
           message: this.$t('notifications.fieldMandatory'),
           isRedirect: false
         })
@@ -350,6 +346,21 @@ export default {
         .catch(error => {
           console.warn(`Get Location Address, Form Location - Error ${error.code}: ${error.message}.`)
         })
+    },
+    validateFieldMandatory() {
+      const fieldsNameEmpty = this.fieldsList.filter(fieldItem => {
+        const value = this.$store.getters.getValueOfField({
+          parentUuid: fieldItem.parentUuid,
+          containerUuid: this.containerUuid,
+          columnName: fieldItem.columnName
+        })
+        if (this.isEmptyValue(value) && fieldItem.isMandatory) {
+          return fieldItem.name
+        }
+      })
+      return fieldsNameEmpty.map(field => {
+        return field.name
+      })
     }
   }
 }
