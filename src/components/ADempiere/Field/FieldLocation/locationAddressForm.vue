@@ -237,8 +237,8 @@ export default {
       // })
     },
     sendValuesToServer() {
-      const emptyMandatoryFields = getters.getFieldsListEmptyMandatory({
-        containerUuid: field.containerUuid,
+      const emptyMandatoryFields = this.$store.getters.getFieldsListEmptyMandatory({
+        containerUuid: this.containerUuid,
         formatReturn: 'name'
       })
       if (!this.isEmptyValue(emptyMandatoryFields)) {

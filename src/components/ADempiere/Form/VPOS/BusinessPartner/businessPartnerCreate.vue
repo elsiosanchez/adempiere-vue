@@ -110,8 +110,11 @@ export default {
       })
       values = this.convertValuesToSend(values)
       values.name2 = name2
-      // const epa = this.validateFieldMandatory()
-      if (this.isEmptyValue(this.validateFieldMandatory())) {
+      const emptyMandatoryFields = this.$store.getters.getFieldsListEmptyMandatory({
+        containerUuid: this.containerUuid,
+        formatReturn: 'name'
+      })
+      if (this.isEmptyValue(emptyMandatoryFields)) {
         this.isLoadingRecord = true
         requestCreateBusinessPartner(values)
           .then(responseBPartner => {
@@ -141,7 +144,7 @@ export default {
       } else {
         this.$message({
           type: 'warn',
-          message: this.$t('notifications.mandatoryFieldMissing') + this.validateFieldMandatory(),
+          message: this.$t('notifications.mandatoryFieldMissing') + emptyMandatoryFields,
           duration: 1500,
           showClose: true
         })
@@ -206,22 +209,6 @@ export default {
           columnName: 'Address4',
           value: undefined
         }]
-      })
-    },
-    validateFieldMandatory() {
-      const fieldsNameEmpty = this.fieldsList.filter(fieldItem => {
-        const value = this.$store.getters.getValueOfField({
-          parentUuid: fieldItem.parentUuid,
-          containerUuid: this.containerUuid,
-          columnName: fieldItem.columnName
-        })
-        if (this.isEmptyValue(value) && fieldItem.isMandatory) {
-          return fieldItem.name
-        }
-      })
-
-      return fieldsNameEmpty.map(field => {
-        return field.name
       })
     }
   }
