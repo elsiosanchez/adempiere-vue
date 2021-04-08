@@ -74,14 +74,6 @@ export default {
       unsubscribe: () => {}
     }
   },
-  computed: {
-    emptyMandatoryFields() {
-      const field = this.$store.getters.getFieldsListEmptyMandatory({
-        containerUuid: this.containerUuid
-      })
-      return field
-    }
-  },
   watch: {
     showField(value) {
       if (value) {
