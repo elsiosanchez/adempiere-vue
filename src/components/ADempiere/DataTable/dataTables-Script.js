@@ -141,13 +141,18 @@ export default {
           }
         } else if (this.isMobile) {
           return {
-            height: '20%',
+            height: '10%',
             overflow: 'hidden'
           }
         }
         return {
           height: '11%',
           overflow: 'hidden'
+        }
+      }
+      if (this.isMobile) {
+        return {
+          height: '10%'
         }
       }
       return {
