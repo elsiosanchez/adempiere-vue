@@ -42,7 +42,37 @@
                   :command="option"
                   :divided="true"
                 >
-                  <div class="contents">
+                  <el-popover
+                    v-if="!isMobile"
+                    placement="top"
+                    width="400"
+                    trigger="click"
+                  >
+                    <component
+                      :is="optionFieldFComponentRender"
+                      :field-attributes="contextMenuField.fieldAttributes"
+                      :source-field="contextMenuField.fieldAttributes"
+                      :field-value="contextMenuField.valueField"
+                    />
+                    <el-button slot="reference" type="text" style="color: #606266;">
+                      <div class="contents">
+                        <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                          <i :class="option.icon" style="font-weight: bolder;" />
+                        </div>
+                        <div v-else style="margin-right: 5%">
+                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                        </div>
+                        <div>
+                          <span class="contents">
+                            <b class="label">
+                              {{ option.name }}
+                            </b>
+                          </span>
+                        </div>
+                      </div>
+                    </el-button>
+                  </el-popover>
+                  <div v-if="isMobile" class="contents">
                     <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
                       <i :class="option.icon" style="font-weight: bolder;" />
                     </div>
@@ -125,13 +155,34 @@ export default {
   data() {
     return {
       field: {},
-      visible: this.$store.state.contextMenu.isShowPopoverField
+      visibleForDesktop: false
     }
   },
   computed: {
     // load the component that is indicated in the attributes of received property
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    contextMenuField() {
+      return this.$store.getters.getFieldContextMenu
+    },
+    optionFieldFComponentRender() {
+      let component
+      switch (this.contextMenuField.name) {
+        case this.$t('field.info'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/contextInfo')
+          break
+        case this.$t('language'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/translated/index')
+          break
+        case this.$t('field.calculator'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/calculator')
+          break
+        case this.$t('field.preference'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/preference/index')
+          break
+      }
+      return component
     },
     componentRender() {
       if (this.isEmptyValue(this.field.componentPath || !this.field.isSupported)) {
