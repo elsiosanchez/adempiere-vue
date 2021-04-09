@@ -21,10 +21,10 @@
           <el-dropdown
             size="mini"
             :hide-on-click="true"
-            trigger="click"
+            trigger="hover"
             @command="handleCommand"
           >
-            <span class="el-dropdown-link">
+            <span style="border: aqua;">
               <span key="is-field-name">
                 {{ field.name }}
               </span>
@@ -50,6 +50,7 @@
                   >
                     <component
                       :is="optionFieldFComponentRender"
+                      v-if="visibleForDesktop"
                       :field-attributes="contextMenuField.fieldAttributes"
                       :source-field="contextMenuField.fieldAttributes"
                       :field-value="contextMenuField.valueField"
@@ -165,6 +166,9 @@ export default {
     },
     contextMenuField() {
       return this.$store.getters.getFieldContextMenu
+    },
+    panelContextMenu() {
+      return this.$store.state.contextMenu.isShowRightPanel
     },
     optionFieldFComponentRender() {
       let component
@@ -521,6 +525,8 @@ export default {
       }
       if (this.isMobile) {
         this.$store.commit('changeShowRigthPanel', true)
+      } else {
+        this.visibleForDesktop = true
       }
       this.$store.commit('changeShowPopoverField', true)
       this.$store.dispatch('setOptionField', command)
