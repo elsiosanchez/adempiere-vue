@@ -73,17 +73,6 @@
           </div>
           <div v-else>
             <div v-if="!isParent">
-              <fixed-columns
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-                class="header-search-input"
-              />
-              <filter-columns
-                v-if="isShowOptionalColumns"
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-                class="field-optional"
-              />
               <div :class="{ show: showTableSearch }" class="local-search-container">
                 <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
                 <el-input
@@ -116,13 +105,6 @@
                 style="color: black; font-size: 17px; font-weight: 605 !important;"
                 @click="deleteSelection()"
               />
-              <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
-                <fixed-columns
-                  :container-uuid="containerUuid"
-                  :panel-type="panelType"
-                  class="header-search-input"
-                />
-              </icon-element>
             </div>
           </div>
         </el-header>

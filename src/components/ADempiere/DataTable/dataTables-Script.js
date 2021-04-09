@@ -139,6 +139,11 @@ export default {
             height: '55%',
             overflow: 'auto'
           }
+        } else if (this.isMobile) {
+          return {
+            height: '20%',
+            overflow: 'hidden'
+          }
         }
         return {
           height: '11%',
@@ -146,7 +151,7 @@ export default {
         }
       }
       return {
-        height: '35px'
+        height: '20%'
       }
     },
     getHeigthTable() {
