@@ -47,6 +47,7 @@
                     placement="top"
                     width="400"
                     trigger="click"
+                    style="padding: 0px;"
                   >
                     <component
                       :is="optionFieldFComponentRender"
@@ -560,6 +561,27 @@ export default {
   }
 }
 </script>
+<style>
+.el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus {
+  background: white;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item {
+  line-height: 14px;
+  padding: 0px 15px;
+  padding-top: 0%;
+  padding-right: 15px;
+  padding-bottom: 0%;
+  padding-left: 15px;
+  font-size: 10px;
+  background: white;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item.el-dropdown-menu__item--divided {
+  margin-top: 0%;
+}
+.el-popper {
+  padding: 0px;
+}
+</style>
 <style scoped>
   .svg-icon {
     width: 1em;
@@ -576,8 +598,8 @@ export default {
     top: 0;
     left: 0;
     z-index: 10;
-    padding: 10px 0;
-    margin: 5px 0;
+    padding: 0px;
+    margin: 0px;
     background-color: #FFFFFF;
     border: 1px solid #e6ebf5;
     border-radius: 4px;
