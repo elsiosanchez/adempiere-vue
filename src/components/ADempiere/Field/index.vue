@@ -14,85 +14,87 @@
       :xl="sizeFieldResponsive.xl"
       :class="classField"
     >
-      <el-form-item
-        :required="isMandatory"
-      >
+      <el-form-item>
         <template slot="label">
-          <el-dropdown
-            size="mini"
-            :hide-on-click="true"
-            trigger="hover"
-            @command="handleCommand"
-          >
-            <span style="border: aqua;">
-              <span key="is-field-name">
-                {{ field.name }}
+          <div :style="isMobile ? 'display: flex;width: auto;' : 'display: block;'">
+            <el-dropdown
+              size="mini"
+              :hide-on-click="true"
+              trigger="hover"
+              :style="labelDropdown"
+              @command="handleCommand"
+            >
+              <span :style="isMandatory ? 'border: aqua; color: #f34b4b' : 'border: aqua;'">
+                <span key="is-field-name">
+                  {{ field.name }}
+                </span>
               </span>
-              <i
-                class="el-icon-more el-icon--right"
-              />
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <template
-                v-for="(option, key) in optionField"
-              >
-                <el-dropdown-item
-                  v-if="option.enabled"
-                  :key="key"
-                  :command="option"
-                  :divided="true"
+              <el-dropdown-menu slot="dropdown">
+                <template
+                  v-for="(option, key) in optionField"
                 >
-                  <el-popover
-                    v-if="!isMobile"
-                    placement="top"
-                    width="400"
-                    trigger="click"
-                    style="padding: 0px;"
+                  <el-dropdown-item
+                    v-if="option.enabled"
+                    :key="key"
+                    :command="option"
+                    :divided="true"
                   >
-                    <component
-                      :is="optionFieldFComponentRender"
-                      v-if="visibleForDesktop"
-                      :field-attributes="contextMenuField.fieldAttributes"
-                      :source-field="contextMenuField.fieldAttributes"
-                      :field-value="contextMenuField.valueField"
-                    />
-                    <el-button slot="reference" type="text" style="color: #606266;">
-                      <div class="contents">
-                        <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
-                          <i :class="option.icon" style="font-weight: bolder;" />
+                    <el-popover
+                      v-if="!isMobile"
+                      placement="top"
+                      width="400"
+                      trigger="click"
+                      style="padding: 0px;"
+                    >
+                      <component
+                        :is="optionFieldFComponentRender"
+                        v-if="visibleForDesktop"
+                        :field-attributes="contextMenuField.fieldAttributes"
+                        :source-field="contextMenuField.fieldAttributes"
+                        :field-value="contextMenuField.valueField"
+                      />
+                      <el-button slot="reference" type="text" style="color: #606266;">
+                        <div class="contents">
+                          <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                            <i :class="option.icon" style="font-weight: bolder;" />
+                          </div>
+                          <div v-else style="margin-right: 5%">
+                            <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                          </div>
+                          <div>
+                            <span class="contents">
+                              <b class="label">
+                                {{ option.name }}
+                              </b>
+                            </span>
+                          </div>
                         </div>
-                        <div v-else style="margin-right: 5%">
-                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
-                        </div>
-                        <div>
-                          <span class="contents">
-                            <b class="label">
-                              {{ option.name }}
-                            </b>
-                          </span>
-                        </div>
+                      </el-button>
+                    </el-popover>
+                    <div v-if="isMobile" class="contents">
+                      <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                        <i :class="option.icon" style="font-weight: bolder;" />
                       </div>
-                    </el-button>
-                  </el-popover>
-                  <div v-if="isMobile" class="contents">
-                    <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
-                      <i :class="option.icon" style="font-weight: bolder;" />
+                      <div v-else style="margin-right: 5%">
+                        <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                      </div>
+                      <div>
+                        <span class="contents">
+                          <b class="label">
+                            {{ option.name }}
+                          </b>
+                        </span>
+                      </div>
                     </div>
-                    <div v-else style="margin-right: 5%">
-                      <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
-                    </div>
-                    <div>
-                      <span class="contents">
-                        <b class="label">
-                          {{ option.name }}
-                        </b>
-                      </span>
-                    </div>
-                  </div>
-                </el-dropdown-item>
-              </template>
-            </el-dropdown-menu>
-          </el-dropdown>
+                  </el-dropdown-item>
+                </template>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <i
+              style="margin: 0px;padding: 0px;line-height: inherit;"
+              class="el-icon-more el-icon--right"
+            />
+          </div>
         </template>
         <component
           :is="componentRender"
@@ -162,6 +164,29 @@ export default {
   },
   computed: {
     // load the component that is indicated in the attributes of received property
+    labelStyle() {
+      let size = '90'
+      switch (this.field.name.length) {
+        case 25:
+          size = '35'
+          break
+        case 20:
+          size = '50'
+          break
+      }
+      return size
+    },
+    labelDropdown() {
+      if (this.isMobile) {
+        return {
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          width: this.labelStyle + '%'
+        }
+      }
+      return ''
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -580,6 +605,13 @@ export default {
 }
 .el-popper {
   padding: 0px;
+}
+.el-textarea {
+    position: relative;
+    width: 100%;
+    vertical-align: bottom;
+    font-size: 14px;
+    display: flex;
 }
 </style>
 <style scoped>
