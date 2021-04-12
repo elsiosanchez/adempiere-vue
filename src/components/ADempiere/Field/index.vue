@@ -21,7 +21,7 @@
               size="mini"
               :hide-on-click="true"
               trigger="hover"
-              :style="labelDropdown"
+              :style="isMobile ? 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width:'+labelStyle+'%' : ''"
               @command="handleCommand"
             >
               <span :style="isMandatory ? 'border: aqua; color: #f34b4b' : 'border: aqua;'">
@@ -165,27 +165,12 @@ export default {
   computed: {
     // load the component that is indicated in the attributes of received property
     labelStyle() {
-      let size = '90'
-      switch (this.field.name.length) {
-        case 25:
-          size = '35'
-          break
-        case 20:
-          size = '50'
-          break
+      if (this.field.name.length >= 25) {
+        return '35'
+      } else if (this.field.name.length >= 20) {
+        return '50'
       }
-      return size
-    },
-    labelDropdown() {
-      if (this.isMobile) {
-        return {
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          width: this.labelStyle + '%'
-        }
-      }
-      return ''
+      return '90'
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -586,6 +571,12 @@ export default {
   }
 }
 </script>
+<style scoped>
+.el-form--label-top .el-form-item__label {
+  padding-bottom: 0px !important;
+  display: block;
+}
+</style>
 <style>
 .el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus {
   background: white;
