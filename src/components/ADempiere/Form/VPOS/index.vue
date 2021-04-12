@@ -91,13 +91,16 @@ export default {
     },
     showCollection() {
       return this.$store.getters.getShowCollectionPos
+    // },
+    // pointOfSalesId() {
+    //   const currentPOS = this.$store.getters.getCurrentPOS
+    //   if (currentPOS && !this.isEmptyValue(currentPOS.id)) {
+    //     return currentPOS.id
+    //   }
+    //   return undefined
     },
-    pointOfSalesId() {
-      const currentPOS = this.$store.getters.getCurrentPOS
-      if (currentPOS && !this.isEmptyValue(currentPOS.id)) {
-        return currentPOS.id
-      }
-      return undefined
+    listPointOfSales() {
+      return this.$store.getters.posAttributes.listPointOfSales
     }
   },
   watch: {
@@ -113,27 +116,26 @@ export default {
   },
   created() {
     // load pont of sales list
-    if (this.isEmptyValue(this.$store.getters.getSellingPointsList)) {
-      let posToSet
+    if (this.isEmptyValue(this.listPointOfSales)) {
       // set pos id with query path
-      this.$store.dispatch('listPointOfSalesFromServer', posToSet)
+      this.$store.dispatch('listPointOfSalesFromServer', this.$route.query.pos)
     }
 
     this.unsubscribePOSList = this.posListWithOrganization()
   },
-  mounted() {
-    if (this.isEmptyValue(this.$route.query) || this.isEmptyValue(this.$route.query.pos)) {
-      this.$router.push({
-        params: {
-          ...this.$route.params
-        },
-        query: {
-          ...this.$route.query,
-          pos: this.pointOfSalesId
-        }
-      }, () => {})
-    }
-  },
+  // mounted() {
+  //   if (this.isEmptyValue(this.$route.query) || this.isEmptyValue(this.$route.query.pos)) {
+  //     this.$router.push({
+  //       params: {
+  //         ...this.$route.params
+  //       },
+  //       query: {
+  //         ...this.$route.query,
+  //         pos: this.pointOfSalesId
+  //       }
+  //     }, () => {})
+  //   }
+  // },
   beforeDestroy() {
     this.unsubscribePOSList()
   },

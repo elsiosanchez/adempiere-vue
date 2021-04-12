@@ -182,7 +182,6 @@ export default {
           }
           return false
         })
-
         // Remote search
         if (this.isEmptyValue(results) && String(stringToMatch.length > 3)) {
           clearTimeout(this.timeOut)

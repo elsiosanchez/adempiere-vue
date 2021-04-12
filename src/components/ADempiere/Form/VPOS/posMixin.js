@@ -73,15 +73,15 @@ export default {
         }
       }
     },
-    currentPoint() {
-      return this.$store.getters.getCurrentPOS
-    },
+    // currentPoint() {
+    //   return this.$store.getters.getCurrentPOS
+    // },
     priceListUuid() {
-      const currentPOS = this.currentPoint
+      const currentPOS = this.currentPointOfSales
       if (this.isEmptyValue(currentPOS)) {
         return undefined
       }
-      return this.currentPoint.priceList.uuid
+      return currentPOS.priceList.uuid
     },
     getWarehouse() {
       return this.$store.getters['user/getWarehouse']
@@ -100,6 +100,12 @@ export default {
     },
     getOrder() {
       return this.$store.getters.getPos.currentOrder
+    },
+    currentPointOfSales() {
+      return this.$store.getters.posAttributes.currentPointOfSales
+    },
+    listPointOfSales() {
+      return this.$store.getters.posAttributes.listPointOfSales
     }
   },
   watch: {
@@ -133,20 +139,20 @@ export default {
         this.listOrderLines(value)
       }
     },
-    currentPoint(value) {
-      if (!this.isEmptyValue(value)) {
-        this.$store.dispatch('setCurrentPOS', value)
-      }
-    },
+    // currentPoint(value) {
+    //   if (!this.isEmptyValue(value)) {
+    //     this.$store.dispatch('setCurrentPOS', value)
+    //   }
+    // },
     /**
      * Used when loading/reloading the app without the order uuid
      * @param {oject|boolean} bPartnerToSet
      */
-    isSetTemplateBP(bPartnerToSet) {
-      if (bPartnerToSet) {
-        this.setBusinessPartner(bPartnerToSet)
-      }
-    },
+    // isSetTemplateBP(bPartnerToSet) {
+    //   if (bPartnerToSet) {
+    //     this.setBusinessPartner(bPartnerToSet)
+    //   }
+    // },
     updateOrderProcessPos(value) {
       if (!value && !this.isEmptyValue(this.$route.query)) {
         this.reloadOrder(true)
@@ -167,28 +173,28 @@ export default {
   beforeDestroy() {
     this.unsubscribe()
   },
-  mounted() {
-    if (!this.isEmptyValue(this.$route.query)) {
-      this.reloadOrder(true, this.$route.query.action)
-    }
-    if (!this.isEmptyValue(this.$route.query.pos) && !this.isEmptyValue(this.allOrderLines) && this.isEmptyValue(this.$route.query.action)) {
-      this.$router.push({
-        params: {
-          ...this.$route.params
-        },
-        query: {
-          ...this.$route.query,
-          action: this.getOrder.uuid
-        }
-      }, () => {})
-    }
-  },
+  // mounted() {
+  //   if (!this.isEmptyValue(this.$route.query)) {
+  //     this.reloadOrder(true, this.$route.query.action)
+  //   }
+  //   if (!this.isEmptyValue(this.$route.query.pos) && !this.isEmptyValue(this.allOrderLines) && this.isEmptyValue(this.$route.query.action)) {
+  //     this.$router.push({
+  //       params: {
+  //         ...this.$route.params
+  //       },
+  //       query: {
+  //         ...this.$route.query,
+  //         action: this.getOrder.uuid
+  //       }
+  //     }, () => {})
+  //   }
+  // },
   methods: {
     formatDate,
     formatPrice,
     formatQuantity,
     withoutPOSTerminal() {
-      if (this.isEmptyValue(this.currentPoint)) {
+      if (this.isEmptyValue(this.currentPointOfSales)) {
         this.$message({
           type: 'warn',
           message: 'Without POS Terminal',
@@ -292,7 +298,7 @@ export default {
       }
       const orderUuid = this.$route.query.action
       if (this.isEmptyValue(orderUuid)) {
-        const posUuid = this.currentPoint.uuid
+        const posUuid = this.currentPointOfSales.uuid
         let customerUuid = this.$store.getters.getValueOfField({
           containerUuid: this.containerUuid,
           columnName: 'C_BPartner_ID_UUID'
@@ -302,14 +308,14 @@ export default {
           columnName: 'C_BPartner_ID'
         })
         if (this.isEmptyValue(customerUuid) || id === 1000006) {
-          customerUuid = this.currentPoint.templateBusinessPartner.uuid
+          customerUuid = this.currentPointOfSales.templateBusinessPartner.uuid
         }
         // user session
         // alert(name)
         this.$store.dispatch('createOrder', {
           posUuid,
           customerUuid,
-          salesRepresentativeUuid: this.currentPoint.templateBusinessPartner.uuid
+          salesRepresentativeUuid: this.currentPointOfSales.templateBusinessPartner.uuid
         })
           .then(response => {
             // this.order = response
@@ -416,12 +422,6 @@ export default {
           }
         }
       })
-    },
-    mas() {
-      this.$refs.linesTable.setCurrentRow(this.listOrderLine[1])
-    },
-    menos() {
-      this.$refs.linesTable.setCurrentRow(this.listOrderLine[0])
     },
     shortcutKeyMethod(event) {
       switch (event.srcKey) {

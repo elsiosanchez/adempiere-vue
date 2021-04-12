@@ -386,7 +386,6 @@ export default {
      * @param {object} PointOfSales
      */
     validatePos(PointOfSales) {
-      console.log(this.isEmptyValue(PointOfSales), this.isReadyFromGetData)
       if (this.isEmptyValue(PointOfSales)) {
         const message = this.$t('notifications.errorPointOfSale')
         this.$store.commit('setListProductPrice', {

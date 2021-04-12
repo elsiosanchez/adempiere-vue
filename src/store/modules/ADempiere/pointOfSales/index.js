@@ -21,7 +21,9 @@ const pointOfSales = {
     showPOSCollection: false,
     pointOfSales: {
       ...withoutResponse
-    }
+    },
+    listPointOfSales: {},
+    currentPointOfSales: {}
   },
   mutations: {
     resetStatePointOfSales(state) {
@@ -41,6 +43,12 @@ const pointOfSales = {
     },
     setShowPOSCollection(state, isShowedCollection) {
       state.showPOSCollection = isShowedCollection
+    },
+    listPointOfSales(state, listPointOfSales) {
+      state.listPointOfSales = listPointOfSales
+    },
+    currentPointOfSales(state, currentPointOfSales) {
+      state.currentPointOfSales = currentPointOfSales
     }
   },
   actions: {
@@ -50,41 +58,23 @@ const pointOfSales = {
      */
     listPointOfSalesFromServer({ commit, getters, dispatch }, posToSet = null) {
       const userUuid = getters['user/getUserUuid']
+      let pos, listPos
       requestListPointOfSales({
         userUuid
       })
         .then(response => {
-          // TODO: Add organization
-          commit('setPontOfSales', {
-            ...response,
-            userUuid
-          })
-          const posList = response.sellingPointsList
-          const getterPos = getters.getPointOfSalesUuid
-          let pos
-          if (!isEmptyValue(posList)) {
-            if (!isEmptyValue(getterPos)) {
-              pos = posList.find(itemPOS => itemPOS.uuid === getterPos)
-            }
-
-            // match with route.query.pos
-            if (isEmptyValue(pos) && !isEmptyValue(posToSet)) {
-              pos = posList.find(itemPOS => itemPOS.id === posToSet)
-            }
-
-            // set first element in array list
-            if (isEmptyValue(pos)) {
-              pos = posList[0]
-            }
+          listPos = response.sellingPointsList
+          if (!isEmptyValue(posToSet)) {
+            pos = listPos.find(itemPOS => itemPOS.id === parseInt(posToSet))
+          }
+          if (isEmptyValue(pos) && isEmptyValue(posToSet)) {
+            pos = listPos.find(itemPOS => itemPOS.salesRepresentative.uuid === userUuid)
           }
           if (isEmptyValue(pos)) {
-            pos = {
-              uuid: undefined
-            }
+            pos = listPos[0]
           }
-          if (pos.uuid !== getterPos) {
-            dispatch('setCurrentPOS', pos)
-          }
+          commit('listPointOfSales', listPos)
+          dispatch('setCurrentPOS', pos)
         })
         .catch(error => {
           console.warn(`listPointOfSalesFromServer: ${error.message}. Code: ${error.code}.`)
@@ -96,8 +86,8 @@ const pointOfSales = {
         })
     },
     setCurrentPOS({ commit, dispatch }, posToSet) {
-      commit('setCurrentPOS', posToSet)
-
+      commit('currentPointOfSales', posToSet)
+      const currentPOS = posToSet
       const oldRoute = router.app._route
       router.push({
         name: oldRoute.name,
@@ -114,7 +104,14 @@ const pointOfSales = {
       commit('setIsReloadProductPrice')
       commit('setIsReloadListOrders')
       commit('setShowPOSKeyLayout', false)
-      dispatch('deleteAllCollectBox')
+
+      // Maintain Order and Product List
+      dispatch('listOrdersFromServer', {
+        posUuid: currentPOS.uuid
+      })
+      dispatch('listProductPriceFromServer', {
+        currentPOS
+      })
     }
   },
   getters: {
@@ -165,6 +162,12 @@ const pointOfSales = {
     },
     getShowCollectionPos: (state) => {
       return state.showPOSCollection
+    },
+    posAttributes: (state) => {
+      return {
+        listPointOfSales: state.listPointOfSales,
+        currentPointOfSales: state.currentPointOfSales
+      }
     }
   }
 }

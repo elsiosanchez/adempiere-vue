@@ -186,17 +186,18 @@
               <br>
               <p>
                 <el-dropdown
+                  v-if="!isEmptyValue(currentPointOfSales)"
                   trigger="click"
                   style="padding-top: 8px; color: black;"
                   @command="changePos"
                 >
                   <p>
                     <i class="el-icon-mobile-phone" />
-                    {{ $t('form.pos.order.pointSale') }}: <b style="cursor: pointer"> {{ namePointOfSales.name }} </b>
+                    {{ $t('form.pos.order.pointSale') }}: <b style="cursor: pointer"> {{ currentPointOfSales.name }} </b>
                   </p>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-for="item in sellingPointsList"
+                      v-for="item in listPointOfSales"
                       :key="item.uuid"
                       :command="item"
                     >
@@ -341,9 +342,6 @@ export default {
         uuid: ''
       }
     },
-    sellingPointsList() {
-      return this.$store.getters.getSellingPointsList
-    },
     orderDate() {
       if (this.isEmptyValue(this.getOrder) || this.isEmptyValue(this.getOrder.dateOrdered)) {
         return this.formatDate(new Date())
@@ -469,11 +467,11 @@ export default {
           ...this.$route.params
         },
         query: {
-          pos: this.currentPoint.id
+          pos: this.currentPointOfSales.id
         }
       }).catch(() => {
       }).finally(() => {
-        const { templateBusinessPartner } = this.currentPoint
+        const { templateBusinessPartner } = this.currentPointOfSales
         this.$store.commit('updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
           attributes: [{

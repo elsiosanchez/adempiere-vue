@@ -103,8 +103,11 @@ export default {
     isShowProductsPriceList() {
       return this.$store.state['pointOfSales/listProductPrice'].productPrice[this.attribute]
     },
-    currentPoint() {
-      return this.$store.getters.getCurrentPOS
+    // currentPoint() {
+    //   return this.$store.getters.getCurrentPOS
+    // },
+    currentPointOfSales() {
+      return this.$store.getters.posAttributes.currentPointOfSales
     },
     productPrice() {
       return this.$store.getters.getProductPrice
@@ -132,12 +135,12 @@ export default {
       if (isToLoad) {
         this.loadProductsPricesList()
       }
-    },
-    currentPoint(value) {
-      if (!this.isEmptyValue(value)) {
-        this.loadProductsPricesList()
-      }
     }
+    // currentPointOfSales(value) {
+    //   if (!this.isEmptyValue(value)) {
+    //     this.loadProductsPricesList()
+    //   }
+    // }
   },
   created() {
     this.unsubscribe = this.subscribeChanges()
@@ -145,7 +148,7 @@ export default {
       isLoaded: false
     })
     this.timeOut = setTimeout(() => {
-      this.validatePos(this.currentPoint)
+      this.validatePos(this.currentPointOfSales)
     }, 3000)
   },
   beforeDestroy() {

@@ -54,9 +54,10 @@ const listProductPrice = {
     listProductPriceFromServer({ state, commit, rootGetters }, {
       containerUuid = 'Products-Price-List',
       pageNumber, // 1
-      searchValue
+      searchValue,
+      currentPOS
     }) {
-      const posUuid = rootGetters.getPointOfSalesUuid
+      const posUuid = isEmptyValue(currentPOS) ? rootGetters.posAttributes.currentPointOfSales.uuid : currentPOS.uuid
       if (isEmptyValue(posUuid)) {
         const message = language.t('notifications.errorPointOfSale')
         showMessage({
@@ -79,12 +80,10 @@ const listProductPrice = {
           pageToken = token + '-' + pageNumber
         }
       }
-
-      const { priceList, templateBusinessPartner } = rootGetters.getCurrentPOS
+      const { priceList, templateBusinessPartner } = rootGetters.posAttributes.currentPointOfSales
       const { uuid: businessPartnerUuid } = templateBusinessPartner
       const { uuid: priceListUuid } = priceList
       const { uuid: warehouseUuid } = rootGetters['user/getWarehouse']
-
       if (isEmptyValue(searchValue)) {
         searchValue = rootGetters.getValueOfField({
           containerUuid,

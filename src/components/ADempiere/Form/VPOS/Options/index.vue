@@ -221,7 +221,7 @@
                 </p>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    v-for="item in sellingPointsList"
+                    v-for="item in listPointOfSales"
                     :key="item.uuid"
                     :command="item"
                   >
@@ -243,7 +243,6 @@
                   :is-selectable="false"
                   popover-name="isShowPopoverMenu"
                 />
-
                 <div
                   slot="reference"
                   :style="blockOption"
@@ -327,8 +326,11 @@ export default {
         }
       }
     },
-    sellingPointsList() {
-      return this.$store.getters.getSellingPointsList
+    listPointOfSales() {
+      return this.$store.getters.posAttributes.listPointOfSales
+    },
+    currentPointOfSales() {
+      return this.$store.getters.posAttributes.currentPointOfSales
     },
     currentPOS() {
       return this.$store.getters.getPos.currentOrder
@@ -378,7 +380,7 @@ export default {
       }).catch(error => {
         console.info(`VPOS/Options component (New Order): ${error.message}`)
       }).finally(() => {
-        const { templateBusinessPartner } = this.$store.getters.getCurrentPOS
+        const { templateBusinessPartner } = this.currentPointOfSales
         // TODO: Set order with POS Terminal default values
         this.$store.commit('setListPayments', [])
         this.$store.dispatch('setOrder', {
@@ -435,7 +437,7 @@ export default {
       })
     },
     completePreparedOrder() {
-      const posUuid = this.currentPoint.uuid
+      const posUuid = this.currentPointOfSales.uuid
       this.$store.dispatch('updateOrderPos', true)
       this.$store.dispatch('updatePaymentPos', true)
       this.$message({
@@ -523,7 +525,7 @@ export default {
     },
     copyOrder() {
       this.processPos = posProcess[1].uuid
-      const posUuid = this.currentPoint.uuid
+      const posUuid = this.currentPointOfSales.uuid
       const parametersList = [{
         columnName: 'C_Order_ID',
         value: this.$store.getters.getPos.currentOrder.id
