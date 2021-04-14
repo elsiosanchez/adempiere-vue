@@ -107,7 +107,7 @@ export default {
         if (params.containerUuid === 'Collection') {
           commit('currencyDivideRateCollection', divideRate)
         } else {
-          commit('currencyDivideRate', divideRate)
+          commit('currencyDivideRateCollection', divideRate)
         }
       })
       .catch(error => {
@@ -167,7 +167,7 @@ export default {
     tenderTypeCode,
     currencyUuid
   }) {
-    const listPayments = getters.getListPayments.find(payment => {
+    const listPayments = getters.getListPayments.payments.find(payment => {
       if ((payment.tenderTypeCode === tenderTypeCode) && (payment.tenderTypeCode === 'X') && (currencyUuid === payment.currencyUuid)) {
         return payment
       }
@@ -248,7 +248,10 @@ export default {
       orderUuid
     })
       .then(response => {
-        commit('setListPayments', response.listPayments)
+        commit('setListPayments', {
+          payments: response.listPayments.reverse(),
+          isLoaded: true
+        })
       })
       .catch(error => {
         console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
@@ -256,15 +259,6 @@ export default {
       .finally(() => {
         dispatch('updatePaymentPos', false)
       })
-  },
-  tenderTypeDisplaye({ commit }, tenderType) {
-    const displayTenderType = tenderType.map(item => {
-      return {
-        tenderTypeCode: item.id,
-        tenderTypeDisplay: item.label
-      }
-    })
-    commit('setTenderTypeDisplaye', displayTenderType)
   },
   currencyDisplaye({ commit }, currency) {
     const displaycurrency = currency.map(item => {

@@ -22,9 +22,6 @@ export default {
   setListPayments(state, list) {
     state.listPayments = list
   },
-  setTenderTypeDisplaye(state, tenderTypeDisplaye) {
-    state.tenderTypeDisplaye = tenderTypeDisplaye
-  },
   setCurrencyDisplaye(state, currency) {
     state.currency = currency
   },

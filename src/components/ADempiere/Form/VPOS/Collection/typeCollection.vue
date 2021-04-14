@@ -22,7 +22,7 @@
                         {{
                           tenderTypeFind({
                             currentPayment: value.tenderTypeCode,
-                            listTypePayment: typesPayment
+                            listTypePayment: labelTypesPayment
                           })
                         }}
                       </span>
@@ -45,11 +45,7 @@
                         {{ formatDate(value.paymentDate) }}
                       </el-button>
                       <div
-                        v-if="currencyFind({
-                          currencyCurrent: value.currencyUuid,
-                          listCurrency: listCurrency,
-                          defaultCurrency: currency
-                        }).currencyDisplay !== currency.iSOCode"
+                        v-if="loginCovertion"
                         slot="header"
                         class="clearfix"
                         style="padding-bottom: 20px;"
@@ -60,25 +56,9 @@
                           </b>
                         </p>
                         <br>
-                        <p class="total">
+                        <p v-if="!isEmptyValue(value.currencyConvertion)" class="total">
                           <b style="float: right;">
-                            {{
-                              formatPrice(
-                                (amountConvertion(value)),
-                                currencyFind({
-                                  currencyCurrent: value.currencyUuid,
-                                  listCurrency: listCurrency,
-                                  defaultCurrency: currency
-                                }).currencyDisplay
-                              )
-                            }}
-                          </b>
-                        </p>
-                      </div>
-                      <div v-else slot="header" class="clearfix">
-                        <p class="total">
-                          <b style="float: right;padding-top: 18px;padding-bottom: 20px;">
-                            {{ formatPrice(value.amount, currency.iSOCode) }}
+                            {{ formatPrice(value.amountConvertion, value.currencyConvertion.iSOCode) }}
                           </b>
                         </p>
                       </div>
@@ -99,6 +79,9 @@ import {
   formatDate,
   formatPrice
 } from '@/utils/ADempiere/valueFormat.js'
+import {
+  requestGetConversionRate
+} from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
   name: 'TypeCollection',
@@ -114,11 +97,17 @@ export default {
     listTypesPayment: {
       type: Object,
       default: undefined
+    },
+    isLoaded: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      conevertion: 0
+      conevertion: 0,
+      loginCovertion: false,
+      labelTypesPayment: []
     }
   },
   computed: {
@@ -132,16 +121,42 @@ export default {
       return this.$store.getters.getConvertionPayment
     }
   },
-  watch: {
-    listTypesPayment(value) {
-      if (!this.isEmptyValue(value) && this.typesPayment.length <= 1) {
-        this.tenderTypeDisplaye(value)
-      }
+  created() {
+    this.convertingPaymentMethods()
+    if (this.isEmptyValue(this.labelTypesPayment)) {
+      this.tenderTypeDisplaye(this.listTypesPayment)
     }
   },
   methods: {
     formatDate,
     formatPrice,
+    convertingPaymentMethods() {
+      const currencyUuid = this.isAddTypePay.find(pay => pay.currencyUuid !== this.currency.uuid)
+      if (!this.isEmptyValue(currencyUuid) && this.isLoaded) {
+        requestGetConversionRate({
+          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          currencyFromUuid: this.currency.uuid,
+          currencyToUuid: currencyUuid.currencyUuid
+        })
+          .then(response => {
+            this.isAddTypePay.forEach(element => {
+              if (element.currencyUuid !== this.$store.getters.getCurrentPOS.priceList.currency.uuid) {
+                element.amountConvertion = element.amount / response.divideRate
+                element.currencyConvertion = response.currencyTo
+              } else {
+                element.currencyConvertion = {}
+              }
+            })
+            this.$store.commit('setListPayments', {
+              payments: this.isAddTypePay
+            })
+          })
+          .catch(error => {
+            console.warn(`conversion: ${error.message}. Code: ${error.code}.`)
+          })
+      }
+      this.loginCovertion = true
+    },
     getImageFromTenderType(typePay) {
       // A: Direct Deposit: ACH Automatic Clearing House
       // C: Credit Card:
@@ -192,9 +207,6 @@ export default {
         paymentUuid
       })
     },
-    amountConvertion(payment) {
-      return payment.amount * this.conevertionAmount.multiplyRate
-    },
     tenderTypeDisplaye(value) {
       if (!this.isEmptyValue(value.reference)) {
         const tenderType = value.reference
@@ -205,7 +217,7 @@ export default {
             filters: []
           })
             .then(response => {
-              this.$store.dispatch('tenderTypeDisplaye', response)
+              this.labelTypesPayment = response
             })
         }
       }

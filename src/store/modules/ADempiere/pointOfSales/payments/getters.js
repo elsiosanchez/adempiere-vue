@@ -22,9 +22,6 @@ export default {
   getListPayments: (state) => {
     return state.listPayments
   },
-  getListsPaymentTypes: (state) => {
-    return state.tenderTypeDisplaye
-  },
   getListCurrency: (state) => {
     return state.currency
   },
