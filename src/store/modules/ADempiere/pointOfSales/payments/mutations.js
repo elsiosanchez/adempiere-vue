@@ -27,5 +27,8 @@ export default {
   },
   setConvertionPayment(state, convertion) {
     state.convertion = convertion
+  },
+  setFieldCurrency(state, currency) {
+    state.fieldCurrency = currency
   }
 }

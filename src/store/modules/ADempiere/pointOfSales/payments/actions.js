@@ -103,6 +103,7 @@ export default {
       currencyToUuid: params.currencyToUuid
     })
       .then(response => {
+        commit('setFieldCurrency', response.currencyTo)
         const divideRate = isEmptyValue(response.divideRate) ? 1 : response.divideRate
         if (params.containerUuid === 'Collection') {
           commit('currencyDivideRateCollection', divideRate)
