@@ -63,7 +63,7 @@
 import draggable from 'vuedraggable'
 
 export default {
-  name: 'RecordAccess',
+  name: 'RecordAccessDesktop',
   components: {
     draggable
   },

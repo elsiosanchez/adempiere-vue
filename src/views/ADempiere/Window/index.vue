@@ -298,8 +298,12 @@
       <right-panel
         v-if="panelContextMenu && isMobile"
       >
+        <record-access
+          v-if="showRecordAccess"
+        />
         <component
           :is="componentRender"
+          v-if="!showRecordAccess"
           :field-attributes="contextMenuField.fieldAttributes"
           :source-field="contextMenuField.fieldAttributes"
           :record-uuid="contextMenuField.fieldAttributes.recordUuid"

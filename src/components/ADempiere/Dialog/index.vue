@@ -13,7 +13,9 @@
     <div
       v-if="panelType !== 'From'"
     >
-      <record-access />
+      <record-access
+        v-if="showRecordAccess"
+      />
       <sequence-order
         v-if="modalMetadata.isSortTab"
         key="order"
@@ -53,7 +55,7 @@
 <script>
 import MainPanel from '@/components/ADempiere/Panel'
 import SequenceOrder from '@/components/ADempiere/SequenceOrder'
-import RecordAccess from '@/components/ADempiere/recordAccess'
+import RecordAccess from '@/components/ADempiere/RecordAccess'
 import { showNotification } from '@/utils/ADempiere/notification'
 import {
   updateAccessRecord
@@ -104,6 +106,9 @@ export default {
     },
     getterDataRecordsAndSelection() {
       return this.$store.getters.getDataRecordAndSelection(this.containerUuid)
+    },
+    showRecordAccess() {
+      return this.$store.getters.getShowRecordAccess
     }
   },
   watch: {
@@ -132,8 +137,10 @@ export default {
         type: this.modalMetadata.panelType,
         action: undefined
       })
+      this.$store.commit('setRecordAccess', false)
     },
     runAction(action) {
+      this.$store.commit('setRecordAccess', false)
       if (action.isSortTab) {
         this.$store.dispatch('updateSequence', {
           parentUuid: this.modalMetadata.parentUuid,

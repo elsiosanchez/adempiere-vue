@@ -15,7 +15,7 @@ import WorkflowLogs from '@/components/ADempiere/ContainerInfo/workflowLogs'
 import WorkflowStatusBar from '@/components/ADempiere/WorkflowStatusBar'
 // Panel right the Context Menu Field
 import RightPanel from '@/components/ADempiere/RightPanel'
-
+import RecordAccess from '@/components/ADempiere/RecordAccess'
 /**
  * Window Logic Component View
  * Build and show window, tab and records view, generates with
@@ -36,7 +36,8 @@ export default {
     ChatEntries,
     RecordLogs,
     WorkflowLogs,
-    WorkflowStatusBar
+    WorkflowStatusBar,
+    RecordAccess
   },
   beforeRouteUpdate(to, from, next) {
     this.$store.dispatch('setWindowOldRoute', {
@@ -94,6 +95,9 @@ export default {
           break
       }
       return component
+    },
+    showRecordAccess() {
+      return this.$store.getters.getShowRecordAccess
     },
     isNewRecord() {
       return this.isEmptyValue(this.$route.query) ||

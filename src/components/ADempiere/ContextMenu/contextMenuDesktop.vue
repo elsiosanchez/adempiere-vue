@@ -199,6 +199,9 @@ export default {
     clickRunAction(action) {
       if (action === 'refreshData') {
         this.refreshData()
+      } else if (action.action === 'recordAccess') {
+        this.$store.commit('changeShowRigthPanel', true)
+        this.$store.commit('setRecordAccess', true)
       } else {
         this.runAction(action)
       }
@@ -269,7 +272,7 @@ export default {
     border-radius: 4px;
     -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    max-height: 250px;
+    max-height: 300px;
     max-width: 220px;
     overflow: auto;
   }
