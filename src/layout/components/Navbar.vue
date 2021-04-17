@@ -72,7 +72,6 @@
         <lang-select class="right-menu-item hover-effect" />
 
       </template>
-      <el-button v-show="!isMenuMobile && isMobile" type="text" icon="el-icon-more" @click="isMenuOption()" />
       <el-popover
         placement="bottom"
         width="245"
@@ -90,6 +89,7 @@
           <img :src="avatarResize" class="user-avatar">
         </el-button>
       </el-popover>
+      <el-button v-show="!isMenuMobile && isMobile" type="text" icon="el-icon-more el-icon--right" @click="isMenuOption()" />
     </div>
   </div>
 </template>

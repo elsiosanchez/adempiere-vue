@@ -2,6 +2,31 @@
   <div :class="{'show':show}" class="header-search">
     <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
     <el-select
+      v-if="isMobile"
+      ref="headerSearchSelect"
+      v-model="search"
+      :remote-method="querySearch"
+      filterable
+      default-first-option
+      remote
+      :placeholder="$t('table.dataTable.search')"
+      class="header-search-select"
+      @change="change"
+    >
+      <el-option
+        v-for="element in options"
+        :key="element.item.path"
+        :value="element.item"
+        :label="element.item.title"
+        :style="isMobile ? 'max-width: 300px;' : ''"
+      >
+        <i class="el-icon-more el-icon--top" /> /
+        {{ element.item.title }}
+        <svg-icon :icon-class="element.item.meta.icon" />
+      </el-option>
+    </el-select>
+    <el-select
+      v-else
       ref="headerSearchSelect"
       v-model="search"
       :remote-method="querySearch"
@@ -193,7 +218,19 @@ export default {
     },
     querySearch(query) {
       if (query !== '') {
-        this.options = this.fuse.search(query)
+        const listOptionsMobile = this.fuse.search(query).map(element => {
+          const index = element.item.title.length - 1
+          return {
+            ...element,
+            item: {
+              meta: element.item.meta,
+              name: element.item.name,
+              path: element.item.path,
+              title: element.item.title[index]
+            }
+          }
+        })
+        this.options = this.isMobile ? listOptionsMobile : this.fuse.search(query)
       } else {
         this.options = []
       }
@@ -219,6 +256,7 @@ export default {
     border-radius: 0;
     display: inline-block;
     vertical-align: middle;
+    max-width: 350px;
 
     ::v-deep .el-input__inner {
       border-radius: 0;
