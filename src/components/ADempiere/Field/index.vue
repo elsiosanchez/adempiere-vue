@@ -14,24 +14,24 @@
       :xl="sizeFieldResponsive.xl"
       :class="classField"
     >
-      <el-form-item
-        :required="isMandatory"
-      >
+      <el-form-item>
         <template slot="label">
           <el-dropdown
             size="mini"
             :hide-on-click="true"
             trigger="click"
+            :split-button="true"
+            :style="isMobile ? 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width:'+labelStyle+'%' : ''"
             @command="handleCommand"
+            @click="false"
           >
-            <span class="el-dropdown-link">
-              <span key="is-field-name">
-                {{ field.name }}
+            <div :style="isMobile ? 'display: flex;width: auto;' : 'display: block;'">
+              <span :style="isMandatory && isEmptyValue(valueField) ? 'border: aqua; color: #f34b4b' : 'border: aqua;'">
+                <span key="is-field-name">
+                  {{ field.name }}
+                </span>
               </span>
-              <i
-                class="el-icon-more el-icon--right"
-              />
-            </span>
+            </div>
             <el-dropdown-menu slot="dropdown">
               <template
                 v-for="(option, key) in optionField"
@@ -42,7 +42,40 @@
                   :command="option"
                   :divided="true"
                 >
-                  <div class="contents">
+                  <el-popover
+                    v-if="!isMobile"
+                    placement="top"
+                    width="400"
+                    trigger="click"
+                    style="padding: 0px;"
+                    :hide="visibleForDesktop"
+                  >
+                    <component
+                      :is="optionFieldFComponentRender"
+                      v-if="visibleForDesktop"
+                      :field-attributes="contextMenuField.fieldAttributes"
+                      :source-field="contextMenuField.fieldAttributes"
+                      :field-value="contextMenuField.valueField"
+                    />
+                    <el-button slot="reference" type="text" style="color: #606266;">
+                      <div class="contents">
+                        <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                          <i :class="option.icon" style="font-weight: bolder;" />
+                        </div>
+                        <div v-else style="margin-right: 5%">
+                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                        </div>
+                        <div>
+                          <span class="contents">
+                            <b class="label">
+                              {{ option.name }}
+                            </b>
+                          </span>
+                        </div>
+                      </div>
+                    </el-button>
+                  </el-popover>
+                  <div v-if="isMobile" class="contents">
                     <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
                       <i :class="option.icon" style="font-weight: bolder;" />
                     </div>
@@ -125,13 +158,45 @@ export default {
   data() {
     return {
       field: {},
-      visible: this.$store.state.contextMenu.isShowPopoverField
+      visibleForDesktop: false
     }
   },
   computed: {
     // load the component that is indicated in the attributes of received property
+    labelStyle() {
+      if (this.field.name.length >= 25) {
+        return '35'
+      } else if (this.field.name.length >= 20) {
+        return '50'
+      }
+      return '90'
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
+    },
+    contextMenuField() {
+      return this.$store.getters.getFieldContextMenu
+    },
+    panelContextMenu() {
+      return this.$store.state.contextMenu.isShowRightPanel
+    },
+    optionFieldFComponentRender() {
+      let component
+      switch (this.contextMenuField.name) {
+        case this.$t('field.info'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/contextInfo')
+          break
+        case this.$t('language'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/translated/index')
+          break
+        case this.$t('field.calculator'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/calculator')
+          break
+        case this.$t('field.preference'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/preference/index')
+          break
+      }
+      return component
     },
     componentRender() {
       if (this.isEmptyValue(this.field.componentPath || !this.field.isSupported)) {
@@ -431,6 +496,9 @@ export default {
     }
   },
   watch: {
+    panelContextMenu(value) {
+      this.visibleForDesktop = false
+    },
     metadataField(value) {
       this.field = value
     }
@@ -470,6 +538,8 @@ export default {
       }
       if (this.isMobile) {
         this.$store.commit('changeShowRigthPanel', true)
+      } else {
+        this.visibleForDesktop = true
       }
       this.$store.commit('changeShowPopoverField', true)
       this.$store.dispatch('setOptionField', command)
@@ -504,6 +574,54 @@ export default {
 }
 </script>
 <style scoped>
+.el-form--label-top .el-form-item__label {
+  padding-bottom: 0px !important;
+  display: block;
+}
+</style>
+<style>
+.el-button--mini {
+  font-size: 14px;
+  color: #606266 !important;
+  font-weight: 605!important;
+  border: 0;
+  padding-top: 7px;
+  padding-right: 0px;
+  padding-bottom: 7px;
+  padding-left: 15px;
+}
+.el-button:hover, .el-button:focus {
+  color: #606266;
+  cursor: auto;
+}
+.el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus {
+  background: white;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item {
+  line-height: 14px;
+  padding: 0px 15px;
+  padding-top: 0%;
+  padding-right: 15px;
+  padding-bottom: 0%;
+  padding-left: 15px;
+  font-size: 10px;
+  background: white;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item.el-dropdown-menu__item--divided {
+  margin-top: 0%;
+}
+.el-popper {
+  padding: 0px;
+}
+.el-textarea {
+    position: relative;
+    width: 100%;
+    vertical-align: bottom;
+    font-size: 14px;
+    display: flex;
+}
+</style>
+<style scoped>
   .svg-icon {
     width: 1em;
     height: 1.5em;
@@ -519,8 +637,8 @@ export default {
     top: 0;
     left: 0;
     z-index: 10;
-    padding: 10px 0;
-    margin: 5px 0;
+    padding: 0px;
+    margin: 0px;
     background-color: #FFFFFF;
     border: 1px solid #e6ebf5;
     border-radius: 4px;
