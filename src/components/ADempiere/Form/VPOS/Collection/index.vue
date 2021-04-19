@@ -58,7 +58,7 @@
                       :key="field.columnName"
                       :metadata-field="field.columnName === 'PayAmt' ? {
                         ...field,
-                        labelCurrency: $store.getters.getFieldCuerrency
+                        labelCurrency: isEmptyValue($store.getters.getFieldCuerrency) ? currencyPoint : $store.getters.getFieldCuerrency
                       } : field"
                     />
                   </el-col>
