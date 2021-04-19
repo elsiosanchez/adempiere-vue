@@ -229,7 +229,7 @@ export default {
         containerUuid: this.metadata.containerUuid
       })
       values = this.convertValuesToSend(values)
-      const point = this.$store.getters.getPointOfSalesUuid
+      const point = this.$store.getters.posAttributes.currentPointOfSales.uuid
       if (!this.isEmptyValue(point)) {
         this.$store.dispatch('listOrdersFromServer', {
           ...values

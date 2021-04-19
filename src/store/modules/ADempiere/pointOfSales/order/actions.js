@@ -188,7 +188,7 @@ export default {
     salesRepresentativeUuid
   }) {
     if (isEmptyValue(posUuid)) {
-      posUuid = getters.getPointOfSalesUuid
+      posUuid = getters.posAttributes.currentPointOfSales.uuid
     }
 
     let { pageNumber, token } = state.listOrder

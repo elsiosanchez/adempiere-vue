@@ -182,7 +182,7 @@ export default {
       return this.$store.state['pointOfSales/listProductPrice'].productPrice[this.attribute]
     },
     currentPoint() {
-      return this.$store.getters.getCurrentPOS
+      return this.$store.getters.posAttributes.currentPointOfSales
     },
     productPrice() {
       return this.$store.getters.getProductPrice
@@ -206,7 +206,7 @@ export default {
       return (!isLoaded || isReload) // && this.isShowProductsPriceList
     },
     listPrice() {
-      const pos = this.$store.getters.getCurrentPOS
+      const pos = this.currentPoint
       if (!this.isEmptyValue(pos)) {
         return pos.priceList.id
       }

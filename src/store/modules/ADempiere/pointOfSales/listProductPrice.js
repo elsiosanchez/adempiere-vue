@@ -47,9 +47,6 @@ const listProductPrice = {
     setProductPicePageNumber({ commit }, pageNumber) {
       commit('setProductPicePageNumber', pageNumber)
       commit('setIsReloadProductPrice')
-
-      // Not reload, watch in component to reload
-      // dispatch('listProductPriceFromServer', {})
     },
     listProductPriceFromServer({ state, commit, rootGetters }, {
       containerUuid = 'Products-Price-List',
@@ -128,7 +125,7 @@ const listProductPrice = {
       pageNumber, // 1
       searchValue
     }) {
-      const posUuid = rootGetters.getPointOfSalesUuid
+      const posUuid = rootGetters.posAttributes.currentPointOfSales.uuid
       if (isEmptyValue(posUuid)) {
         const message = 'Sin punto de venta seleccionado'
         showMessage({
@@ -152,7 +149,7 @@ const listProductPrice = {
         }
       }
 
-      const { priceList, templateBusinessPartner } = rootGetters.getCurrentPOS
+      const { priceList, templateBusinessPartner } = rootGetters.posAttributes.currentPointOfSales
       const { uuid: businessPartnerUuid } = templateBusinessPartner
       const { uuid: priceListUuid } = priceList
       const { uuid: warehouseUuid } = rootGetters['user/getWarehouse']

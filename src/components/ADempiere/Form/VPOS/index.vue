@@ -91,13 +91,6 @@ export default {
     },
     showCollection() {
       return this.$store.getters.getShowCollectionPos
-    // },
-    // pointOfSalesId() {
-    //   const currentPOS = this.$store.getters.getCurrentPOS
-    //   if (currentPOS && !this.isEmptyValue(currentPOS.id)) {
-    //     return currentPOS.id
-    //   }
-    //   return undefined
     },
     listPointOfSales() {
       return this.$store.getters.posAttributes.listPointOfSales
@@ -123,19 +116,6 @@ export default {
 
     this.unsubscribePOSList = this.posListWithOrganization()
   },
-  // mounted() {
-  //   if (this.isEmptyValue(this.$route.query) || this.isEmptyValue(this.$route.query.pos)) {
-  //     this.$router.push({
-  //       params: {
-  //         ...this.$route.params
-  //       },
-  //       query: {
-  //         ...this.$route.query,
-  //         pos: this.pointOfSalesId
-  //       }
-  //     }, () => {})
-  //   }
-  // },
   beforeDestroy() {
     this.unsubscribePOSList()
   },

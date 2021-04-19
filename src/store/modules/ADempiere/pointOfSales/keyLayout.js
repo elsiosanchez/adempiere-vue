@@ -60,7 +60,7 @@ const keyLayout = {
   getters: {
     // current pos uuid
     getKeyLayoutUuidWithPOS: (state, getters) => {
-      const currentPOS = getters.getCurrentPOS
+      const currentPOS = getters.posAttributes.currentPointOfSales
       if (isEmptyValue(currentPOS)) {
         return undefined
       }

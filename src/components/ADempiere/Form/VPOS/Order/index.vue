@@ -332,16 +332,6 @@ export default {
       }
       return 'padding-left: 0px; padding-right: 0px; padding-top: 2.2%;margin-right: 1%;float: right;'
     },
-    namePointOfSales() {
-      const currentPOS = this.$store.getters.getCurrentPOS
-      if (currentPOS && !this.isEmptyValue(currentPOS.name)) {
-        return currentPOS
-      }
-      return {
-        name: '',
-        uuid: ''
-      }
-    },
     orderDate() {
       if (this.isEmptyValue(this.getOrder) || this.isEmptyValue(this.getOrder.dateOrdered)) {
         return this.formatDate(new Date())
@@ -370,7 +360,7 @@ export default {
       return this.allOrderLines.length
     },
     currencyPoint() {
-      const currency = this.currentPoint
+      const currency = this.currentPointOfSales
       if (!this.isEmptyValue(currency)) {
         return currency.priceList.currency
       }
@@ -395,12 +385,6 @@ export default {
         columnName: 'C_Currency_ID_UUID'
       })
     },
-    displayeTypeCurrency() {
-      return this.$store.getters.getValueOfField({
-        containerUuid: this.containerUuid,
-        columnName: 'DisplayColumn_C_Currency_ID'
-      })
-    },
     isDisabled() {
       return this.$store.getters.getIsProcessed
     },
@@ -410,19 +394,19 @@ export default {
   },
   watch: {
     currencyUuid(value) {
-      if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPoint)) {
+      if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPointOfSales)) {
         this.$store.dispatch('conversionDivideRate', {
-          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
       }
     },
     converCurrency(value) {
-      if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPoint)) {
+      if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPointOfSales)) {
         this.$store.dispatch('conversionMultiplyRate', {
           containerUuid: 'Order',
-          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
@@ -444,9 +428,6 @@ export default {
     if (!this.isEmptyValue(this.$route.query.action)) {
       this.$store.dispatch('reloadOrder', { orderUuid: this.$route.query.action })
     }
-    // setTimeout(() => {
-    //   this.currencyDisplaye()
-    // }, 1500)
   },
   methods: {
     changePos(posElement) {
@@ -472,7 +453,7 @@ export default {
       }).catch(() => {
       }).finally(() => {
         this.$store.commit('setListPayments', [])
-        const { templateBusinessPartner } = this.currentPoint
+        const { templateBusinessPartner } = this.currentPointOfSales
         this.$store.commit('updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
           attributes: [{
@@ -516,34 +497,6 @@ export default {
       if (!this.seeConversion) {
         this.seeConversion = true
       }
-    // },
-    // tenderTypeDisplaye() {
-    //   if (!this.isEmptyValue(this.fieldsList)) {
-    //     const tenderType = this.fieldsList[5].reference
-    //     if (!this.isEmptyValue(tenderType)) {
-    //       this.$store.dispatch('getLookupListFromServer', {
-    //         tableName: tenderType.tableName,
-    //         query: tenderType.query
-    //       })
-    //         .then(response => {
-    //           this.$store.dispatch('tenderTypeDisplaye', response)
-    //         })
-    //     }
-    //   }
-    // },
-    // currencyDisplaye() {
-    //   if (!this.isEmptyValue(this.fieldsList)) {
-    //     const currency = this.fieldsList[4].reference
-    //     if (!this.isEmptyValue(currency)) {
-    //       this.$store.dispatch('getLookupListFromServer', {
-    //         tableName: currency.tableName,
-    //         query: currency.query
-    //       })
-    //         .then(response => {
-    //           this.$store.dispatch('currencyDisplaye', response)
-    //         })
-    //     }
-    //   }
     }
   }
 }

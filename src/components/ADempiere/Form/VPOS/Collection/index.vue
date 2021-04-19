@@ -240,7 +240,6 @@ export default {
         }
       }
       return collection
-      // return false
     },
     fullCopper() {
       if ((this.change > this.isCashAmt) && this.pay > this.currentOrder.grandTotal) {
@@ -392,7 +391,7 @@ export default {
       return 0
     },
     currencyPoint() {
-      const currency = this.$store.getters.getCurrentPOS
+      const currency = this.currentPointOfSales
       if (!this.isEmptyValue(currency)) {
         return currency.priceList.currency
       }
@@ -416,12 +415,6 @@ export default {
       return this.$store.getters.getValueOfField({
         containerUuid: 'Collection',
         columnName: 'C_Currency_ID_UUID'
-      })
-    },
-    displayeTypeCurrency() {
-      return this.$store.getters.getValueOfField({
-        containerUuid: this.containerUuid,
-        columnName: 'DisplayColumn_C_Currency_ID'
       })
     },
     multiplyRate() {
@@ -466,6 +459,9 @@ export default {
     },
     isDisabled() {
       return this.$store.getters.getPos.isProcessed
+    },
+    currentPointOfSales() {
+      return this.$store.getters.posAttributes.currentPointOfSales
     }
   },
   watch: {
@@ -486,7 +482,7 @@ export default {
     currencyUuid(value) {
       if (!this.isEmptyValue(value)) {
         this.$store.dispatch('conversionDivideRate', {
-          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          conversionTypeUuid: this.currentPointOfSales,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
@@ -494,7 +490,7 @@ export default {
       if (!this.isEmptyValue(value)) {
         this.$store.dispatch('conversionMultiplyRate', {
           containerUuid: 'Collection',
-          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          conversionTypeUuid: this.currentPointOfSales,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
@@ -512,7 +508,7 @@ export default {
       if (!this.isEmptyValue(value)) {
         this.$store.dispatch('conversionMultiplyRate', {
           containerUuid: 'Collection',
-          conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+          conversionTypeUuid: this.currentPointOfSales,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
@@ -555,7 +551,7 @@ export default {
     },
     addCollectToList() {
       const containerUuid = this.containerUuid
-      const posUuid = this.$store.getters.getCurrentPOS.uuid
+      const posUuid = this.currentPointOfSales.uuid
       const orderUuid = this.$route.query.action
       const bankUuid = this.$store.getters.getValueOfField({
         containerUuid,
@@ -615,8 +611,7 @@ export default {
       this.addCollect()
     },
     updateServer(listPaymentsLocal) {
-      // const listLocal = this.$store.getters.getPaymentBox
-      const posUuid = this.$store.getters.getCurrentPOS.uuid
+      const posUuid = this.currentPointOfSales.uuid
       const orderUuid = this.$route.query.action
       this.$store.dispatch('uploadOrdersToServer', { listPaymentsLocal, posUuid, orderUuid })
     },
@@ -750,7 +745,7 @@ export default {
     convertCurrency() {
       const convertCurrency = this.currencyDisplay(100)
       this.$store.dispatch('convertionPayment', {
-        conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+        conversionTypeUuid: this.currentPointOfSales,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: convertCurrency.currencyUuid
       })
@@ -765,7 +760,7 @@ export default {
       })
     },
     completePreparedOrder(payment) {
-      const posUuid = this.$store.getters.getCurrentPOS.uuid
+      const posUuid = this.currentPointOfSales.uuid
       const orderUuid = this.$route.query.action
       this.$store.dispatch('updateOrderPos', true)
       this.$store.dispatch('updatePaymentPos', true)
@@ -797,7 +792,7 @@ export default {
         })
         .finally(() => {
           this.$store.dispatch('listOrdersFromServer', {
-            posUuid: this.$store.getters.getCurrentPOS.uuid
+            posUuid: this.currentPointOfSales.uuid
           })
           this.$store.dispatch('updateOrderPos', false)
           this.$store.dispatch('updatePaymentPos', false)

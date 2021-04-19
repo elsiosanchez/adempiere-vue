@@ -26,9 +26,6 @@ const pointOfSales = {
     currentPointOfSales: {}
   },
   mutations: {
-    resetStatePointOfSales(state) {
-      state = {}
-    },
     setPontOfSales(state, pos) {
       state.pointOfSales = pos
     },
@@ -115,45 +112,6 @@ const pointOfSales = {
     }
   },
   getters: {
-    getPointOfSales: (state) => {
-      if (isEmptyValue(state.pointOfSales)) {
-        return {
-          ...withoutResponse,
-          sellingPointsList: []
-        }
-      }
-      return state.pointOfSales
-    },
-    // current pos uuid
-    getPointOfSalesUuid: (state, getters) => {
-      const currentPOS = getters.getCurrentPOS
-      if (isEmptyValue(currentPOS)) {
-        return undefined
-      }
-      return currentPOS.uuid
-    },
-    // current pos info
-    getCurrentPOS: (state, getters) => {
-      const userUuid = getters['user/getUserUuid']
-      let currentPOS
-      const sellingPointsList = state.pointOfSales.sellingPointsList
-      if (!isEmptyValue(sellingPointsList) && (sellingPointsList.length > 1)) {
-        currentPOS = state.pointOfSales.sellingPointsList.find(elem => elem.salesRepresentative.uuid === userUuid)
-      }
-      if (!isEmptyValue(currentPOS)) {
-        return currentPOS
-      }
-      if (isEmptyValue(state.pointOfSales.currentPOS) && (!isEmptyValue(sellingPointsList))) {
-        return state.pointOfSales.sellingPointsList[0]
-      }
-      if (state.pointOfSales.currentPOS) {
-        return state.pointOfSales.currentPOS
-      }
-      return undefined
-    },
-    getSellingPointsList: (state, getters) => {
-      return getters.getPointOfSales.sellingPointsList
-    },
     getIsShowPOSOptions: (state) => {
       return state.showPOSOptions
     },

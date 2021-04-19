@@ -336,7 +336,7 @@ export default {
       return this.$store.getters.getPos.currentOrder
     },
     currentPoint() {
-      return this.$store.getters.getCurrentPOS
+      return this.$store.getters.posAttributes.currentPointOfSales
     },
     pointOfSalesId() {
       const currentPOS = this.currentPOS
@@ -468,7 +468,7 @@ export default {
         })
         .finally(() => {
           this.$store.dispatch('listOrdersFromServer', {
-            posUuid: this.$store.getters.getCurrentPOS.uuid
+            posUuid: this.currentPoint.uuid
           })
           this.$store.dispatch('updateOrderPos', false)
           this.$store.dispatch('updatePaymentPos', false)
@@ -583,11 +583,11 @@ export default {
         orderUuid: this.$route.query.action
       })
         .then(response => {
-          this.changePos(this.$store.getters.getCurrentPOS)
+          this.changePos(this.currentPoint)
         })
         .finally(() => {
           this.$store.dispatch('listOrdersFromServer', {
-            posUuid: this.$store.getters.getCurrentPOS.uuid
+            posUuid: this.currentPoint.uuid
           })
           this.$message({
             type: 'success',
