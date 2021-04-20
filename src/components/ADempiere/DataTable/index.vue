@@ -1,3 +1,20 @@
+<!--
+ ADempiere-Vue (Frontend) for ADempiere ERP & CRM Smart Business Solution
+ Copyright (C) 2017-Present E.R.P. Consultores y Asociados, C.A.
+ Contributor(s): Yamel Senih ysenih@erpya.com www.erpya.com
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <https:www.gnu.org/licenses/>.
+-->
 <template>
   <el-container
     v-if="isLoadPanel"
@@ -27,7 +44,6 @@
               />
             </el-collapse-item>
           </el-collapse>
-
           <div v-if="!isMobile">
             <table-main-menu
               :container-uuid="containerUuid"
@@ -71,19 +87,8 @@
               />
             </div>
           </div>
-          <div v-else>
+          <!-- <div v-else>
             <div v-if="!isParent">
-              <fixed-columns
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-                class="header-search-input"
-              />
-              <filter-columns
-                v-if="isShowOptionalColumns"
-                :container-uuid="containerUuid"
-                :panel-type="panelType"
-                class="field-optional"
-              />
               <div :class="{ show: showTableSearch }" class="local-search-container">
                 <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
                 <el-input
@@ -97,18 +102,6 @@
               </div>
             </div>
             <div v-else class="panel-expand">
-              <div :class="{ show: showTableSearch, mobile: isMobile }" class="local-search-container">
-                <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
-                <el-input
-                  ref="headerSearchInput"
-                  v-model="searchTable"
-                  size="mini"
-                  :placeholder="$t('table.dataTable.search')"
-                  class="header-search-input"
-                  clearable
-                />
-              </div>
-              <!-- is parent and is mobile -->
               <el-button
                 v-show="isPanelWindow && getDataSelection.length"
                 type="text"
@@ -116,18 +109,22 @@
                 style="color: black; font-size: 17px; font-weight: 605 !important;"
                 @click="deleteSelection()"
               />
-              <icon-element icon="el-icon-news" style="padding-top: 0px;" @click="searchRecordNavegation()">
-                <fixed-columns
-                  :container-uuid="containerUuid"
-                  :panel-type="panelType"
-                  class="header-search-input"
-                />
-              </icon-element>
             </div>
-          </div>
+          </div>  -->
         </el-header>
 
         <el-main style="padding: 0px !important; overflow: hidden;">
+          <div v-if="isEmptyValue(activeName) && isParent" :class="{ show: showTableSearch }" class="local-search-container">
+            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+            <el-input
+              ref="headerSearchInput"
+              v-model="searchTable"
+              size="mini"
+              :placeholder="$t('table.dataTable.search')"
+              class="header-search-input"
+              clearable
+            />
+          </div>
           <table-context-menu
             v-show="isShowedContextMenu"
             :style="{ left: leftContextualMenu + 'px', top: topContextualMenu + 'px' }"
