@@ -30,5 +30,8 @@ export default {
   },
   conversionRate(state, currency) {
     state.convertionRate.push(currency)
+  },
+  resetConversionRate(state, currency) {
+    state.convertionRate = currency
   }
 }

@@ -109,7 +109,8 @@ const pointOfSales = {
           pos: posToSet.id
         }
       }, () => {})
-
+      commit('resetConversionRate', [])
+      commit('currencyDivideRateCollection', 1)
       commit('setIsReloadKeyLayout')
       commit('setIsReloadProductPrice')
       commit('setIsReloadListOrders')
