@@ -41,6 +41,17 @@
                   </el-popover>
                 </b>
               </p>
+              <p class="total">
+                <b>Tasa del Día: </b>
+                <b v-if="!isEmptyValue(dateRate)" style="float: right;">
+                  {{
+                    dateRate.iSOCode
+                  }}
+                  {{
+                    formatConversionCurrenty(convertion)
+                  }}
+                </b>
+              </p>
             </div>
             <div
               v-if="isLoaded"
@@ -185,6 +196,7 @@ import typeCollection from '@/components/ADempiere/Form/VPOS/Collection/typeColl
 import convertAmount from '@/components/ADempiere/Form/VPOS/Collection/convertAmount/index'
 import { formatDate, formatPrice } from '@/utils/ADempiere/valueFormat.js'
 import { processOrder } from '@/api/ADempiere/form/point-of-sales.js'
+import { FIELDS_DECIMALS } from '@/utils/ADempiere/references'
 
 export default {
   name: 'Collection',
@@ -360,7 +372,7 @@ export default {
         return missing
       }
       const pending = this.currentOrder.grandTotal <= this.pay ? 0 : this.currentOrder.grandTotal
-      return pending / this.convertion
+      return pending
     },
     convertion() {
       return this.$store.getters.getDivideRateCollection
@@ -473,6 +485,9 @@ export default {
     },
     isDisabled() {
       return this.$store.getters.getPos.isProcessed
+    },
+    dateRate() {
+      return this.$store.getters.getConvertionRate.find(currency => currency.id === this.typeCurrency)
     }
   },
   watch: {
@@ -521,14 +536,38 @@ export default {
           value: this.pending
         })
       }
+    },
+    dateRate(value) {
+      if (!this.isEmptyValue(value.amountConvertion)) {
+        this.$store.commit('updateValueOfField', {
+          containerUuid: this.containerUuid,
+          columnName: 'PayAmt',
+          value: this.pending / value.amountConvertion
+        })
+      } else {
+        this.$store.commit('updateValueOfField', {
+          containerUuid: this.containerUuid,
+          columnName: 'PayAmt',
+          value: this.pending
+        })
+      }
     }
   },
   created() {
+    this.$store.dispatch('addRateConvertion', this.currencyPoint)
     this.unsubscribe = this.subscribeChanges()
     this.defaultValueCurrency()
   },
   methods: {
     formatDate,
+    formatNumber({ displayType, number }) {
+      let fixed = 0
+      // Amount, Costs+Prices, Number
+      if (FIELDS_DECIMALS.includes(displayType)) {
+        fixed = 2
+      }
+      return new Intl.NumberFormat().format(number.toFixed(fixed))
+    },
     formatPrice,
     sumCash(cash) {
       let sum = 0

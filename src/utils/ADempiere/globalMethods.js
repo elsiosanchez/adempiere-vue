@@ -8,5 +8,6 @@ export {
   clearVariables,
   currencyFind,
   tenderTypeFind,
+  formatConversionCurrenty,
   typeValue
 } from '@/utils/ADempiere/valueUtils.js'

@@ -96,13 +96,21 @@ export default {
     const payment = state.paymentBox
     payment.splice(0)
   },
-  conversionDivideRate({ commit }, params) {
+  conversionDivideRate({ commit, dispatch }, params) {
     requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
-      currencyToUuid: params.currencyToUuid
+      currencyToUuid: params.currencyToUuid,
+      conversionDate: params.conversionDate
     })
       .then(response => {
+        if (!isEmptyValue(response.currencyTo)) {
+          const currency = {
+            ...response.currencyTo,
+            amountConvertion: response.divideRate
+          }
+          dispatch('addRateConvertion', currency)
+        }
         const divideRate = isEmptyValue(response.divideRate) ? 1 : response.divideRate
         if (params.containerUuid === 'Collection') {
           commit('currencyDivideRateCollection', divideRate)
@@ -118,6 +126,12 @@ export default {
           showClose: true
         })
       })
+  },
+  addRateConvertion({ commit, state }, currency) {
+    const listCurrent = state.convertionRate.find(element => element.id === currency.id)
+    if (!listCurrent) {
+      commit('conversionRate', currency)
+    }
   },
   conversionMultiplyRate({ commit }, {
     containerUuid,

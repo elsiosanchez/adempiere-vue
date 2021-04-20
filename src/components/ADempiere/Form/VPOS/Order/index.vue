@@ -10,8 +10,8 @@
         :style="isShowedPOSKeyLayout ? 'padding-right: 20px; padding-left: 0px;' : 'padding-right: 0px; padding-left: 0px;'"
       >
         <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-          <el-row :gutter="24">
-            <el-col :span="14" style="padding-left: 0px; padding-right: 0px;">
+          <el-row :gutter="24" style="display: flex;">
+            <el-col :span="13" style="padding-left: 0px; padding-right: 0px;">
               <template
                 v-for="(field) in fieldsList"
               >
@@ -22,7 +22,7 @@
                 />
               </template>
             </el-col>
-            <el-col :span="6" style="padding-left: 2px; padding-right: 2px;">
+            <el-col :span="7" style="padding-left: 2px; padding-right: 2px;">
               <business-partner
                 :parent-metadata="{
                   name: panelMetadata.name,
@@ -33,7 +33,7 @@
                 :is-disabled="isDisabled"
               />
             </el-col>
-            <el-col :span="1" :style="styleTab + 'float: left;'">
+            <el-col :span="2" style="margin-top: 3%;">
               <el-tag
                 v-if="!isEmptyValue(getOrder.documentStatus.value)"
                 :type="tagStatus(getOrder.documentStatus.value)"
@@ -43,7 +43,7 @@
                 </span>
               </el-tag>
             </el-col>
-            <el-col :span="2" :style="styleTab + 'float: right;'">
+            <el-col :span="3" style="margin-top: 3%;">
               <el-button type="primary" plain :disabled="isEmptyValue(this.$route.query.action)" @click="newOrder">
                 {{ $t('form.pos.optionsPoinSales.salesOrder.newOrder') }}
               </el-button>
@@ -235,7 +235,7 @@
                 </b>
               </p>
             </span>
-            <span style="float: right;padding-right: 40px;">
+            <span style="float: right;padding-right: 3%;">
               <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ getOrder.documentNo }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.date') }}:
