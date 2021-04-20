@@ -40,49 +40,6 @@ export default {
     }
   },
   computed: {
-    allOrderLines() {
-      return this.listOrderLine
-    },
-    listOrderLine() {
-      return this.$store.getters.getListOrderLine
-    },
-    ordersList() {
-      const order = this.$store.getters.getListOrder
-      if (order && !this.isEmptyValue(order.ordersList)) {
-        return order.ordersList
-      }
-      return []
-    },
-    currentOrder() {
-      const action = this.$route.query.action
-      if (!this.isEmptyValue(action)) {
-        return this.$store.getters.getOrder
-      }
-
-      return {
-        documentType: {},
-        documentStatus: {
-          value: ''
-        },
-        totalLines: 0,
-        grandTotal: 0,
-        salesRepresentative: {},
-        businessPartner: {
-          value: '',
-          uuid: ''
-        }
-      }
-    },
-    // currentPoint() {
-    //   return this.$store.getters.getCurrentPOS
-    // },
-    priceListUuid() {
-      const currentPOS = this.currentPointOfSales
-      if (this.isEmptyValue(currentPOS)) {
-        return undefined
-      }
-      return currentPOS.priceList.uuid
-    },
     getWarehouse() {
       return this.$store.getters['user/getWarehouse']
     },
@@ -98,20 +55,50 @@ export default {
     updateOrderProcessPos() {
       return this.$store.getters.getUpdateOrderPos
     },
-    getOrder() {
-      return this.$store.getters.getPos.currentOrder
-    },
     currentPointOfSales() {
       return this.$store.getters.posAttributes.currentPointOfSales
     },
     listPointOfSales() {
       return this.$store.getters.posAttributes.listPointOfSales
+    },
+    ordersList() {
+      if (this.isEmptyValue(this.currentPointOfSales)) {
+        return []
+      }
+      return this.currentPointOfSales.listOrder
+    },
+    currentOrder() {
+      if (this.isEmptyValue(this.currentPointOfSales)) {
+        return {
+          documentType: {},
+          documentStatus: {
+            value: ''
+          },
+          totalLines: 0,
+          grandTotal: 0,
+          salesRepresentative: {},
+          businessPartner: {
+            value: '',
+            uuid: ''
+          }
+        }
+      }
+      return this.currentPointOfSales.currentOrder
+    },
+    listOrderLine() {
+      if (this.isEmptyValue(this.currentOrder)) {
+        return []
+      }
+      return this.currentOrder.lineOrder
     }
   },
   watch: {
-    getOrder(value) {
-      if (!this.isEmptyValue(value)) {
-        // this.order = value
+    currentOrder(value) {
+      if (this.isEmptyValue(value)) {
+        this.orderLines = []
+        this.$store.dispatch('listOrderLine', [])
+        this.listOrderLines()
+      } else {
         this.$store.commit('updateValuesOfContainer', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
@@ -128,15 +115,6 @@ export default {
             value: value.businessPartner.uuid
           }]
         })
-      }
-    },
-    currentOrder(value) {
-      if (this.isEmptyValue(value)) {
-        this.orderLines = []
-        this.$store.dispatch('listOrderLine', [])
-        this.listOrderLines({})
-      } else {
-        this.listOrderLines(value)
       }
     },
     // currentPoint(value) {
@@ -163,11 +141,11 @@ export default {
     this.getPanel()
   },
   beforeMount() {
-    if (!this.isEmptyValue(this.currentPoint)) {
-      if (!this.isEmptyValue(this.currentOrder)) {
-        this.listOrderLines(this.currentOrder)
-      }
-    }
+    // if (!this.isEmptyValue(this.currentPoint)) {
+    //   if (!this.isEmptyValue(this.currentOrder)) {
+    //     this.listOrderLines({ uuid: value.uuid })
+    //   }
+    // }
     this.unsubscribe = this.subscribeChanges()
   },
   beforeDestroy() {
@@ -177,14 +155,14 @@ export default {
   //   if (!this.isEmptyValue(this.$route.query)) {
   //     this.reloadOrder(true, this.$route.query.action)
   //   }
-  //   if (!this.isEmptyValue(this.$route.query.pos) && !this.isEmptyValue(this.allOrderLines) && this.isEmptyValue(this.$route.query.action)) {
+  //   if (!this.isEmptyValue(this.$route.query.pos) && !this.isEmptyValue(this.listOrderLine) && this.isEmptyValue(this.$route.query.action)) {
   //     this.$router.push({
   //       params: {
   //         ...this.$route.params
   //       },
   //       query: {
   //         ...this.$route.query,
-  //         action: this.getOrder.uuid
+  //         action: this.currentOrder.uuid
   //       }
   //     }, () => {})
   //   }
@@ -221,7 +199,7 @@ export default {
     },
     updateOrder(update) {
       // user session
-      if (update.value !== this.getOrder.businessPartner.uuid && !this.isEmptyValue(this.currentPoint)) {
+      if (update.value !== this.currentOrder.businessPartner.uuid && !this.isEmptyValue(this.currentPoint)) {
         this.$store.dispatch('updateOrder', {
           orderUuid: this.$route.query.action,
           posUuid: this.currentPoint.uuid,
@@ -257,7 +235,7 @@ export default {
 
       findProduct({
         searchValue: searchProduct,
-        priceListUuid: this.priceListUuid
+        priceListUuid: this.currentPointOfSales.priceList.uuid
       })
         .then(productPrice => {
           this.product = productPrice.product
@@ -346,7 +324,7 @@ export default {
         if (this.isEmptyValue(orderUuid)) {
           orderUuid = this.$route.query.action
           // if (this.isEmptyValue(orderUuid)) {
-          //   orderUuid = this.$store.getters.getOrder.uuid // this.currentOrder.uuid
+          //   orderUuid = this.$store.getters.currentOrder.uuid // this.currentOrder.uuid
           // }
         }
         if (!this.isEmptyValue(orderUuid)) {
@@ -379,7 +357,7 @@ export default {
       // this.order = orderToPush
     },
     getOrderTax(currency) {
-      return this.formatPrice(this.getOrder.grandTotal - this.getOrder.totalLines, currency)
+      return this.formatPrice(this.currentOrder.grandTotal - this.currentOrder.totalLines, currency)
     },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {

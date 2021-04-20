@@ -237,7 +237,8 @@ export default {
         // })
       })
   },
-  setOrder({ commit }, order) {
+  setOrder({ commit, dispatch }, order) {
+    dispatch('listOrderLinesFromServer', order.uuid)
     commit('setOrder', order)
   },
   currentOrder({ commit }, findOrder) {

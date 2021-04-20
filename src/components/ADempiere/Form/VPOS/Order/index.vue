@@ -35,11 +35,11 @@
             </el-col>
             <el-col :span="1" :style="styleTab + 'float: left;'">
               <el-tag
-                v-if="!isEmptyValue(getOrder.documentStatus.value)"
-                :type="tagStatus(getOrder.documentStatus.value)"
+                v-if="!isEmptyValue(currentOrder.documentStatus.value)"
+                :type="tagStatus(currentOrder.documentStatus.value)"
               >
-                <span v-if="!isEmptyValue(getOrder.documentStatus.value)">
-                  {{ getOrder.documentStatus.name }}
+                <span v-if="!isEmptyValue(currentOrder.documentStatus.value)">
+                  {{ currentOrder.documentStatus.name }}
                 </span>
               </el-tag>
             </el-col>
@@ -57,7 +57,7 @@
             <el-table
               ref="linesTable"
               v-shortkey="shortsKey"
-              :data="allOrderLines"
+              :data="listOrderLine"
               border
               style="width: 100%; max-width: 100%; background-color: #FFFFFF; font-size: 14px; overflow: auto; color: #606266;"
               highlight-current-row
@@ -121,7 +121,7 @@
                               <el-col :span="10">
                                 <div style="float: right">
                                   {{ $t('form.productInfo.price') }}:
-                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, currencyPoint.iSOCode) }}</b>
+                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, currencyPointOfSales.iSOCode) }}</b>
                                   <br>
                                   {{ $t('form.productInfo.taxAmount') }}:
                                   <b>{{ currentOrderLine.taxIndicator }}</b>
@@ -174,9 +174,9 @@
             <div class="keypad">
               <el-button type="primary" icon="el-icon-top" :disabled="isDisabled" @click="arrowTop" />
               <el-button type="primary" icon="el-icon-bottom" :disabled="isDisabled" @click="arrowBottom" />
-              <el-button v-show="isValidForDeleteLine(allOrderLines)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
+              <el-button v-show="isValidForDeleteLine(listOrderLine)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
               <el-button
-                v-show="isValidForDeleteLine(allOrderLines)"
+                v-show="isValidForDeleteLine(listOrderLine)"
                 type="success"
                 icon="el-icon-bank-card"
                 @click="openCollectionPanel"
@@ -209,11 +209,11 @@
             </div>
             <span style="float: right;">
               <p class="total">{{ $t('form.pos.order.seller') }}:<b style="float: right;">
-                {{ getOrder.salesRepresentative.name }}
+                {{ currentOrder.salesRepresentative.name }}
               </b></p>
-              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(getOrder.totalLines, currencyPoint.iSOCode) }}</b></p>
-              <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPoint.iSOCode) }}</b> </p>
-              <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPoint.iSOCode) }}</b> </p>
+              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(currentOrder.totalLines, currencyPointOfSales.iSOCode) }}</b></p>
+              <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPointOfSales.iSOCode) }}</b> </p>
+              <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPointOfSales.iSOCode) }}</b> </p>
               <p class="total">
                 <b>
                   {{ $t('form.pos.order.total') }}:
@@ -226,25 +226,25 @@
                     <convert-amount
                       v-show="seeConversion"
                       :convert="multiplyRate"
-                      :amount="getOrder.grandTotal"
-                      :currency="currencyPoint"
+                      :amount="currentOrder.grandTotal"
+                      :currency="currencyPointOfSales"
                     />
                     <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="seeConversion = !seeConversion">
-                      {{ formatPrice(getOrder.grandTotal, currencyPoint.iSOCode) }}
+                      {{ formatPrice(currentOrder.grandTotal, currencyPointOfSales.iSOCode) }}
                     </el-button>
                   </el-popover>
                 </b>
               </p>
             </span>
             <span style="float: right;padding-right: 40px;">
-              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ getOrder.documentNo }}</b></p>
+              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ currentOrder.documentNo }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.date') }}:
                 <b class="order-info">
                   {{ orderDate }}
                 </b>
               </p>
-              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ getOrder.documentType.name }}</b></p>
+              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ currentOrder.documentType.name }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.itemQuantity') }}
                 <b class="order-info">
@@ -333,16 +333,16 @@ export default {
       return 'padding-left: 0px; padding-right: 0px; padding-top: 2.2%;margin-right: 1%;float: right;'
     },
     orderDate() {
-      if (this.isEmptyValue(this.getOrder) || this.isEmptyValue(this.getOrder.dateOrdered)) {
+      if (this.isEmptyValue(this.currentOrder) || this.isEmptyValue(this.currentOrder.dateOrdered)) {
         return this.formatDate(new Date())
       }
-      return this.formatDate(this.getOrder.dateOrdered)
+      return this.formatDate(this.currentOrder.dateOrdered)
     },
     getItemQuantity() {
-      if (this.isEmptyValue(this.getOrder)) {
+      if (this.isEmptyValue(this.currentOrder)) {
         return 0
       }
-      const result = this.allOrderLines.map(order => {
+      const result = this.listOrderLine.map(order => {
         return order.quantityOrdered
       })
 
@@ -354,12 +354,12 @@ export default {
       return 0
     },
     numberOfLines() {
-      if (this.isEmptyValue(this.getOrder)) {
+      if (this.isEmptyValue(this.currentOrder)) {
         return
       }
-      return this.allOrderLines.length
+      return this.listOrderLine.length
     },
-    currencyPoint() {
+    currencyPointOfSales() {
       const currency = this.currentPointOfSales
       if (!this.isEmptyValue(currency)) {
         return currency.priceList.currency
@@ -397,7 +397,7 @@ export default {
       if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPointOfSales)) {
         this.$store.dispatch('conversionDivideRate', {
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-          currencyFromUuid: this.currencyPoint.uuid,
+          currencyFromUuid: this.currencyPointOfSales.uuid,
           currencyToUuid: value
         })
       }
@@ -407,20 +407,11 @@ export default {
         this.$store.dispatch('conversionMultiplyRate', {
           containerUuid: 'Order',
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-          currencyFromUuid: this.currencyPoint.uuid,
+          currencyFromUuid: this.currencyPointOfSales.uuid,
           currencyToUuid: value
         })
       } else {
         this.$store.commit('currencyMultiplyRate', 1)
-      }
-    },
-    namePo1intOfSales(value) {
-      if (!this.isEmptyValue(value)) {
-        this.$router.push({
-          query: {
-            pos: value.id
-          }
-        })
       }
     }
   },
