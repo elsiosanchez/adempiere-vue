@@ -2,7 +2,7 @@
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>
-        {{ $t('data.recordAccess.title') }}
+        {{ $t('data.recordAccess.actions') }}
       </span>
     </div>
     <div style="margin-bottom: 10%;">
