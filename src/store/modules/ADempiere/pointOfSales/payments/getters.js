@@ -28,6 +28,9 @@ export default {
   getConvertionPayment: (state) => {
     return state.convertion
   },
+  getFieldCuerrency: (state) => {
+    return state.fieldCurrency
+  },
   getConvertionRate: (state) => {
     return state.convertionRate
   }

@@ -104,6 +104,7 @@ export default {
       conversionDate: params.conversionDate
     })
       .then(response => {
+        commit('setFieldCurrency', response.currencyTo)
         if (!isEmptyValue(response.currencyTo)) {
           const currency = {
             ...response.currencyTo,

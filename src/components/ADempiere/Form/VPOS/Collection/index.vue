@@ -84,7 +84,10 @@
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
                     <field-definition
                       :key="field.columnName"
-                      :metadata-field="field"
+                      :metadata-field="field.columnName === 'PayAmt' ? {
+                        ...field,
+                        labelCurrency: isEmptyValue($store.getters.getFieldCuerrency) ? currencyPoint : $store.getters.getFieldCuerrency
+                      } : field"
                     />
                   </el-col>
                 </el-row>
@@ -531,6 +534,7 @@ export default {
         })
       }
       if (this.isEmptyValue(value)) {
+        this.$store.commit('setFieldCurrency', this.currencyPoint)
         this.$store.dispatch('conversionDivideRate', {
           containerUuid: 'Collection',
           conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,

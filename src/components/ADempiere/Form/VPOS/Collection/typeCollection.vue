@@ -149,7 +149,7 @@ export default {
     formatPrice,
     convertingPaymentMethods() {
       const currencyUuid = this.isAddTypePay.find(pay => pay.currencyUuid !== this.currency.uuid)
-      if (!this.isEmptyValue(currencyUuid) && this.isLoaded) {
+      if (!this.isEmptyValue(currencyUuid)) {
         requestGetConversionRate({
           conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
           currencyFromUuid: this.currency.uuid,

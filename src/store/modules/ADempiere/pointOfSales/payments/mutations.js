@@ -33,5 +33,8 @@ export default {
   },
   resetConversionRate(state, currency) {
     state.convertionRate = currency
+  },
+  setFieldCurrency(state, currency) {
+    state.fieldCurrency = currency
   }
 }

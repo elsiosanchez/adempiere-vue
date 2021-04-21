@@ -14,5 +14,6 @@ export default {
   },
   currency: [],
   convertion: {},
+  fieldCurrency: {},
   convertionRate: []
 }
