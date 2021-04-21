@@ -2,12 +2,12 @@
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>
-        Acceso A registros
+        {{ $t('data.recordAccess.title') }}
       </span>
     </div>
     <div style="margin-bottom: 10%;">
       <span style="margin-bottom: 10%;">
-        Ocultar Registro
+        {{ $t('data.recordAccess.hideRecord') }}
       </span>
       <br>
       <el-select
@@ -32,7 +32,7 @@
       <span
         style="margin-bottom: 10%;"
       >
-        Permitir Visualizacion del Registro
+        {{ $t('data.recordAccess.recordDisplay') }}
       </span>
       <br>
       <el-select

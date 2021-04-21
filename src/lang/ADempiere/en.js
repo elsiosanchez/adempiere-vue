@@ -335,6 +335,7 @@ export default {
     lockRecord: 'Lock Record',
     noDescription: 'No Description',
     recordAccess: {
+      title: 'Access To records',
       actions: 'Record Access',
       hideRecord: 'Hide Record',
       recordDisplay: 'Allow Record Display',
