@@ -59,6 +59,38 @@
                   :command="option"
                   :divided="true"
                 >
+                  <el-popover
+                    v-if="!isMobile"
+                    placement="top"
+                    trigger="click"
+                    style="padding: 0px;"
+                    :hide="visibleForDesktop"
+                  >
+                    <component
+                      :is="optionFieldFComponentRender"
+                      v-if="visibleForDesktop"
+                      :field-attributes="contextMenuField.fieldAttributes"
+                      :source-field="contextMenuField.fieldAttributes"
+                      :field-value="contextMenuField.valueField"
+                    />
+                    <el-button slot="reference" type="text" style="color: #606266;">
+                      <div class="contents">
+                        <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                          <i :class="option.icon" style="font-weight: bolder;" />
+                        </div>
+                        <div v-else style="margin-right: 5%">
+                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                        </div>
+                        <div>
+                          <span class="contents">
+                            <b class="label">
+                              {{ option.name }}
+                            </b>
+                          </span>
+                        </div>
+                      </div>
+                    </el-button>
+                  </el-popover>
                   <div v-if="isMobile" class="contents">
                     <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
                       <i :class="option.icon" style="font-weight: bolder;" />
@@ -257,7 +289,6 @@ export default {
       if (this.isSelectCreated) {
         return () => import('@/components/ADempiere/Field/FieldSelectMultiple')
       }
-
       let field
       switch (this.field.componentPath) {
         case 'FieldAutocomplete':
@@ -608,6 +639,7 @@ export default {
       }
     },
     handleCommand(command) {
+      this.$store.commit('setRecordAccess', false)
       if (command.name === this.$t('table.ProcessActivity.zoomIn')) {
         this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
         return

@@ -60,7 +60,52 @@
               <div style="margin-right: 5%;margin-top: 10%;">
                 <i :class="iconAction(action)" style="font-weight: bolder;" />
               </div>
-              <div>
+              <el-dropdown
+                v-if="!isEmptyValue(action.childs)"
+              >
+                <span class="contents">
+                  <b class="label">
+                    {{ action.name }}
+                  </b>
+                </span>
+                <p
+                  class="description"
+                >
+                  {{ $t('data.noDescription') }}
+                </p>
+                <el-dropdown-menu
+                  slot="dropdown"
+                  @command="handleCommand"
+                >
+                  <el-dropdown-item
+                    v-for="(childs, key) in action.childs"
+                    :key="key"
+                    :command="childs"
+                    :divided="true"
+                  >
+                    <span class="contents">
+                      <b class="label" @click="handleCommand(childs)">
+                        {{ childs.name }}
+                      </b>
+                    </span>
+                    <p
+                      v-if="!isEmptyValue(childs.description)"
+                      class="description"
+                    >
+                      {{ childs.description }}
+                    </p>
+                    <p
+                      v-else
+                      class="description"
+                    >
+                      {{ $t('data.noDescription') }}
+                    </p>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <div
+                v-else
+              >
                 <span class="contents">
                   <b class="label">
                     {{ action.name }}
@@ -216,9 +261,16 @@ export default {
     clickRunAction(action) {
       if (action === 'refreshData') {
         this.refreshData()
+      } else if (action.action === 'recordAccess') {
+        this.$store.commit('changeShowRigthPanel', true)
+        this.$store.commit('setRecordAccess', true)
+        this.runAction(action)
       } else {
         this.runAction(action)
       }
+    },
+    handleCommand(childs) {
+      this.runAction(childs)
     },
     clickReferences(reference) {
       this.openReference(reference)
@@ -286,7 +338,7 @@ export default {
     border-radius: 4px;
     -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    max-height: 250px;
+    max-height: 300px;
     max-width: 220px;
     overflow: auto;
   }
