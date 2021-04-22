@@ -167,7 +167,7 @@ export default {
       if (columnName === 'LineDescription') {
         return row.lineDescription
       }
-      const currency = this.currencyPointOfSales.iSOCode
+      const currency = this.pointOfSalesCurrency.iSOCode
       if (columnName === 'CurrentPrice') {
         return this.formatPrice(row.priceActual, currency)
       } else if (columnName === 'QtyOrdered') {

@@ -74,6 +74,18 @@ export default {
     currentPointOfSales() {
       return this.$store.getters.posAttributes.currentPointOfSales
     },
+    // Currency Point Of Sales
+    pointOfSalesCurrency() {
+      // const currency = this.currentPointOfSales
+      if (!this.isEmptyValue(this.currentPointOfSales.priceList)) {
+        return this.currentPointOfSales.priceList.currency
+      }
+      return {
+        uuid: '',
+        iSOCode: '',
+        curSymbol: ''
+      }
+    },
     listPointOfSales() {
       return this.$store.getters.posAttributes.listPointOfSales
     },
@@ -153,36 +165,12 @@ export default {
       }
     }
   },
-  created() {
-    this.getPanel()
-  },
   beforeMount() {
-    // if (!this.isEmptyValue(this.currentPoint)) {
-    //   if (!this.isEmptyValue(this.currentOrder)) {
-    //     this.listOrderLines({ uuid: value.uuid })
-    //   }
-    // }
     this.unsubscribe = this.subscribeChanges()
   },
   beforeDestroy() {
     this.unsubscribe()
   },
-  // mounted() {
-  //   if (!this.isEmptyValue(this.$route.query)) {
-  //     this.reloadOrder(true, this.$route.query.action)
-  //   }
-  //   if (!this.isEmptyValue(this.$route.query.pos) && !this.isEmptyValue(this.listOrderLine) && this.isEmptyValue(this.$route.query.action)) {
-  //     this.$router.push({
-  //       params: {
-  //         ...this.$route.params
-  //       },
-  //       query: {
-  //         ...this.$route.query,
-  //         action: this.currentOrder.uuid
-  //       }
-  //     }, () => {})
-  //   }
-  // },
   methods: {
     formatDate,
     formatPrice,
@@ -467,6 +455,58 @@ export default {
             })
           break
       }
+    },
+    newOrder() {
+      this.$router.push({
+        params: {
+          ...this.$route.params
+        },
+        query: {
+          pos: this.currentPointOfSales.id
+        }
+      }).catch(() => {
+      }).finally(() => {
+        this.$store.commit('setListPayments', [])
+        const { templateBusinessPartner } = this.currentPointOfSales
+        this.$store.commit('updateValuesOfContainer', {
+          containerUuid: this.metadata.containerUuid,
+          attributes: [{
+            columnName: 'UUID',
+            value: undefined
+          },
+          {
+            columnName: 'ProductValue',
+            value: undefined
+          },
+          {
+            columnName: 'C_BPartner_ID',
+            value: templateBusinessPartner.id
+          },
+          {
+            columnName: 'DisplayColumn_C_BPartner_ID',
+            value: templateBusinessPartner.name
+          },
+          {
+            columnName: ' C_BPartner_ID_UUID',
+            value: templateBusinessPartner.uuid
+          }]
+        })
+        this.$store.dispatch('setOrder', {
+          documentType: {},
+          documentStatus: {
+            value: ''
+          },
+          totalLines: 0,
+          grandTotal: 0,
+          salesRepresentative: {},
+          businessPartner: {
+            value: '',
+            uuid: ''
+          }
+        })
+        this.$store.commit('setShowPOSCollection', false)
+        this.$store.dispatch('listOrderLine', [])
+      })
     }
   }
 }

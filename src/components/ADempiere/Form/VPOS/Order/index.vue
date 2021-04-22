@@ -138,7 +138,7 @@
                               <el-col :span="10">
                                 <div style="float: right">
                                   {{ $t('form.productInfo.price') }}:
-                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, currencyPointOfSales.iSOCode) }}</b>
+                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, pointOfSalesCurrency.iSOCode) }}</b>
                                   <br>
                                   {{ $t('form.productInfo.taxAmount') }}:
                                   <b>{{ currentOrderLine.taxIndicator }}</b>
@@ -228,9 +228,9 @@
               <p class="total">{{ $t('form.pos.order.seller') }}:<b style="float: right;">
                 {{ currentOrder.salesRepresentative.name }}
               </b></p>
-              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(currentOrder.totalLines, currencyPointOfSales.iSOCode) }}</b></p>
-              <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPointOfSales.iSOCode) }}</b> </p>
-              <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPointOfSales.iSOCode) }}</b> </p>
+              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(currentOrder.totalLines, pointOfSalesCurrency.iSOCode) }}</b></p>
+              <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, pointOfSalesCurrency.iSOCode) }}</b> </p>
+              <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(pointOfSalesCurrency.iSOCode) }}</b> </p>
               <p class="total">
                 <b>
                   {{ $t('form.pos.order.total') }}:
@@ -244,10 +244,10 @@
                       v-show="seeConversion"
                       :convert="multiplyRate"
                       :amount="currentOrder.grandTotal"
-                      :currency="currencyPointOfSales"
+                      :currency="pointOfSalesCurrency"
                     />
                     <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="seeConversion = !seeConversion">
-                      {{ formatPrice(currentOrder.grandTotal, currencyPointOfSales.iSOCode) }}
+                      {{ formatPrice(currentOrder.grandTotal, pointOfSalesCurrency.iSOCode) }}
                     </el-button>
                   </el-popover>
                 </b>
@@ -376,17 +376,6 @@ export default {
       }
       return this.listOrderLine.length
     },
-    currencyPointOfSales() {
-      const currency = this.currentPointOfSales
-      if (!this.isEmptyValue(currency)) {
-        return currency.priceList.currency
-      }
-      return {
-        uuid: '',
-        iSOCode: '',
-        curSymbol: ''
-      }
-    },
     multiplyRate() {
       return this.$store.getters.getMultiplyRate
     },
@@ -414,7 +403,7 @@ export default {
       if (!this.isEmptyValue(value) && !this.isEmptyValue(this.currentPointOfSales)) {
         this.$store.dispatch('conversionDivideRate', {
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-          currencyFromUuid: this.currencyPointOfSales.uuid,
+          currencyFromUuid: this.pointOfSalesCurrency.uuid,
           currencyToUuid: value
         })
       }
@@ -424,7 +413,7 @@ export default {
         this.$store.dispatch('conversionMultiplyRate', {
           containerUuid: 'Order',
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-          currencyFromUuid: this.currencyPointOfSales.uuid,
+          currencyFromUuid: this.pointOfSalesCurrency.uuid,
           currencyToUuid: value
         })
       } else {
@@ -450,57 +439,57 @@ export default {
       this.isShowedPOSKeyLaout = !this.isShowedPOSKeyLaout
       this.$store.commit('setShowPOSOptions', false)
     },
-    newOrder() {
-      this.$router.push({
-        params: {
-          ...this.$route.params
-        },
-        query: {
-          pos: this.currentPointOfSales.id
-        }
-      }).catch(() => {
-      }).finally(() => {
-        this.$store.commit('setListPayments', [])
-        const { templateBusinessPartner } = this.currentPointOfSales
-        this.$store.commit('updateValuesOfContainer', {
-          containerUuid: this.metadata.containerUuid,
-          attributes: [{
-            columnName: 'UUID',
-            value: undefined
-          },
-          {
-            columnName: 'ProductValue',
-            value: undefined
-          },
-          {
-            columnName: 'C_BPartner_ID',
-            value: templateBusinessPartner.id
-          },
-          {
-            columnName: 'DisplayColumn_C_BPartner_ID',
-            value: templateBusinessPartner.name
-          },
-          {
-            columnName: ' C_BPartner_ID_UUID',
-            value: templateBusinessPartner.uuid
-          }]
-        })
-        this.$store.dispatch('setOrder', {
-          documentType: {},
-          documentStatus: {
-            value: ''
-          },
-          totalLines: 0,
-          grandTotal: 0,
-          salesRepresentative: {},
-          businessPartner: {
-            value: '',
-            uuid: ''
-          }
-        })
-        this.$store.dispatch('listOrderLine', [])
-      })
-    },
+    // newOrder() {
+    //   this.$router.push({
+    //     params: {
+    //       ...this.$route.params
+    //     },
+    //     query: {
+    //       pos: this.currentPointOfSales.id
+    //     }
+    //   }).catch(() => {
+    //   }).finally(() => {
+    //     this.$store.commit('setListPayments', [])
+    //     const { templateBusinessPartner } = this.currentPointOfSales
+    //     this.$store.commit('updateValuesOfContainer', {
+    //       containerUuid: this.metadata.containerUuid,
+    //       attributes: [{
+    //         columnName: 'UUID',
+    //         value: undefined
+    //       },
+    //       {
+    //         columnName: 'ProductValue',
+    //         value: undefined
+    //       },
+    //       {
+    //         columnName: 'C_BPartner_ID',
+    //         value: templateBusinessPartner.id
+    //       },
+    //       {
+    //         columnName: 'DisplayColumn_C_BPartner_ID',
+    //         value: templateBusinessPartner.name
+    //       },
+    //       {
+    //         columnName: ' C_BPartner_ID_UUID',
+    //         value: templateBusinessPartner.uuid
+    //       }]
+    //     })
+    //     this.$store.dispatch('setOrder', {
+    //       documentType: {},
+    //       documentStatus: {
+    //         value: ''
+    //       },
+    //       totalLines: 0,
+    //       grandTotal: 0,
+    //       salesRepresentative: {},
+    //       businessPartner: {
+    //         value: '',
+    //         uuid: ''
+    //       }
+    //     })
+    //     this.$store.dispatch('listOrderLine', [])
+    //   })
+    // },
     open() {
       if (!this.seeConversion) {
         this.seeConversion = true

@@ -294,6 +294,7 @@ import {
 } from '@/api/ADempiere/form/point-of-sales.js'
 import ModalDialog from '@/components/ADempiere/Dialog'
 import posProcess from '@/utils/ADempiere/constants/posProcess'
+import posMixin from '@/components/ADempiere/Form/VPOS/posMixin.js'
 import orderLineMixin from '@/components/ADempiere/Form/VPOS/Order/orderLineMixin.js'
 
 export default {
@@ -304,7 +305,8 @@ export default {
     ModalDialog
   },
   mixins: [
-    orderLineMixin
+    orderLineMixin,
+    posMixin
   ],
   props: {
     metadata: {
@@ -384,63 +386,6 @@ export default {
     changePos(posElement) {
       this.$store.dispatch('setCurrentPOS', posElement)
       this.newOrder()
-    },
-    newOrder() {
-      const pos = this.pointOfSalesId || this.$route.query.pos
-      this.$router.push({
-        params: {
-          ...this.$route.params
-        },
-        query: {
-          pos
-        }
-      }).catch(error => {
-        console.info(`VPOS/Options component (New Order): ${error.message}`)
-      }).finally(() => {
-        const { templateBusinessPartner } = this.currentPointOfSales
-        // TODO: Set order with POS Terminal default values
-        this.$store.commit('setListPayments', {
-          payments: []
-        })
-        this.$store.dispatch('setOrder', {
-          documentType: {},
-          documentStatus: {
-            value: ''
-          },
-          totalLines: 0,
-          grandTotal: 0,
-          salesRepresentative: {},
-          businessPartner: {
-            value: '',
-            uuid: ''
-          }
-        })
-        this.$store.dispatch('listOrderLine', [])
-        this.$store.commit('setShowPOSCollection', false)
-        this.$store.commit('updateValuesOfContainer', {
-          containerUuid: this.metadata.containerUuid,
-          attributes: [{
-            columnName: 'UUID',
-            value: undefined
-          },
-          {
-            columnName: 'ProductValue',
-            value: undefined
-          },
-          {
-            columnName: 'C_BPartner_ID',
-            value: templateBusinessPartner.id
-          },
-          {
-            columnName: 'DisplayColumn_C_BPartner_ID',
-            value: templateBusinessPartner.name
-          },
-          {
-            columnName: ' C_BPartner_ID_UUID',
-            value: this.$store.getters['user/getUserUuid']
-          }]
-        })
-      })
     },
     printOrder() {
       printOrder({
