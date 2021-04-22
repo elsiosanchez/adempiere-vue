@@ -19,7 +19,6 @@
   <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
     <!-- actions or process on container -->
     <el-dropdown
-      size="mini"
       :hide-on-click="true"
       split-button
       trigger="click"
@@ -77,7 +76,7 @@
     </el-dropdown>
     <!-- menu relations -->
     <el-dropdown size="mini" @command="clickRelation">
-      <el-button size="mini">
+      <el-button type="success" plain>
         {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
@@ -108,7 +107,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown size="mini" @command="clickReferences">
-      <el-button size="mini" :disabled="!(isReferecesContent && isLoadedReferences)">
+      <el-button type="warning" plain :disabled="!(isReferecesContent && isLoadedReferences)">
         {{ $t('components.contextMenuReferences') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
@@ -264,7 +263,22 @@ export default {
   }
 }
 </script>
-
+<style>
+  .el-button-group > .el-button:not(:last-child) {
+    margin-right: -1px;
+    color: #409eff;
+    background: #ecf5ff;
+    border-color: #b3d8ff;
+  }
+  .el-button-group > .el-button:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-right: -1px;
+    color: #409eff;
+    background: #c3defd;
+    border-color: #1682e6;
+  }
+</style>
 <style scoped>
   .el-tree-node__children {
     overflow: hidden;
