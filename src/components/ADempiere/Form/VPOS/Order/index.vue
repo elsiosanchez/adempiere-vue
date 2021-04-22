@@ -391,9 +391,6 @@ export default {
         columnName: 'C_Currency_ID_UUID'
       })
     },
-    isDisabled() {
-      return this.$store.getters.getIsProcessed
-    },
     labelButtonCollections() {
       return this.isDisabled ? this.$t('form.pos.order.collections') : this.$t('form.pos.order.collect')
     }
@@ -427,10 +424,6 @@ export default {
     }
   },
   methods: {
-    changePos(posElement) {
-      this.$store.dispatch('setCurrentPOS', posElement)
-      this.newOrder()
-    },
     openCollectionPanel() {
       this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
       this.$store.commit('setShowPOSCollection', true)
@@ -439,57 +432,6 @@ export default {
       this.isShowedPOSKeyLaout = !this.isShowedPOSKeyLaout
       this.$store.commit('setShowPOSOptions', false)
     },
-    // newOrder() {
-    //   this.$router.push({
-    //     params: {
-    //       ...this.$route.params
-    //     },
-    //     query: {
-    //       pos: this.currentPointOfSales.id
-    //     }
-    //   }).catch(() => {
-    //   }).finally(() => {
-    //     this.$store.commit('setListPayments', [])
-    //     const { templateBusinessPartner } = this.currentPointOfSales
-    //     this.$store.commit('updateValuesOfContainer', {
-    //       containerUuid: this.metadata.containerUuid,
-    //       attributes: [{
-    //         columnName: 'UUID',
-    //         value: undefined
-    //       },
-    //       {
-    //         columnName: 'ProductValue',
-    //         value: undefined
-    //       },
-    //       {
-    //         columnName: 'C_BPartner_ID',
-    //         value: templateBusinessPartner.id
-    //       },
-    //       {
-    //         columnName: 'DisplayColumn_C_BPartner_ID',
-    //         value: templateBusinessPartner.name
-    //       },
-    //       {
-    //         columnName: ' C_BPartner_ID_UUID',
-    //         value: templateBusinessPartner.uuid
-    //       }]
-    //     })
-    //     this.$store.dispatch('setOrder', {
-    //       documentType: {},
-    //       documentStatus: {
-    //         value: ''
-    //       },
-    //       totalLines: 0,
-    //       grandTotal: 0,
-    //       salesRepresentative: {},
-    //       businessPartner: {
-    //         value: '',
-    //         uuid: ''
-    //       }
-    //     })
-    //     this.$store.dispatch('listOrderLine', [])
-    //   })
-    // },
     open() {
       if (!this.seeConversion) {
         this.seeConversion = true

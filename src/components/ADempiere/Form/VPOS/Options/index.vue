@@ -345,25 +345,6 @@ export default {
         }
       }
     },
-    listPointOfSales() {
-      return this.$store.getters.posAttributes.listPointOfSales
-    },
-    currentPointOfSales() {
-      return this.$store.getters.posAttributes.currentPointOfSales
-    },
-    currentPOS() {
-      return this.$store.getters.getPos.currentOrder
-    },
-    currentPoint() {
-      return this.$store.getters.posAttributes.currentPointOfSales
-    },
-    pointOfSalesId() {
-      const currentPOS = this.currentPOS
-      if (!this.isEmptyValue(currentPOS)) {
-        return currentPOS.id
-      }
-      return undefined
-    },
     blockOption() {
       if (!this.isEmptyValue(this.$route.query.pos)) {
         return 'cursor: pointer; text-align: center !important; color: black'
@@ -382,10 +363,6 @@ export default {
     notSubmitForm(event) {
       event.preventDefault()
       return false
-    },
-    changePos(posElement) {
-      this.$store.dispatch('setCurrentPOS', posElement)
-      this.newOrder()
     },
     printOrder() {
       printOrder({
@@ -432,7 +409,7 @@ export default {
         })
         .finally(() => {
           this.$store.dispatch('listOrdersFromServer', {
-            posUuid: this.currentPoint.uuid
+            posUuid: this.currentPointOfSales.uuid
           })
           this.$store.dispatch('updateOrderPos', false)
           this.$store.dispatch('updatePaymentPos', false)
@@ -497,8 +474,8 @@ export default {
       this.$store.dispatch('addParametersProcessPos', parametersList)
       requestCreateOrder({
         posUuid,
-        customerUuid: this.currentPOS.businessPartner.uuid,
-        salesRepresentativeUuid: this.currentPOS.salesRepresentative.uuid
+        customerUuid: this.currentPointOfSales.businessPartner.uuid,
+        salesRepresentativeUuid: this.currentPointOfSales.salesRepresentative.uuid
       })
         .then(order => {
           this.$store.dispatch('currentOrder', order)
@@ -547,11 +524,11 @@ export default {
         orderUuid: this.$route.query.action
       })
         .then(response => {
-          this.changePos(this.currentPoint)
+          this.changePos(this.currentPointOfSales)
         })
         .finally(() => {
           this.$store.dispatch('listOrdersFromServer', {
-            posUuid: this.currentPoint.uuid
+            posUuid: this.currentPointOfSales.uuid
           })
           this.$message({
             type: 'success',

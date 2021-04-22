@@ -113,6 +113,9 @@ export default {
       }
       return this.currentPointOfSales.currentOrder
     },
+    isDisabled() {
+      return this.currentPointOfSales.currentOrder.isProcessed
+    },
     listOrderLine() {
       if (this.isEmptyValue(this.currentOrder)) {
         return []
@@ -145,20 +148,6 @@ export default {
         })
       }
     },
-    // currentPoint(value) {
-    //   if (!this.isEmptyValue(value)) {
-    //     this.$store.dispatch('setCurrentPOS', value)
-    //   }
-    // },
-    /**
-     * Used when loading/reloading the app without the order uuid
-     * @param {oject|boolean} bPartnerToSet
-     */
-    // isSetTemplateBP(bPartnerToSet) {
-    //   if (bPartnerToSet) {
-    //     this.setBusinessPartner(bPartnerToSet)
-    //   }
-    // },
     updateOrderProcessPos(value) {
       if (!value && !this.isEmptyValue(this.$route.query)) {
         this.reloadOrder(true)
@@ -507,6 +496,10 @@ export default {
         this.$store.commit('setShowPOSCollection', false)
         this.$store.dispatch('listOrderLine', [])
       })
+    },
+    changePos(posElement) {
+      this.$store.dispatch('setCurrentPOS', posElement)
+      this.newOrder()
     }
   }
 }
