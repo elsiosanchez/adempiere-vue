@@ -399,7 +399,9 @@ export default {
       }).finally(() => {
         const { templateBusinessPartner } = this.currentPointOfSales
         // TODO: Set order with POS Terminal default values
-        this.$store.commit('setListPayments', [])
+        this.$store.commit('setListPayments', {
+          payments: []
+        })
         this.$store.dispatch('setOrder', {
           documentType: {},
           documentStatus: {

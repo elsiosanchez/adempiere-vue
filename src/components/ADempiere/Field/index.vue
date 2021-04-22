@@ -62,7 +62,6 @@
                   <el-popover
                     v-if="!isMobile"
                     placement="top"
-                    width="400"
                     trigger="click"
                     style="padding: 0px;"
                     :hide="visibleForDesktop"
@@ -222,7 +221,6 @@ export default {
       if (this.isSelectCreated) {
         return () => import('@/components/ADempiere/Field/FieldSelectMultiple')
       }
-
       let field
       switch (this.field.componentPath) {
         case 'FieldAutocomplete':
@@ -549,6 +547,7 @@ export default {
       }
     },
     handleCommand(command) {
+      this.$store.commit('setRecordAccess', false)
       if (command.name === this.$t('table.ProcessActivity.zoomIn')) {
         this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
         return
