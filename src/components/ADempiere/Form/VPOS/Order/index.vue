@@ -378,7 +378,7 @@ export default {
     },
     currencyPointOfSales() {
       const currency = this.currentPointOfSales
-      if (!this.isEmptyValue(currency)) {
+      if (!this.isEmptyValue(currency.priceList)) {
         return currency.priceList.currency
       }
       return {

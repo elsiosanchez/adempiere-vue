@@ -26,13 +26,13 @@
           Ver Histórico de Órdenes
         </template>
         <el-form
-          v-if="!isEmptyValue(metadataList)"
+          v-if="!isEmptyValue(sortFieldsListOrder)"
           label-position="top"
           label-width="10px"
           @submit.native.prevent="notSubmitForm"
         >
           <template
-            v-for="(field) in metadataList"
+            v-for="(field) in sortFieldsListOrder"
           >
             <field
               :key="field.columnName"
@@ -56,7 +56,7 @@
       ref="orderTable"
       v-shortkey="shortsKey"
       v-loading="!tableOrder.isLoaded"
-      :data="ordersList"
+      :data="sortTableOrderList"
       border
       fit
       :highlight-current-row="highlightRow"
@@ -208,6 +208,12 @@ export default {
         closeOrdersList: ['esc'],
         refreshList: ['f5']
       }
+    },
+    sortFieldsListOrder() {
+      return this.sortfield(this.metadataList)
+    },
+    sortTableOrderList() {
+      return this.sortDate(this.ordersList)
     }
   },
   watch: {
@@ -347,6 +353,17 @@ export default {
     setFieldsList() {
       const list = []
       // Product Code
+      // Create Panel
+      this.$store.dispatch('addPanel', {
+        containerUuid: 'Orders-List',
+        isCustomForm: false,
+        uuid: this.containerUuid,
+        panelType: 'from',
+        fieldsList: this.fieldsList
+      })
+      this.fieldsList.sort((a, b) => {
+        return a.sequence - b.sequence
+      })
       this.fieldsList.forEach(element => {
         this.createFieldFromDictionary(element)
           .then(response => {
@@ -360,6 +377,16 @@ export default {
           })
       })
       this.metadataList = list
+    },
+    sortDate(listDate) {
+      return listDate.sort((elementA, elementB) => {
+        return new Date().setTime(new Date(elementB.dateOrdered).getTime()) - new Date().setTime(new Date(elementA.dateOrdered).getTime())
+      })
+    },
+    sortfield(field) {
+      return field.sort((elementA, elementB) => {
+        return elementA.sequence - elementB.sequence
+      })
     }
   }
 }
