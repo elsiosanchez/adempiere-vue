@@ -15,38 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Payments Getters
+ * KeyLayout Mutations
  */
+import Vue from 'vue'
 
 export default {
-  getPaymentBox: (state) => {
-    return state
+  setKeyLayout(state, keyLayout) {
+    Vue.set(state, 'keyLayout', keyLayout)
   },
-  getMultiplyRate: (state) => {
-    return state.multiplyRate
-  },
-  getDivideRate: (state) => {
-    return state.divideRate
-  },
-  getMultiplyRateCollection: (state) => {
-    return state.multiplyRateCollection
-  },
-  getDivideRateCollection: (state) => {
-    return state.divideRateCollection
-  },
-  getListPayments: (state) => {
-    return state.listPayments
-  },
-  getListCurrency: (state) => {
-    return state.currency
-  },
-  getConvertionPayment: (state) => {
-    return state.convertion
-  },
-  getFieldCuerrency: (state) => {
-    return state.fieldCurrency
-  },
-  getConvertionRate: (state) => {
-    return state.convertionRate
+  setIsReloadKeyLayout(state) {
+    Vue.set(state.keyLayout, 'isReload', true)
+    Vue.set(state.keyLayout, 'isLoaded', false)
   }
 }

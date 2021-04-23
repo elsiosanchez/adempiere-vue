@@ -1,3 +1,19 @@
+// ADempiere-Vue (Frontend) for ADempiere ERP & CRM Smart Business Solution
+// Copyright (C) 2017-Present E.R.P. Consultores y Asociados, C.A.
+// Contributor(s): Elsio Sanchez esanchez@erpya.com www.erpya.com
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import {
   requestGetConversionRate,
   createPayment,
@@ -10,7 +26,6 @@ import { showMessage } from '@/utils/ADempiere/notification.js'
 
 /**
  * Payments Actions
- * @author Elsio Sanchez <elsiosanches@gmail.com>
  */
 export default {
   /**
@@ -97,6 +112,7 @@ export default {
     payment.splice(0)
   },
   conversionDivideRate({ commit, dispatch }, params) {
+    console.log('conversionDivideRate')
     requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
@@ -113,9 +129,12 @@ export default {
           dispatch('addRateConvertion', currency)
         }
         const divideRate = isEmptyValue(response.divideRate) ? 1 : response.divideRate
+        const multiplyRate = isEmptyValue(response.multiplyRate) ? 1 : response.multiplyRate
         if (params.containerUuid === 'Collection') {
+          commit('currencyMultiplyRateCollection', multiplyRate)
           commit('currencyDivideRateCollection', divideRate)
         } else {
+          commit('currencyMultiplyRate', multiplyRate)
           commit('currencyDivideRateCollection', divideRate)
         }
       })
@@ -128,11 +147,8 @@ export default {
         })
       })
   },
-  addRateConvertion({ commit, state }, currency) {
-    const listCurrent = state.convertionRate.find(element => element.id === currency.id)
-    if (!listCurrent) {
-      commit('conversionRate', currency)
-    }
+  addRateConvertion({ commit, state, getters }, currency) {
+    commit('conversionRate', currency)
   },
   conversionMultiplyRate({ commit }, {
     containerUuid,
@@ -148,7 +164,7 @@ export default {
       // conversionDate
     })
       .then(response => {
-        const multiplyRate = isEmptyValue(response.multiplyRate) ? 0 : response.multiplyRate
+        const multiplyRate = isEmptyValue(response.multiplyRate) ? 1 : response.multiplyRate
         if (containerUuid === 'Collection') {
           commit('currencyMultiplyRateCollection', multiplyRate)
         } else {

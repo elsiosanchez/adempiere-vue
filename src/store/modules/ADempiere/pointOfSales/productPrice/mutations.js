@@ -15,38 +15,28 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Payments Getters
+ * Product Price Mutations
  */
+import Vue from 'vue'
 
 export default {
-  getPaymentBox: (state) => {
-    return state
+  setListProductPrice(state, productsPrices) {
+    state.productPrice = {
+      ...state.productPrice,
+      ...productsPrices
+    }
   },
-  getMultiplyRate: (state) => {
-    return state.multiplyRate
+  setProductPicePageNumber(state, pageNumber) {
+    state.productPrice.pageNumber = pageNumber
   },
-  getDivideRate: (state) => {
-    return state.divideRate
+  showListProductPrice(state, payload) {
+    Vue.set(state.productPrice, payload.attribute, payload.isShowed)
   },
-  getMultiplyRateCollection: (state) => {
-    return state.multiplyRateCollection
+  setIsReloadProductPrice(state) {
+    Vue.set(state.productPrice, 'isReload', true)
+    Vue.set(state.productPrice, 'isLoaded', false)
   },
-  getDivideRateCollection: (state) => {
-    return state.divideRateCollection
-  },
-  getListPayments: (state) => {
-    return state.listPayments
-  },
-  getListCurrency: (state) => {
-    return state.currency
-  },
-  getConvertionPayment: (state) => {
-    return state.convertion
-  },
-  getFieldCuerrency: (state) => {
-    return state.fieldCurrency
-  },
-  getConvertionRate: (state) => {
-    return state.convertionRate
+  updtaeSearchProduct(state, searchProduct) {
+    state.searchProduct = searchProduct
   }
 }

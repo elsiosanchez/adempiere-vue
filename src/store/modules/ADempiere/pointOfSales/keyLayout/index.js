@@ -14,39 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Payments Getters
- */
+import state from './state.js'
+import mutations from './mutations.js'
+import actions from './actions.js'
 
-export default {
-  getPaymentBox: (state) => {
-    return state
-  },
-  getMultiplyRate: (state) => {
-    return state.multiplyRate
-  },
-  getDivideRate: (state) => {
-    return state.divideRate
-  },
-  getMultiplyRateCollection: (state) => {
-    return state.multiplyRateCollection
-  },
-  getDivideRateCollection: (state) => {
-    return state.divideRateCollection
-  },
-  getListPayments: (state) => {
-    return state.listPayments
-  },
-  getListCurrency: (state) => {
-    return state.currency
-  },
-  getConvertionPayment: (state) => {
-    return state.convertion
-  },
-  getFieldCuerrency: (state) => {
-    return state.fieldCurrency
-  },
-  getConvertionRate: (state) => {
-    return state.convertionRate
-  }
+/**
+ * keyLayout Vuex Module
+ */
+const keyLayout = {
+  state,
+  mutations,
+  actions
 }
+
+export default keyLayout

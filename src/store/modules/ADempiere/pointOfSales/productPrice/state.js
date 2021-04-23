@@ -15,38 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Payments Getters
+ * Product Price State
  */
-
+const withoutResponse = {
+  isLoaded: false,
+  isReload: true,
+  recordCount: 0,
+  nextPageToken: undefined
+}
 export default {
-  getPaymentBox: (state) => {
-    return state
+  productPrice: {
+    ...withoutResponse,
+    isShowPopoverField: false, // with field
+    isShowPopoverMenu: false // with menu
   },
-  getMultiplyRate: (state) => {
-    return state.multiplyRate
-  },
-  getDivideRate: (state) => {
-    return state.divideRate
-  },
-  getMultiplyRateCollection: (state) => {
-    return state.multiplyRateCollection
-  },
-  getDivideRateCollection: (state) => {
-    return state.divideRateCollection
-  },
-  getListPayments: (state) => {
-    return state.listPayments
-  },
-  getListCurrency: (state) => {
-    return state.currency
-  },
-  getConvertionPayment: (state) => {
-    return state.convertion
-  },
-  getFieldCuerrency: (state) => {
-    return state.fieldCurrency
-  },
-  getConvertionRate: (state) => {
-    return state.convertionRate
-  }
+  searchProduct: ''
 }

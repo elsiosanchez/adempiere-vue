@@ -14,39 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Payments Getters
- */
+import Vue from 'vue'
 
+/**
+ * Pos Mutations
+ * @author Elsio Sanchez <elsiosanches@gmail.com>
+ */
 export default {
-  getPaymentBox: (state) => {
-    return state
+  setPontOfSales(state, pos) {
+    state.pointOfSales = pos
   },
-  getMultiplyRate: (state) => {
-    return state.multiplyRate
+  setCurrentPOS(state, pos) {
+    Vue.set(state.pointOfSales, 'currentPOS', pos)
   },
-  getDivideRate: (state) => {
-    return state.divideRate
+  listPointOfSales(state, listPointOfSales) {
+    state.listPointOfSales = listPointOfSales
   },
-  getMultiplyRateCollection: (state) => {
-    return state.multiplyRateCollection
+  currentPointOfSales(state, currentPointOfSales) {
+    state.currentPointOfSales = currentPointOfSales
   },
-  getDivideRateCollection: (state) => {
-    return state.divideRateCollection
+  setShowPOSOptions(state, isShowedOptions) {
+    state.showPOSOptions = isShowedOptions
   },
-  getListPayments: (state) => {
-    return state.listPayments
+  setShowPOSKeyLayout(state, isShowedKeyLayout) {
+    state.showPOSKeyLayout = isShowedKeyLayout
   },
-  getListCurrency: (state) => {
-    return state.currency
-  },
-  getConvertionPayment: (state) => {
-    return state.convertion
-  },
-  getFieldCuerrency: (state) => {
-    return state.fieldCurrency
-  },
-  getConvertionRate: (state) => {
-    return state.convertionRate
+  setShowPOSCollection(state, isShowedCollection) {
+    state.showPOSCollection = isShowedCollection
   }
 }
