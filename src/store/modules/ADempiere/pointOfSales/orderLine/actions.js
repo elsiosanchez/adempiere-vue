@@ -57,7 +57,8 @@ export default {
       })
   },
   updateOrderLines({ commit, rootGetters }, params) {
-    const line = rootGetters.getListOrderLine
+    // const line = rootGetters.getListOrderLine
+    const line = rootGetters.posAttributes.currentPointOfSales.currentOrder.lineOrder
     const found = line.map(element => {
       if (element.uuid === params.uuid) {
         return {

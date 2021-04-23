@@ -14,19 +14,83 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Get Point Of Sales Vuex Module Store Data
+ * Search Point of Sale list
+ * Current Point of Sale
+ */
+
 import state from './state.js'
 import mutations from './mutations.js'
 import actions from './actions.js'
 import getters from '../getters/index.js'
 
 /**
- * Pos Vuex Module
- * Search Point of Sale list
- * Current Point of Sale
+ * Get Order Vuex Module Store Data
+ * Create Order
+ * Update Order
+ * List Order
+ * Delete Order
+ * Reload Order
  */
+
+import stateOrder from '../order/state.js'
+import mutationsOrder from '../order/mutations.js'
+
+/**
+ * Get Order Line Vuex Module Store Data
+ * Create Line
+ * Update Line
+ * Delete Line
+ * List Line
+ */
+
+import stateOrderLine from '../orderLine/state.js'
+import mutationsOrderLine from '../orderLine/mutations.js'
+
+/**
+ * Get Payments Vuex Module Store Data
+ * Create Payment
+ * Update Payment
+ * Delete Payment
+ * List Payment
+ */
+
+import statePayments from '../payments/state.js'
+import mutationsPayments from '../payments/mutations.js'
+
+/**
+ * Get Product Price Vuex Module Store Data
+ * Product List
+ * Search Product
+ */
+import stateProductPrice from '../productPrice/state.js'
+import mutationsProductPrice from '../productPrice/mutations.js'
+
+/**
+ * Get keyLayout Vuex Module Store Data
+ * List Catalog
+ */
+import stateKeyLayout from '../keyLayout/state.js'
+import mutationsKeyLayout from '../keyLayout/mutations.js'
+
 const pointOfSales = {
-  state,
-  mutations,
+  state: {
+    ...state,
+    ...stateOrder,
+    ...stateOrderLine,
+    ...statePayments,
+    ...stateProductPrice,
+    ...stateKeyLayout
+  },
+  mutations: {
+    ...mutations,
+    ...mutationsOrder,
+    ...mutationsOrderLine,
+    ...mutationsPayments,
+    ...mutationsProductPrice,
+    ...mutationsKeyLayout
+  },
   actions,
   getters
 }

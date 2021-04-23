@@ -28,5 +28,8 @@ export default {
     ...withoutResponse
   },
   listPointOfSales: {},
-  currentPointOfSales: {}
+  currentPointOfSales: {},
+  showPOSOptions: false,
+  showPOSKeyLayout: false,
+  showPOSCollection: false
 }

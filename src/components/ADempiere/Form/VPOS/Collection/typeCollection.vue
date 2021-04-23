@@ -144,7 +144,6 @@ export default {
   },
   created() {
     this.convertingPaymentMethods()
-    console.log(this.isEmptyValue(this.labelTypesPayment), this.labelTypesPayment)
     if (this.isEmptyValue(this.labelTypesPayment)) {
       this.tenderTypeDisplaye(this.listTypesPayment)
     }

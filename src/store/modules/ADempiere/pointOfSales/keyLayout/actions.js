@@ -24,9 +24,9 @@ import { showMessage } from '@/utils/ADempiere/notification.js'
  * keyLayout Actions
  */
 export default {
-  getKeyLayoutFromServer({ commit, getters }, keyLayoutUuid) {
+  getKeyLayoutFromServer({ commit, rootGetters }, keyLayoutUuid) {
     if (isEmptyValue(keyLayoutUuid)) {
-      keyLayoutUuid = getters.getKeyLayoutUuidWithPOS
+      keyLayoutUuid = rootGetters.posAttributes.currentPointOfSales.keyLayoutUuid
     }
 
     if (isEmptyValue(keyLayoutUuid)) {

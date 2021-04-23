@@ -17,16 +17,16 @@
 import state from './state.js'
 import mutations from './mutations.js'
 import actions from './actions.js'
-import getters from './getters.js'
 
 /**
  * Product Price Vuex Module
+ * Product List
+ * Search Product
  */
 const listProductPrice = {
   state,
   mutations,
-  actions,
-  getters
+  actions
 }
 
 export default listProductPrice

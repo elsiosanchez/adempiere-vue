@@ -285,14 +285,14 @@ export default {
     },
     listPayments() {
       const listLocal = this.$store.getters.getPaymentBox
-      const listServer = this.$store.getters.getPos.listPayments
+      const listServer = this.currentOrder.listPayments
       if (!this.sendToServer) {
         return listServer.payments
       }
       return listLocal
     },
     isLoadedPayments() {
-      return this.$store.getters.getPos.listPayments.isLoaded
+      return this.currentOrder.listPayments.isLoaded
     },
     paymentBox() {
       const payment = this.listPayments.filter(pay => {
@@ -418,9 +418,6 @@ export default {
         return missing
       }
       return 0
-    },
-    currentOrder() {
-      return this.$store.getters.getPos.currentOrder
     },
     typeCurrency() {
       return this.$store.getters.getValueOfField({

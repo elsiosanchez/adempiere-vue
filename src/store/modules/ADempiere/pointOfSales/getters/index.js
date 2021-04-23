@@ -17,29 +17,94 @@
 /**
  * PointOfSales Getters
  */
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
 
+const withoutResponse = {
+  isLoaded: false,
+  isReload: true,
+  recordCount: 0,
+  nextPageToken: undefined
+}
+
+function isProcessed(order) {
+  if (!isEmptyValue(order.documentStatus.value) &&
+    (order.documentStatus.value === 'CO' ||
+     order.documentStatus.value === 'VO' ||
+     order.documentStatus.value === 'IP' ||
+     order.documentStatus.value === 'IP')) {
+    return true
+  }
+  return false
+}
 export default {
   /**
-   * List PointOfSales
-   * Current PointOfSales
+   * Point of Sale Attributes
+   * List Point Of Sales
+   * Current Point Of Sales
    * Current Order
-   * Line Order
-   * List Payment
-   * List Order
+   * List Order Lines
+   * List Payment Order
+   * Lst Order
    */
   posAttributes: (state, getters) => {
     return {
       listPointOfSales: state.listPointOfSales,
       currentPointOfSales: {
         ...state.currentPointOfSales,
-        listOrder: getters.getListOrder,
+        listOrder: state.listOrder,
         currentOrder: {
-          ...getters.getOrder,
-          lineOrder: getters.getListOrderLine,
-          listPayments: getters.getListPayments,
-          isProcessed: getters.getIsProcessed
+          ...state.order,
+          lineOrder: state.listOrderLine,
+          listPayments: state.listPayments,
+          isProcessed: isProcessed(state.order)
         }
       }
     }
+  },
+  /**
+   * Product Price Getters
+   * List Product
+   * Search Product
+   */
+  getProductPrice: (state) => {
+    if (isEmptyValue(state.productPrice) || !state.productPrice.isLoaded) {
+      return {
+        ...withoutResponse,
+        productPricesList: []
+      }
+    }
+    return state.productPrice
+  },
+  getSearchProduct: (state) => {
+    return state.searchProduct
+  },
+  /**
+   * visibility of point of sale panels
+   * Show Panel Options the Point Of Sales
+   * Show Panel Key Layout the Point Of Sales
+   * Show Panel Collection the Point Of Sales
+   */
+  getIsShowPOSOptions: (state) => {
+    return state.showPOSOptions
+  },
+  getShowPOSKeyLayout: (state) => {
+    return state.showPOSKeyLayout
+  },
+  getShowCollectionPos: (state) => {
+    return state.showPOSCollection
+  },
+  /**
+   * get Key Layout
+   * List Catalog
+   */
+  getKeyLayout: (state) => {
+    if (isEmptyValue(state.keyLayout)) {
+      return {
+        ...withoutResponse,
+        uuid: undefined,
+        ordersList: []
+      }
+    }
+    return state.keyLayout
   }
 }

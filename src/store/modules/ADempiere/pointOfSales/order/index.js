@@ -17,7 +17,6 @@
 import state from './state.js'
 import mutations from './mutations.js'
 import actions from './actions.js'
-import getters from './getters.js'
 
 /**
  * Order Vuex Module
@@ -30,8 +29,7 @@ import getters from './getters.js'
 const ordes = {
   state,
   mutations,
-  actions,
-  getters
+  actions
 }
 
 export default ordes

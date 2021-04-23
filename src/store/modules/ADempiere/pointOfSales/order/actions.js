@@ -132,7 +132,7 @@ export default {
    */
   reloadOrder({ commit, dispatch, rootGetters }, { orderUuid }) {
     if (isEmptyValue(orderUuid)) {
-      orderUuid = rootGetters.getOrder.uuid // this.currentOrder.uuid
+      orderUuid = rootGetters.posAttributes.currentPointOfSales.currentOrder.uuid // this.currentOrder.uuid
     }
     if (!isEmptyValue(orderUuid)) {
       requestGetOrder(orderUuid)

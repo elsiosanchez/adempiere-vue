@@ -129,9 +129,6 @@ export default {
     currentPointOfSales() {
       return this.$store.getters.posAttributes.currentPointOfSales
     },
-    listOrderLine() {
-      return this.$store.getters.getPos.lineOrder
-    },
     getKeyLayout() {
       return this.$store.getters.getKeyLayout
     },
