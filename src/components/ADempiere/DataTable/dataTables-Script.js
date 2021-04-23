@@ -344,7 +344,7 @@ export default {
       })
     },
     headerLabel(field) {
-      if (field.isMandatory || field.isMandatoryFromLogic || field.isDisplayedGrid) {
+      if (field.isMandatory || field.isMandatoryFromLogic && field.isDisplayedGrid) {
         return '* ' + field.name
       }
       if (field.isDisplayedGrid) {
