@@ -19,6 +19,7 @@
   <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
     <!-- actions or process on container -->
     <el-dropdown
+      size="mini"
       :hide-on-click="true"
       split-button
       trigger="click"
@@ -76,7 +77,7 @@
     </el-dropdown>
     <!-- menu relations -->
     <el-dropdown size="mini" @command="clickRelation">
-      <el-button type="success" plain>
+      <el-button type="success" plain size="mini">
         {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
@@ -107,7 +108,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown size="mini" @command="clickReferences">
-      <el-button type="warning" plain :disabled="!(isReferecesContent && isLoadedReferences)">
+      <el-button type="warning" plain :disabled="!(isReferecesContent && isLoadedReferences)" size="mini">
         {{ $t('components.contextMenuReferences') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
