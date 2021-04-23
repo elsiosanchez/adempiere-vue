@@ -23,9 +23,13 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
+import orderLineMixin from './Order/orderLineMixin.js'
 
 export default {
   name: 'POSMixin',
+  mixins: [
+    orderLineMixin
+  ],
   props: {
     metadata: {
       type: Object,

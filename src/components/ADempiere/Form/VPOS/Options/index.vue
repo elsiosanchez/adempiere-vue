@@ -324,7 +324,7 @@ export default {
   computed: {
     isShowProductsPriceList: {
       get() {
-        return this.$store.state['pointOfSales/listProductPrice'].productPrice.isShowPopoverMenu
+        return this.$store.state['pointOfSales/point/index'].productPrice.isShowPopoverMenu
       },
       set(isShowed) {
         if (!this.isEmptyValue(this.$route.query.pos)) {
