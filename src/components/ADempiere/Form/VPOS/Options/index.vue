@@ -474,7 +474,7 @@ export default {
       this.$store.dispatch('addParametersProcessPos', parametersList)
       requestCreateOrder({
         posUuid,
-        customerUuid: this.currentPointOfSales.templateBusinessPartner.uuid,
+        customerUuid: this.currentOrder.businessPartner.uuid,
         salesRepresentativeUuid: this.currentPointOfSales.salesRepresentative.uuid
       })
         .then(order => {
