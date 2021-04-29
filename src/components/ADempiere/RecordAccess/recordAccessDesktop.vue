@@ -6,12 +6,10 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
@@ -76,29 +74,25 @@
               v-for="(element, index) in includedList"
               :key="element.roleUuid"
               class="board-item"
-              style="height: 50%;padding-left: 0px;padding-right: 0px;"
+              style="height: 50%;padding-left: 0px;padding-right: 0px;min-width: 550px;max-width: 100%;"
             >
               <el-table
                 v-if="!isEmptyValue(includedList)"
                 :data="[includedList[index]]"
                 border
                 :show-header="false"
+                style="min-width: 120%;padding-left: 0%;padding-right: 0%;"
               >
                 <el-table-column
                   prop="roleName"
-                  min-width="150"
                 />
-                <el-table-column
-                  fixed="right"
-                >
+                <el-table-column>
                   <template slot-scope="scope">
                     {{ $t('data.recordAccess.isReadonly') }} <el-switch v-model="scope.row.isReadOnly" />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  fixed="right"
-                >
-                  <template slot-scope="scope">
+                <el-table-column>
+                  <template slot-scope="scope" min-width="150">
                     {{ $t('data.recordAccess.isDependentEntities') }} <el-switch v-model="scope.row.isDependentEntities" />
                   </template>
                 </el-table-column>
@@ -143,7 +137,6 @@ export default {
     overflow: hidden;
     background: #f0f0f0;
     border-radius: 3px;
-
     .board-column-header {
       height: 50px;
       line-height: 50px;
@@ -154,7 +147,6 @@ export default {
       color: #fff;
       border-radius: 3px 3px 0 0;
     }
-
     .board-column-content {
       height: auto;
       overflow: hidden;
@@ -164,7 +156,6 @@ export default {
       justify-content: flex-start;
       flex-direction: column;
       align-items: center;
-
       .board-item {
         cursor: pointer;
         width: 100%;
