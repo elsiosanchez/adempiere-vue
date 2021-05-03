@@ -68,7 +68,7 @@ export default {
     excludedList: {
       get() {
         if (this.recordAccess.roles) {
-          return this.recordAccess.roles.filter(role => !role.isLocked)
+          return this.recordAccess.roles.filter(role => !role.isRoleConfi)
         } else {
           return []
         }
@@ -79,7 +79,8 @@ export default {
     includedList: {
       get() {
         if (this.recordAccess.roles) {
-          return this.recordAccess.roles.filter(role => role.isLocked)
+          console.log('epa', this.recordAccess.roles)
+          return this.recordAccess.roles.filter(role => role.isRoleConfi)
         } else {
           return []
         }
@@ -99,19 +100,23 @@ export default {
       recordUuid: this.record.UUID
     })
       .then(access => {
+        console.log(access)
         this.recordAccess.tableName = access.tableName
         this.recordAccess.recordId = access.recordId
         this.recordAccess.recordUuid = access.recordUuid
         access.availableRoles.forEach(role => {
           this.recordAccess.roles.push({
             ...role,
-            isLocked: false
+            isRoleConfi: false,
+            isLocked: role.isExclude
           })
         })
         access.currentRoles.forEach(role => {
-          this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId).isLocked = true
+          this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId).isLocked = role.isExclude
+          this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId).isRoleConfi = true
           this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId).isDependentEntities = role.isDependentEntities
           this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId).isReadOnly = role.isReadOnly
+          this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId).isExclude = role.isExclude
         })
       })
   },
@@ -143,7 +148,7 @@ export default {
       index,
       element
     }) {
-      this.recordAccess.roles[index].isLocked = true
+      this.recordAccess.roles[index].isRoleConfi = true
     },
     /**
      * @param {number} index: the index of the element before remove
@@ -153,7 +158,7 @@ export default {
       index,
       element
     }) {
-      this.recordAccess.roles[index].isLocked = false
+      this.recordAccess.roles[index].isRoleConfi = false
     },
     getOrder(arrayToSort, orderBy = this.order) {
       return arrayToSort.sort((itemA, itemB) => {

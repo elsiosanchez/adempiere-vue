@@ -341,10 +341,12 @@ export default {
     noDescription: 'No Description',
     recordAccess: {
       actions: 'Record Access',
-      hideRecord: 'Hide Record',
-      recordDisplay: 'Allow Record Display',
+      availableRoles: 'Roles Available',
+      configRoles: 'Configured Roles',
       isReadonly: 'Reading Only',
-      isDependentEntities: 'Dependent Entities'
+      isDependentEntities: 'Dependent Entities',
+      isLock: 'Block',
+      isUnlock: 'Unblock'
     },
     selectionRequired: 'You must select a record',
     undo: 'Undo',

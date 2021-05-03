@@ -316,10 +316,12 @@ export default {
     noDescription: 'Sin Descripción',
     recordAccess: {
       actions: 'Acceso a Registros',
-      hideRecord: 'Ocultar Registro',
-      recordDisplay: 'Permitir Visualización del Registro',
+      availableRoles: 'Roles disponibles',
+      configRoles: 'Roles Configurados',
       isReadonly: 'Solo  Lectura',
-      isDependentEntities: 'Entidades Dependientes'
+      isDependentEntities: 'Entidades Dependientes',
+      isLock: 'Bloquear',
+      isUnlock: 'Desbloquear'
     },
     selectionRequired: 'Debe seleccionar un registro',
     undo: 'Deshacer',
