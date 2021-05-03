@@ -102,6 +102,7 @@ export default {
     branches: 'Branches',
     code: 'Code',
     issues: 'Issues',
+    downloadZip: 'Download Zip',
     releaseNotes: 'Release Notes'
   },
   permission: {

@@ -102,7 +102,9 @@ export default {
     branches: 'Ramas',
     code: 'Código',
     issues: 'Solicitudes de extracción',
+    downloadZip: 'descargar  Zip',
     releaseNotes: 'Nota de Liberaciones'
+
   },
   permission: {
     addRole: 'Nuevo rol',

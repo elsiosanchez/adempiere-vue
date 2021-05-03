@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="27">
+    <el-row :gutter="24">
       <!-- ADempiere Vue -->
       <el-col :span="defaultSize" :style="style">
         <el-card class="box-card">
@@ -27,6 +27,7 @@
                         v-model="RepositoryADVue.clone"
                         :disabled="true"
                       />
+                      <el-button icon="el-icon-copy-document" @click="fallbackCopyTextToClipboard(RepositoryProxyApi.clone)" />
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="SSH" name="SSH">
@@ -35,10 +36,16 @@
                         v-model="RepositoryADVue.sshUrl"
                         :disabled="true"
                       />
+                      <el-button icon="el-icon-copy-document" @click="fallbackCopyTextToClipboard(RepositoryProxyApi.sshUrl)" />
                     </div>
                   </el-tab-pane>
                 </el-tabs>
-                <el-button slot="reference" icon="el-icon-download" type="success" size="mini" plain style="margin: 0px;padding-right: 3px;">
+                <el-button plain style="width: -webkit-fill-available;">
+                  <a target="_blank" :href="RepositoryADVue.downloadZip">
+                    <svg-icon icon-class="zip" /> {{ $t('documentation.downloadZip') }}
+                  </a>
+                </el-button>
+                <el-button slot="reference" icon="el-icon-download" type="success" size="mini" plain>
                   {{ $t('documentation.code') }}
                 </el-button>
               </el-popover>
@@ -129,6 +136,7 @@
                         v-model="RepositoryProxyApi.clone"
                         :disabled="true"
                       />
+                      <el-button icon="el-icon-copy-document" @click="fallbackCopyTextToClipboard(RepositoryProxyApi.clone)" />
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="SSH" name="SSH">
@@ -137,9 +145,15 @@
                         v-model="RepositoryProxyApi.sshUrl"
                         :disabled="true"
                       />
+                      <el-button icon="el-icon-copy-document" @click="fallbackCopyTextToClipboard(RepositoryProxyApi.sshUrl)" />
                     </div>
                   </el-tab-pane>
                 </el-tabs>
+                <el-button plain style="width: -webkit-fill-available;">
+                  <a target="_blank" :href="RepositoryProxyApi.downloadZip">
+                    <svg-icon icon-class="zip" /> {{ $t('documentation.downloadZip') }}
+                  </a>
+                </el-button>
                 <el-button slot="reference" icon="el-icon-download" type="success" size="mini" plain>{{ $t('documentation.code') }}</el-button>
               </el-popover>
               <el-button type="primary" size="mini" plain>
@@ -229,6 +243,7 @@
                         v-model="RepositorygRPC.clone"
                         :disabled="true"
                       />
+                      <el-button icon="el-icon-copy-document" @click="fallbackCopyTextToClipboard(RepositoryProxyApi.clone)" />
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="SSH" name="SSH">
@@ -237,9 +252,15 @@
                         v-model="RepositorygRPC.sshUrl"
                         :disabled="true"
                       />
+                      <el-button icon="el-icon-copy-document" @click="fallbackCopyTextToClipboard(RepositoryProxyApi.sshUrl)" />
                     </div>
                   </el-tab-pane>
                 </el-tabs>
+                <el-button plain style="width: -webkit-fill-available;">
+                  <a target="_blank" :href="RepositorygRPC.downloadZip" style="width: -webkit-fill-available; display: table;">
+                    <svg-icon icon-class="zip" /> {{ $t('documentation.downloadZip') }}
+                  </a>
+                </el-button>
                 <el-button slot="reference" icon="el-icon-download" type="success" size="mini" plain>{{ $t('documentation.code') }}</el-button>
               </el-popover>
               <el-button type="primary" size="mini" plain>
@@ -306,109 +327,6 @@
           </div>
         </el-card>
       </el-col>
-      <!-- ADempiere Vue Site -->
-      <el-col :span="defaultSize" :style="style">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <div style="float: left;display: inline-flex;margin-top: 2%;">
-              <span>
-                <b> {{ RepositoryADVueSite.title }} </b>
-              </span>
-              <a target="_blank" :href="RepositoryADVueSite.href" style="margin-left: 5px;">
-                <svg-icon icon-class="link" />
-              </a>
-            </div>
-            <div style="float: right;display: inline-flex;">
-              <el-popover
-                placement="right"
-                width="350"
-                trigger="click"
-                style="float: right"
-              >
-                <el-tabs v-model="activeName">
-                  <el-tab-pane label="HTTPS" name="HTTPS">
-                    <div style="display: flex;">
-                      <el-input
-                        v-model="RepositoryADVueSite.clone"
-                        :disabled="true"
-                      />
-                    </div>
-                  </el-tab-pane>
-                  <el-tab-pane label="SSH" name="SSH">
-                    <div style="display: flex;">
-                      <el-input
-                        v-model="RepositoryADVueSite.sshUrl"
-                        :disabled="true"
-                      />
-                    </div>
-                  </el-tab-pane>
-                </el-tabs>
-                <el-button slot="reference" icon="el-icon-download" type="success" size="mini" plain>{{ $t('documentation.code') }}</el-button>
-              </el-popover>
-              <el-button type="primary" size="mini" plain>
-                <a target="_blank" :href="RepositoryADVueSite.href + '/branches'">
-                  <svg-icon icon-class="tree-table" />  {{ $t('documentation.branches') }}
-                </a>
-              </el-button>
-              <el-button type="warning" size="mini" plain style="margin: 0px;padding-right: 3px;">
-                <a target="_blank" :href="RepositoryADVueSite.href + '/issues'">
-                  <i class="el-icon-warning el-icon--right" />  {{ $t('documentation.issues') }}
-                </a>
-              </el-button>
-            </div>
-          </div>
-          <div>
-            <div v-if="!isEmptyValue(RepositoryADVueSite)" style="display: inline-flex;width: 100%;">
-              <img width="100" height="100" :src="RepositoryADVueSite.avatar" style="margin-left: 20%;">
-              <p style="font-size: 30px;padding-top: 1%;color: #008fd3;"> {{ RepositoryADVueSite.title }} </p>
-            </div>
-
-            <p align="center">
-              <tags />
-            </p>
-            <div v-if="!isEmptyValue(RepositoryADVueSite)" id="markdown" v-markdown="RepositoryADVueSite.description" />
-            <el-collapse accordion>
-              <el-collapse-item name="1">
-                <template slot="title" style="font-size: 16px;">
-                  <span style="font-size: 16px;font-weight: revert;">
-                    <b> {{ releasesLabel }} </b>
-                  </span>
-                  <a target="_blank" :href="RepositoryADVueSite.href + '/releases'" style="font-size: 16px;font-weight: revert;padding-left: 1%">
-                    <svg-icon icon-class="link" />
-                  </a>
-                </template>
-                <el-collapse
-                  v-model="activeListReleases"
-                  accordion
-                >
-                  <el-collapse-item
-                    v-for="(releases, key) in releasesListADVueSite"
-                    :key="key"
-                    :name="key"
-                  >
-                    <template slot="title">
-                      <svg v-if="key !== stopper" class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16" style="margin-right: 2%;">
-                        <path fill-rule="evenodd" :d="icon" />
-                      </svg>
-                      <b>
-                        {{
-                          releases.title
-                        }}
-                      </b>
-                    </template>
-                    <el-button type="text" style="float: right;">
-                      <a target="_blank" :href="releases.download">
-                        {{ releases.titleDownload }} <i class="el-icon-download" />
-                      </a>
-                    </el-button>
-                    <div v-if="!isEmptyValue(releases.body)" id="markdown" v-markdown="releases.body" />
-                  </el-collapse-item>
-                </el-collapse>
-              </el-collapse-item>
-            </el-collapse>
-          </div>
-        </el-card>
-      </el-col>
     </el-row>
   </div>
 </template>
@@ -438,8 +356,7 @@ export default {
       RepositoryADVueSite: {},
       releasesListADVue: [],
       releasesListProxyApi: [],
-      releasesListgRPC: [],
-      releasesListADVueSite: []
+      releasesListgRPC: []
     }
   },
   computed: {
@@ -448,7 +365,7 @@ export default {
     },
     defaultSize() {
       if (this.isMobile) {
-        return 27
+        return 24
       }
       return 8
     },
@@ -483,7 +400,8 @@ export default {
             avatar: response.organization.avatar_url,
             clone: response.clone_url,
             sshUrl: response.ssh_url,
-            branches: response.branches_url
+            branches: response.branches_url,
+            downloadZip: response.html_url + '/archive/refs/heads/' + response.default_branch + '.zip'
           }
         })
     },
@@ -529,7 +447,8 @@ export default {
             avatar: response.organization.avatar_url,
             clone: response.clone_url,
             sshUrl: response.ssh_url,
-            branches: response.branches_url
+            branches: response.branches_url,
+            downloadZip: response.html_url + '/archive/refs/heads/' + response.default_branch + '.zip'
           }
         })
     },
@@ -574,7 +493,8 @@ export default {
             avatar: response.organization.avatar_url,
             clone: response.clone_url,
             sshUrl: response.ssh_url,
-            branches: response.branches_url
+            branches: response.branches_url,
+            downloadZip: response.html_url + '/archive/refs/heads/' + response.default_branch + '.zip'
           }
         })
     },
@@ -606,64 +526,41 @@ export default {
           }
         })
     },
-    // Adempiere Vue Site
-    fetchRepositoryADVueSite() {
-      fetchReadme({
-        repository: 'adempiere-vue-site'
-      })
-        .then(response => {
-          this.RepositoryADVueSite = {
-            title: response.name,
-            href: response.html_url,
-            description: response.description,
-            avatar: response.organization.avatar_url,
-            clone: response.clone_url,
-            sshUrl: response.ssh_url,
-            branches: response.branches_url
-          }
-        })
-    },
-    fechReleasesADVueSite() {
-      fetchReleasesList({
-        repository: '/adempiere-vue-site'
-      })
-        .then(response => {
-          if (response) {
-            response.forEach(release => {
-              this.releasesListADVueSite.push({
-                title: this.isEmptyValue(release.name) ? release.tag_name : release.name,
-                href: release.html_url,
-                author: release.author.login,
-                body: release.body,
-                created_at: release.created_at,
-                download: release.assets[0].browser_download_url,
-                titleDownload: release.assets[0].name
-              })
-            })
-            if (config.repository.releaseNo !== undefined && this.releasesListgRPC.length > 0) {
-              this.releaseNotes = this.releasesListADVueSite.find(release => {
-                return release.title === config.repository.releaseNo
-              })
-              if (!this.releaseNotes) {
-                this.releaseNotes = this.releasesListADVueSite[0]
-              }
-            }
-          }
-        })
-      console.log(this.releasesListADVueSite)
-    },
     // load
     loadReleasesList() {
       // Repository
       this.fetchRepositoryADVue()
       this.fetchRepositoryProxy()
       this.fetchRepositoryGRPC()
-      this.fetchRepositoryADVueSite()
       // Releases
       this.fechReleases()
       this.fechReleasesProxy()
       this.fechReleasesgRPC()
-      this.fechReleasesADVueSite()
+    },
+    // fallback Copy Text To Clip board
+    fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        if (document.execCommand('copy')) {
+          this.clipboardMessage(this.$t('notifications.copySuccessful'))
+        }
+      } catch (err) {
+        this.clipboardMessage(this.$t('notifications.copyUnsuccessful'))
+      }
+      document.body.removeChild(textArea)
+    },
+    // Notification Message when Copying TextNotification Message when Copying Text
+    clipboardMessage(message) {
+      this.$message({
+        message: message,
+        type: 'success',
+        showClose: true,
+        duration: 1500
+      })
     }
   }
 }
