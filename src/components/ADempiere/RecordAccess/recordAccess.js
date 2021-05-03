@@ -79,7 +79,6 @@ export default {
     includedList: {
       get() {
         if (this.recordAccess.roles) {
-          console.log('epa', this.recordAccess.roles)
           return this.recordAccess.roles.filter(role => role.isRoleConfi)
         } else {
           return []
@@ -100,7 +99,6 @@ export default {
       recordUuid: this.record.UUID
     })
       .then(access => {
-        console.log(access)
         this.recordAccess.tableName = access.tableName
         this.recordAccess.recordId = access.recordId
         this.recordAccess.recordUuid = access.recordUuid
