@@ -193,4 +193,8 @@ export default {
   .popover-scroll {
     max-height: 200px !important;
   }
+  .el-popper[x-placement^=right] {
+    margin-left: 12px;
+    padding: 20px;
+  }
 </style>
