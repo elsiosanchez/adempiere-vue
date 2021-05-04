@@ -184,6 +184,16 @@ export default {
           console.warn(`setPreference error: ${error.message}.`)
         })
     },
+    validateList(list) {
+      list.forEach(element => {
+        if (element.isExclude) {
+          element.isReadOnly = false
+        } else {
+          element.isDependentEntities = false
+        }
+      })
+      return list
+    },
     close() {
       this.$store.dispatch('setShowDialog', {
         type: 'window',

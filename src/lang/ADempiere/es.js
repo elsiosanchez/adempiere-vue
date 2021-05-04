@@ -315,9 +315,14 @@ export default {
     lockRecord: 'Bloquear Registro',
     noDescription: 'Sin Descripción',
     recordAccess: {
+      modeMobile: {
+        accessRoles: 'Roles con Acceso',
+        accessRolesIsReadonly: 'Roles con Acceso y Solo lectura',
+        lockedRoles: 'Roles Bloqueados',
+        lockedRolesIsDependentEntities: 'Roles Bloqueados con Entidades Dependientes'
+      },
       actions: 'Acceso a Registros',
-      availableRoles: 'Roles disponibles',
-      configRoles: 'Roles Configurados',
+      availableRoles: 'Roles Disponibles',
       isReadonly: 'Solo  Lectura',
       isDependentEntities: 'Entidades Dependientes',
       isLock: 'Bloquear',

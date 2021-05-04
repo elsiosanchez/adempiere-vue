@@ -340,9 +340,14 @@ export default {
     lockRecord: 'Lock Record',
     noDescription: 'No Description',
     recordAccess: {
+      modeMobile: {
+        accessRoles: 'Access Roles',
+        accessRolesIsReadonly: 'Roles with Access and Read Only',
+        lockedRoles: 'Locked Roles',
+        lockedRolesIsDependentEntities: 'Locked Roles with Dependent Entities'
+      },
       actions: 'Record Access',
       availableRoles: 'Roles Available',
-      configRoles: 'Configured Roles',
       isReadonly: 'Reading Only',
       isDependentEntities: 'Dependent Entities',
       isLock: 'Block',
