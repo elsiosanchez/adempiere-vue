@@ -347,7 +347,8 @@ export default {
         lockedRolesIsDependentEntities: 'Locked Roles with Dependent Entities'
       },
       actions: 'Record Access',
-      availableRoles: 'Roles Available',
+      configRoles: 'Roles Configurados',
+      availableRoles: 'Roles Configured',
       isReadonly: 'Reading Only',
       isDependentEntities: 'Dependent Entities',
       isLock: 'Block',

@@ -323,6 +323,7 @@ export default {
       },
       actions: 'Acceso a Registros',
       availableRoles: 'Roles Disponibles',
+      configRoles: 'Roles Configurados',
       isReadonly: 'Solo  Lectura',
       isDependentEntities: 'Entidades Dependientes',
       isLock: 'Bloquear',
