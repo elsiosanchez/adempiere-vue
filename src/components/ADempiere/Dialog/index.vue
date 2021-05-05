@@ -225,11 +225,6 @@ export default {
           }
         }
       }
-      if (action.action === undefined) {
-        const list = this.$store.getters.getListRecordAcces
-        // updateAccessRecord(list)
-        console.log(list)
-      }
     }
   }
 }

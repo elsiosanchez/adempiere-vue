@@ -697,7 +697,6 @@ export default {
         }
       }
       if (shareLink !== this.$route.fullPath) {
-        console.log({ shareLink })
         this.activeClipboard(shareLink)
       }
     },
@@ -717,9 +716,7 @@ export default {
       document.body.removeChild(textArea)
     },
     activeClipboard(text) {
-      console.log(navigator.clipboard)
       if (!navigator.clipboard) {
-        console.log({ navigator }, text)
         this.fallbackCopyTextToClipboard(text)
         return
       }
