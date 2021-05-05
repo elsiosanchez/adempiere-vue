@@ -58,7 +58,6 @@
         icon="el-icon-close"
         @click="closeDialog"
       />
-      alooooooooo
       <el-button
         type="primary"
         icon="el-icon-check"
