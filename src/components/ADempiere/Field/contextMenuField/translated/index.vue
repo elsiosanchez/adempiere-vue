@@ -58,22 +58,44 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          :label="$t('field.container.codeTranslation')"
+          :label="$t('field.codeTranslation')"
           :required="true"
         >
           <el-input
             v-model="translatedValue"
             :disabled="isEmptyValue(langValue)"
-            @change="changeTranslationValue"
           />
         </el-form-item>
       </el-form>
     </div>
+    <!--
+    <br>
+    <el-row>
+      <el-col :span="24">
+        <samp style="float: right; padding-right: 10px;">
+          <el-button
+            type="danger"
+            class="custom-button-address-location"
+            icon="el-icon-close"
+            @click="close()"
+          />
+          <el-button
+            type="primary"
+            class="custom-button-address-location"
+            icon="el-icon-check"
+            @click="changeTranslationValue"
+          />
+        </samp>
+      </el-col>
+    </el-row>
+    -->
   </el-card>
 </template>
 
 <script>
 import { getLanguage } from '@/lang/index'
+// import { showMessage } from '@/utils/ADempiere/notification.js'
+// import language from '@/lang'
 
 export default {
   name: 'FieldTranslated',
@@ -131,6 +153,7 @@ export default {
     }
   },
   created() {
+    this.getTranslation()
     let langMatch = this.languageList.find(itemLanguage => {
       return itemLanguage.languageISO === getLanguage()
     })
@@ -151,7 +174,7 @@ export default {
       this.isLoading = true
       this.$store.dispatch('getTranslationsFromServer', {
         containerUuid: this.fieldAttributes.containerUuid,
-        recordUuid: this.recordUuid,
+        recordUuid: this.fieldAttributes.recordUuid,
         tableName: this.fieldAttributes.tableName,
         language: this.langValue
       })
@@ -164,8 +187,14 @@ export default {
         containerUuid: this.fieldAttributes.containerUuid,
         language: this.langValue,
         columnName: this.fieldAttributes.columnName,
+        recordUuid: this.fieldAttributes.recordUuid,
         value
       })
+      this.close()
+    },
+    close() {
+      this.$children[0].visible = false
+      this.$store.commit('changeShowRigthPanel', false)
     }
   }
 }
