@@ -307,6 +307,7 @@ export default {
     calculator: 'Calculadora',
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de Codigo',
+    logsField: 'Bitácora de Cambios',
     container: {
       help: 'Ayuda',
       description: 'Descripción'

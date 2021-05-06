@@ -355,6 +355,13 @@ export default {
       }
     },
     getRecord(value) {
+      if (value && this.getTableName && this.recordId && this.isEmptyValue(this.gettersListRecordLogs)) {
+        this.$store.dispatch('listRecordLogs', {
+          tableName: this.getTableName,
+          recordId: this.recordId,
+          recordUuid: value.UUID
+        })
+      }
       if (!this.isEmptyValue(this.windowMetadata.currentTab.tableName) && !this.isEmptyValue(value) && (!this.isEmptyValue(this.$route.query) && this.$route.query.typeAction === 'recordAccess')) {
         this.$store.commit('setRecordAccess', true)
       }

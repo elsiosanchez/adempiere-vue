@@ -331,6 +331,7 @@ export default {
     calculator: 'Calculator',
     preference: 'Preference',
     codeTranslation: 'Traduccion de Codigo',
+    logsField: 'Field Change Log',
     container: {
       help: 'Help',
       description: 'Description'

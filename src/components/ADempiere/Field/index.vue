@@ -75,7 +75,7 @@
                     />
                     <el-button slot="reference" type="text" style="color: #606266;">
                       <div class="contents">
-                        <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                        <div v-if="!option.svg" style="margin-right: 5%;padding-top: 3%;">
                           <i :class="option.icon" style="font-weight: bolder;" />
                         </div>
                         <div v-else style="margin-right: 5%">
@@ -92,7 +92,7 @@
                     </el-button>
                   </el-popover>
                   <div v-if="isMobile" class="contents">
-                    <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                    <div v-if="!option.svg" style="margin-right: 5%;padding-top: 3%;">
                       <i :class="option.icon" style="font-weight: bolder;" />
                     </div>
                     <div v-else style="margin-right: 5%">
@@ -143,10 +143,13 @@
                   />
                   <el-button slot="reference" type="text" style="color: #606266;">
                     <div class="contents">
-                      <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                      <div
+                        v-if="!option.svg"
+                        style="margin-right: 5%;padding-top: 3%;"
+                      >
                         <i :class="option.icon" style="font-weight: bolder;" />
                       </div>
-                      <div v-else style="margin-right: 5%">
+                      <div v-else style="margin-right: 5%;; padding-left: 2%;">
                         <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
                       </div>
                       <div>
@@ -160,7 +163,7 @@
                   </el-button>
                 </el-popover>
                 <div v-if="false" class="contents">
-                  <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                  <div v-if="!option.svg" style="margin-right: 5%;padding-top: 3%;">
                     <i :class="option.icon" style="font-weight: bolder;" />
                   </div>
                   <div v-else style="margin-right: 5%">
@@ -278,6 +281,9 @@ export default {
           break
         case this.$t('field.preference'):
           component = () => import('@/components/ADempiere/Field/contextMenuField/preference/index')
+          break
+        case this.$t('field.logsField'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/changeLogs/index')
           break
       }
       return component
@@ -536,18 +542,21 @@ export default {
           name: this.$t('field.info'),
           enabled: true,
           fieldAttributes: this.fieldAttributes,
+          svg: false,
           icon: 'el-icon-info'
         },
         {
           name: this.$t('table.ProcessActivity.zoomIn'),
           enabled: this.isContextInfo,
           fieldAttributes: this.fieldAttributes,
+          svg: false,
           icon: 'el-icon-files'
         },
         {
           name: this.$t('language'),
           enabled: this.field.isTranslatedField,
           fieldAttributes: this.fieldAttributes,
+          svg: true,
           icon: 'language'
         },
         {
@@ -556,6 +565,7 @@ export default {
           fieldAttributes: this.fieldAttributes,
           recordDataFields: this.recordDataFields,
           valueField: this.valueField,
+          svg: false,
           icon: 'el-icon-s-operation'
         },
         {
@@ -563,7 +573,16 @@ export default {
           enabled: true,
           fieldAttributes: this.fieldAttributes,
           valueField: this.valueField,
+          svg: false,
           icon: 'el-icon-notebook-2'
+        },
+        {
+          name: this.$t('field.logsField'),
+          enabled: true,
+          fieldAttributes: this.fieldAttributes,
+          valueField: this.valueField,
+          svg: true,
+          icon: 'tree-table'
         }
       ]
     },
