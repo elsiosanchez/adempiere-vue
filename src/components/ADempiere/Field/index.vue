@@ -176,22 +176,22 @@
               </el-menu-item>
             </el-submenu>
           </el-menu>
-          <el-popover
-            v-if="openOptionField && !isEmptyValue(optionColumnName) && (optionColumnName === field.columnName) && showPopoverPath"
-            v-model="openOptionField"
-            placement="top-start"
-            width="400"
-            trigger="click"
-          >
-            <component
-              :is="optionFieldFComponentRender"
-              :field-attributes="fieldAttributes"
-              :source-field="fieldAttributes"
-              :field-value="valueField"
-            />
-            <el-button slot="reference" type="text" :disabled="true" @click="openOptionField = !openOptionField" />
-          </el-popover>
         </template>
+        <el-popover
+          v-if="openOptionField && !isEmptyValue(optionColumnName) && (optionColumnName === field.columnName) && showPopoverPath"
+          v-model="openOptionField"
+          placement="top-start"
+          width="400"
+          trigger="click"
+        >
+          <component
+            :is="optionFieldFComponentRender"
+            :field-attributes="fieldAttributes"
+            :source-field="fieldAttributes"
+            :field-value="valueField"
+          />
+          <el-button slot="reference" type="text" :disabled="true" @click="openOptionField = !openOptionField" />
+        </el-popover>
         <component
           :is="componentRender"
           :ref="field.columnName"
@@ -627,6 +627,11 @@ export default {
     },
     metadataField(value) {
       this.field = value
+    },
+    openOptionField(value) {
+      if (!value) {
+        this.showPopoverPath = false
+      }
     }
   },
   created() {
