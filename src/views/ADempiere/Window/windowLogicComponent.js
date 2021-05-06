@@ -244,7 +244,8 @@ export default {
     },
     isShowedTabsChildren() {
       if (this.windowMetadata && this.windowMetadata.isShowedTabsChildren) {
-        return this.windowMetadata.isShowedTabsChildren
+        // return this.windowMetadata.isShowedTabsChildren
+        return false
       }
       return false
     },
