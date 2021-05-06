@@ -42,7 +42,6 @@
             size="medium"
             style="width: 100%;"
             filterable
-            @change="getTranslation"
           >
             <!-- <el-option
               key="blank-option"
@@ -58,7 +57,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          :label="$t('field.codeTranslation')"
+          :label="$t('field.codeTranslation') + fieldAttributes.name"
           :required="true"
         >
           <el-input
@@ -68,7 +67,6 @@
         </el-form-item>
       </el-form>
     </div>
-    <!--
     <br>
     <el-row>
       <el-col :span="24">
@@ -83,19 +81,16 @@
             type="primary"
             class="custom-button-address-location"
             icon="el-icon-check"
-            @click="changeTranslationValue"
+            @click="changeTranslationValue(translatedValue)"
           />
         </samp>
       </el-col>
     </el-row>
-    -->
   </el-card>
 </template>
 
 <script>
 import { getLanguage } from '@/lang/index'
-// import { showMessage } from '@/utils/ADempiere/notification.js'
-// import language from '@/lang'
 
 export default {
   name: 'FieldTranslated',
@@ -132,7 +127,7 @@ export default {
       const values = this.$store.getters.getTranslationByLanguage({
         containerUuid: this.fieldAttributes.containerUuid,
         language: this.langValue,
-        recordUuid: this.recordUuid
+        recordUuid: this.fieldAttributes.recordUuid
       })
       if (this.isEmptyValue(values)) {
         return undefined
