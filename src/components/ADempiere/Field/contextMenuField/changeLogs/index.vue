@@ -24,28 +24,55 @@
       </span>
     </div>
     <div>
-      <el-scrollbar v-if="!isEmptyValue(listLogsField)">
+      <el-scrollbar v-if="!isEmptyValue(listLogsField)" :wrap-class="classIsMobilePanel">
         <el-timeline>
           <el-timeline-item
             v-for="(listLogs, key) in listLogsField"
-            :key="key"
+            :key="listLogs.logId"
+            :type="listLogs.type"
             :timestamp="translateDate(listLogs.logDate)"
             placement="top"
-            color="#008fd3"
           >
-            <span v-for="(list, index) in listLogs.changeLogsList" :key="index">
-              <p v-if="list.columnName === fieldAttributes.columnName">
-                <b> {{ list.displayColumnName }} :</b>
-                <strike>
-                  <el-link type="danger">
-                    {{ list.oldDisplayValue }}
-                  </el-link>
-                </strike>
-                <el-link type="success">
-                  {{ list.newDisplayValue }}
+            <el-card shadow="hover" class="clearfix">
+              <div>
+                {{ listLogs.userName }}
+                <el-link
+                  type="primary"
+                  style="float: right;"
+                  @click="showkey(key)"
+                >
+                  {{ $t('window.containerInfo.changeDetail') }}
                 </el-link>
-              </p>
-            </span>
+              </div>
+              <el-collapse-transition>
+                <div v-show="(currentKey === key)">
+                  <span v-for="(list, index) in listLogs.changeLogsList" :key="index">
+                    <p v-if="list.columnName === 'DocStatus'">
+                      <b> {{ list.displayColumnName }} :</b>
+                      <strike>
+                        <el-tag :type="tagStatus(list.oldValue)">
+                          {{ list.oldDisplayValue }}
+                        </el-tag>
+                      </strike>
+                      <el-tag :type="tagStatus(list.newValue)">
+                        {{ list.newDisplayValue }}
+                      </el-tag>
+                    </p>
+                    <p v-else>
+                      <b> {{ list.displayColumnName }} :</b>
+                      <strike>
+                        <el-link type="danger">
+                          {{ list.oldDisplayValue }}
+                        </el-link>
+                      </strike>
+                      <el-link type="success">
+                        {{ list.newDisplayValue }}
+                      </el-link>
+                    </p>
+                  </span>
+                </div>
+              </el-collapse-transition>
+            </el-card>
           </el-timeline-item>
         </el-timeline>
       </el-scrollbar>
@@ -69,7 +96,9 @@ export default {
   },
   data() {
     return {
-      isLoading: false
+      isLoading: false,
+      currentKey: 0,
+      typeAction: 0
     }
   },
   computed: {
@@ -80,19 +109,45 @@ export default {
       const log = this.$store.getters.getRecordLogs.entityLogs
       if (log) {
         const logsField = log.map(element => {
+          let type
+          if (!this.isEmptyValue(element.changeLogsList[0].newDisplayValue) && this.isEmptyValue(element.changeLogsList[0].oldDisplayValue)) {
+            type = 'success'
+          } else if (this.isEmptyValue(element.changeLogsList[0].newDisplayValue) && !this.isEmptyValue(element.changeLogsList[0].oldDisplayValue)) {
+            type = 'danger'
+          } else {
+            type = 'primary'
+          }
           return {
             ...element,
-            columnName: element.changeLogsList[0].columnName
+            columnName: element.changeLogsList[0].columnName,
+            type
           }
         })
         return logsField.filter(field => field.columnName === this.fieldAttributes.columnName)
       }
       return []
+    },
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
+    },
+    classIsMobilePanel() {
+      if (this.isMobile) {
+        return 'panel-mobile'
+      }
+      return 'scroll-child'
     }
   },
   methods: {
     translateDate(value) {
       return this.$d(new Date(value), 'long', this.language)
+    },
+    showkey(key, index) {
+      if (key === this.currentKey && index === this.typeAction) {
+        this.currentKey = 1000
+      } else {
+        this.currentKey = key
+        this.typeAction = index
+      }
     }
   }
 }
@@ -118,5 +173,8 @@ export default {
    */
   .el-form--label-top .el-form-item__label {
     padding-bottom: 0px !important;
+  }
+  .panel-mobile {
+    height: 80vh;
   }
 </style>
