@@ -64,7 +64,6 @@
                     placement="top"
                     trigger="click"
                     style="padding: 0px;"
-                    :hide="visibleForDesktop"
                   >
                     <component
                       :is="optionFieldFComponentRender"
@@ -181,6 +180,21 @@
             </el-submenu>
           </el-menu>
         </template>
+        <el-popover
+          v-if="openOptionField && !isEmptyValue(optionColumnName) && (optionColumnName === field.columnName) && showPopoverPath"
+          v-model="openOptionField"
+          placement="top-start"
+          width="400"
+          trigger="click"
+        >
+          <component
+            :is="optionFieldFComponentRender"
+            :field-attributes="fieldAttributes"
+            :source-field="fieldAttributes"
+            :field-value="valueField"
+          />
+          <el-button slot="reference" type="text" :disabled="true" @click="openOptionField = !openOptionField" />
+        </el-popover>
         <component
           :is="componentRender"
           :ref="field.columnName"
@@ -245,7 +259,9 @@ export default {
     return {
       field: {},
       visibleForDesktop: false,
-      triggerMenu: 'click'
+      triggerMenu: 'click',
+      showPopoverPath: false,
+      optionColumnName: this.$route.query.fieldColumnName
     }
   },
   computed: {
@@ -269,7 +285,9 @@ export default {
     },
     optionFieldFComponentRender() {
       let component
-      switch (this.contextMenuField.name) {
+      const option = this.optionField.find(option => this.$route.query.typeAction === option.name)
+      const nameComponent = this.isEmptyValue(option) ? this.contextMenuField.name : this.$route.query.typeAction
+      switch (nameComponent) {
         case this.$t('field.info'):
           component = () => import('@/components/ADempiere/Field/contextMenuField/contextInfo')
           break
@@ -598,6 +616,28 @@ export default {
         containerUuid: this.fieldAttributes.containerUuid,
         columnName: this.fieldAttributes.columnName
       })
+    },
+    openOptionField: {
+      get() {
+        const option = this.optionField.find(option => this.$route.query.typeAction === option.name)
+        if (!this.isEmptyValue(this.$route.query) && option) {
+          return true
+        }
+        return false
+      },
+      set(value) {
+        if (!value) {
+          this.showPopoverPath = false
+          this.$router.push({
+            name: this.$route.name,
+            query: {
+              ...this.$route.query,
+              typeAction: '',
+              fieldColumnName: ''
+            }
+          }, () => {})
+        }
+      }
     }
   },
   watch: {
@@ -606,9 +646,17 @@ export default {
     },
     metadataField(value) {
       this.field = value
+    },
+    openOptionField(value) {
+      if (!value) {
+        this.showPopoverPath = false
+      }
     }
   },
   created() {
+    this.timeOut = setTimeout(() => {
+      this.showPopoverPath = true
+    }, 2000)
     // assined field with prop
     this.field = this.metadataField
     if (this.field.isCustomField && !this.field.componentPath) {
@@ -647,6 +695,14 @@ export default {
         this.$store.commit('changeShowRigthPanel', true)
       } else {
         this.visibleForDesktop = true
+        this.$router.push({
+          name: this.$route.name,
+          query: {
+            ...this.$route.query,
+            typeAction: key,
+            fieldColumnName: this.field.columnName
+          }
+        }, () => {})
       }
       this.$store.commit('changeShowPopoverField', true)
       this.$store.dispatch('setOptionField', option)
@@ -785,6 +841,9 @@ export default {
 </style>
 
 <style lang="scss">
+  .el-popover {
+    position: fixed;
+  }
   .custom-tittle-popover {
     font-size: 14px;
     font-weight: bold;
