@@ -110,6 +110,9 @@ export default {
         case this.$t('field.preference'):
           component = () => import('@/components/ADempiere/Field/contextMenuField/preference/index')
           break
+        case this.$t('field.logsField'):
+          component = () => import('@/components/ADempiere/Field/contextMenuField/changeLogs/index')
+          break
       }
       return component
     },
