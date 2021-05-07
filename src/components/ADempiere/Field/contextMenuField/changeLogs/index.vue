@@ -27,7 +27,7 @@
       <el-scrollbar v-if="!isEmptyValue(listLogsField)" :wrap-class="classIsMobilePanel">
         <el-timeline>
           <el-timeline-item
-            v-for="(listLogs, key) in listLogsField.sort(sortSequence)"
+            v-for="(listLogs) in listLogsField.sort(sortSequence)"
             :key="listLogs.logId"
             :type="listLogs.type"
             :timestamp="translateDate(listLogs.logDate)"
@@ -36,42 +36,35 @@
             <el-card shadow="hover" class="clearfix">
               <div>
                 {{ listLogs.userName }}
-                <el-link
-                  type="primary"
-                  style="float: right;"
-                  @click="showkey(key)"
-                >
-                  {{ $t('window.containerInfo.changeDetail') }}
-                </el-link>
               </div>
-              <el-collapse-transition>
-                <div v-show="(currentKey === key)">
-                  <span v-for="(list, index) in listLogs.changeLogsList" :key="index">
-                    <p v-if="list.columnName === 'DocStatus'">
-                      <b> {{ list.displayColumnName }} :</b>
-                      <strike>
-                        <el-tag :type="tagStatus(list.oldValue)">
-                          {{ list.oldDisplayValue }}
-                        </el-tag>
-                      </strike>
-                      <el-tag :type="tagStatus(list.newValue)">
-                        {{ list.newDisplayValue }}
+              <!-- <el-collapse-transition> -->
+              <div>
+                <span v-for="(list, index) in listLogs.changeLogsList" :key="index">
+                  <p v-if="list.columnName === 'DocStatus'">
+                    <b> {{ list.displayColumnName }} :</b>
+                    <strike>
+                      <el-tag :type="tagStatus(list.oldValue)">
+                        {{ list.oldDisplayValue }}
                       </el-tag>
-                    </p>
-                    <p v-else>
-                      <b> {{ list.displayColumnName }} :</b>
-                      <strike>
-                        <el-link type="danger">
-                          {{ list.oldDisplayValue }}
-                        </el-link>
-                      </strike>
-                      <el-link type="success">
-                        {{ list.newDisplayValue }}
+                    </strike>
+                    <el-tag :type="tagStatus(list.newValue)">
+                      {{ list.newDisplayValue }}
+                    </el-tag>
+                  </p>
+                  <p v-else>
+                    <b> {{ list.displayColumnName }} :</b>
+                    <strike>
+                      <el-link type="danger">
+                        {{ list.oldDisplayValue }}
                       </el-link>
-                    </p>
-                  </span>
-                </div>
-              </el-collapse-transition>
+                    </strike>
+                    <el-link type="success">
+                      {{ list.newDisplayValue }}
+                    </el-link>
+                  </p>
+                </span>
+              </div>
+              <!-- </el-collapse-transition> -->
             </el-card>
           </el-timeline-item>
         </el-timeline>
