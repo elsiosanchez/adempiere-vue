@@ -27,7 +27,7 @@
       <el-scrollbar v-if="!isEmptyValue(listLogsField)" :wrap-class="classIsMobilePanel">
         <el-timeline>
           <el-timeline-item
-            v-for="(listLogs, key) in listLogsField"
+            v-for="(listLogs, key) in listLogsField.sort(sortSequence)"
             :key="listLogs.logId"
             :type="listLogs.type"
             :timestamp="translateDate(listLogs.logDate)"
@@ -138,6 +138,9 @@ export default {
     }
   },
   methods: {
+    sortSequence(itemA, itemB) {
+      return new Date().setTime(new Date(itemB.logDate).getTime()) - new Date().setTime(new Date(itemA.logDate).getTime())
+    },
     translateDate(value) {
       return this.$d(new Date(value), 'long', this.language)
     },
