@@ -65,15 +65,15 @@ El llamado al consumo de servicio de  **Preferencia** se encuentra en la siguien
 └─ src                            # Código fuente principal
     └─ api                        # Servicios globales
       └─ ADempiere                # Servicios específicos de ADempiere
-            └─ actions            # Acciones
-                └─ record-access  # Directorio principal de los servicio preferencia
+            └─ field              # Campos
+                └─ preference     # Directorio principal de los servicio preferencia
 
 ```
 
 
 Los servicios llamados del componente son <br>
-[GET adempiere-api/ui/record-access](https://adempiere.github.io/proxy-adempiere-api/guide/default-modules/adempiere-api/user.html#user-service)<br>
-[POST adempiere-api/ui/set-record-access](https://adempiere.github.io/proxy-adempiere-api/guide/default-modules/adempiere-api/user.html#user-service)
+[GET adempiere-api/ui/set-preference](https://adempiere.github.io/proxy-adempiere-api/guide/default-modules/adempiere-api/user.html#user-service)<br>
+[POST adempiere-api/ui/delete-preference](https://adempiere.github.io/proxy-adempiere-api/guide/default-modules/adempiere-api/user.html#user-service)
 
 ### Por hacer
 
