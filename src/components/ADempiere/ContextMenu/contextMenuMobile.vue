@@ -245,6 +245,14 @@ export default {
       } else if (action.action === 'recordAccess') {
         this.$store.commit('changeShowRigthPanel', true)
         this.$store.commit('setRecordAccess', true)
+        console.log({ action })
+        this.$router.push({
+          name: this.$route.name,
+          query: {
+            ...this.$route.query,
+            typeAction: action.action
+          }
+        }, () => {})
       } else {
         this.runAction(action)
       }
