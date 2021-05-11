@@ -308,6 +308,7 @@ export default {
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de ',
     logsField: 'Bitácora de Cambios',
+    contextInfo: 'Información del Contexto',
     container: {
       help: 'Ayuda',
       description: 'Descripción'
