@@ -12,7 +12,7 @@ export default {
     profile: 'Perfil',
     ProcessActivity: 'Histórico Procesos',
     withoutLog: 'No se Encontró Registro de Error ',
-    ProductInfo: 'Informacion de Producto',
+    ProductInfo: 'Información de Producto',
     role: 'Rol',
     organization: 'Organización',
     warehouse: 'Almacén',
@@ -303,12 +303,11 @@ export default {
   },
   field: {
     field: 'Campo',
-    info: 'Informacion',
+    info: 'Información',
     calculator: 'Calculadora',
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de ',
     logsField: 'Bitácora de Cambios',
-    contextInfo: 'Información del Contexto',
     container: {
       help: 'Ayuda',
       description: 'Descripción'
