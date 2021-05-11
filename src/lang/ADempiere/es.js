@@ -12,7 +12,7 @@ export default {
     profile: 'Perfil',
     ProcessActivity: 'Histórico Procesos',
     withoutLog: 'No se Encontró Registro de Error ',
-    ProductInfo: 'Informacion de Producto',
+    ProductInfo: 'Información de Producto',
     role: 'Rol',
     organization: 'Organización',
     warehouse: 'Almacén',
@@ -303,11 +303,12 @@ export default {
   },
   field: {
     field: 'Campo',
-    info: 'Informacion',
+    info: 'Información',
     calculator: 'Calculadora',
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de ',
     logsField: 'Bitácora de Cambios',
+    contextInfo: 'Información del Contexto',
     logsFieldEmpty: 'El campo no tiene cambios aún',
     container: {
       help: 'Ayuda',
@@ -321,7 +322,7 @@ export default {
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
     deleteRecordError: 'Error al eliminar el regitro',
     exportRecord: 'Exportar Registro',
-    lockRecord: 'Bloquear Registro',
+    lockRecord: 'Registro Bloqueado',
     noDescription: 'Sin Descripción',
     recordAccess: {
       modeMobile: {
