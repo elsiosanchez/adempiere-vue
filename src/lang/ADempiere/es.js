@@ -321,7 +321,7 @@ export default {
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
     deleteRecordError: 'Error al eliminar el regitro',
     exportRecord: 'Exportar Registro',
-    lockRecord: 'Registro Bloqueado',
+    lockRecord: 'Bloquear Registro',
     noDescription: 'Sin Descripción',
     recordAccess: {
       modeMobile: {
@@ -341,7 +341,12 @@ export default {
     },
     selectionRequired: 'Debe seleccionar un registro',
     undo: 'Deshacer',
-    unlockRecord: 'Registro Desbloqueado'
+    unlockRecord: 'Desbloquear Registro',
+    notification: {
+      lockRecord: 'El Registro fue Bloqueado',
+      unlockRecord: 'El Registro fue Desbloqueado'
+    }
+
   },
   sequence: {
     available: 'Disponibles',
