@@ -36,8 +36,8 @@
             :timestamp="translateDate(chats.logDate)"
             placement="top"
           >
-            <el-card shadow="always" style="border: 2px solid #d2e1ffd6;">
-              <div v-markdown="chats.characterData" />
+            <el-card shadow="always" style="border: 2px solid rgba(210, 225, 255, 0.84);">
+              <div v-markdown="chats.characterData" style="padding-top: 2%; padding-bottom: 2%" />
             </el-card>
           </el-timeline-item>
         </el-timeline>

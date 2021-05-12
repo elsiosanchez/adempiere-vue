@@ -36,7 +36,7 @@
             placement="top"
           >
             <el-card shadow="always" style="border: 2px solid #d2e1ffd6;">
-              <div v-markdown="chats.characterData" />
+              <div v-markdown="chats.characterData" style="padding-top: 2%; padding-bottom: 2%" />
             </el-card>
           </el-timeline-item>
         </el-timeline>
