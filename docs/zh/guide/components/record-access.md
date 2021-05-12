@@ -56,9 +56,9 @@
             └── RecordAccess        # 记录访问主目录
 
 ```
-Aquí puede ver un [Demo](https://demo-ui.erpya.com/#/7aa4242a-93c0-42d8-92be-8250002d3e3c/d97027fd-4cd5-445e-8fd8-ef5d3f7959b4/window/147?tabParent=0&tabChild=0&action=43adbe9d-04a7-4cf6-9582-895c1e40da0b&typeAction=recordAccess)
+在这里你可以看到一个[演示](https://demo-ui.erpya.com/#/7aa4242a-93c0-42d8-92be-8250002d3e3c/d97027fd-4cd5-445e-8fd8-ef5d3f7959b4/window/147?tabParent=0&tabChild=0&action=43adbe9d-04a7-4cf6-9582-895c1e40da0b&typeAction=recordAccess)
 
-El llamado al consumo de servicio de  **Acceso a Registros** se encuentra en la siguiente ruta:
+在以下路径中可以找到**记录访问**服务的消费调用。
 ```bash
 └─ src                            # 主要的源代码。
     └─ api                        # 全球服务
