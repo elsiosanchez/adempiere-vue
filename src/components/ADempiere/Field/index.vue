@@ -131,7 +131,7 @@
                   width="400"
                   trigger="click"
                   style="padding: 0px;"
-                  :hide="visibleForDesktop"
+                  @hide="closePopover"
                 >
                   <component
                     :is="optionFieldFComponentRender"
@@ -691,6 +691,16 @@ export default {
   },
   methods: {
     recursiveTreeSearch,
+    closePopover() {
+      this.$router.push({
+        name: this.$route.name,
+        query: {
+          ...this.$route.query,
+          typeAction: '',
+          fieldColumnName: ''
+        }
+      }, () => {})
+    },
     handleOpen(key, keyPath) {
       this.triggerMenu = 'hover'
     },
