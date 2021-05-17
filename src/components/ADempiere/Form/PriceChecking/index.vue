@@ -253,8 +253,12 @@ export default {
         } else if ((mutation.type === 'updateValueOfField') && (mutation.payload.columnName === 'ProductValue') && !this.isEmptyValue(mutation.payload.value)) {
           clearTimeout(this.timeOut)
           this.timeOut = setTimeout(() => {
+            let value = mutation.payload.value
+            if (typeof value[value.length - 1] === 'string') {
+              value = mutation.payload.value.slice(0, -1)
+            }
             requestGetProductPrice({
-              searchValue: mutation.payload.value,
+              searchValue: mutation.payload.value.slice(0, -1),
               priceListUuid: this.currentPoint.priceList.uuid
             })
               .then(productPrice => {
@@ -262,7 +266,6 @@ export default {
                 const { product, taxRate, priceStandard: priceBase } = productPrice
                 const { rate } = taxRate
                 const { imageURL: image } = product
-
                 this.productPrice = {
                   currency: productPrice.currency,
                   image,
