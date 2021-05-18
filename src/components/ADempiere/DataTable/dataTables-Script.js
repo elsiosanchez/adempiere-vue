@@ -347,7 +347,9 @@ export default {
       if (field.isMandatory || field.isMandatoryFromLogic && field.isDisplayedGrid) {
         return '* ' + field.name
       }
-      if (field.isDisplayedGrid) {
+      if (field.isDisplayedGrid && this.panelType === 'window') {
+        return field.name
+      } else {
         return field.name
       }
     },

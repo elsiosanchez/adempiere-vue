@@ -55,7 +55,7 @@ export function requestBrowserSearch({
 
   return request({
     url: '/user-interface/smart-browser/browser-items',
-    data: {
+    params: {
       // Running Parameters
       uuid,
       table_name: tableName,
@@ -65,9 +65,7 @@ export function requestBrowserSearch({
       query,
       where_clause: whereClause,
       order_by_clause: orderByClause,
-      limit
-    },
-    params: {
+      limit,
       // Page Data
       page_token: pageToken,
       page_size: pageSize
