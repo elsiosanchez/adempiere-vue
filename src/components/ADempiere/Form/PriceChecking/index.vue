@@ -152,9 +152,6 @@ export default {
   },
   mounted() {
     this.getImage()
-    // setTimeout(() => {
-    //   this.focusProductValue()
-    // }, 1000)
   },
   beforeDestroy() {
     this.unsubscribe()
@@ -197,13 +194,11 @@ export default {
     formatPrice,
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        console.log(mutation.type, { mutation }, mutation.payload.value)
         if ((mutation.type === 'currentPointOfSales') || (mutation.type === 'setListProductPrice') || (mutation.type === 'addFocusLost')) {
           this.focusProductValue()
         }
         if ((mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue' && (this.productPrice.upc !== mutation.payload.value)) {
           // cleans all values except column name 'ProductValue'
-          console.log(this.productPrice.upc, 0, mutation.payload.value)
           this.search = mutation.payload.value
           if (!this.isEmptyValue(this.search) && this.search.length >= 4) {
             requestGetProductPrice({
@@ -258,7 +253,6 @@ export default {
           }
         } else if ((mutation.type === 'updateValueOfField') && (mutation.payload.columnName === 'ProductValue') && !this.isEmptyValue(mutation.payload.value) && (this.productPrice.upc !== mutation.payload.value)) {
           clearTimeout(this.timeOut)
-          console.log(this.productPrice.upc, 1, mutation.payload.value)
           this.timeOut = setTimeout(() => {
             let value = mutation.payload.value
             if (typeof value[value.length - 1] === 'string') {
