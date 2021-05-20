@@ -155,7 +155,7 @@ export default {
             discount: response.discountRate
           })
           this.fillOrderLine(response)
-          this.reloadOrder(true)
+          this.$store.dispatch('reloadOrder', { orderUuid: this.$store.getters.posAttributes.currentPointOfSales.currentOrder.uuid })
           this.$store.dispatch('currentLine', response)
         })
         .catch(error => {
