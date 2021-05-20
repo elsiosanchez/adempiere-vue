@@ -29,27 +29,32 @@ export default {
         lineDescription: {
           columnName: 'LineDescription',
           label: this.$t('form.pos.tableProduct.product'),
-          isNumeric: false
+          isNumeric: false,
+          size: '380'
         },
         currentPrice: {
           columnName: 'CurrentPrice',
           label: this.$t('form.productInfo.price'),
-          isNumeric: true
+          isNumeric: true,
+          size: 'auto'
         },
         quantityOrdered: {
           columnName: 'QtyOrdered',
           label: this.$t('form.pos.tableProduct.quantity'),
-          isNumeric: true
+          isNumeric: true,
+          size: '100px'
         },
         discount: {
           columnName: 'Discount',
           label: '% ' + this.$t('form.pos.order.discount'),
-          isNumeric: true
+          isNumeric: true,
+          size: '110px'
         },
         grandTotal: {
           columnName: 'GrandTotal',
           label: 'Total',
-          isNumeric: true
+          isNumeric: true,
+          size: 'auto'
         }
       },
       currentOrderLine: {
@@ -211,15 +216,15 @@ export default {
           this.$refs.linesTable.setCurrentRow(this.listOrderLine[this.currentTable])
         }
       }
-      if (rowLine) {
-        this.$router.push({
-          name: this.$route.name,
-          query: {
-            ...this.$route.query,
-            line: rowLine.line
-          }
-        }, () => {})
-      }
+      // if (rowLine) {
+      //   this.$router.push({
+      //     name: this.$route.name,
+      //     query: {
+      //       ...this.$route.query,
+      //       line: rowLine.line
+      //     }
+      //   }, () => {})
+      // }
     },
     fillOrderLineQuantities({
       currentPrice,
