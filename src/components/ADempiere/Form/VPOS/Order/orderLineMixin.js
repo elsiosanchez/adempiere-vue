@@ -168,11 +168,12 @@ export default {
         })
     },
     deleteOrderLine(lineSelection) {
+      console
       requestDeleteOrderLine({
         orderLineUuid: lineSelection.uuid
       })
         .then(() => {
-          this.reloadOrder(true)
+          this.$store.dispatch('reloadOrder', { orderUuid: this.$store.getters.posAttributes.currentPointOfSales.currentOrder.uuid })
         })
         .catch(error => {
           console.error(error.message)
