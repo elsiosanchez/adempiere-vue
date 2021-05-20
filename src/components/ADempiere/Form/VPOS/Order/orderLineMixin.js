@@ -119,12 +119,7 @@ export default {
       }
     },
     updateOrderLine(line) {
-      let {
-        currentPrice: price,
-        discount: discountRate,
-        quantityOrdered: quantity
-      } = this.currentOrderLine
-
+      let quantity, price, discountRate
       switch (line.columnName) {
         case 'QtyEntered':
           quantity = line.value
@@ -156,6 +151,7 @@ export default {
           })
           this.fillOrderLine(response)
           this.reloadOrder(true)
+          this.$store.dispatch('currentLine', response)
         })
         .catch(error => {
           console.error(error.message)
@@ -203,6 +199,9 @@ export default {
         return this.formatPrice(row.grandTotal, currency)
       }
     },
+    productPrice(price, discount) {
+      return price / discount * 100
+    },
     handleCurrentLineChange(rowLine) {
       this.$store.dispatch('currentLine', rowLine)
       if (!this.isEmptyValue(rowLine)) {
@@ -211,6 +210,15 @@ export default {
         if (this.isEmptyValue(this.currentOrderLine) && !this.isEmptyValue(this.listOrderLine)) {
           this.$refs.linesTable.setCurrentRow(this.listOrderLine[this.currentTable])
         }
+      }
+      if (rowLine) {
+        this.$router.push({
+          name: this.$route.name,
+          query: {
+            ...this.$route.query,
+            line: rowLine.line
+          }
+        }, () => {})
       }
     },
     fillOrderLineQuantities({

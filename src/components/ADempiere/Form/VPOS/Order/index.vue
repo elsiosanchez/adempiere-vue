@@ -465,8 +465,18 @@ export default {
       return this.currentOrder.lineOrder
     },
     currentLineOrder() {
-      console.log(this.$store.state['pointOfSales/orderLine/index'].line)
-      return this.$store.state['pointOfSales/orderLine/index'].line
+      const line = this.$store.state['pointOfSales/orderLine/index'].line
+      if (this.isEmptyValue(line) && !this.isEmptyValue(this.$route.query.line)) {
+        const currentLine = this.listOrderLine.find(line => {
+          if (line.line === parseInt(this.$route.query.line)) {
+            return line
+          }
+        })
+        this.$store.commit('setLine', currentLine)
+        return currentLine
+      }
+
+      return line
     }
   },
   mounted() {
