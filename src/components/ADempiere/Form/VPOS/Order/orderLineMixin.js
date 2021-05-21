@@ -217,15 +217,6 @@ export default {
           this.$refs.linesTable.setCurrentRow(this.listOrderLine[this.currentTable])
         }
       }
-      // if (rowLine) {
-      //   this.$router.push({
-      //     name: this.$route.name,
-      //     query: {
-      //       ...this.$route.query,
-      //       line: rowLine.line
-      //     }
-      //   }, () => {})
-      // }
     },
     fillOrderLineQuantities({
       currentPrice,
