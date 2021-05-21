@@ -40,7 +40,7 @@
               :metadata-field="field"
             />
             <el-popover
-              v-if="columnNameVisible === field.columnName"
+              v-if="columnNameVisible === field.columnName && visible"
               ref="ping"
               v-model="visible"
               placement="right"
@@ -67,7 +67,7 @@
                   @click="checkclosePin(pin, field.columnName)"
                 />
               </span>
-              <el-button slojt="reference" type="text" disabled @click="visible = !visible" />
+              <el-button slojt="reference" type="text" disabled />
             </el-popover>
             <field
               v-if="field.columnName === 'Discount'"
@@ -160,6 +160,7 @@ export default {
   },
   watch: {
     showField(value) {
+      this.visible = false
       if (value && this.isEmptyValue(this.metadataList) && (this.dataLine.uuid === this.$store.state['pointOfSales/orderLine/index'].line.uuid)) {
         this.metadataList = this.setFieldsList()
         this.isLoadedField = true
