@@ -168,7 +168,6 @@ export default {
            * TODO: When refreshing you are making 2 list requests, you can be the
            * observer that activates the second request
           */
-          console.log(6)
           this.loadProductsPricesList()
           break
 
@@ -181,7 +180,6 @@ export default {
       }
     },
     loadProductsPricesList() {
-      console.log('alo')
       this.$store.dispatch('listProductPriceFromServer', {})
     },
     /**

@@ -67,7 +67,6 @@ export default {
    * Search Product
    */
   getProductPrice: (state) => {
-    console.log(state.productPrice)
     if (isEmptyValue(state.productPrice)) {
       return {
         ...withoutResponse,
