@@ -227,12 +227,11 @@ export default {
       if (this.isEmptyValue(fileName)) {
         return this.defaultImage
       }
-      const epa = getImagePath({
+      return getImagePath({
         file: fileName,
         width: 300,
         height: 300
       })
-      return epa.uri
     }
   }
 }
