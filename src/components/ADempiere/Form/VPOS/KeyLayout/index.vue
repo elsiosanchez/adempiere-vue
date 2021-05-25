@@ -93,7 +93,6 @@
 </template>
 
 <script>
-// import VueContentLoading from '@/components/ADempiere/ContentLoader'
 import { getImagePath } from '@/utils/ADempiere/resource.js'
 import { formatQuantity } from '@/utils/ADempiere/valueFormat.js'
 export default {
