@@ -42,14 +42,12 @@
           :name="processMetadata.name"
           :help="processMetadata.help"
         />
-        <el-scrollbar wrap-class="scroll-child">
-          <main-panel
-            :position-tab="processMetadata.accesLevel"
-            :container-uuid="processUuid"
-            :metadata="processMetadata"
-            :panel-type="panelType"
-          />
-        </el-scrollbar>
+        <main-panel
+          :position-tab="processMetadata.accesLevel"
+          :container-uuid="processUuid"
+          :metadata="processMetadata"
+          :panel-type="panelType"
+        />
       </el-card>
       <!-- </el-col>
       </el-row> -->
