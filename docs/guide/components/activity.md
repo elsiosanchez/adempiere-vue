@@ -57,4 +57,4 @@ The **Activity** service consumption call can be found in the following path:
             └─ windows      # Main directory of role services.
 ```
 The services called from the component are <br>
-[POST /adempiere-api/logs/list-entity-logs](https://adempiere.github.io/proxy-adempiere-api/guide/default-modules/adempiere-api/user-log.html#post-adempiere-api-logs-list-entity-logs)<br>
+[POST /adempiere-api/logs/list-entity-logs](https://adempiere.github.io/proxy-adempiere-api/guide/default-modules/adempiere-api/user-log.html#post-adempiere-api-logs-list-entity-logs)
