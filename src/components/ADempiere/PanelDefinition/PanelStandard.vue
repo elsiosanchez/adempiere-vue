@@ -32,17 +32,19 @@
             :shadow="shadowGroup"
             :body-style="{ padding: '10px' }"
           >
-            <el-row>
-              <template v-for="(fieldAttributes, subKey) in fieldsList">
-                <field-definition
-                  :ref="fieldAttributes.columnName"
-                  :key="subKey"
-                  :metadata-field="{
-                    ...fieldAttributes
-                  }"
-                />
-              </template>
-            </el-row>
+            <el-scrollbar wrap-class="process-scroll">
+              <el-row>
+                <template v-for="(fieldAttributes, subKey) in fieldsList">
+                  <field-definition
+                    :ref="fieldAttributes.columnName"
+                    :key="subKey"
+                    :metadata-field="{
+                      ...fieldAttributes
+                    }"
+                  />
+                </template>
+              </el-row>
+            </el-scrollbar>
           </el-card>
         </div>
       </div>
@@ -86,10 +88,7 @@ export default defineComponent({
     }
 
     const shadowGroup = computed(() => {
-      if (root.$store.state.app.device === 'mobile') {
-        return 'never'
-      }
-      return 'hover'
+      return 'never'
     })
 
     generatePanel()
@@ -107,4 +106,10 @@ export default defineComponent({
 .el-card {
   width: 100% !important;
 }
+</style>
+<style>
+.process-scroll {
+    max-height: 75vh !important;
+    padding-bottom: 10% !important;
+  }
 </style>
