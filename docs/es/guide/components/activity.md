@@ -34,4 +34,4 @@ En la versión de escritorio se hace clic sobre el icono "**i**", ubicado en la 
 
 En la versión móvil se debe posicionar en la parte inferior de la ventana para visualizar las pestañas "**Notas**" y "**Actividad**", luego se selecciona la pestaña "**Actividad**", para acceder a todos los cambios efectuados en el registro de la ventana.
 
-<img :src="$withBase('/images/components/activity/how-to-use-it-in-the-mobile-version.gif')" /
+<img :src="$withBase('/images/components/activity/how-to-use-it-in-the-mobile-version.gif')" />
