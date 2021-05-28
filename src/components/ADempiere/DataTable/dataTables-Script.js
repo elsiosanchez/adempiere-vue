@@ -73,6 +73,7 @@ export default {
       currentTable: 0,
       visible: this.getShowContextMenuTable,
       searchTable: '', // text from search
+      searchTableChildren: '', // text from search
       defaultMaxPagination: 50,
       activeName,
       rowStyle: {
@@ -80,7 +81,9 @@ export default {
       },
       uuidCurrentRecordSelected: '',
       showTableSearch: false,
-      searchColumnName: []
+      searchColumnName: [],
+      recordsSearchTable: [],
+      recordsSearchTableChildren: []
     }
   },
   computed: {
@@ -258,6 +261,15 @@ export default {
         return this.currentTable
       }
       return this.currentTable + 1
+    },
+
+    allRecordsData() {
+      if (this.isParent && !this.isEmptyValue(this.searchTable)) {
+        return this.recordsSearchTable
+      } else if (!this.isParent && !this.isEmptyValue(this.searchTableChildren)) {
+        return this.recordsSearchTableChildren
+      }
+      return this.recordsData
     }
   },
   watch: {
@@ -638,19 +650,31 @@ export default {
         selection: rowsSelection
       })
     },
-    filterResult() {
+    filterResult(value) {
+      if (this.isParent) {
+        this.searchTable = value
+      } else {
+        this.searchTableChildren = value
+      }
       const result = this.getterDataRecordsAndSelection.record.filter(record => {
         let list
         this.searchColumnName.forEach(validate => {
           if (typeof record[validate] !== 'boolean' && !this.isEmptyValue(record[validate]) || !this.isEmptyValue(record['DisplayColumn_' + validate])) {
-            if (record[validate].includes(this.searchTable)) {
+            const SearchColumns = typeof record[validate] === 'number' ? record['DisplayColumn_' + validate] : record[validate]
+            if (SearchColumns.includes(value)) {
               list = record
             }
           }
         })
         return list
       })
-      return result
+      if (this.isParent) {
+        this.searchTable = value
+        this.recordsSearchTable = result
+      } else {
+        this.searchTableChildren = value
+        this.recordsSearchTableChildren = result
+      }
     },
     /**
      * Verify is displayed field in column table
