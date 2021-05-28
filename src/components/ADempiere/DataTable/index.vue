@@ -78,6 +78,11 @@
             />
             <div :class="{ show: showTableSearch }" class="local-search-container">
               <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+              <!--<search-columns
+                :list-records="getterDataRecordsAndSelection.record"
+                :epa="fieldsList"
+                :isParent="isParent"
+              />-->
               <el-input
                 ref="headerSearchInput"
                 v-model="searchTable"

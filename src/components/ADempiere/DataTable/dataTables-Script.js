@@ -17,6 +17,7 @@
 import FieldDefinition from '@/components/ADempiere/Field'
 import FilterColumns from '@/components/ADempiere/DataTable/filterColumns'
 import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
+import SearchColumns from '@/components/ADempiere/DataTable/searchColumns'
 import TableContextMenu from '@/components/ADempiere/DataTable/menu/tableContextMenu'
 import TableMainMenu from '@/components/ADempiere/DataTable/menu'
 import IconElement from '@/components/ADempiere/IconElement'
@@ -38,6 +39,7 @@ export default {
     FieldDefinition,
     FilterColumns,
     FixedColumns,
+    SearchColumns,
     IconElement,
     MainPanel,
     TableContextMenu,
@@ -79,7 +81,8 @@ export default {
         height: '52px'
       },
       uuidCurrentRecordSelected: '',
-      showTableSearch: false
+      showTableSearch: false,
+      searchColumnName: []
     }
   },
   computed: {
@@ -270,6 +273,12 @@ export default {
   },
   created() {
     this.getPanel()
+    const selectionColumn = this.fieldsList.filter(element => element.isSelectionColumn)
+    this.searchColumnName = selectionColumn.map(element => {
+      if (element.isSelectionColumn) {
+        return element.columnName
+      }
+    })
   },
   mounted() {
     if (this.isTableSelection) {
@@ -632,20 +641,18 @@ export default {
       })
     },
     filterResult() {
-      const data = this.recordsData.filter(rowItem => {
-        if (this.searchTable.trim().length) {
-          let find = false
-          Object.keys(rowItem).forEach(key => {
-            if (String(rowItem[key]).toLowerCase().includes(String(this.searchTable).toLowerCase())) {
-              find = true
-              return find
+      const result = this.getterDataRecordsAndSelection.record.filter(record => {
+        let list
+        this.searchColumnName.forEach(validate => {
+          if (typeof record[validate] !== 'boolean' && !this.isEmptyValue(record[validate]) || !this.isEmptyValue(record['DisplayColumn_' + validate])) {
+            if (record[validate].includes(this.searchTable)) {
+              list = record
             }
-          })
-          return find
-        }
-        return true
+          }
+        })
+        return list
       })
-      return data
+      return result
     },
     /**
      * Verify is displayed field in column table
