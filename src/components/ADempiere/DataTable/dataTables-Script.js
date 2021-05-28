@@ -17,7 +17,6 @@
 import FieldDefinition from '@/components/ADempiere/Field'
 import FilterColumns from '@/components/ADempiere/DataTable/filterColumns'
 import FixedColumns from '@/components/ADempiere/DataTable/fixedColumns'
-import SearchColumns from '@/components/ADempiere/DataTable/searchColumns'
 import TableContextMenu from '@/components/ADempiere/DataTable/menu/tableContextMenu'
 import TableMainMenu from '@/components/ADempiere/DataTable/menu'
 import IconElement from '@/components/ADempiere/IconElement'
@@ -39,7 +38,6 @@ export default {
     FieldDefinition,
     FilterColumns,
     FixedColumns,
-    SearchColumns,
     IconElement,
     MainPanel,
     TableContextMenu,
