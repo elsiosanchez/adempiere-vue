@@ -283,12 +283,6 @@ export default {
   },
   created() {
     this.getPanel()
-    const selectionColumn = this.fieldsList.filter(element => element.isSelectionColumn)
-    this.searchColumnName = selectionColumn.map(element => {
-      if (element.isSelectionColumn) {
-        return element.columnName
-      }
-    })
   },
   mounted() {
     if (this.isTableSelection) {
@@ -651,6 +645,12 @@ export default {
       })
     },
     filterResult(value) {
+      const selectionColumn = this.fieldsList.filter(element => element.isSelectionColumn)
+      this.searchColumnName = selectionColumn.map(element => {
+        if (element.isSelectionColumn) {
+          return element.columnName
+        }
+      })
       if (this.isParent) {
         this.searchTable = value
       } else {
