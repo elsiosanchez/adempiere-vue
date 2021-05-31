@@ -84,6 +84,7 @@
               border
               highlight-current-row
               fit
+              style="overflow: auto;"
               @current-change="handleCurrentLineChange"
               @shortkey.native="shortcutKeyMethod"
             >
@@ -515,7 +516,7 @@ export default {
     formatPrice,
     formatQuantity,
     openCollectionPanel() {
-      this.isShowedPOSKeyLayout = true
+      this.isShowedPOSKeyLayout = this.isMobile ? !this.isShowedPOSKeyLayout : true
       this.$store.commit('setShowPOSCollection', true)
       const orderUuid = this.$route.query.action
       this.$store.dispatch('listPayments', { orderUuid })
