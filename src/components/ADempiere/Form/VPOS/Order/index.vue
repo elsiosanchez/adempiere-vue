@@ -222,6 +222,8 @@
                   <el-popover
                     :v-model="seeConversion"
                     placement="top-start"
+                    trigger="click"
+                    @hide="closeConvertion"
                   >
                     <convert-amount
                       v-show="seeConversion"
@@ -451,6 +453,9 @@ export default {
     formatDate,
     formatPrice,
     formatQuantity,
+    closeConvertion() {
+      this.seeConversion = false
+    },
     openCollectionPanel() {
       this.isShowedPOSKeyLayout = true
       this.$store.commit('setShowPOSCollection', true)
