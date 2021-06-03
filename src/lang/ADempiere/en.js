@@ -470,6 +470,7 @@ export default {
         pending: 'Pending',
         payment: 'Payment',
         change: 'Change',
+        totalInvoiced: 'Total Invoiced',
         convertAmount: 'Convert Quantity',
         fullPayment: 'Full Payment',
         dayRate: 'Day Rate',
@@ -483,6 +484,15 @@ export default {
           account: 'Account',
           cash: 'Cash',
           zelle: 'Zelle'
+        },
+        overdrawnInvoice: {
+          title: 'OverdrawnInvoice',
+          below: 'Would you like to leave the Invoice with an Open balance',
+          above: 'Customer Details',
+          returned: 'Your change is',
+          coupon: 'Generate a Gift Card or Voucher',
+          returnMoney: 'Return money in another form of payment',
+          adjustDocument: 'You want to Adjust Document'
         }
       },
       keyLayout: {

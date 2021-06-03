@@ -445,6 +445,7 @@ export default {
         pending: 'Pendiente',
         payment: 'Pago',
         change: 'Cambio',
+        totalInvoiced: 'Total Facturado',
         convertAmount: 'Convertir Cantidad',
         fullPayment: 'Cobro Completo',
         dayRate: 'Tasa del Día',
@@ -458,6 +459,15 @@ export default {
           account: 'Cuenta',
           cash: 'Efectivo',
           zelle: 'Zelle'
+        },
+        overdrawnInvoice: {
+          title: 'Factura Sobregirada',
+          below: 'Desea dejar la Factura con un saldo Abierto',
+          above: 'Datos del Cliente',
+          returned: 'Su vuelto es',
+          coupon: 'Generate a Gift Card or Voucher',
+          returnMoney: 'Devolver dinero en otra forma de pago',
+          adjustDocument: 'Desea Ajustar Documento'
         }
       },
       keyLayout: {
