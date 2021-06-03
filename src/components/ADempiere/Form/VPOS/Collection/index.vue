@@ -506,7 +506,7 @@ export default {
     fieldsPaymentType() {
       return this.fieldsList[2]
     },
-    overInvoice() {
+    overUnderPayment() {
       return this.$store.state['pointOfSales/payments/index'].dialogoInvoce.success
     }
   },
@@ -575,7 +575,7 @@ export default {
         })
       }
     },
-    overInvoice(value) {
+    overUnderPayment(value) {
       if (value) {
         this.completePreparedOrder(this.listPayments)
       }
