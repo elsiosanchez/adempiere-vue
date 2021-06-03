@@ -509,6 +509,29 @@ export default {
       grandTotalConverted: 'Grand Total Converted',
       quantityAvailable: 'Quantity Avalible',
       upc: 'UPC / EAN'
+    },
+    guideSteps: {
+      productValue: {
+        description: 'Search for the product by Product Code, Name or UPC'
+      },
+      businessPartner: {
+        description: 'Show Business Partner Information'
+      },
+      linesTable: {
+        title: 'Order Lines',
+        description: 'Order Product Listing'
+      },
+      buttonPanelLeftPos: {
+        title: 'Show Left Panel',
+        description: 'Display the Point of Sale Options panel'
+      },
+      point: {
+        description: 'Displays the current point of sale'
+      },
+      buttonPanelRightPos: {
+        title: 'Show Right Panel',
+        description: 'Displays the catalog panel'
+      }
     }
   }
 }
