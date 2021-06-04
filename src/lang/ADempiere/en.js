@@ -547,6 +547,9 @@ export default {
       infoInvoce: {
         title: 'Invoice Detail',
         description: 'Invoice information with total amount, pending, change'
+      },
+      toolsPoint: {
+        title: 'Point of Sale Tools'
       }
     }
   }

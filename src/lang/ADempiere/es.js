@@ -522,6 +522,9 @@ export default {
       infoInvoce: {
         title: 'Detalle de la Factura',
         description: 'Informacion de la Factura con el monto total, pendiente, cambio'
+      },
+      toolsPoint: {
+        title: 'Herramientas del Punto de Venta'
       }
     }
   }
