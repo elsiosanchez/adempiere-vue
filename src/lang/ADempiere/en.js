@@ -531,6 +531,22 @@ export default {
       buttonPanelRightPos: {
         title: 'Show Right Panel',
         description: 'Displays the catalog panel'
+      },
+      fieldListCollection: {
+        title: 'Collection Fields',
+        description: 'Field Group which has. Amount, Currency, Payment Type, Bank, Reference No. and Date'
+      },
+      buttonCollection: {
+        title: 'Collection Tools',
+        description: 'Composed of a set of buttons that allows you to add, delete and process'
+      },
+      cardCollection: {
+        title: 'Payment Panel',
+        description: 'In this panel you can see a list with the cards of the added payments'
+      },
+      infoInvoce: {
+        title: 'Invoice Detail',
+        description: 'Invoice information with total amount, pending, change'
       }
     }
   }

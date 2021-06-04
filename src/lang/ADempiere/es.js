@@ -506,6 +506,22 @@ export default {
       buttonPanelRightPos: {
         title: 'Mostrar Panel Derecho',
         description: 'Despliega el panel de catalogo'
+      },
+      fieldListCollection: {
+        title: 'Campos de la Cobranza',
+        description: 'Grupo de Campo el cual posee. Monto, Moneda, Tipo de pago, Banco, Nro Referencia y Fecha'
+      },
+      buttonCollection: {
+        title: 'Herramientas de la Cobranza',
+        description: 'Compuesta por un conjunto de botonera que posee agregar, eliminar y porcesar'
+      },
+      cardCollection: {
+        title: 'Panel de Pago',
+        description: 'En este panel aparece un listado con las tarjeta de los pagos agregados'
+      },
+      infoInvoce: {
+        title: 'Detalle de la Factura',
+        description: 'Informacion de la Factura con el monto total, pendiente, cambio'
       }
     }
   }

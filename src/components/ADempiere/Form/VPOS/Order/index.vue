@@ -42,7 +42,7 @@
             </el-col>
             <el-col :span="isEmptyValue(currentOrder) ? 9 : 7" :style="styleTab">
               <business-partner
-                id="business-partner"
+                id="BusinessPartner"
                 :parent-metadata="{
                   name: panelMetadata.name,
                   containerUuid: panelMetadata.containerUuid,
@@ -80,7 +80,7 @@
         <el-container style="background: white; padding: 0px; height: 100% !important;">
           <el-main style="padding-top: 0px; padding-right: 10px; padding-bottom: 0px; padding-left: 10px;">
             <el-table
-              id="linesTable"
+              id="linesOrder"
               ref="linesTable"
               v-shortkey="shortsKey"
               :data="listOrderLine"
@@ -175,17 +175,19 @@
 
           <el-footer :class="classOrderFooter">
             <div class="keypad">
-              <el-button type="primary" icon="el-icon-top" :disabled="isDisabled" @click="arrowTop" />
-              <el-button type="primary" icon="el-icon-bottom" :disabled="isDisabled" @click="arrowBottom" />
-              <el-button v-show="isValidForDeleteLine(listOrderLine)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
-              <el-button
-                v-show="isValidForDeleteLine(listOrderLine)"
-                type="success"
-                icon="el-icon-bank-card"
-                @click="openCollectionPanel"
-              >
-                {{ labelButtonCollections }}
-              </el-button>
+              <span id="toolPoint">
+                <el-button type="primary" icon="el-icon-top" :disabled="isDisabled" @click="arrowTop" />
+                <el-button type="primary" icon="el-icon-bottom" :disabled="isDisabled" @click="arrowBottom" />
+                <el-button v-show="isValidForDeleteLine(listOrderLine)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
+                <el-button
+                  v-show="isValidForDeleteLine(listOrderLine)"
+                  type="success"
+                  icon="el-icon-bank-card"
+                  @click="openCollectionPanel"
+                >
+                  {{ labelButtonCollections }}
+                </el-button>
+              </span>
               <br>
               <p id="point">
                 <el-dropdown
@@ -298,7 +300,7 @@
     </div>
     <div v-if="!isMobile" :style="classButtomRight">
       <el-button
-        id="button-panel-right-pos"
+        id="buttonPanelRightPos"
         :circle="true"
         type="primary"
         :icon="isShowedPOSKeyLayout ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"

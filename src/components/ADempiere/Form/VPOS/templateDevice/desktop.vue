@@ -29,7 +29,7 @@
             </el-aside>
             <div style="width: 36px;padding-top: 30vh; z-index: 100;">
               <el-button
-                id="button-panel-left-pos"
+                id="buttonPanelLeftPos"
                 :circle="true"
                 type="primary"
                 :icon="isShowedPOSOptions ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
