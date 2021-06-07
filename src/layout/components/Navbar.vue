@@ -101,7 +101,7 @@ export default {
     },
     showGuide() {
       const typeViews = this.$route.meta.type
-      if (!this.isEmptyValue(typeViews) && typeViews === 'form') {
+      if (!this.isEmptyValue(typeViews) && typeViews !== 'window') {
         return true
       }
       return false
@@ -123,15 +123,17 @@ export default {
       })
 
       return uri
+    },
+    fieldPanel() {
+      return this.$store.getters.getFieldsListFromPanel(this.$route.meta.uuid).filter(field => field.isShowedFromUser)
     }
   },
   mounted() {
     this.driver = new Driver()
   },
   methods: {
-    guide(value) {
-      const stepsPos = steps.filter(steps => this.isEmptyValue(steps.panel))
-      value = this.showCollection && this.isShowedPOSKeyLaout ? steps : stepsPos
+    guide() {
+      const value = this.formatGuide(this.$route.meta.type)
       this.driver.defineSteps(value)
       this.driver.start()
     },
@@ -157,6 +159,39 @@ export default {
       this.$router.push({
         name: 'Profile'
       }, () => {})
+    },
+    formatGuide(type) {
+      let field
+      switch (type) {
+        case 'report':
+          field = this.fieldPanel.map(steps => {
+            return {
+              element: '#' + steps.columnName,
+              popover: {
+                title: steps.name,
+                description: steps.description,
+                position: 'top'
+              }
+            }
+          })
+          break
+        case 'process':
+          field = this.fieldPanel.map(steps => {
+            return {
+              element: '#' + steps.columnName,
+              popover: {
+                title: steps.name,
+                description: steps.description,
+                position: 'top'
+              }
+            }
+          })
+          break
+        case 'form':
+          field = this.showCollection && this.isShowedPOSKeyLaout ? steps : steps.filter(steps => this.isEmptyValue(steps.panel))
+          break
+      }
+      return field
     }
   }
 }
