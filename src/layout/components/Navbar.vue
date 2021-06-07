@@ -16,7 +16,7 @@
     </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <el-tooltip v-if="showGuide" content="Guia" placement="top-start">
+        <el-tooltip content="Guia" placement="top-start">
           <el-button icon="el-icon-info" type="text" style="color: black;font-size: larger" @click.prevent.stop="guide" />
         </el-tooltip>
         <search id="header-search" class="right-menu-item" />
@@ -126,6 +126,14 @@ export default {
     },
     fieldPanel() {
       return this.$store.getters.getFieldsListFromPanel(this.$route.meta.uuid).filter(field => field.isShowedFromUser)
+    },
+    fieldWindow() {
+      const windowUuid = this.$store.getters.getWindow(this.$route.meta.uuid).currentTab.uuid
+      const list = this.$store.getters.getFieldsListFromPanel(windowUuid)
+      if (!this.isEmptyValue(list)) {
+        return list.filter(field => field.isShowedFromUserDefault)
+      }
+      return []
     }
   },
   mounted() {
@@ -136,12 +144,6 @@ export default {
       const value = this.formatGuide(this.$route.meta.type)
       this.driver.defineSteps(value)
       this.driver.start()
-    },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath)
     },
     isMenuOption() {
       this.isMenuMobile = !this.isMenuMobile
@@ -177,6 +179,18 @@ export default {
           break
         case 'process':
           field = this.fieldPanel.map(steps => {
+            return {
+              element: '#' + steps.columnName,
+              popover: {
+                title: steps.name,
+                description: steps.description,
+                position: 'top'
+              }
+            }
+          })
+          break
+        case 'window':
+          field = this.fieldWindow.map(steps => {
             return {
               element: '#' + steps.columnName,
               popover: {
