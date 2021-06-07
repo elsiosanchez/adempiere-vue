@@ -32,7 +32,7 @@
             <el-radio v-model="option" :label="4"> {{ $t('form.pos.collect.overdrawnInvoice.adjustDocument') }}</el-radio>
           </el-form-item>
         </el-form>
-        <el-card v-if="radio === 2" class="box-card">
+        <el-card v-if="option === 2" class="box-card">
           <div slot="header" class="clearfix">
             <span>{{ $t('form.pos.collect.overdrawnInvoice.above') }}</span>
           </div>
@@ -53,7 +53,7 @@
             </el-form>
           </div>
         </el-card>
-        <el-card v-if="radio === 3" class="box-card">
+        <el-card v-if="option === 3" class="box-card">
           <div slot="header" class="clearfix">
             <span>{{ $t('form.pos.collect.overdrawnInvoice.above') }}</span>
           </div>
@@ -118,6 +118,7 @@ import { formatPrice } from '@/utils/ADempiere/valueFormat.js'
 import formMixin from '@/components/ADempiere/Form/formMixin'
 import posMixin from '@/components/ADempiere/Form/VPOS/posMixin.js'
 import fieldsListOverdrawnInvoice from './fieldsListOverdrawnInvoice.js'
+import { overdrawnInvoice } from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
   name: 'OverdrawnInvoice',
@@ -173,6 +174,42 @@ export default {
   methods: {
     formatPrice,
     success() {
+      const customerDetails = []
+      this.fieldsList.forEach(element => {
+        const value = this.$store.getters.getValueOfField({
+          containerUuid: 'OverdrawnInvoice',
+          columnName: element.columnName
+        })
+        customerDetails.push({
+          label: element.columnName,
+          value
+        })
+      })
+      const posUuid = this.currentPointOfSales.uuid
+      const orderUuid = this.$route.query.action
+      overdrawnInvoice({
+        posUuid,
+        orderUuid,
+        createPayments: !this.isEmptyValue(this.currentOrder.listPayments.payments),
+        payments: this.currentOrder.listPayments.payments,
+        customerDetails,
+        option: this.option
+      })
+        .then(response => {
+          this.$store.dispatch('reloadOrder', response.uuid)
+          this.$message({
+            type: 'success',
+            message: this.$t('notifications.completed'),
+            showClose: true
+          })
+        })
+        .catch(error => {
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
       this.$store.commit('dialogoInvoce', { show: false, success: true })
     },
     close() {
@@ -232,7 +269,6 @@ export default {
     color: #333;
     line-height: 10px;
   }
-y como la otra vez yo le a
   .el-aside {
     color: #333;
   }

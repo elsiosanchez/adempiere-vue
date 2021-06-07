@@ -574,11 +574,6 @@ export default {
           query: value.reference.query
         })
       }
-    },
-    overUnderPayment(value) {
-      if (value) {
-        this.completePreparedOrder(this.listPayments)
-      }
     }
   },
   created() {
