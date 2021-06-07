@@ -17,6 +17,15 @@ module.exports = {
       }
     ]
   ],
+  plugins: [
+    [
+      '@vuepress/pwa',
+      {
+        serviceWorker: true,
+        updatePopup: true
+      }
+    ]
+  ],
   themeConfig: {
     repo: 'adempiere/adempiere-vue',
     docsRepo: 'adempiere/adempiere-vue',
