@@ -16,7 +16,9 @@
 
 import router from '@/router'
 import {
-  listPointOfSales
+  listPointOfSales,
+  listWarehouse,
+  listPrices
 } from '@/api/ADempiere/form/point-of-sales.js'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
 import { showMessage } from '@/utils/ADempiere/notification.js'
@@ -48,9 +50,43 @@ export default {
         }
         commit('listPointOfSales', listPos)
         dispatch('setCurrentPOS', pos)
+        dispatch('listWarehouseFromServer', pos.uuid)
+        dispatch('listPricesFromServer', pos.uuid)
       })
       .catch(error => {
         console.warn(`listPointOfSalesFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  listWarehouseFromServer({ commit }, pointOfSalesUuid) {
+    listWarehouse({
+      pointOfSalesUuid
+    })
+      .then(response => {
+        commit('listWarehouses', response)
+      })
+      .catch(error => {
+        console.warn(`listWarehouseFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  listPricesFromServer({ commit }, pointOfSalesUuid) {
+    listPrices({
+      pointOfSalesUuid
+    })
+      .then(response => {
+        commit('listPrices', response)
+      })
+      .catch(error => {
+        console.warn(`listPricesFromServer: ${error.message}. Code: ${error.code}.`)
         showMessage({
           type: 'error',
           message: error.message,

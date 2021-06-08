@@ -434,7 +434,9 @@ export default {
         generalOptions: {
           title: 'General Options',
           changePos: 'Change Point of Sale',
-          listProducts: 'Change Point of Sale'
+          listProducts: 'Change Point of Sale',
+          warehouseList: 'Change Warehouse',
+          priceList: 'Change Price List'
         }
       },
       tableProduct: {

@@ -30,6 +30,12 @@ export default {
   listPointOfSales(state, listPointOfSales) {
     state.listPointOfSales = listPointOfSales
   },
+  listWarehouses(state, listWarehouses) {
+    state.listWarehouses = listWarehouses
+  },
+  listPrices(state, listPrices) {
+    state.listPrices = listPrices
+  },
   currentPointOfSales(state, currentPointOfSales) {
     state.currentPointOfSales = currentPointOfSales
   },

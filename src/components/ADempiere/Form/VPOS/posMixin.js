@@ -87,6 +87,20 @@ export default {
     listPointOfSales() {
       return this.$store.getters.posAttributes.listPointOfSales
     },
+    priceListPointOfSales() {
+      const list = this.$store.getters.posAttributes.currentPointOfSales.listPrices
+      if (this.isEmptyValue(list)) {
+        return []
+      }
+      return list
+    },
+    warehousesListPointOfSales() {
+      const list = this.$store.getters.posAttributes.currentPointOfSales.listWarehouses
+      if (this.isEmptyValue(list)) {
+        return []
+      }
+      return list
+    },
     ordersList() {
       if (this.isEmptyValue(this.currentPointOfSales)) {
         return []

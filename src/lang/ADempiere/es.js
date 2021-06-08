@@ -409,7 +409,9 @@ export default {
         generalOptions: {
           title: 'Opciones Generales',
           changePos: 'Cambiar Punto de Venta',
-          listProducts: 'Lista de Productos y Precios'
+          listProducts: 'Lista de Productos y Precios',
+          warehouseList: 'Cambiar de Almacén',
+          priceList: 'Cambiar Lista de Precio'
         }
       },
       tableProduct: {

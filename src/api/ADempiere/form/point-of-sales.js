@@ -637,3 +637,41 @@ export function validatePin({
       return pinResponse
     })
 }
+
+/**
+ * list Warehouse
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listWarehouse({
+  posUuid
+}) {
+  return request({
+    url: `${config.pointOfSales.endpoint}/warehouse`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listWarehouseResponse => {
+      return listWarehouseResponse
+    })
+}
+
+/**
+ * List Prices
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listPrices({
+  posUuid
+}) {
+  return request({
+    url: `${config.pointOfSales.endpoint}/prices`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listPricesResponse => {
+      return listPricesResponse
+    })
+}
