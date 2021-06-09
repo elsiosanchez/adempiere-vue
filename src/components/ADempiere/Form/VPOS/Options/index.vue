@@ -273,7 +273,7 @@
                 >
                   <svg-icon icon-class="tree-table" />
                   <br>
-                  {{ $t('form.pos.optionsPoinSales.generalOptions.warehouseList') }}
+                  {{ $t('form.pos.optionsPoinSales.generalOptions.changeWarehouseList') }}
                 </p>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -296,7 +296,7 @@
                 >
                   <svg-icon icon-class="list" />
                   <br>
-                  {{ $t('form.pos.optionsPoinSales.generalOptions.priceList') }}                </p>
+                  {{ $t('form.pos.optionsPoinSales.generalOptions.changePriceList') }} </p>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
                     v-for="item in priceListPointOfSales"

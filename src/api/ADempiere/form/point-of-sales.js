@@ -646,7 +646,7 @@ export function listWarehouse({
   posUuid
 }) {
   return request({
-    url: `${config.pointOfSales.endpoint}/warehouse`,
+    url: `${config.pointOfSales.endpoint}/available-warehouses`,
     method: 'get',
     params: {
       pos_uuid: posUuid
@@ -665,7 +665,7 @@ export function listPrices({
   posUuid
 }) {
   return request({
-    url: `${config.pointOfSales.endpoint}/prices`,
+    url: `${config.pointOfSales.endpoint}/available-price-list`,
     method: 'get',
     params: {
       pos_uuid: posUuid
@@ -673,5 +673,43 @@ export function listPrices({
   })
     .then(listPricesResponse => {
       return listPricesResponse
+    })
+}
+
+/**
+ * Currencies
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listCurrencies({
+  posUuid
+}) {
+  return request({
+    url: `${config.pointOfSales.endpoint}/available-currencies`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listCurrencies => {
+      return listCurrencies
+    })
+}
+
+/**
+ * Tender Type
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listTenderType({
+  posUuid
+}) {
+  return request({
+    url: `${config.pointOfSales.endpoint}/available-tender-types`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listTenderType => {
+      return listTenderType
     })
 }
