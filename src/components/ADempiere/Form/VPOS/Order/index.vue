@@ -557,8 +557,8 @@ export default {
       return line
     },
     curretnPriceList() {
-      if (!this.isEmptyValue(this.currentPointOfSales.priceList)) {
-        return this.currentPointOfSales.priceList
+      if (!this.isEmptyValue(this.$store.getters.currentPriceList)) {
+        return this.$store.getters.currentPriceList
       }
       return {}
     },
@@ -576,8 +576,8 @@ export default {
       return {}
     },
     listWarehouse() {
-      if (!this.isEmptyValue(this.$store.getters['user/getWarehouses'])) {
-        return this.$store.getters['user/getWarehouses']
+      if (!this.isEmptyValue(this.$store.getters.currentWarehouse)) {
+        return this.$store.getters.currentWarehouse
       }
       return []
     }
@@ -666,10 +666,10 @@ export default {
       this.newOrder()
     },
     changeWarehouse(warehouse) {
-      console.log(warehouse)
+      this.$store.commit('currentWarehouse', warehouse)
     },
     changePriceList(priceList) {
-      console.log(priceList)
+      this.$store.commit('currentListPrices', priceList)
     },
     arrowTop() {
       if (this.currentTable > 0) {

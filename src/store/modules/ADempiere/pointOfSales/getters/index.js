@@ -110,5 +110,23 @@ export default {
       }
     }
     return state.keyLayout
+  },
+  /**
+   * Current Price List
+   */
+  currentPriceList: (state) => {
+    if (!isEmptyValue(state.currentlistPrices)) {
+      return state.currentlistPrices
+    }
+    return {}
+  },
+  /**
+   * Current Warehouse
+   */
+  currentWarehouse: (state) => {
+    if (!isEmptyValue(state.currentWarehouse)) {
+      return state.currentWarehouse
+    }
+    return {}
   }
 }
