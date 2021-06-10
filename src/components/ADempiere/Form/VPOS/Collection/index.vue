@@ -100,7 +100,7 @@
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
                     <!-- Add selected currency symbol -->
                     <field-definition
-                      v-if="field.columnName !== 'C_Currency_ID'"
+                      v-if="field.columnName === 'PayAmt' || field.columnName === 'TenderType'"
                       :key="field.columnName"
                       :metadata-field="field.columnName === 'PayAmt' ? {
                         ...field,
@@ -123,6 +123,17 @@
                         />
                       </el-select>
                     </el-form-item>
+                  </el-col>
+                  <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
+                    <!-- Add selected currency symbol -->
+                    <field-definition
+                      v-if="field.columnName !== 'PayAmt' && field.columnName !== 'TenderType' && field.columnName !== 'C_Currency_ID'"
+                      :key="field.columnName"
+                      :metadata-field="field.columnName === 'PayAmt' ? {
+                        ...field,
+                        labelCurrency: isEmptyValue(dateRate.divideRate) ? dateRate : dateRate.currencyTo
+                      } : field"
+                    />
                   </el-col>
                 </el-row>
               </el-form>

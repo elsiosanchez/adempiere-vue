@@ -72,7 +72,7 @@ export default {
         searchValue,
         priceListUuid: rootGetters.currentPriceList.uuid,
         businessPartnerUuid,
-        warehouseUuid,
+        warehouseUuid: rootGetters.currentWarehouse.uuid,
         pageToken
       }).then(responseProductPrice => {
         if (isEmptyValue(token) || isEmptyValue(pageToken)) {

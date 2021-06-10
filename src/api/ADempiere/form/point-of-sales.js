@@ -77,7 +77,8 @@ export function createOrder({
   posUuid,
   customerUuid,
   documentTypeUuid,
-  salesRepresentativeUuid
+  salesRepresentativeUuid,
+  warehouseUuid
 }) {
   return request({
     url: `${config.pointOfSales.endpoint}/create-order`,
@@ -86,7 +87,8 @@ export function createOrder({
       pos_uuid: posUuid,
       customer_uuid: customerUuid,
       document_type_uuid: documentTypeUuid,
-      sales_representative_uuid: salesRepresentativeUuid
+      sales_representative_uuid: salesRepresentativeUuid,
+      warehouse_uuid: warehouseUuid
     }
   })
     .then(createOrderResponse => {
@@ -101,7 +103,8 @@ export function updateOrder({
   orderUuid,
   posUuid,
   customerUuid,
-  description
+  description,
+  warehouseUuid
 }) {
   return request({
     url: `${config.pointOfSales.endpoint}/update-order`,
@@ -110,7 +113,8 @@ export function updateOrder({
       order_uuid: orderUuid,
       pos_uuid: posUuid,
       customer_uuid: customerUuid,
-      description
+      description,
+      warehouse_uuid: warehouseUuid
     }
   })
     .then(updateOrderResponse => {
