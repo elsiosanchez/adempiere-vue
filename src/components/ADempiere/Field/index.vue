@@ -26,9 +26,9 @@
       key="is-panel-template"
       :xs="24"
       :sm="12"
-      :md="8"
-      :lg="8"
-      :xl="8"
+      :md="6"
+      :lg="6"
+      :xl="6"
       :class="classField"
     >
       <el-form-item>
@@ -269,7 +269,7 @@ export default {
         return 'in-table'
       }
       return ''
-    },
+    }
   },
   watch: {
     metadataField(value) {

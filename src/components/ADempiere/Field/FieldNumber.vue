@@ -78,6 +78,7 @@ export default {
   },
   computed: {
     cssClassStyle() {
+      console.log(this.metadata)
       let styleClass = ' custom-field-number '
       if (!this.isEmptyValue(this.metadata.cssClassName)) {
         styleClass += this.metadata.cssClassName

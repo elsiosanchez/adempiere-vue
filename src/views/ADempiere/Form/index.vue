@@ -42,7 +42,7 @@
         <el-col :span="24">
           <el-card
             class="content-collapse"
-            :style="isEmptyValue(formMetadata.fieldsList) ? 'height: 100% !important;' : ''"
+            style="height: 100% !important;"
           >
             <title-and-help
               v-if="isShowTitleForm"
@@ -56,11 +56,14 @@
                 icon="el-icon-arrow-up"
                 @click="changeDisplatedTitle"
               />
+              {{
+                isShowTitleForm
+              }}
             </title-and-help>
             <el-button
               v-if="!isShowTitleForm"
               type="text"
-              style="position: absolute; right: 10px;"
+              style="position: absolute; right: 0px;"
               :circle="true"
               icon="el-icon-arrow-down"
               @click="changeDisplatedTitle"
