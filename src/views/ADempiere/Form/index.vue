@@ -56,9 +56,6 @@
                 icon="el-icon-arrow-up"
                 @click="changeDisplatedTitle"
               />
-              {{
-                isShowTitleForm
-              }}
             </title-and-help>
             <el-button
               v-if="!isShowTitleForm"
