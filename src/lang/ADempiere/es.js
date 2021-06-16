@@ -530,6 +530,27 @@ export default {
       toolsPoint: {
         title: 'Herramientas del Punto de Venta'
       }
+    },
+    allocationPayments: {
+      field: {
+        description: 'Descripción',
+        organization: 'Organización',
+        charge: 'Cargo',
+        difference: 'Diferencia',
+        automaticAdjustment: 'Ajuste Automático',
+        multiCurrency: 'Multimoneda'
+      },
+      table: {
+        date: 'Fecha',
+        conversion: 'Conversión',
+        Open: 'Abierto',
+        discount: 'Descuento',
+        adjust: 'Ajuste',
+        applied: 'Aplicado',
+        payOver: 'Pago Sobre/ Por debajo',
+        invoices: 'Facturas',
+        payments: 'Pagos'
+      }
     }
   }
 }

@@ -555,6 +555,27 @@ export default {
       toolsPoint: {
         title: 'Point of Sale Tools'
       }
+    },
+    allocationPayments: {
+      field: {
+        description: 'Description',
+        organization: 'Organization',
+        charge: 'Charge',
+        difference: 'Difference',
+        automaticAdjustment: 'Automatic Adjustment',
+        multiCurrency: 'MultiCurrency'
+      },
+      table: {
+        date: 'Date',
+        conversion: 'Conversion',
+        open: 'Open',
+        discount: 'Discount',
+        adjust: 'Adjust',
+        applied: 'Applied',
+        payOver: 'Pay Over/Under',
+        invoices: 'Invoices',
+        payments: 'Payments'
+      }
     }
   }
 }

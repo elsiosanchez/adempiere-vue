@@ -16,7 +16,6 @@
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <!-- <el-card class="box-card" shadow="always"> -->
   <el-container style="height: -webkit-fill-available;">
     <el-header class="header">
       <el-form label-position="top" class="from-main">
@@ -37,19 +36,19 @@
     <el-main id="mainFrom" style="padding-left: 20px;padding-right: 20px;">
       <!-- Table Pay -->
       <el-tabs type="border-card">
-        <el-tab-pane label="Pago">
+        <el-tab-pane :label="$t('form.allocationPayments.table.payments')">
           <table-from
             :label="labelTablePay"
-            :metadata="tableData"
+            :metadata="invoiceList"
           />
         </el-tab-pane>
       </el-tabs>
       <!-- Table Invoice -->
       <el-tabs type="border-card" style="padding-top: 10px">
-        <el-tab-pane label="Factura">
+        <el-tab-pane :label="$t('form.allocationPayments.table.invoices')">
           <table-from
             :label="labelTableInvoce"
-            :metadata="tableData"
+            :metadata="invoiceList"
           />
         </el-tab-pane>
       </el-tabs>
@@ -58,36 +57,26 @@
       <el-form label-position="top" :inline="true">
         <el-row style="padding-right: 2%;padding-left: 2%;">
           <el-col :span="5">
-            <el-form-item label="Diferencia VES">
+            <el-form-item :label="$t('form.allocationPayments.field.difference') + displayeCurrency">
               <el-input-number v-model="num" :controls="false" />
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="Cargo">
+            <el-form-item :label="$t('form.allocationPayments.field.charge')">
               <el-select v-model="value" placeholder="Select">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                <el-option />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="Organizacion">
+            <el-form-item :label="$t('form.allocationPayments.field.organization')">
               <el-select v-model="value" placeholder="Select">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                <el-option />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="Descripción">
+            <el-form-item :label="$t('form.allocationPayments.field.description')">
               <el-input v-model="input" placeholder="Descripción" />
             </el-form-item>
           </el-col>
@@ -99,15 +88,14 @@
       </el-form>
     </el-footer>
   </el-container>
-  <!-- </el-card> -->
 </template>
 
 <script>
 import formMixin from '@/components/ADempiere/Form/formMixin.js'
 import fieldsList from './fieldList.js'
 import labelTablePay from './labelTablePay.js'
-import labelTableInvoce from './labelTableInvoce.js'
 import tableFrom from './tableFrom'
+import labelTableInvoce from './labelTableInvoce.js'
 
 export default {
   name: 'AllocationPayments',
@@ -136,107 +124,6 @@ export default {
       labelTableInvoce,
       num: 0,
       input: '',
-      tableData: [{
-        Date: '2016-05-03',
-        CPCC: 'AP',
-        Descripcion: 'No. 189, Grove St, Los Angeles'
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {}, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }, {
-        Date: '2016-05-02',
-        CPCC: 'AR',
-        Descripcion: 'No. 189, Grove St, Los Angeles',
-        convert: 1955936557.20
-      }],
-      options: [{
-        value: 'Option1',
-        label: 'Option1'
-      }, {
-        value: 'Option2',
-        label: 'Option2'
-      }, {
-        value: 'Option3',
-        label: 'Option3'
-      }, {
-        value: 'Option4',
-        label: 'Option4'
-      }, {
-        value: 'Option5',
-        label: 'Option5'
-      }],
       value: ''
     }
   },
@@ -247,6 +134,18 @@ export default {
         return 'show-title-footer'
       }
       return 'footer'
+    },
+    invoiceList() {
+      return this.$store.getters.getInvoiceList
+    },
+    paymentList() {
+      return this.$store.getters.getPaymentList
+    },
+    displayeCurrency() {
+      return this.$store.getters.getValueOfField({
+        containerUuid: this.containerUuid,
+        columnName: 'DisplayColumn_C_Currency_ID'
+      })
     }
   }
 }

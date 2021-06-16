@@ -15,8 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // List of fields to send in search
+import language from '@/lang'
+
 export default [
-  // tableName: 'C_Payment',
   {
     elementColumnName: 'C_BPartner_ID',
     isFromDictionary: true,
@@ -85,7 +86,7 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
-      name: 'Multimoneda',
+      name: language.t('form.allocationPayments.field.multiCurrency'),
       sequence: 5,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
@@ -117,7 +118,7 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
-      name: 'Ajuste Automático',
+      name: language.t('form.allocationPayments.field.automaticAdjustment'),
       sequence: 7,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,

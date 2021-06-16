@@ -15,10 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // List of fields to send in search
+import language from '@/lang'
+
 export default [
   {
     columnName: 'Date',
-    label: 'Fecha',
+    label: language.t('form.allocationPayments.table.date'),
     isNumeric: false,
     size: '200'
   },
@@ -30,31 +32,31 @@ export default [
   },
   {
     columnName: 'AD_Org_ID',
-    label: 'Organización',
+    label: language.t('form.allocationPayments.field.organization'),
     isNumeric: false,
     size: '200'
   },
   {
     columnName: 'description',
-    label: 'Descripción',
+    label: language.t('form.allocationPayments.field.description'),
     isNumeric: false,
     size: '200'
   },
   {
     columnName: 'convert',
-    label: 'Convercion',
+    label: language.t('form.allocationPayments.table.conversion'),
     isNumeric: true,
     size: '200'
   },
   {
     columnName: 'Open',
-    label: 'Abierto',
+    label: language.t('form.allocationPayments.table.open'),
     isNumeric: true,
     size: '200'
   },
   {
     columnName: 'applied',
-    label: 'Aplicado',
+    label: language.t('form.allocationPayments.table.applied'),
     isNumeric: true,
     size: '200'
   }
