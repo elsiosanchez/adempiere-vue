@@ -14,23 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import Vue from 'vue'
-
 /**
  * Pos Mutations
- * @author Elsio Sanchez <elsiosanches@gmail.com>
+ * All related to global store of Point of Sales
  */
 export default {
-  setPontOfSales(state, pos) {
-    state.pointOfSales = pos
+  setPointOfSalesList(state, pointOfSalesList) {
+    state.pointOfSalesList = pointOfSalesList
   },
-  setCurrentPOS(state, pos) {
-    Vue.set(state.pointOfSales, 'currentPOS', pos)
+  setWarehousesList(state, warehousesList) {
+    state.warehousesList = warehousesList
   },
-  listPointOfSales(state, listPointOfSales) {
-    state.listPointOfSales = listPointOfSales
+  setCurrentPriceList(state, currentPriceList) {
+    state.currentPriceList = currentPriceList
   },
-  currentPointOfSales(state, currentPointOfSales) {
+  setCurrentWarehouse(state, warehouse) {
+    state.currentWarehouse = warehouse
+  },
+  setPricesList(state, pricesList) {
+    state.pricesList = pricesList
+  },
+  setCurrenciesList(state, currenciesList) {
+    state.currenciesList = currenciesList
+  },
+  addConversionToList(state, conversion) {
+    state.conversionsList.push(conversion)
+  },
+  setCurrentPointOfSales(state, currentPointOfSales) {
     state.currentPointOfSales = currentPointOfSales
   },
   setShowPOSOptions(state, isShowedOptions) {

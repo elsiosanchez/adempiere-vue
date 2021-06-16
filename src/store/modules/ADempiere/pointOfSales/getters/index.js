@@ -45,13 +45,18 @@ export default {
    * List Order Lines
    * List Payment Order
    * Lst Order
+   * List Warehouses
+   * List Prices
    */
-  posAttributes: (state, getters) => {
+  posAttributes: (state) => {
     return {
-      listPointOfSales: state.listPointOfSales,
+      pointOfSalesList: state.pointOfSalesList,
       currentPointOfSales: {
         ...state.currentPointOfSales,
         listOrder: state.listOrder,
+        warehousesList: state.warehousesList,
+        pricesList: state.pricesList,
+        currentPriceList: state.currentPriceList,
         currentOrder: {
           ...state.order,
           lineOrder: state.listOrderLine,
@@ -106,5 +111,24 @@ export default {
       }
     }
     return state.keyLayout
+  },
+  /**
+   * Current Price List
+   */
+  currentPriceList: (state) => {
+    if (!isEmptyValue(state.currentPriceList)) {
+      return state.currentPriceList
+    }
+    return {}
+  },
+  /**
+   * Current Warehouse
+   */
+  currentWarehouse: (state) => {
+    if (!isEmptyValue(state.currentWarehouse)) {
+      return state.currentWarehouse
+    }
+    return {}
   }
+  // Current POS, it can be s
 }

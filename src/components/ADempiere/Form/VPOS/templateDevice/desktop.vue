@@ -29,6 +29,7 @@
             </el-aside>
             <div style="width: 36px;padding-top: 30vh; z-index: 100;">
               <el-button
+                id="buttonPanelLeftPos"
                 :circle="true"
                 type="primary"
                 :icon="isShowedPOSOptions ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
@@ -110,7 +111,7 @@ export default {
       return this.$store.getters.getShowCollectionPos
     },
     listPointOfSales() {
-      return this.$store.getters.posAttributes.listPointOfSales
+      return this.$store.getters.posAttributes.pointOfSalesList
     }
   },
   watch: {

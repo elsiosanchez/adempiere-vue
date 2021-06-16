@@ -16,7 +16,10 @@
 
 import router from '@/router'
 import {
-  requestListPointOfSales
+  listPointOfSales,
+  listWarehouse,
+  listPrices,
+  listCurrencies
 } from '@/api/ADempiere/form/point-of-sales.js'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
 import { showMessage } from '@/utils/ADempiere/notification.js'
@@ -31,22 +34,22 @@ export default {
    */
   listPointOfSalesFromServer({ commit, getters, dispatch }, posToSet = null) {
     const userUuid = getters['user/getUserUuid']
-    let pos, listPos
-    requestListPointOfSales({
+    let pos, pontOfSalesList
+    listPointOfSales({
       userUuid
     })
       .then(response => {
-        listPos = response.sellingPointsList
+        pontOfSalesList = response.sellingPointsList
         if (!isEmptyValue(posToSet)) {
-          pos = listPos.find(itemPOS => itemPOS.id === parseInt(posToSet))
+          pos = pontOfSalesList.find(itemPOS => itemPOS.id === parseInt(posToSet))
         }
         if (isEmptyValue(pos) && isEmptyValue(posToSet)) {
-          pos = listPos.find(itemPOS => itemPOS.salesRepresentative.uuid === userUuid)
+          pos = pontOfSalesList.find(itemPOS => itemPOS.salesRepresentative.uuid === userUuid)
         }
         if (isEmptyValue(pos)) {
-          pos = listPos[0]
+          pos = pontOfSalesList[0]
         }
-        commit('listPointOfSales', listPos)
+        commit('setPointOfSalesList', pontOfSalesList)
         dispatch('setCurrentPOS', pos)
       })
       .catch(error => {
@@ -58,8 +61,56 @@ export default {
         })
       })
   },
-  setCurrentPOS({ commit, dispatch }, posToSet) {
-    commit('currentPointOfSales', posToSet)
+  listWarehouseFromServer({ commit }, posUuid) {
+    listWarehouse({
+      posUuid
+    })
+      .then(response => {
+        commit('setWarehousesList', response.records)
+      })
+      .catch(error => {
+        console.warn(`listWarehouseFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  listPricesFromServer({ commit }, point) {
+    listPrices({
+      posUuid: point.uuid
+    })
+      .then(response => {
+        commit('setPricesList', response.records)
+      })
+      .catch(error => {
+        console.warn(`listPricesFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  listCurrenciesFromServer({ commit }, posUuid) {
+    listCurrencies({
+      posUuid
+    })
+      .then(response => {
+        commit('setCurrenciesList', response.records)
+      })
+      .catch(error => {
+        console.warn(`listPricesFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  setCurrentPOS({ commit, dispatch, rootGetters }, posToSet) {
+    commit('setCurrentPointOfSales', posToSet)
     const oldRoute = router.app._route
     router.push({
       name: oldRoute.name,
@@ -71,7 +122,11 @@ export default {
         pos: posToSet.id
       }
     }, () => {})
-
+    dispatch('listWarehouseFromServer', posToSet.uuid)
+    dispatch('listCurrenciesFromServer', posToSet.uuid)
+    dispatch('listPricesFromServer', posToSet)
+    commit('setCurrentPriceList', posToSet.priceList)
+    commit('setCurrentWarehouse', rootGetters['user/getWarehouse'])
     commit('resetConversionRate', [])
     commit('setIsReloadKeyLayout')
     commit('setIsReloadProductPrice')
