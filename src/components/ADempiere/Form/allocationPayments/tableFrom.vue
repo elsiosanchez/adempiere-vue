@@ -22,7 +22,9 @@
     <el-table
       :data="metadata"
       style="width: 100%"
-      max-height="200"
+      height="200"
+      max-height="400"
+      highlight-current-row
       border
       @selection-change="handleSelectionChange"
     >

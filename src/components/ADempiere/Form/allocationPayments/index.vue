@@ -18,74 +18,74 @@
 <template>
   <el-container style="height: -webkit-fill-available;">
     <el-header class="header">
-      <el-form label-position="top" class="from-main">
-        <el-form-item style="margin: 0px !important;">
-          <template
-            v-for="(field) in fieldsList"
-          >
-            <field
-              v-if="field.columnName !== 'QtyEntered'"
-              :key="field.columnName"
-              :metadata-field="field"
-              :v-model="field.value"
-            />
-          </template>
-        </el-form-item>
-      </el-form>
+      <el-card shadow="never">
+        <el-form label-position="top" class="from-main">
+          <el-form-item>
+            <template
+              v-for="(field) in fieldsList"
+            >
+              <field
+                v-if="field.sequence <= 7"
+                :key="field.columnName"
+                :metadata-field="field"
+                :v-model="field.value"
+              />
+            </template>
+          </el-form-item>
+        </el-form>
+      </el-card>
     </el-header>
-    <el-main id="mainFrom" style="padding-left: 20px;padding-right: 20px;">
-      <!-- Table Pay -->
-      <el-tabs type="border-card">
-        <el-tab-pane :label="$t('form.allocationPayments.table.payments')">
-          <table-from
-            :label="labelTablePay"
-            :metadata="invoiceList"
-          />
-        </el-tab-pane>
-      </el-tabs>
-      <!-- Table Invoice -->
-      <el-tabs type="border-card" style="padding-top: 10px">
-        <el-tab-pane :label="$t('form.allocationPayments.table.invoices')">
-          <table-from
-            :label="labelTableInvoce"
-            :metadata="invoiceList"
-          />
-        </el-tab-pane>
-      </el-tabs>
+    <el-main style="padding-left: 20px;padding-right: 20px;padding-bottom: 0px;padding-top: 0px">
+      <div id="mainFrom">
+        <!-- Table Pay -->
+        <el-tabs type="border-card">
+          <el-tab-pane :label="$t('form.allocationPayments.table.payments')">
+            <table-from
+              :label="labelTablePay"
+              :metadata="invoiceList"
+            />
+          </el-tab-pane>
+        </el-tabs>
+        <br>
+        <!-- Table Invoice -->
+        <el-tabs type="border-card" style="padding-top: 10px">
+          <el-tab-pane :label="$t('form.allocationPayments.table.invoices')">
+            <table-from
+              :label="labelTableInvoce"
+              :metadata="invoiceList"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </el-main>
     <el-footer :class="styleFooter">
-      <el-form label-position="top" :inline="true">
-        <el-row style="padding-right: 2%;padding-left: 2%;">
-          <el-col :span="5">
-            <el-form-item :label="$t('form.allocationPayments.field.difference') + displayeCurrency">
-              <el-input-number v-model="num" :controls="false" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item :label="$t('form.allocationPayments.field.charge')">
-              <el-select v-model="value" placeholder="Select">
-                <el-option />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item :label="$t('form.allocationPayments.field.organization')">
-              <el-select v-model="value" placeholder="Select">
-                <el-option />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item :label="$t('form.allocationPayments.field.description')">
-              <el-input v-model="input" placeholder="Descripción" />
-            </el-form-item>
+      <el-card shadow="hover" style="padding-left: 20px;padding-right: 20px;">
+        <el-row>
+          <el-col :span="20">
+            <el-form label-position="top" class="from-main">
+              <el-form-item>
+                <template
+                  v-for="(field) in fieldsList"
+                >
+                  <field
+                    v-if="field.sequence > 7"
+                    :key="field.columnName"
+                    :metadata-field="field.columnName === 'T_Qty' ? {
+                      ...field,
+                      name: $t('form.allocationPayments.field.difference') + displayeCurrency
+                    } : field"
+                    :v-model="field.value"
+                  />
+                </template>
+              </el-form-item>
+            </el-form>
           </el-col>
           <el-col :span="4" style="padding-top: 2.5%;">
             <el-button type="primary" icon="el-icon-check" style="float: right;" />
             <el-button type="danger" icon="el-icon-close" style="float: right;margin-right: 5%;" />
           </el-col>
         </el-row>
-      </el-form>
+      </el-card>
     </el-footer>
   </el-container>
 </template>
@@ -133,7 +133,7 @@ export default {
       if (showTitle) {
         return 'show-title-footer'
       }
-      return 'footer'
+      return 'from-footer'
     },
     invoiceList() {
       return this.$store.getters.getInvoiceList
@@ -155,6 +155,7 @@ export default {
  .from-main {
     padding-right: 1% !important;
     padding-bottom: 0px !important;
+    padding-top: 0px !important;
     padding-left: 1% !important;
   }
   .card-form {
@@ -162,19 +163,17 @@ export default {
     overflow: auto;
   }
   .header {
-    padding: 0 20px;
+    padding-bottom: 0px;
     box-sizing: border-box;
     flex-shrink: 0;
     height: 20% !important;
   }
-  footer {
-    padding: 0px;
+  .from-footer {
     height: 10% !important;
     box-sizing: border-box;
     flex-shrink: 0;
   }
   .show-title-footer {
-    padding: 0px;
     height: 15% !important;
     box-sizing: border-box;
     flex-shrink: 0
