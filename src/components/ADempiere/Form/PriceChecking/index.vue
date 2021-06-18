@@ -73,7 +73,7 @@
 
               <div class="product-price amount">
                 <span style="float: right;"> {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }} </span> <br>
-                {{ formatPrice(productPrice.schemaGrandTotal, productPrice.schemaCurrency.iSOCode) }}
+                <span v-if="!isEmptyValue(currentPoint.displayCurrency)"> {{ formatPrice(productPrice.grandTotalConverted, currentPoint.displayCurrency.iSOCode) }}</span>
               </div>
             </el-col>
           </el-row>
@@ -135,6 +135,15 @@ export default {
     },
     currentPoint() {
       return this.$store.getters.posAttributes.currentPointOfSales
+    },
+    listPoint() {
+      return this.$store.getters.posAttributes.pointOfSalesList
+    },
+    convertionList() {
+      return this.$store.state['pointOfSales/point/index'].conversionsList
+    },
+    currentConvertion() {
+      return this.convertionList.find(convert => convert.currencyTo.id === this.currentPoint.displayCurrency.id)
     }
   },
   created() {
@@ -143,12 +152,24 @@ export default {
   mounted() {
     this.backgroundForm = this.defaultImage
     this.getImageFromSource(this.organizationImagePath)
-    this.$store.dispatch('listPointOfSalesFromServer')
+    if (this.isEmptyValue(this.listPoint)) {
+      this.$store.dispatch('listPointOfSalesFromServer')
+    }
+    if (!this.isEmptyValue(this.listPoint) && this.isEmptyValue(this.currentConvertion)) {
+      this.$store.dispatch('searchConversion', {
+        conversionTypeUuid: this.currentPoint.conversionTypeUuid,
+        currencyFromUuid: this.currentPoint.priceList.currency.uuid,
+        conversionDate: this.formatDateConvert(new Date()),
+        currencyToUuid: this.currentPoint.displayCurrency.uuid
+      })
+    }
   },
   beforeDestroy() {
     this.unsubscribe()
   },
   methods: {
+    formatPercent,
+    formatPrice,
     focusProductValue() {
       if (!this.isEmptyValue(this.$refs.ProductValue[0])) {
         this.$refs.ProductValue[0].$children[0].$children[0].$children[1].$children[0].focus()
@@ -165,8 +186,10 @@ export default {
       })
       this.backgroundForm = image.uri
     },
-    formatPercent,
-    formatPrice,
+    amountConvert(price, currency) {
+      const convertion = this.convertionList.find(convert => convert.currencyTo.id === currency.id)
+      return price / convertion.divideRate
+    },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
         if ((mutation.type === 'currentPointOfSales') || (mutation.type === 'setListProductPrice') || (mutation.type === 'addFocusLost')) {
@@ -178,7 +201,7 @@ export default {
           if (!this.isEmptyValue(this.search) && this.search.length >= 4) {
             getProductPrice({
               searchValue: mutation.payload.value,
-              priceListUuid: this.currentPoint.priceList.uuid
+              posUuid: this.currentPoint.uuid
             })
               .then(productPrice => {
                 this.messageError = true
@@ -191,16 +214,12 @@ export default {
                   image,
                   grandTotal: this.getGrandTotal(priceBase, rate),
                   productName: product.name,
-                  productDescription: product.description,
+                  productDescription: product.help,
                   priceBase,
                   priceStandard: productPrice.priceStandard,
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
-                  schemaCurrency: productPrice.schemaCurrency,
-                  schemaGrandTotal: this.getGrandTotal(productPrice.schemaPriceStandard, rate),
-                  schemaPriceStandard: productPrice.schemaPriceStandard,
-                  schemaPriceList: productPrice.schemaPriceList,
-                  schemaPriceLimit: productPrice.schemaPriceLimit,
+                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPoint.displayCurrency),
                   taxRate: rate,
                   taxName: taxRate.name,
                   taxIndicator: taxRate.taxIndicator,
@@ -235,7 +254,7 @@ export default {
             }
             getProductPrice({
               searchValue: mutation.payload.value,
-              priceListUuid: this.currentPoint.priceList.uuid
+              posUuid: this.currentPoint.uuid
             })
               .then(productPrice => {
                 this.messageError = true
@@ -253,7 +272,7 @@ export default {
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
                   schemaCurrency: productPrice.schemaCurrency,
-                  schemaGrandTotal: this.getGrandTotal(productPrice.schemaPriceStandard, rate),
+                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPoint.displayCurrency),
                   schemaPriceStandard: productPrice.schemaPriceStandard,
                   schemaPriceList: productPrice.schemaPriceList,
                   schemaPriceLimit: productPrice.schemaPriceLimit,
