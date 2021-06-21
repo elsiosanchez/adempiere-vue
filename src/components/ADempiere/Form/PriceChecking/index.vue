@@ -73,7 +73,7 @@
 
               <div class="product-price amount">
                 <span style="float: right;"> {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }} </span> <br>
-                <span v-if="!isEmptyValue(currentPoint.displayCurrency)"> {{ formatPrice(productPrice.grandTotalConverted, currentPoint.displayCurrency.iSOCode) }}</span>
+                <span v-if="!isEmptyValue(currentPointOfSales.displayCurrency)"> {{ formatPrice(productPrice.grandTotalConverted, currentPointOfSales.displayCurrency.iSOCode) }}</span>
               </div>
             </el-col>
           </el-row>
@@ -133,17 +133,17 @@ export default {
     defaultImage() {
       return require('@/image/ADempiere/priceChecking/no-image.jpg')
     },
-    currentPoint() {
+    currentPointOfSales() {
       return this.$store.getters.posAttributes.currentPointOfSales
     },
-    listPoint() {
+    pointOfSalesList() {
       return this.$store.getters.posAttributes.pointOfSalesList
     },
-    convertionList() {
+    convertionsList() {
       return this.$store.state['pointOfSales/point/index'].conversionsList
     },
     currentConvertion() {
-      return this.convertionList.find(convert => convert.currencyTo.id === this.currentPoint.displayCurrency.id)
+      return this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
     }
   },
   created() {
@@ -152,15 +152,14 @@ export default {
   mounted() {
     this.backgroundForm = this.defaultImage
     this.getImageFromSource(this.organizationImagePath)
-    if (this.isEmptyValue(this.listPoint)) {
+    if (this.isEmptyValue(this.pointOfSalesList)) {
       this.$store.dispatch('listPointOfSalesFromServer')
     }
-    if (!this.isEmptyValue(this.listPoint) && this.isEmptyValue(this.currentConvertion)) {
+    if (!this.isEmptyValue(this.pointOfSalesList) && this.isEmptyValue(this.currentConvertion)) {
       this.$store.dispatch('searchConversion', {
-        conversionTypeUuid: this.currentPoint.conversionTypeUuid,
-        currencyFromUuid: this.currentPoint.priceList.currency.uuid,
-        conversionDate: this.formatDateConvert(new Date()),
-        currencyToUuid: this.currentPoint.displayCurrency.uuid
+        conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+        currencyFromUuid: this.currentPointOfSales.priceList.currency.uuid,
+        currencyToUuid: this.currentPointOfSales.displayCurrency.uuid
       })
     }
   },
@@ -187,7 +186,7 @@ export default {
       this.backgroundForm = image.uri
     },
     amountConvert(price, currency) {
-      const convertion = this.convertionList.find(convert => convert.currencyTo.id === currency.id)
+      const convertion = this.convertionsList.find(convert => convert.currencyTo.id === currency.id)
       return price / convertion.divideRate
     },
     subscribeChanges() {
@@ -201,7 +200,7 @@ export default {
           if (!this.isEmptyValue(this.search) && this.search.length >= 4) {
             getProductPrice({
               searchValue: mutation.payload.value,
-              posUuid: this.currentPoint.uuid
+              posUuid: this.currentPointOfSales.uuid
             })
               .then(productPrice => {
                 this.messageError = true
@@ -219,7 +218,7 @@ export default {
                   priceStandard: productPrice.priceStandard,
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
-                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPoint.displayCurrency),
+                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPointOfSales.displayCurrency),
                   taxRate: rate,
                   taxName: taxRate.name,
                   taxIndicator: taxRate.taxIndicator,
@@ -254,7 +253,7 @@ export default {
             }
             getProductPrice({
               searchValue: mutation.payload.value,
-              posUuid: this.currentPoint.uuid
+              posUuid: this.currentPointOfSales.uuid
             })
               .then(productPrice => {
                 this.messageError = true
@@ -272,7 +271,7 @@ export default {
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
                   schemaCurrency: productPrice.schemaCurrency,
-                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPoint.displayCurrency),
+                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPointOfSales.displayCurrency),
                   schemaPriceStandard: productPrice.schemaPriceStandard,
                   schemaPriceList: productPrice.schemaPriceList,
                   schemaPriceLimit: productPrice.schemaPriceLimit,

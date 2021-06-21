@@ -18,7 +18,6 @@ export {
   zeroPad,
   tagStatus,
   iconStatus,
-  formatDateConvert,
   isEmptyValue,
   calculationValue,
   clearVariables,
