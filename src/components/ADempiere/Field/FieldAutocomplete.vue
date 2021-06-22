@@ -18,7 +18,7 @@
 <template>
   <el-autocomplete
     v-model="displayedValue"
-    :placeholder="placeholder"
+    :placeholder="metadata.placeholder"
     :fetch-suggestions="localSearch"
     clearable
     value-key="name"
@@ -27,10 +27,25 @@
     @focus="isFocus = true"
     @blur="isFocus = false"
   >
+    <template
+      slot="prefix"
+    >
+      <i
+        :class="metadata.icon"
+      />
+    </template>
     <template slot="suffix">
       <i
         class="el-icon-arrow-down el-input__icon"
       />
+    </template>
+    <template slot-scope="props">
+      <div class="header">
+        <b>{{ props.item.name }} </b>
+      </div>
+      <span class="info">
+        {{ props.item.value }}
+      </span>
     </template>
   </el-autocomplete>
 </template>
@@ -52,6 +67,7 @@ export default {
     }
 
     return {
+      recordsBusinessPartners: [],
       controlDisplayed: this.displayedValue,
       isFocus: false,
       isLoading: false,
@@ -191,78 +207,50 @@ export default {
       }
     },
     localSearch(stringToMatch, callBack) {
-      if (this.isEmptyValue(stringToMatch)) {
-        // not show list
-        callBack([])
+      const localListSearch = this.metadata.loadAll
+      const results = stringToMatch ? localListSearch.filter(this.createFilter(stringToMatch)) : localListSearch
+      // call callback function to return suggestions
+      if (this.isEmptyValue(results) && stringToMatch.length > 3) {
+        clearTimeout(this.timeOut)
+        this.timeOut = setTimeout(() => {
+          this.remoteSearch(stringToMatch)
+            .then(remoteResponse => {
+              callBack(remoteResponse)
+            })
+        }, 3000)
         return
       }
-
-      const recordsList = this.getterLookupList
-      let results = recordsList
-      if (stringToMatch || true) {
-        const parsedValue = stringToMatch.toLowerCase().trim()
-        results = recordsList.filter(rowBPartner => {
-          // columns: id, uuid, label
-          for (const columnBPartner in rowBPartner) {
-            const valueToCompare = String(rowBPartner[columnBPartner]).toLowerCase()
-
-            if (valueToCompare.includes(parsedValue)) {
-              return true
-            }
-          }
-          return false
-        })
-
-        // Remote search
-        if (this.isEmptyValue(results)) {
-          clearTimeout(this.timeOut)
-
-          this.timeOut = setTimeout(() => {
-            this.remoteSearch(stringToMatch)
-              .then(remoteResponse => {
-                callBack(remoteResponse)
-              })
-          }, 2000)
-          return
-        }
-      }
-
-      // call callback function to return suggestions
       callBack(results)
+    },
+    createFilter(stringToMatch) {
+      return (find) => {
+        return (find.name.toLowerCase().indexOf(stringToMatch.toLowerCase()) === 0)
+      }
     },
     remoteSearch(searchValue) {
       return new Promise(resolve => {
         const message = {
-          message: 'Sin resultados coincidentes con la busqueda',
+          message: this.$t('notifications.searchWithOutRecords'),
           type: 'info',
           showClose: true
         }
 
-        this.$store.dispatch('getLookupListFromServer', {
-          parentUuid: this.metadata.parentUuid,
-          containerUuid: this.metadata.containerUuid,
-          tableName: this.metadata.reference.tableName,
-          query: this.metadata.reference.query,
-          isAddBlankValue: true,
-          blankValue: this.blankOption.id,
-          valuesList: searchValue
+        this.$store.dispatch(this.metadata.searchServer, {
+          pageNumber: 1,
+          searchValue
         })
-          .then(() => {
-            const recordsList = this.getterLookupAll
+          .then((response) => {
+            const recordsList = this.metadata.loadAll
             if (this.isEmptyValue(recordsList)) {
               this.$message(message)
             }
-
-            resolve(recordsList)
+            return response
           })
           .catch(error => {
             console.warn(error.message)
 
             this.$message(message)
-            resolve([])
-          })
-          .finally(() => {
-            this.isLoading = false
+            return []
           })
       })
     }
