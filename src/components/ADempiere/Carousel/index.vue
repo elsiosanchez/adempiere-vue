@@ -25,6 +25,9 @@
               {{ item.name }}
             </b>
           </p>
+          <p style="margin: 0px;text-align: center;">
+            {{ item.description }}
+          </p>
         </div>
         <div class="text item">
           <slot />

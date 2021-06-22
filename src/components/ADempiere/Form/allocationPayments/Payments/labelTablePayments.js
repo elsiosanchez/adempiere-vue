@@ -37,12 +37,6 @@ export default [
     size: '200'
   },
   {
-    columnName: 'CPCC',
-    label: 'CP - CC',
-    isNumeric: false,
-    size: '200'
-  },
-  {
     columnName: 'converted',
     label: language.t('form.allocationPayments.table.converted'),
     isNumeric: true,

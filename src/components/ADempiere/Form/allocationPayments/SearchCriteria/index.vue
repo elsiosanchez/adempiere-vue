@@ -18,16 +18,16 @@
 <template>
   <el-form label-position="top" class="from-main">
     <el-form-item>
-      <template
-        v-for="(field) in fieldsList"
-      >
-        <field
-          v-if="field.sequence <= 7"
-          :key="field.columnName"
-          :metadata-field="field"
-          :v-model="field.value"
-        />
-      </template>
+      <el-row>
+        <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
+          <field
+            v-if="field.sequence <= 7"
+            :key="field.columnName"
+            :metadata-field="field"
+            :v-model="field.value"
+          />
+        </el-col>
+      </el-row>
     </el-form-item>
   </el-form>
 </template>

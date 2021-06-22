@@ -550,6 +550,11 @@ export default {
         payOver: 'Pago Sobre/ Por debajo',
         invoices: 'Facturas',
         payments: 'Pagos'
+      },
+      step: {
+        descriptionSearchCriteria: 'Seleccione al menos un Socio de Negocio para verificar los documentos pendientes por asignar',
+        descriptionPayments: 'Seleccione al menos un Pago para asignar a la factura correspondiente',
+        descriptionInvoices: 'Los documentos que se muestran a continuación son aquellos que se encuentran pendientes por cancelar o pagar, los mismos están abiertos hasta que se asignen los pagos correspondientes'
       }
     }
   }

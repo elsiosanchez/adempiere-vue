@@ -18,12 +18,11 @@
 <template>
   <el-container style="height: -webkit-fill-available;">
     <el-header class="header">
-      <el-steps :space="200" :active="active" simple finish-status="success" process-status="finish">
+      <el-steps :active="active" finish-status="success" process-status="finish">
         <el-step
           v-for="(item, index) in step"
           :key="index"
           :title="item.name"
-          :icon="item.icon"
         />
       </el-steps>
     </el-header>
@@ -98,19 +97,23 @@ export default {
       return [
         {
           name: this.$t('views.searchCriteria'),
-          icon: 'el-icon-search'
+          icon: 'el-i.con-search',
+          description: this.$t('form.allocationPayments.step.descriptionSearchCriteria')
         },
         {
           name: this.$t('form.allocationPayments.table.payments'),
-          icon: 'el-icon-money'
+          icon: 'el-icon-money',
+          description: this.$t('form.allocationPayments.step.descriptionPayments')
         },
         {
           name: this.$t('form.allocationPayments.table.invoices'),
-          icon: 'el-icon-tickets'
+          icon: 'el-icon-tickets',
+          description: this.$t('form.allocationPayments.step.descriptionInvoices')
         },
         {
           name: this.$t('views.summary'),
-          icon: 'el-icon-document'
+          icon: 'el-icon-document',
+          description: ''
         }
       ]
     }

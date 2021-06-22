@@ -575,6 +575,11 @@ export default {
         payOver: 'Pay Over/Under',
         invoices: 'Invoices',
         payments: 'Payments'
+      },
+      step: {
+        descriptionSearchCriteria: 'Select at least one Business Partner to check for pending documents to be assigned',
+        descriptionPayments: 'Select at least one Payment to assign to the corresponding invoice',
+        descriptionInvoices: 'The documents shown below are those pending cancellation or payment and are open until the corresponding payments are assigned.'
       }
     }
   }
