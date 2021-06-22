@@ -48,13 +48,11 @@
         </el-form>
 
         <div class="inquiry-product" style="z-index: 4;">
+          <div class="product-description">
+            {{ productPrice.productName }} {{ productPrice.productDescription }}
+          </div>
           <el-row v-if="!isEmptyValue(productPrice)" :gutter="20">
-            <el-col style="padding-left: 0px; padding-right: 0%;">
-              <div class="product-description">
-                {{ productPrice.productName }} {{ productPrice.productDescription }}
-              </div>
-              <br><br><br>
-
+            <el-col :span="24" style="padding-left: 0px; padding-right: 0%;">
               <div class="product-price-base">
                 {{ $t('form.priceChecking.basePrice') }}
                 <span class="amount">
@@ -155,7 +153,7 @@ export default {
     if (this.isEmptyValue(this.pointOfSalesList)) {
       this.$store.dispatch('listPointOfSalesFromServer')
     }
-    if (!this.isEmptyValue(this.pointOfSalesList) && this.isEmptyValue(this.currentConvertion)) {
+    if (!this.isEmptyValue(this.pointOfSalesList) && this.isEmptyValue(this.currentConvertion) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency)) {
       this.$store.dispatch('searchConversion', {
         conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
         currencyFromUuid: this.currentPointOfSales.priceList.currency.uuid,
@@ -186,8 +184,15 @@ export default {
       this.backgroundForm = image.uri
     },
     amountConvert(price, currency) {
-      const convertion = this.convertionsList.find(convert => convert.currencyTo.id === currency.id)
-      return price / convertion.divideRate
+      console.log(this.convertionsList)
+      if (!this.isEmptyValue(this.convertionsList)) {
+        const convertion = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
+        console.log(this.isEmptyValue(convertion.divideRate))
+        if (!this.isEmptyValue(convertion.divideRate)) {
+          return price
+        }
+      }
+      return price
     },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
@@ -218,7 +223,7 @@ export default {
                   priceStandard: productPrice.priceStandard,
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
-                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPointOfSales.displayCurrency),
+                  grandTotalConverted: this.amountConvert(productPrice.priceStandard),
                   taxRate: rate,
                   taxName: taxRate.name,
                   taxIndicator: taxRate.taxIndicator,
@@ -271,7 +276,7 @@ export default {
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
                   schemaCurrency: productPrice.schemaCurrency,
-                  grandTotalConverted: this.amountConvert(productPrice.priceStandard, this.currentPointOfSales.displayCurrency),
+                  grandTotalConverted: this.amountConvert(productPrice.priceStandard),
                   schemaPriceStandard: productPrice.schemaPriceStandard,
                   schemaPriceList: productPrice.schemaPriceList,
                   schemaPriceLimit: productPrice.schemaPriceLimit,
@@ -341,6 +346,8 @@ export default {
     font-size: 30px;
     float: right;
     padding-bottom: 0px;
+    text-align: end;
+    width: 80%;
   }
   .product-price-base, .product-tax {
     font-size: 30px;
@@ -361,7 +368,7 @@ export default {
   }
   .inquiry-product {
     position: absolute;
-    right: 20%;
+    right: 10%;
     width: 100%;
     top: 33%;
     .amount {
