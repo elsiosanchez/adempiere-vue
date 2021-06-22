@@ -31,6 +31,8 @@ export default [
       size: 24,
       sequence: 1,
       componentPath: 'FieldAutocomplete',
+      searchServer: 'listBPartnerFromServer',
+      icon: 'el-icon-user-solid el-input__icon',
       isActiveLogics: true,
       isMandatory: true
     }
@@ -88,65 +90,6 @@ export default [
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       componentPath: 'FieldYesNo',
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  {
-    elementColumnName: 'T_Qty',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      handleFocusGained: true,
-      handleFocusLost: true,
-      handleKeyPressed: true,
-      handleKeyReleased: true,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      size: 24,
-      sequence: 8,
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  // Date
-  {
-    elementColumnName: 'C_Charge_ID',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      handleFocusGained: true,
-      handleFocusLost: true,
-      handleKeyPressed: true,
-      handleKeyReleased: true,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      size: 24,
-      sequence: 9,
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  // AD_Org_ID
-  {
-    columnName: 'AD_Org_ID_Top',
-    elementColumnName: 'AD_Org_ID',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 24,
-      sequence: 10,
-      handleActionPerformed: true,
-      handleContentSelection: true,
-      handleActionKeyPerformed: true
-    }
-  },
-  // Currency
-  {
-    elementColumnName: 'Description',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 24,
-      sequence: 11,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
       isActiveLogics: true,
       isMandatory: true
     }

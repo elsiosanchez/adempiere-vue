@@ -33,18 +33,33 @@
         :indicator="active"
       >
         <div class="text item">
-          <search-criteria
-            v-if="active === 0"
-            :metadata="metadata"
-          />
+          <el-form v-if="active === 0" label-position="top" class="from-main">
+            <el-form-item>
+              <el-row>
+                <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
+                  <field
+                    :key="field.columnName"
+                    :metadata-field="field.componentPath === 'FieldAutocomplete' ? {
+                      ...field,
+                      loadAll: recordsBusinessPartners
+                    } : field"
+                    :v-model="field.value"
+                  />
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-form>
           <payments
             v-if="active === 1"
+            :business-partner-uuid="businessPartnerUuid"
           />
           <invoices
             v-if="active === 2"
+            :business-partner-uuid="businessPartnerUuid"
           />
           <Summary
             v-if="active === 3"
+            :business-partner-uuid="businessPartnerUuid"
           />
         </div>
       </carousel>
@@ -61,31 +76,45 @@
 import Payments from './Payments'
 import Invoices from './Invoices'
 import Summary from './Summary'
-import SearchCriteria from './SearchCriteria'
 import Carousel from '@/components/ADempiere/Carousel'
+import formMixin from '@/components/ADempiere/Form/formMixin.js'
+import fieldsList from './fieldList.js'
 export default {
   name: 'AllocationPayments',
   components: {
-    SearchCriteria,
     Payments,
     Invoices,
     Summary,
     Carousel
   },
+  mixins: [
+    formMixin
+  ],
   props: {
     metadata: {
       type: Object,
-      default: () => {}
+      required: true,
+      default: () => {
+        return {
+          uuid: 'Bar-code-Reader',
+          containerUuid: 'Bar-code-Reader',
+          fieldsList
+        }
+      }
     }
   },
   data() {
     return {
       active: 0,
       input: '',
-      value: ''
+      value: '',
+      fieldsList
     }
   },
   computed: {
+    recordsBusinessPartners() {
+      return this.$store.getters.getBusinessPartnersList
+    },
     styleFooter() {
       const showTitle = this.$store.getters.getIsShowTitleForm
       if (showTitle) {
@@ -116,12 +145,29 @@ export default {
           description: ''
         }
       ]
+    },
+    businessPartnerUuid() {
+      return this.$store.getters.getValueOfField({
+        containerUuid: this.$route.meta.uuid,
+        columnName: 'C_BPartner_ID_UUID'
+      })
     }
   },
   methods: {
     next() {
       if (this.active < 3) {
         this.active++
+      }
+      switch (this.step[this.active].name) {
+        case this.$t('form.allocationPayments.table.payments'):
+          this.$store.dispatch('serverPaymentList', this.businessPartnerUuid)
+          break
+        case this.$t('form.allocationPayments.table.invoices'):
+          this.$store.dispatch('serverBillingList', this.businessPartnerUuid)
+          break
+        case this.$t('views.summary'):
+          this.$store.dispatch('searchServerPaymentAllocationSummaryList', this.businessPartnerUuid)
+          break
       }
     },
     prev() {

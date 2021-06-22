@@ -41,6 +41,9 @@ export default {
     summaryList() {
       return this.$store.getters.getSummaryList
     }
+  },
+  created() {
+    console.log('alo')
   }
 }
 </script>

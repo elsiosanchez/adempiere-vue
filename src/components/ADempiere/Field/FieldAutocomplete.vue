@@ -20,12 +20,14 @@
     v-model="displayedValue"
     :placeholder="placeholder"
     :fetch-suggestions="localSearch"
+    :trigger-on-focus="true"
     clearable
     value-key="name"
     style="width: 100%;"
     popper-class="custom-field-bpartner-info"
     @focus="isFocus = true"
     @blur="isFocus = false"
+    @select="handleSelect"
   >
     <template slot="suffix">
       <i
@@ -264,6 +266,23 @@ export default {
           .finally(() => {
             this.isLoading = false
           })
+      })
+    },
+    handleSelect(item) {
+      this.$store.commit('updateValueOfField', {
+        containerUuid: this.metadata.containerUuid,
+        columnName: this.metadata.columnName,
+        value: item.id
+      })
+      this.$store.commit('updateValueOfField', {
+        containerUuid: this.metadata.containerUuid,
+        columnName: this.metadata.displayColumnName,
+        value: item.name
+      })
+      this.$store.commit('updateValueOfField', {
+        containerUuid: this.metadata.containerUuid,
+        columnName: this.metadata.columnName + '_UUID',
+        value: item.uuid
       })
     }
   }

@@ -1,6 +1,14 @@
+import {
+  paymentList,
+  invocesList,
+  summaryList
+} from '@/api/ADempiere/form/v-allocation.js'
+import { showMessage } from '@/utils/ADempiere/notification.js'
+
 const AllocationPayments = {
   invoiceList: [],
-  paymentList: []
+  paymentList: [],
+  summaryList: []
 }
 
 export default {
@@ -11,14 +19,59 @@ export default {
     },
     setPaymentList(state, list) {
       state.paymentList = list
+    },
+    setSummaryList(state, list) {
+      state.summaryList = list
     }
   },
   actions: {
-    serverPaymentList({ commit }, params) {
-      commit('setPaymentList', params)
+    serverPaymentList({ commit }, businessPartnerUuid) {
+      paymentList({
+        businessPartnerUuid
+      })
+        .then(responsePaymentList => {
+          commit('setPaymentList', responsePaymentList)
+        })
+        .catch(error => {
+          console.warn(`serverPaymentList: ${error.message}. Code: ${error.code}.`)
+          showMessage({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
     },
-    serverBillingList({ commit }, params) {
-      commit('setInvoiceLis', params)
+    serverBillingList({ commit }, businessPartnerUuid) {
+      invocesList({
+        businessPartnerUuid
+      })
+        .then(response => {
+          commit('setInvoiceLis', response)
+        })
+        .catch(error => {
+          console.warn(`serverBillingList: ${error.message}. Code: ${error.code}.`)
+          showMessage({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
+    },
+    searchServerPaymentAllocationSummaryList({ commit }, businessPartnerUuid) {
+      summaryList({
+        businessPartnerUuid
+      })
+        .then(response => {
+          commit('setSummaryList', response)
+        })
+        .catch(error => {
+          console.warn(`searchServerPaymentAllocationSummaryList: ${error.message}. Code: ${error.code}.`)
+          showMessage({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
     }
   },
   getters: {
@@ -27,6 +80,9 @@ export default {
     },
     getPaymentList: (state) => {
       return state.paymentList
+    },
+    getSummaryList: (state) => {
+      return state.summaryList
     }
   }
 }
