@@ -85,6 +85,15 @@
             </el-col>
           </el-row>
         </div>
+        <div v-if="!isEmptyValue(productPrice)" class="inquiry-product" style="z-index: 4;">
+          <el-row>
+            <el-col>
+              <div class="rate-date">
+                {{ $t('form.pos.collect.dayRate') }}: {{ formatQuantity(currentConvertion.multiplyRate) }} ~ ({{ formatPrice(1, productPrice.currency.iSOCode) }} = {{ formatPrice(currentConvertion.multiplyRate) }} {{ currentPointOfSales.displayCurrency.iSOCode }})
+              </div>
+            </el-col>
+          </el-row>
+        </div>
       </el-main>
     </el-container>
   </div>
@@ -153,13 +162,6 @@ export default {
     if (this.isEmptyValue(this.pointOfSalesList)) {
       this.$store.dispatch('listPointOfSalesFromServer')
     }
-    if (!this.isEmptyValue(this.pointOfSalesList) && this.isEmptyValue(this.currentConvertion) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency)) {
-      this.$store.dispatch('searchConversion', {
-        conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-        currencyFromUuid: this.currentPointOfSales.priceList.currency.uuid,
-        currencyToUuid: this.currentPointOfSales.displayCurrency.uuid
-      })
-    }
   },
   beforeDestroy() {
     this.unsubscribe()
@@ -184,12 +186,17 @@ export default {
       this.backgroundForm = image.uri
     },
     amountConvert(price, currency) {
-      console.log(this.convertionsList)
+      if (!this.isEmptyValue(this.pointOfSalesList) && this.isEmptyValue(this.currentConvertion) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency)) {
+        this.$store.dispatch('searchConversion', {
+          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+          currencyFromUuid: this.currentPointOfSales.priceList.currency.uuid,
+          currencyToUuid: this.currentPointOfSales.displayCurrency.uuid
+        })
+      }
       if (!this.isEmptyValue(this.convertionsList)) {
         const convertion = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
-        console.log(this.isEmptyValue(convertion.divideRate))
         if (!this.isEmptyValue(convertion.divideRate)) {
-          return price
+          return price / convertion.divideRate
         }
       }
       return price
@@ -345,7 +352,7 @@ export default {
     color: #32363a;
     font-size: 30px;
     float: right;
-    padding-bottom: 0px;
+    padding-bottom: 1%;
     text-align: end;
     width: 80%;
   }
@@ -358,7 +365,12 @@ export default {
     font-size: 50px;
     float: right;
   }
-
+  .rate-date {
+    padding-top: 30%;
+    font-size: 50px;
+    float: right;
+    font-weight: 600;
+  }
   .inquiry-form {
     position: absolute;
     right: 5%;
