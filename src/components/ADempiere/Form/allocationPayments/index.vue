@@ -18,111 +18,70 @@
 <template>
   <el-container style="height: -webkit-fill-available;">
     <el-header class="header">
-      <el-card shadow="never">
-        <el-form label-position="top" class="from-main">
-          <el-form-item>
-            <template
-              v-for="(field) in fieldsList"
-            >
-              <field
-                v-if="field.sequence <= 7"
-                :key="field.columnName"
-                :metadata-field="field"
-                :v-model="field.value"
-              />
-            </template>
-          </el-form-item>
-        </el-form>
-      </el-card>
+      <el-steps :space="200" :active="active" simple finish-status="success" process-status="finish">
+        <el-step
+          v-for="(item, index) in step"
+          :key="index"
+          :title="item.name"
+          :icon="item.icon"
+        />
+      </el-steps>
     </el-header>
-    <el-main style="padding-left: 20px;padding-right: 20px;padding-bottom: 0px;padding-top: 0px">
-      <div id="mainFrom">
-        <!-- Table Pay -->
-        <el-tabs type="border-card">
-          <el-tab-pane :label="$t('form.allocationPayments.table.payments')">
-            <table-from
-              :label="labelTablePay"
-              :metadata="invoiceList"
-            />
-          </el-tab-pane>
-        </el-tabs>
-        <br>
-        <!-- Table Invoice -->
-        <el-tabs type="border-card" style="padding-top: 10px">
-          <el-tab-pane :label="$t('form.allocationPayments.table.invoices')">
-            <table-from
-              :label="labelTableInvoce"
-              :metadata="invoiceList"
-            />
-          </el-tab-pane>
-        </el-tabs>
-      </div>
+    <el-main class="main">
+      <carousel
+        :step-reference="metadata.fileName"
+        :steps="step"
+        :indicator="active"
+      >
+        <div class="text item">
+          <search-criteria
+            v-if="active === 0"
+            :metadata="metadata"
+          />
+          <payments
+            v-if="active === 1"
+          />
+          <invoices
+            v-if="active === 2"
+          />
+          <Summary
+            v-if="active === 3"
+          />
+        </div>
+      </carousel>
     </el-main>
     <el-footer :class="styleFooter">
-      <el-card shadow="hover" style="padding-left: 20px;padding-right: 20px;">
-        <el-row>
-          <el-col :span="20">
-            <el-form label-position="top" class="from-main">
-              <el-form-item>
-                <template
-                  v-for="(field) in fieldsList"
-                >
-                  <field
-                    v-if="field.sequence > 7"
-                    :key="field.columnName"
-                    :metadata-field="field.columnName === 'T_Qty' ? {
-                      ...field,
-                      name: $t('form.allocationPayments.field.difference') + displayeCurrency
-                    } : field"
-                    :v-model="field.value"
-                  />
-                </template>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col :span="4" style="padding-top: 2.5%;">
-            <el-button type="primary" icon="el-icon-check" style="float: right;" />
-            <el-button type="danger" icon="el-icon-close" style="float: right;margin-right: 5%;" />
-          </el-col>
-        </el-row>
-      </el-card>
+      <el-button type="primary" icon="el-icon-check" style="float: right;" @click="next" />
+      <el-button v-show="active > 0" type="danger" icon="el-icon-close" style="float: right;margin-right: 10px;" @click="prev" />
     </el-footer>
   </el-container>
 </template>
 
 <script>
-import formMixin from '@/components/ADempiere/Form/formMixin.js'
-import fieldsList from './fieldList.js'
-import labelTablePay from './labelTablePay.js'
-import tableFrom from './tableFrom'
-import labelTableInvoce from './labelTableInvoce.js'
 
+import Payments from './Payments'
+import Invoices from './Invoices'
+import Summary from './Summary'
+import SearchCriteria from './SearchCriteria'
+import Carousel from '@/components/ADempiere/Carousel'
 export default {
   name: 'AllocationPayments',
   components: {
-    tableFrom
+    SearchCriteria,
+    Payments,
+    Invoices,
+    Summary,
+    Carousel
   },
-  mixins: [
-    formMixin
-  ],
   props: {
     metadata: {
       type: Object,
-      default: () => {
-        return {
-          uuid: 'Bar-code-Reader',
-          containerUuid: 'Bar-code-Reader',
-          fieldsList
-        }
-      }
+      default: () => {}
     }
   },
   data() {
     return {
-      fieldsList,
-      labelTablePay,
-      labelTableInvoce,
-      num: 0,
+      active: 0,
       input: '',
       value: ''
     }
@@ -135,17 +94,35 @@ export default {
       }
       return 'from-footer'
     },
-    invoiceList() {
-      return this.$store.getters.getInvoiceList
+    step() {
+      return [
+        {
+          name: this.$t('views.searchCriteria'),
+          icon: 'el-icon-search'
+        },
+        {
+          name: this.$t('form.allocationPayments.table.payments'),
+          icon: 'el-icon-money'
+        },
+        {
+          name: this.$t('form.allocationPayments.table.invoices'),
+          icon: 'el-icon-tickets'
+        },
+        {
+          name: this.$t('views.summary'),
+          icon: 'el-icon-document'
+        }
+      ]
+    }
+  },
+  methods: {
+    next() {
+      if (this.active < 3) {
+        this.active++
+      }
     },
-    paymentList() {
-      return this.$store.getters.getPaymentList
-    },
-    displayeCurrency() {
-      return this.$store.getters.getValueOfField({
-        containerUuid: this.containerUuid,
-        columnName: 'DisplayColumn_C_Currency_ID'
-      })
+    prev() {
+      this.active--
     }
   }
 }
@@ -157,6 +134,7 @@ export default {
     padding-bottom: 0px !important;
     padding-top: 0px !important;
     padding-left: 1% !important;
+    height: 90%;
   }
   .card-form {
     height: 100% !important;
@@ -166,7 +144,7 @@ export default {
     padding-bottom: 0px;
     box-sizing: border-box;
     flex-shrink: 0;
-    height: 20% !important;
+    height: 4% !important;
   }
   .from-footer {
     height: 10% !important;
@@ -178,6 +156,21 @@ export default {
     box-sizing: border-box;
     flex-shrink: 0
   }
+  .main {
+    display: block;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    overflow: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-top: 0px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+}
 </style>
 <style lang="scss">
   .el-tabs__header {
@@ -187,5 +180,9 @@ export default {
     margin-right: 0px;
     margin-bottom: 5px;
     margin-left: 0px;
+  }
+  .el-carousel__container {
+    position: relative;
+    height: inherit;
   }
 </style>

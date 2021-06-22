@@ -567,7 +567,7 @@ export default {
       },
       table: {
         date: 'Date',
-        conversion: 'Conversion',
+        converted: 'Conversion',
         open: 'Open',
         discount: 'Discount',
         adjust: 'Adjust',

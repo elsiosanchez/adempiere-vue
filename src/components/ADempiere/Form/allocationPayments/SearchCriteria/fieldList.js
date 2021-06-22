@@ -78,36 +78,6 @@ export default [
       isMandatory: true
     }
   },
-  // Multi-currency
-  {
-    columnName: 'MultiCurrency',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 24,
-      name: language.t('form.allocationPayments.field.multiCurrency'),
-      sequence: 5,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      componentPath: 'FieldYesNo',
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  // CP - CC
-  {
-    elementColumnName: 'APAR',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 24,
-      sequence: 6,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      componentPath: 'FieldSelect',
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  // AutoWriteOff
   {
     elementColumnName: 'AutoWriteOff',
     isFromDictionary: true,

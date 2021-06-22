@@ -22,11 +22,11 @@
     <el-table
       :data="metadata"
       style="width: 100%"
-      height="200"
-      max-height="400"
-      highlight-current-row
+      height="60vh"
       border
-      @selection-change="handleSelectionChange"
+      highlight-current-row
+      :row-class-name="styleCell ? tableRowClassName : ''"
+      @select="handleSelectionChange"
     >
       <el-table-column
         type="selection"
@@ -61,6 +61,10 @@ export default {
     height: {
       type: String,
       default: ''
+    },
+    styleCell: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -69,8 +73,14 @@ export default {
     }
   },
   methods: {
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    handleSelectionChange(selection, row) {
+      this.multipleSelection = row
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (row.Difference > 0) {
+        'success-row'
+      }
+      return 'warning-row'
     }
   }
 }
@@ -80,5 +90,14 @@ export default {
   .card-form {
     height: 100% !important;
     overflow: auto;
+  }
+</style>
+<style>
+.el-table .warning-row {
+    background:#ff4949a6;
+  }
+
+  .el-table .success-row {
+    background: #8ff6bd80;
   }
 </style>

@@ -19,22 +19,16 @@ import language from '@/lang'
 
 export default [
   {
+    columnName: 'NrDocument',
+    label: 'Nr Docuemnto',
+    isNumeric: false,
+    size: '150'
+  },
+  {
     columnName: 'Date',
     label: language.t('form.allocationPayments.table.date'),
     isNumeric: false,
-    size: '200'
-  },
-  {
-    columnName: 'CPCC',
-    label: 'CP - CC',
-    isNumeric: false,
-    size: '200'
-  },
-  {
-    columnName: 'AD_Org_ID',
-    label: language.t('form.allocationPayments.field.organization'),
-    isNumeric: false,
-    size: '200'
+    size: '150'
   },
   {
     columnName: 'description',
@@ -43,39 +37,39 @@ export default [
     size: '200'
   },
   {
-    columnName: 'convert',
-    label: language.t('form.allocationPayments.table.conversion'),
-    isNumeric: true,
-    size: '200'
+    columnName: 'CPCC',
+    label: 'CP - CC',
+    isNumeric: false,
+    size: '150'
   },
   {
     columnName: 'Open',
     label: language.t('form.allocationPayments.table.open'),
     isNumeric: true,
-    size: '200'
+    size: '150'
   },
   {
     columnName: 'Discount',
     label: language.t('form.allocationPayments.table.discount'),
     isNumeric: true,
-    size: '200'
+    size: '150'
   },
   {
     columnName: 'Adjust',
     label: language.t('form.allocationPayments.table.adjust'),
     isNumeric: true,
-    size: '200'
+    size: '150'
+  },
+  {
+    columnName: 'converted',
+    label: language.t('form.allocationPayments.table.converted'),
+    isNumeric: true,
+    size: '150'
   },
   {
     columnName: 'applied',
     label: language.t('form.allocationPayments.table.applied'),
     isNumeric: true,
-    size: '200'
-  },
-  {
-    columnName: 'pay',
-    label: language.t('form.allocationPayments.table.payOver'),
-    isNumeric: true,
-    size: '200'
+    size: '150'
   }
 ]

@@ -542,11 +542,11 @@ export default {
       },
       table: {
         date: 'Fecha',
-        conversion: 'Conversión',
+        converted: 'Convertido',
         Open: 'Abierto',
         discount: 'Descuento',
         adjust: 'Ajuste',
-        applied: 'Aplicado',
+        applied: 'Monto Aplicado',
         payOver: 'Pago Sobre/ Por debajo',
         invoices: 'Facturas',
         payments: 'Pagos'

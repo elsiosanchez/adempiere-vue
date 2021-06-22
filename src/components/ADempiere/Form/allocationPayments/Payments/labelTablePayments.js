@@ -19,20 +19,14 @@ import language from '@/lang'
 
 export default [
   {
+    columnName: 'NrDocument',
+    label: 'Nr Docuemnto',
+    isNumeric: false,
+    size: '200'
+  },
+  {
     columnName: 'Date',
     label: language.t('form.allocationPayments.table.date'),
-    isNumeric: false,
-    size: '200'
-  },
-  {
-    columnName: 'CPCC',
-    label: 'CP - CC',
-    isNumeric: false,
-    size: '200'
-  },
-  {
-    columnName: 'AD_Org_ID',
-    label: language.t('form.allocationPayments.field.organization'),
     isNumeric: false,
     size: '200'
   },
@@ -43,14 +37,14 @@ export default [
     size: '200'
   },
   {
-    columnName: 'convert',
-    label: language.t('form.allocationPayments.table.conversion'),
-    isNumeric: true,
+    columnName: 'CPCC',
+    label: 'CP - CC',
+    isNumeric: false,
     size: '200'
   },
   {
-    columnName: 'Open',
-    label: language.t('form.allocationPayments.table.open'),
+    columnName: 'converted',
+    label: language.t('form.allocationPayments.table.converted'),
     isNumeric: true,
     size: '200'
   },
