@@ -71,7 +71,7 @@
 
               <div class="product-price amount">
                 <span style="float: right;"> {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }} </span> <br>
-                <span v-if="!isEmptyValue(currentPointOfSales.displayCurrency)"> {{ formatPrice(productPrice.grandTotalConverted, currentPointOfSales.displayCurrency.iSOCode) }}</span>
+                <span v-if="!isEmptyValue(currentPointOfSales.displayCurrency)"> {{ formatPrice(getGrandTotal(productPrice.grandTotalConverted, productPrice.taxRate), currentPointOfSales.displayCurrency.iSOCode) }}</span>
               </div>
             </el-col>
           </el-row>
@@ -153,7 +153,11 @@ export default {
       if (this.isEmptyValue(this.currentPointOfSales.displayCurrency.id)) {
         return {}
       }
-      const convert = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
+      const convert = this.convertionsList.find(convert => {
+        if (!this.isEmptyValue(convert.currencyTo) && convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id) {
+          return convert
+        }
+      })
       if (convert) {
         return convert
       }
@@ -200,12 +204,21 @@ export default {
           currencyFromUuid: this.currentPointOfSales.priceList.currency.uuid,
           currencyToUuid: this.currentPointOfSales.displayCurrency.uuid
         })
-      }
-      if (!this.isEmptyValue(this.convertionsList)) {
-        const convertion = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
-        if (!this.isEmptyValue(convertion.divideRate)) {
-          return price / convertion.divideRate
-        }
+          .then((response) => {
+            currency = response
+          })
+          .finally(() => {
+            if (!this.isEmptyValue(currency.divideRate)) {
+              return price / currency.divideRate
+            } else if (!this.isEmptyValue(this.convertionsList)) {
+              const convertion = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
+              if (!this.isEmptyValue(convertion.divideRate)) {
+                return price / convertion.divideRate
+              }
+            } else {
+              return price
+            }
+          })
       }
       return price
     },
