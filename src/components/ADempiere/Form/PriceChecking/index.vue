@@ -85,7 +85,7 @@
             </el-col>
           </el-row>
         </div>
-        <div v-if="!isEmptyValue(productPrice)" class="inquiry-product" style="z-index: 4;">
+        <div v-if="!isEmptyValue(productPrice) && !isEmptyValue(currentConvertion)" class="inquiry-product" style="z-index: 4;">
           <el-row>
             <el-col>
               <div class="rate-date">
@@ -112,7 +112,7 @@
 import formMixin from '@/components/ADempiere/Form/formMixin.js'
 import fieldsList from './fieldsList.js'
 import { getProductPrice } from '@/api/ADempiere/form/price-checking.js'
-import { formatPercent, formatPrice } from '@/utils/ADempiere/valueFormat.js'
+import { formatPercent, formatPrice, formatQuantity } from '@/utils/ADempiere/valueFormat.js'
 import { getImagePath } from '@/utils/ADempiere/resource.js'
 
 export default {
@@ -150,7 +150,14 @@ export default {
       return this.$store.state['pointOfSales/point/index'].conversionsList
     },
     currentConvertion() {
-      return this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
+      if (this.isEmptyValue(this.currentPointOfSales.displayCurrency.id)) {
+        return {}
+      }
+      const convert = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
+      if (convert) {
+        return convert
+      }
+      return {}
     }
   },
   created() {
@@ -169,6 +176,7 @@ export default {
   methods: {
     formatPercent,
     formatPrice,
+    formatQuantity,
     focusProductValue() {
       if (!this.isEmptyValue(this.$refs.ProductValue[0])) {
         this.$refs.ProductValue[0].$children[0].$children[0].$children[1].$children[0].focus()
