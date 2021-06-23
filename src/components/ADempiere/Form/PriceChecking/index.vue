@@ -21,19 +21,21 @@
     style="height: 100% !important;"
     @click="focusProductValue"
   >
+
+    <img
+      fit="contain"
+      :src="backgroundForm"
+      class="background-price-checking"
+      style="z-index: 5;"
+    >
     <el-container style="height: 100% !important;">
-      <img
-        fit="contain"
-        :src="backgroundForm"
-        class="background-price-checking"
-        style="z-index: 2;"
-      >
       <el-main>
         <el-form
           key="form-loaded"
           class="inquiry-form"
           label-position="top"
           label-width="10px"
+          style="z-index: -1;"
           @submit.native.prevent="notSubmitForm"
         >
           <field
@@ -49,7 +51,7 @@
 
         <div class="inquiry-product" style="z-index: 4;">
           <div class="product-description">
-            {{ productPrice.productName }} {{ productPrice.productDescription }}
+            <b> {{ productPrice.productName }} </b> <br> {{ productPrice.productDescription }}
           </div>
           <el-row v-if="!isEmptyValue(productPrice)" :gutter="20">
             <el-col :span="24" style="padding-left: 0px; padding-right: 0%;">
@@ -68,10 +70,9 @@
                 </span>
               </div>
               <br><br><br>
-
               <div class="product-price amount">
                 <span style="float: right;"> {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }} </span> <br>
-                <span v-if="!isEmptyValue(currentPointOfSales.displayCurrency)"> {{ formatPrice(getGrandTotal(productPrice.grandTotalConverted, productPrice.taxRate), currentPointOfSales.displayCurrency.iSOCode) }}</span>
+                <span v-if="!isEmptyValue(currentPointOfSales.displayCurrency) && !isEmptyValue(convertionsList)"> {{ formatPrice(productPrice.grandTotal / converted, currentPointOfSales.displayCurrency.iso_code) }}</span>
               </div>
             </el-col>
           </el-row>
@@ -85,11 +86,14 @@
             </el-col>
           </el-row>
         </div>
-        <div v-if="!isEmptyValue(productPrice) && !isEmptyValue(currentConvertion)" class="inquiry-product" style="z-index: 4;">
+        <div v-if="!isEmptyValue(productPrice) && !isEmptyValue(currentPointOfSales.displayCurrency) && !isEmptyValue(convertionsList)" class="inquiry-product" style="z-index: 4;">
           <el-row>
             <el-col>
-              <div class="rate-date">
-                {{ $t('form.pos.collect.dayRate') }}: {{ formatQuantity(currentConvertion.multiplyRate) }} ~ ({{ formatPrice(1, productPrice.currency.iSOCode) }} = {{ formatPrice(currentConvertion.multiplyRate) }} {{ currentPointOfSales.displayCurrency.iSOCode }})
+              <div v-if="!isEmptyValue(currentConvertion)" class="rate-date">
+                {{ $t('form.pos.collect.dayRate') }}: {{ formatQuantity(currentConvertion.multiplyRate) }} ~ ({{ formatPrice(1, productPrice.currency.iSOCode) }} = {{ formatPrice(currentConvertion.multiplyRate) }} {{ currentPointOfSales.displayCurrency.iso_code }})
+              </div>
+              <div v-else class="rate-date">
+                {{ $t('form.pos.collect.noDayRate') }} {{ currentPointOfSales.displayCurrency.description }}
               </div>
             </el-col>
           </el-row>
@@ -150,11 +154,11 @@ export default {
       return this.$store.state['pointOfSales/point/index'].conversionsList
     },
     currentConvertion() {
-      if (this.isEmptyValue(this.currentPointOfSales.displayCurrency.id)) {
+      if (this.isEmptyValue(this.currentPointOfSales.displayCurrency)) {
         return {}
       }
       const convert = this.convertionsList.find(convert => {
-        if (!this.isEmptyValue(convert.currencyTo) && convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id) {
+        if (!this.isEmptyValue(convert.currencyTo) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency) && convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id) {
           return convert
         }
       })
@@ -162,6 +166,19 @@ export default {
         return convert
       }
       return {}
+    },
+    converted() {
+      if (!this.isEmptyValue(this.convertionsList)) {
+        const convertion = this.convertionsList.find(convert => {
+          if (!this.isEmptyValue(convert.currencyTo) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency) && convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id) {
+            return convert
+          }
+        })
+        if (!this.isEmptyValue(convertion)) {
+          return convertion.divideRate
+        }
+      }
+      return 1
     }
   },
   created() {
@@ -192,35 +209,19 @@ export default {
       }
       const image = getImagePath({
         file: fileName,
-        width: 250,
-        height: 280
+        width: 900,
+        height: 900
       })
       this.backgroundForm = image.uri
     },
-    amountConvert(price, currency) {
-      if (!this.isEmptyValue(this.pointOfSalesList) && this.isEmptyValue(this.currentConvertion) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency)) {
+    amountConvert() {
+      if (!this.isEmptyValue(this.currentPointOfSales) && this.isEmptyValue(this.currentConvertion) && !this.isEmptyValue(this.currentPointOfSales.displayCurrency)) {
         this.$store.dispatch('searchConversion', {
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
           currencyFromUuid: this.currentPointOfSales.priceList.currency.uuid,
           currencyToUuid: this.currentPointOfSales.displayCurrency.uuid
         })
-          .then((response) => {
-            currency = response
-          })
-          .finally(() => {
-            if (!this.isEmptyValue(currency.divideRate)) {
-              return price / currency.divideRate
-            } else if (!this.isEmptyValue(this.convertionsList)) {
-              const convertion = this.convertionsList.find(convert => convert.currencyTo.id === this.currentPointOfSales.displayCurrency.id)
-              if (!this.isEmptyValue(convertion.divideRate)) {
-                return price / convertion.divideRate
-              }
-            } else {
-              return price
-            }
-          })
       }
-      return price
     },
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
@@ -251,7 +252,6 @@ export default {
                   priceStandard: productPrice.priceStandard,
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
-                  grandTotalConverted: this.amountConvert(productPrice.priceStandard),
                   taxRate: rate,
                   taxName: taxRate.name,
                   taxIndicator: taxRate.taxIndicator,
@@ -265,6 +265,7 @@ export default {
                 this.productPrice = {}
               })
               .finally(() => {
+                this.amountConvert()
                 this.$store.commit('updateValueOfField', {
                   containerUuid: this.containerUuid,
                   columnName: 'ProductValue',
@@ -304,7 +305,6 @@ export default {
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
                   schemaCurrency: productPrice.schemaCurrency,
-                  grandTotalConverted: this.amountConvert(productPrice.priceStandard),
                   schemaPriceStandard: productPrice.schemaPriceStandard,
                   schemaPriceList: productPrice.schemaPriceList,
                   schemaPriceLimit: productPrice.schemaPriceLimit,
@@ -320,6 +320,7 @@ export default {
                 this.productPrice = {}
               })
               .finally(() => {
+                this.amountConvert()
                 this.$store.commit('updateValueOfField', {
                   containerUuid: this.containerUuid,
                   columnName: 'ProductValue',
@@ -375,7 +376,7 @@ export default {
     float: right;
     padding-bottom: 1%;
     text-align: end;
-    width: 80%;
+
   }
   .product-price-base, .product-tax {
     font-size: 30px;
@@ -390,7 +391,9 @@ export default {
     padding-top: 30%;
     font-size: 50px;
     float: right;
-    font-weight: 600;
+    color: black;
+    font-weight: bold;
+    text-align: end;
   }
   .inquiry-form {
     position: absolute;
@@ -402,7 +405,6 @@ export default {
   .inquiry-product {
     position: absolute;
     right: 10%;
-    width: 100%;
     top: 33%;
     .amount {
       color: black;
