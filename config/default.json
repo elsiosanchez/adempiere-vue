@@ -34,7 +34,7 @@
   "priceChecking": {
     "endpoint": "/form/addons/point-of-sales"
   },
-  "allocationPayments": {
+  "paymentAllocation": {
     "endpoint": "/form/addons/v-allocation"
   }
 }
