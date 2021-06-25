@@ -16,29 +16,66 @@
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <table-from
-    :label="labelTablePayments"
-    :metadata="paymentList"
-  />
+  <div>
+    <table-from
+      :label="labelTablePayments"
+      :records-data="paymentList"
+      :selection="selectedPaymentsList"
+      :add-selection="selectPayments"
+      style="height: 100%;"
+    />
+    <el-card v-if="!isEmptyValue(selectedInvoice)" class="box-card">
+      <div slot="header" class="clearfix">
+        <p class="label">
+          <b>
+            {{ $t('form.allocationPayments.step.selectedInvoce') }}
+          </b>
+        </p>
+      </div>
+      <div class="text item">
+        <table-from
+          :label="labelTablePayments"
+          :records-data="selectedInvoice"
+          :selection="selectedInvoice"
+          :is-selection="false"
+        />
+      </div>
+    </el-card>
+  </div>
 </template>
 
 <script>
 import tableFrom from '../tableFrom'
 import labelTablePayments from './labelTablePayments.js'
+import labelTableInvoce from '../Invoices/labelTableInvoce.js'
 
 export default {
   name: 'Payments',
   components: {
     tableFrom
   },
+  props: {
+    steps: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
-      labelTablePayments
+      labelTablePayments,
+      labelTableInvoce,
+      selectPayments: 'selectedPaymentsAndColletion'
     }
   },
   computed: {
     paymentList() {
       return this.$store.getters.getPaymentList
+    },
+    selectedPaymentsList() {
+      return this.$store.getters.getSelectedPayments
+    },
+    selectedInvoice() {
+      return this.$store.getters.getSelectedInvoce
     }
   }
 }
@@ -48,6 +85,10 @@ export default {
   .card-form {
     height: 100% !important;
     overflow: auto;
+  }
+  .label {
+    text-align: center;
+    margin: 0px;
   }
 </style>
 <style>

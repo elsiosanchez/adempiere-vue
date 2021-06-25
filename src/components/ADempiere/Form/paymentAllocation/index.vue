@@ -16,8 +16,8 @@
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-container style="height: -webkit-fill-available;">
-    <el-header class="header">
+  <div style="height: 100%;">
+    <div class="header">
       <el-steps :active="active" finish-status="success" process-status="finish">
         <el-step
           v-for="(item, index) in step"
@@ -25,14 +25,15 @@
           :title="item.name"
         />
       </el-steps>
-    </el-header>
-    <el-main class="main">
-      <carousel
-        :step-reference="metadata.fileName"
-        :steps="step"
-        :indicator="active"
-      >
-        <div class="text item">
+    </div>
+    <div class="main">
+      <el-card class="box-card">
+        <carousel
+          :step-reference="metadata.fileName"
+          :steps="step"
+          :indicator="active"
+          style="display: contents;height: -webkit-fill-available;"
+        >
           <el-form v-if="active === 0" label-position="top" class="from-main">
             <el-form-item>
               <el-row>
@@ -51,6 +52,7 @@
           </el-form>
           <payments
             v-if="active === 1"
+            :steps="active"
             :business-partner-uuid="businessPartnerUuid"
           />
           <invoices
@@ -61,14 +63,14 @@
             v-if="active === 3"
             :business-partner-uuid="businessPartnerUuid"
           />
-        </div>
-      </carousel>
-    </el-main>
-    <el-footer :class="styleFooter">
+        </carousel>
+      </el-card>
+    </div>
+    <div :class="styleFooter">
       <el-button type="primary" icon="el-icon-check" style="float: right;" @click="next" />
       <el-button v-show="active > 0" type="danger" icon="el-icon-close" style="float: right;margin-right: 10px;" @click="prev" />
-    </el-footer>
-  </el-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -80,7 +82,7 @@ import Carousel from '@/components/ADempiere/Carousel'
 import formMixin from '@/components/ADempiere/Form/formMixin.js'
 import fieldsList from './fieldList.js'
 export default {
-  name: 'AllocationPayments',
+  name: 'PaymentAllocation',
   components: {
     Payments,
     Invoices,
@@ -194,9 +196,11 @@ export default {
     box-sizing: border-box;
     flex-shrink: 0;
     height: 4% !important;
+    padding-left: 1%;
+    padding-right: 1%;
   }
   .from-footer {
-    height: 10% !important;
+    height: 5% !important;
     box-sizing: border-box;
     flex-shrink: 0;
   }
@@ -206,6 +210,7 @@ export default {
     flex-shrink: 0
   }
   .main {
+    height: 90%;
     display: block;
     -webkit-box-flex: 1;
     -ms-flex: 1;
@@ -230,8 +235,15 @@ export default {
     margin-bottom: 5px;
     margin-left: 0px;
   }
-  .el-carousel__container {
-    position: relative;
-    height: inherit;
-  }
+  .el-card {
+    border-radius: 4px;
+    border: 1px solid #e6ebf5;
+    background-color: #FFFFFF;
+    overflow: hidden;
+    color: #303133;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    height: 100%;
+    width: 100%;
+}
 </style>

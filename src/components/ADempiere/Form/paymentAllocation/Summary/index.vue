@@ -17,29 +17,33 @@
 -->
 <template>
   <table-from
-    :label="labelTableInvoce"
-    :metadata="invoiceList"
+    :label="labelTableSummary"
+    :records-data="summaryList"
+    :style-cell="true"
   />
 </template>
 
 <script>
 import tableFrom from '../tableFrom'
-import labelTableInvoce from './labelTableInvoce.js'
+import labelTableSummary from './labelTableSummary.js'
 
 export default {
-  name: 'Invoices',
+  name: 'Summary',
   components: {
     tableFrom
   },
   data() {
     return {
-      labelTableInvoce
+      labelTableSummary
     }
   },
   computed: {
-    invoiceList() {
-      return this.$store.getters.getInvoiceList
+    summaryList() {
+      return this.$store.getters.getSummaryList
     }
+  },
+  created() {
+    console.log('alo')
   }
 }
 </script>

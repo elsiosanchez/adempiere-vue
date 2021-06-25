@@ -18,19 +18,22 @@
 <template>
   <div
     class="card-form"
+    style="height: 100%;overflow: auto;"
   >
     <el-table
-      :data="metadata"
-      style="width: 100%"
-      height="60vh"
+      ref="allocationPayments"
+      :data="recordsData"
+      style="width: 100%;height: 100%;"
       border
       highlight-current-row
+      show-summary
+      :summary-method="getSummaries"
       :row-class-name="styleCell ? tableRowClassName : ''"
       @select="handleSelectionChange"
     >
       <el-table-column
-        type="selection"
-        width="50"
+        :type="isSelection ? 'selection' : ''"
+        min-width="20"
       />
       <el-table-column
         v-for="(valueOrder) in label"
@@ -41,12 +44,15 @@
         :min-width="!valueOrder.isNumeric ? valueOrder.size : valueOrder.size"
         :align="valueOrder.isNumeric ? 'right' : 'left'"
         :prop="valueOrder.columnName"
+        :sortable="valueOrder.isNumeric"
       />
     </el-table>
   </div>
 </template>
 
 <script>
+import { formatPrice } from '@/utils/ADempiere/valueFormat.js'
+
 export default {
   name: 'TableFrom',
   props: {
@@ -54,7 +60,7 @@ export default {
       type: Array,
       default: () => []
     },
-    metadata: {
+    recordsData: {
       type: Array,
       default: () => []
     },
@@ -65,22 +71,74 @@ export default {
     styleCell: {
       type: Boolean,
       default: false
+    },
+    isSelection: {
+      type: Boolean,
+      default: true
+    },
+    selection: {
+      type: Array,
+      default: () => []
+    },
+    addSelection: {
+      type: String,
+      default: ''
     }
   },
-  data() {
-    return {
-      multipleSelection: []
-    }
+  mounted() {
+    this.toggleSelection(this.selection)
   },
   methods: {
+    formatPrice,
     handleSelectionChange(selection, row) {
-      this.multipleSelection = row
+      this.$store.dispatch(this.addSelection, selection)
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          const selectionRow = this.recordsData.find(record => record.NrDocument === row.NrDocument)
+          this.$refs.allocationPayments.toggleRowSelection(selectionRow)
+        })
+      } else {
+        this.$refs.allocationPayments.clearSelection()
+      }
     },
     tableRowClassName({ row, rowIndex }) {
       if (row.Difference > 0) {
         'success-row'
       }
       return 'warning-row'
+    },
+    getSummaries(param) {
+      const { columns } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = 'Σ'
+          return
+        }
+        const values = this.selection.map(item => {
+          if (column.sortable) {
+            return Number(item[column.property])
+          } else {
+            return ''
+          }
+        })
+        if (values.every(value => value > 0) && !this.isEmptyValue(this.selection)) {
+          sums[index] = this.formatPrice(values.reduce((prev, curr) => {
+            const value = Number(curr)
+            if (!isNaN(value)) {
+              return prev + curr
+            } else {
+              return prev
+            }
+          }, 0))
+        } else {
+          sums[index] = ''
+        }
+      })
+
+      return sums
     }
   }
 }

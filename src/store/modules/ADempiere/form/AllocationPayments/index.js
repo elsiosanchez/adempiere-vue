@@ -2,13 +2,15 @@ import {
   paymentList,
   invocesList,
   summaryList
-} from '@/api/ADempiere/form/v-allocation.js'
+} from '@/api/ADempiere/form/paymentAllocation.js'
 import { showMessage } from '@/utils/ADempiere/notification.js'
 
 const AllocationPayments = {
   invoiceList: [],
   paymentList: [],
-  summaryList: []
+  summaryList: [],
+  selectedPayments: [],
+  selectedInvoce: []
 }
 
 export default {
@@ -22,6 +24,12 @@ export default {
     },
     setSummaryList(state, list) {
       state.summaryList = list
+    },
+    setSelectedPayments(state, select) {
+      state.selectedPayments = select
+    },
+    setSelectedInvoce(state, select) {
+      state.selectedInvoce = select
     }
   },
   actions: {
@@ -72,6 +80,12 @@ export default {
             showClose: true
           })
         })
+    },
+    selectedPaymentsAndColletion({ commit }, select) {
+      commit('setSelectedPayments', select)
+    },
+    selectedInvoce({ commit }, select) {
+      commit('setSelectedInvoce', select)
     }
   },
   getters: {
@@ -83,6 +97,12 @@ export default {
     },
     getSummaryList: (state) => {
       return state.summaryList
+    },
+    getSelectedPayments: (state) => {
+      return state.selectedPayments
+    },
+    getSelectedInvoce: (state) => {
+      return state.selectedInvoce
     }
   }
 }

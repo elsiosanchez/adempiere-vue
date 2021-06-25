@@ -58,7 +58,7 @@ export default {
           form = import('@/components/ADempiere/Form/VPOS')
           break
         case 'VAllocation':
-          form = import('@/components/ADempiere/Form/allocationPayments')
+          form = import('@/components/ADempiere/Form/paymentAllocation')
           break
         default:
           form = import('@/views/ADempiere/Unsupported')
