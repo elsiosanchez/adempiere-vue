@@ -24,12 +24,12 @@ export default [
     isNumeric: false
   },
   {
-    columnName: 'Pago',
+    columnName: 'Payment',
     label: language.t('form.allocationPayments.table.payments'),
     isNumeric: false
   },
   {
-    columnName: 'Factura',
+    columnName: 'invoce',
     label: language.t('form.allocationPayments.table.invoices'),
     isNumeric: false
   },

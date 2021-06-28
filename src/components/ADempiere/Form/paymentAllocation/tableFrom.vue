@@ -33,7 +33,7 @@
     >
       <el-table-column
         :type="isSelection ? 'selection' : ''"
-        min-width="20"
+        width="50"
       />
       <el-table-column
         v-for="(valueOrder) in label"
@@ -151,7 +151,7 @@ export default {
   }
 </style>
 <style>
-.el-table .warning-row {
+  .el-table .warning-row {
     background:#ff4949a6;
   }
 

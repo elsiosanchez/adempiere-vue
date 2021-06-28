@@ -16,21 +16,46 @@
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <table-from
-    :label="labelTableSummary"
-    :records-data="summaryList"
-    :style-cell="true"
-  />
+  <div>
+    <table-from
+      :label="labelTableSummary"
+      :records-data="allPaymentsAndInvoce"
+      :selection="allPaymentsAndInvoce"
+      :is-selection="false"
+    />
+    <el-form label-position="top" class="from-main">
+      <el-form-item>
+        <el-row>
+          <el-col v-for="(field, index) in fieldsList" :key="index" :span="6">
+            <field
+              v-if="field.sequence > 5"
+              :key="field.columnName"
+              :metadata-field="field"
+              :v-model="field.value"
+            />
+          </el-col>
+        </el-row>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
+import Field from '@/components/ADempiere/Field'
 import tableFrom from '../tableFrom'
 import labelTableSummary from './labelTableSummary.js'
 
 export default {
   name: 'Summary',
   components: {
-    tableFrom
+    tableFrom,
+    Field
+  },
+  props: {
+    fieldsList: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -40,10 +65,25 @@ export default {
   computed: {
     summaryList() {
       return this.$store.getters.getSummaryList
+    },
+    allPaymentsAndInvoce() {
+      const payments = this.$store.getters.getSelectedPayments
+      const invoces = this.$store.getters.getSelectedInvoce
+      const allList = payments.concat(invoces).map(list => {
+        if (!this.isEmptyValue(list.IsReceipt)) {
+          return {
+            ...list,
+            Payment: list.applied
+          }
+        } if (!this.isEmptyValue(list.IsAccountPayable)) {
+          return {
+            ...list,
+            invoce: list.applied
+          }
+        }
+      })
+      return allList
     }
-  },
-  created() {
-    console.log('alo')
   }
 }
 </script>

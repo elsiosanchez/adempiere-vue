@@ -20,7 +20,7 @@
     <table-from
       :label="labelTableInvoce"
       :records-data="invoiceList"
-      :selection="selectedPaymentsList"
+      :selection="selectedInvoice"
       :add-selection="selectInvoice"
     />
     <el-card v-if="!isEmptyValue(selectedPaymentsList)" class="box-card">

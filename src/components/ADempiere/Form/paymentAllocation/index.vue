@@ -39,6 +39,7 @@
               <el-row>
                 <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
                   <field
+                    v-if="field.sequence <= 5"
                     :key="field.columnName"
                     :metadata-field="field.componentPath === 'FieldAutocomplete' ? {
                       ...field,
@@ -62,6 +63,7 @@
           <Summary
             v-if="active === 3"
             :business-partner-uuid="businessPartnerUuid"
+            :fields-list="fieldsList"
           />
         </carousel>
       </el-card>
@@ -245,5 +247,9 @@ export default {
     transition: 0.3s;
     height: 100%;
     width: 100%;
-}
+  }
+  .el-carousel__container {
+    position: relative;
+    height: 100%;
+  }
 </style>
