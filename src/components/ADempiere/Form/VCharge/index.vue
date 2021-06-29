@@ -14,33 +14,40 @@
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-tabs type="card">
-    <el-tab-pane :label="$t('form.charge.title')">
-      <el-form label-position="top" class="from-main">
-        <el-form-item>
-          <el-row>
-            <el-col v-for="(field, index) in fieldsList" :key="index" :span="6">
-              <field
-                :key="field.columnName"
-                :metadata-field="field"
-                :v-model="field.value"
-              />
-            </el-col>
-            <el-col :span="6" style="padding-top: 1.5%;">
-              <el-button type="primary" plain icon="el-icon-plus" @click="newCharge">
-                {{
-                  $t('tagsView.newRecord')
-                }}
-              </el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-      <el-tabs type="border-card">
+  <el-container style="display: contents;">
+    <el-header :style="isMobile ? 'height: 60%!important' : 'height: 20%!important'">
+      <el-tabs type="card">
+        <el-tab-pane :label="$t('form.charge.title')">
+          <el-form label-position="top" class="from-main">
+            <el-form-item>
+              <el-row>
+                <el-col v-for="(field, index) in fieldsList" :key="index" :span="isMobile ? 24 : 6">
+                  <field
+                    :key="field.columnName"
+                    :metadata-field="field"
+                    :v-model="field.value"
+                  />
+                </el-col>
+                <el-col :span="6" style="padding-top: 1.5%;">
+                  <el-button type="primary" plain icon="el-icon-plus" @click="newCharge">
+                    {{
+                      $t('tagsView.newRecord')
+                    }}
+                  </el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
+    </el-header>
+    <el-footer :style="isMobile ? 'height: 40%!important' : 'height: 80%!important'">
+      <el-tabs type="border-card" style="height: 100%;display: block;">
         <el-tab-pane :label="$t('form.charge.labelTable.header')">
           <el-table
             ref="ChargeTable"
             :data="listAccountsAndCharges"
+            style="overflow: auto;height: 100%;display: block;"
           >
             <el-table-column
               v-for="(valueOrder, item, key) in labelTableVCharge"
@@ -69,8 +76,8 @@
           </el-table>
         </el-tab-pane>
       </el-tabs>
-    </el-tab-pane>
-  </el-tabs>
+    </el-footer>
+  </el-container>
 </template>
 
 <script>
@@ -105,7 +112,166 @@ export default {
     return {
       fieldsList,
       labelTableVCharge,
-      listAccountsAndCharges: []
+      listAccountsAndCharges: [
+        {
+          value: '1.4.1.1.1.2.00',
+          name: 'OTROS ACTIVOS EXTRANJEROS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.001',
+          name: 'VENTAS MATERIA PRIMA BRUTA',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.003',
+          name: 'VENTAS PRODUCTOS TERMINADOS IMPORTADO',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.004',
+          name: 'INTERESES BANCARIOS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.005',
+          name: 'PLAZOS FIJOS',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.00',
+          name: 'OTROS ACTIVOS EXTRANJEROS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.001',
+          name: 'VENTAS MATERIA PRIMA BRUTA',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.003',
+          name: 'VENTAS PRODUCTOS TERMINADOS IMPORTADO',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.004',
+          name: 'INTERESES BANCARIOS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.005',
+          name: 'PLAZOS FIJOS',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.00',
+          name: 'OTROS ACTIVOS EXTRANJEROS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.001',
+          name: 'VENTAS MATERIA PRIMA BRUTA',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.003',
+          name: 'VENTAS PRODUCTOS TERMINADOS IMPORTADO',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.004',
+          name: 'INTERESES BANCARIOS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.005',
+          name: 'PLAZOS FIJOS',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.00',
+          name: 'OTROS ACTIVOS EXTRANJEROS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.001',
+          name: 'VENTAS MATERIA PRIMA BRUTA',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.003',
+          name: 'VENTAS PRODUCTOS TERMINADOS IMPORTADO',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.004',
+          name: 'INTERESES BANCARIOS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.005',
+          name: 'PLAZOS FIJOS',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.00',
+          name: 'OTROS ACTIVOS EXTRANJEROS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.001',
+          name: 'VENTAS MATERIA PRIMA BRUTA',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.003',
+          name: 'VENTAS PRODUCTOS TERMINADOS IMPORTADO',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.004',
+          name: 'INTERESES BANCARIOS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.005',
+          name: 'PLAZOS FIJOS',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.00',
+          name: 'OTROS ACTIVOS EXTRANJEROS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.001',
+          name: 'VENTAS MATERIA PRIMA BRUTA',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.003',
+          name: 'VENTAS PRODUCTOS TERMINADOS IMPORTADO',
+          spending: false
+        },
+        {
+          value: '1.4.1.1.1.2.004',
+          name: 'INTERESES BANCARIOS',
+          spending: true
+        },
+        {
+          value: '1.4.1.1.1.2.005',
+          name: 'PLAZOS FIJOS',
+          spending: false
+        }
+      ]
+    }
+  },
+  computed: {
+    device() {
+      return this.$store.state.app.device
+    },
+    isMobile() {
+      return this.device === 'mobile'
     }
   },
   mounted() {
@@ -209,5 +375,14 @@ export default {
     margin: 0px;
     margin-top: 15%;
     font-size: 5em;
+  }
+</style>
+<style>
+  .el-tabs--border-card > .el-tabs__content {
+    padding: 15px;
+    height: 100%;
+  }
+  .el-tab-pane {
+    height: 90%;
   }
 </style>
