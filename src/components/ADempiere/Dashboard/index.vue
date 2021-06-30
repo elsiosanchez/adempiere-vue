@@ -28,10 +28,10 @@
           </el-button>
         </el-col>
         <el-col v-if="isEmptyValue(title)" :span="1">
-          <el-button type="text" icon="el-icon-files" style="float: right; padding: 3px 0" @click="sendMain(metadata)" />
+          <el-button type="text" icon="el-icon-files" @click="sendMain(metadata)" />
         </el-col>
         <el-col :span="1">
-          <el-button type="text" :icon="!metadata.isCollapsible ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" style="float: right; padding: 3px 0" @click="metadata.isCollapsible = !metadata.isCollapsible" />
+          <el-button type="text" :icon="!metadata.isCollapsible ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="metadata.isCollapsible = !metadata.isCollapsible" />
         </el-col>
       </el-row>
     </div>
@@ -169,11 +169,10 @@ export default {
     }
   }
   .el-card__header {
-    border-bottom: 1px solid #e6ebf5;
-    -webkit-box-sizing: border-box;
+    border: 1px solid #36a3f7;
+    padding: 0px;
+    margin: 0px;
     box-sizing: border-box;
-    padding-top: 2%;
-    padding-bottom: 1%;
   }
   .dashboard-transitio {
     margin: 0px;
@@ -193,5 +192,10 @@ export default {
     font-weight: 500;
     font-size: large;
     padding-left: 1%;
+  }
+</style>
+<style>
+  .el-card__body {
+    padding: 5px;
   }
 </style>
