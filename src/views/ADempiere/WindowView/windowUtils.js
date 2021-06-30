@@ -9,7 +9,7 @@ export function generateWindow(windowResponse) {
     firstTab, firstTabUuid
   } = generateTabs({
     tabs: responseWindow.tabs,
-    windowUuid: responseWindow.uuid
+    parentUuid: responseWindow.uuid
   })
 
   const newWindow = {
@@ -32,15 +32,12 @@ export function generateWindow(windowResponse) {
 
 export function generateTabs({
   tabs,
-  windowUuid
+  parentUuid
 }) {
   const firstTabTableName = tabs[0].tableName
   const firstTabUuid = tabs[0].uuid
-  const tabsListParent = []
 
   // indexes related to visualization
-  let tabParentIndex = 0
-
   const tabsList = tabs.filter((itemTab) => {
     return !(
       itemTab.isTranslationTab || itemTab.isSortTab ||
@@ -50,9 +47,8 @@ export function generateTabs({
     // let tab = tabItem
     const tab = {
       ...tabItem,
+      parentUuid,
       containerUuid: tabItem.uuid,
-      parentUuid: windowUuid,
-      windowUuid,
       tabGroup: tabItem.fieldGroup,
       firstTabUuid,
       // relations
@@ -63,13 +59,16 @@ export function generateTabs({
       index // this index is not related to the index in which the tabs are displayed
     }
 
-    if (tab.isParentTab) {
-      tab.tabParentIndex = tabParentIndex
-      tabParentIndex++
-      tabsListParent.push(tab)
-      return tab
-    }
     return tab
+  })
+
+  const tabsListParent = tabsList.filter(tabItem => {
+    return tabItem.isParentTab
+  }).map((itemTab, tabParentIndex) => {
+    return {
+      ...itemTab,
+      tabParentIndex
+    }
   })
 
   return {
