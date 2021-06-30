@@ -34,6 +34,7 @@ export default {
   computed: {
     // load the component that is indicated in the attributes of received property
     componentRender() {
+      console.log(this.metadata)
       let form
       switch (this.metadata.fileName) {
         case 'PriceChecking':
@@ -53,6 +54,9 @@ export default {
           break
         case 'ProductInfo':
           form = import('@/components/ADempiere/Form/ProductInfo')
+          break
+        case 'VMatch':
+          form = import('@/components/ADempiere/Form/VMatch')
           break
         case 'VPOS':
           form = import('@/components/ADempiere/Form/VPOS')

@@ -433,7 +433,7 @@ export default {
         tax: 'Impuesto',
         total: 'Total',
         itemQuantity: 'Cantidad de Árticulo',
-        numberLines: 'Cantidad de Lineas',
+        numberLines: 'Numero de Lineas',
         pointSale: 'Punto de Venta',
         collect: 'Cobrar',
         collections: 'Cobros',
