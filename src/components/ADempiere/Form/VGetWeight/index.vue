@@ -53,8 +53,8 @@
             {{ scale.name }}
           </el-button>
         </template>
-        <el-button type="danger" icon="el-icon-close" class="button-action" />
         <el-button type="primary" icon="el-icon-check" class="button-action" />
+        <el-button type="danger" icon="el-icon-close" class="button-action" />
       </el-main>
     </el-container>
   </el-card>
