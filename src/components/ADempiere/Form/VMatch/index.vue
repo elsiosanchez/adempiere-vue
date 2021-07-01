@@ -39,16 +39,12 @@
       <invoices
         v-if="active === 1"
       />
-      <span
+      <receipt
         v-if="active === 2"
-      >
-        {{
-          step[active]
-        }}
-      </span>
+      />
     </carousel>
     <div :class="styleFooter">
-      <el-button type="primary" icon="el-icon-check" style="float: right;" @click="next" />
+      <el-button type="primary" :icon="iconStep" style="float: right;" @click="next" />
       <el-button v-show="active > 0" type="danger" icon="el-icon-close" style="float: right;margin-right: 10px;" @click="prev" />
     </div>
   </el-container>
@@ -58,15 +54,16 @@
 import Carousel from '@/components/ADempiere/Carousel'
 import formMixin from '@/components/ADempiere/Form/formMixin.js'
 import fieldsList from './fieldList.js'
-import SearchCriteria from './SearchCriteria/index'
-import Invoices from './Invoices/index'
-
+import SearchCriteria from './components/SearchCriteria/index'
+import Invoices from './components/Invoices/index'
+import Receipt from './components/Receipt/index'
 export default {
   name: 'VMatch',
   components: {
     Carousel,
     SearchCriteria,
-    Invoices
+    Invoices,
+    Receipt
   },
   mixins: [
     formMixin
@@ -101,18 +98,15 @@ export default {
       return [
         {
           name: this.$t('views.searchCriteria'),
-          icon: 'el-i.con-search',
-          description: 'Seleccione al menos un Socio de Negocio para verificar los documentos pendientes por asignar'
+          description: this.$t('form.match.description.searchCriteria')
         },
         {
-          name: 'Factura',
-          icon: 'el-icon-tickets',
-          description: 'Seleccione una Factura para asignar las Entrega/Recibo correspondiente'
+          name: this.$t('form.match.title.invoice'),
+          description: this.$t('form.match.description.invoice')
         },
         {
-          name: 'Entrega / Recibo',
-          icon: 'el-icon-document',
-          description: 'Seleccione al menos una Entrega/Recibo a la cual requiere asignar la factura seleccionada'
+          name: this.$t('form.match.title.deliveryReceipt'),
+          description: this.$t('form.match.description.deliveryReceipt')
         }
       ]
     },
@@ -121,16 +115,53 @@ export default {
         containerUuid: this.$route.meta.uuid,
         columnName: 'C_BPartner_ID_UUID'
       })
+    },
+    selectedInvoice() {
+      return this.$store.getters.getSelectedInvoceMatch
+    },
+    selectedReceipts() {
+      return this.$store.getters.getSelectedReceiptsMatch
+    },
+    iconStep() {
+      const step = this.step.length - 1
+      if (step === this.active) {
+        return 'el-icon-s-tools'
+      }
+      return 'el-icon-check'
+    }
+  },
+  watch: {
+    businessPartnerUuid(value) {
+      if (!this.isEmptyValue(value)) {
+        this.$store.dispatch('serverInvocesList', {
+          businessPartnerUuid: value,
+          formUuid: this.$route.meta.uuid
+        })
+        this.$store.dispatch('serverReceiptsList', {
+          businessPartnerUuid: value,
+          formUuid: this.$route.meta.uuid
+        })
+      }
     }
   },
   methods: {
     next() {
-      if (this.active < 3) {
+      if (this.iconStep !== 'el-icon-s-tools') {
         this.active++
+      } else {
+        this.sendAssignment(this.businessPartnerUuid)
       }
     },
     prev() {
       this.active--
+    },
+    sendAssignment(businessPartnerUuid) {
+      this.$store.dispatch('processAssignment', {
+        businessPartnerUuid,
+        receiptUuid: this.selectedReceipts,
+        invoceUuid: this.selectedInvoice,
+        formUuid: this.$route.meta.uuid
+      })
     }
   }
 }

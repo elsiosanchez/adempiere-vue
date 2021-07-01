@@ -34,7 +34,6 @@ export default {
   computed: {
     // load the component that is indicated in the attributes of received property
     componentRender() {
-      console.log(this.metadata)
       let form
       switch (this.metadata.fileName) {
         case 'PriceChecking':

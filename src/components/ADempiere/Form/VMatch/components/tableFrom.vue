@@ -19,20 +19,32 @@
     style="height: 100%;overflow: auto;"
   >
     <el-table
-      ref="allocationPayments"
+      :ref="refTable"
       :data="recordsData"
-      style="width: 100%;height: 100%;"
+      style="width: 100%;height: 100%;overflow: auto;"
       border
       highlight-current-row
-      show-summary
+      :show-summary="summary"
       :summary-method="getSummaries"
       :row-class-name="styleCell ? tableRowClassName : ''"
       @select="handleSelectionChange"
+      @select-all="handleSelectionChange"
+      @current-change="handleCurrentChange"
     >
       <el-table-column
-        :type="isSelection ? 'selection' : ''"
+        v-if="multiSelection"
+        type="selection"
         width="50"
       />
+      <el-table-column
+        v-else
+        :type="multiSelection ? 'selection' : ''"
+        width="50"
+      >
+        <template v-if="selection && currentRow.nrDocument === scope.row.nrDocument" slot-scope="scope">
+          <i :class="currentRow.icon" />
+        </template>
+      </el-table-column>
       <el-table-column
         v-for="(valueOrder) in label"
         :key="valueOrder.columnName"
@@ -53,6 +65,10 @@ import { formatPrice } from '@/utils/ADempiere/valueFormat.js'
 export default {
   name: 'TableFrom',
   props: {
+    refTable: {
+      type: String,
+      default: 'TableFrom'
+    },
     label: {
       type: Array,
       default: () => []
@@ -71,7 +87,7 @@ export default {
     },
     isSelection: {
       type: Boolean,
-      default: true
+      default: false
     },
     selection: {
       type: Array,
@@ -80,24 +96,63 @@ export default {
     addSelection: {
       type: String,
       default: ''
+    },
+    multiSelection: {
+      type: Boolean,
+      default: false
+    },
+    summary: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      currentRow: {
+        icon: 'el-icon-check'
+      }
+    }
+  },
+  watch: {
+    selection(row) {
+      this.currentRow = {
+        ...this.currentRow,
+        ...row[0]
+      }
     }
   },
   mounted() {
     this.toggleSelection(this.selection)
+    this.setCurrent(this.selection[0])
   },
   methods: {
     formatPrice,
     handleSelectionChange(selection, row) {
       this.$store.dispatch(this.addSelection, selection)
     },
+    setCurrent(row) {
+      this.currentRow = {
+        ...this.currentRow,
+        ...row
+      }
+    },
+    handleCurrentChange(val) {
+      this.currentRow = {
+        ...this.currentRow,
+        val
+      }
+      if (this.isSelection) {
+        this.$store.dispatch(this.addSelection, [val])
+      }
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
           const selectionRow = this.recordsData.find(record => record.NrDocument === row.NrDocument)
-          this.$refs.allocationPayments.toggleRowSelection(selectionRow)
+          this.$refs[this.refTable].toggleRowSelection(selectionRow)
         })
       } else {
-        this.$refs.allocationPayments.clearSelection()
+        this.$refs[this.refTable].clearSelection()
       }
     },
     tableRowClassName({ row, rowIndex }) {

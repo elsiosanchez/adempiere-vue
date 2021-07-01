@@ -14,17 +14,23 @@
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <table-from
-    :label="labelTableInvoce"
-    :records-data="[]"
-    :selection="[]"
-    :add-selection="[]"
-  />
+  <el-tabs type="border-card">
+    <el-tab-pane :label="$t('form.match.title.invoice')">
+      <table-from
+        :ref-table="ref"
+        :label="labelTable"
+        :records-data="invoiceList"
+        :selection="selectedInvoice"
+        :add-selection="selectInvoice"
+        :is-selection="true"
+      />
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script>
 import tableFrom from '../tableFrom'
-import labelTableInvoce from './labelTableInvoce.js'
+import labelTable from '@/components/ADempiere/Form/VMatch/labelTable.js'
 export default {
   name: 'Invoices',
   components: {
@@ -32,16 +38,17 @@ export default {
   },
   data() {
     return {
-      labelTableInvoce,
-      selectInvoice: 'selectedInvoce'
+      labelTable,
+      ref: 'Match',
+      selectInvoice: 'selectedInvoceMatch'
     }
   },
   computed: {
     invoiceList() {
-      return this.$store.getters.getInvoiceList
+      return this.$store.getters.getInvoiceMatch
     },
     selectedInvoice() {
-      return this.$store.getters.getSelectedInvoce
+      return this.$store.getters.getSelectedInvoceMatch
     }
   }
 }

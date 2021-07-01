@@ -19,13 +19,13 @@ import language from '@/lang'
 
 export default [
   {
-    columnName: 'NrDocument',
-    label: 'Nr Docuemnto',
+    columnName: 'nrDocument',
+    label: language.t('form.match.table.nrDocument'),
     isNumeric: false,
     size: '150'
   },
   {
-    columnName: 'Date',
+    columnName: 'date',
     label: language.t('table.recentItems.date'),
     isNumeric: false,
     size: '150'
@@ -37,7 +37,7 @@ export default [
     size: '200'
   },
   {
-    columnName: 'No. Línea',
+    columnName: 'noLínea',
     label: language.t('form.pos.order.numberLines'),
     isNumeric: true,
     size: '150'
@@ -55,8 +55,8 @@ export default [
     size: '150'
   },
   {
-    columnName: 'Assigned',
-    label: 'Asignado',
+    columnName: 'assigned',
+    label: language.t('form.match.field.assigning'),
     isNumeric: true,
     size: '150'
   }
