@@ -1,7 +1,7 @@
 <!--
  ADempiere-Vue (Frontend) for ADempiere ERP & CRM Smart Business Solution
  Copyright (C) 2017-Present E.R.P. Consultores y Asociados, C.A.
- Contributor(s): Leonel Matos lmatos@erpya.com www.erpya.com
+ Contributor(s): Edwin Betancourt EdwinBetanc0urt@outlook.com www.erpya.com
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
@@ -15,42 +15,34 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <https:www.gnu.org/licenses/>.
 -->
+
 <template>
   <component
-    :is="templateDevice"
+    :is="WindowView"
+    :uuid="uuid"
+    :metadata="metadata"
   />
 </template>
 
 <script>
-import { defineComponent, computed } from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
+
+import WindowView from '@/views/ADempiere/WindowView'
+import standardMetadata from './standardWindow.json'
 
 export default defineComponent({
-  name: 'ProcessActivityFromDevice',
+  name: 'TestWindowView',
 
-  setup(props, { root }) {
-    const isMobile = computed(() => {
-      return root.$store.state.app.device === 'mobile'
-    })
-
-    const templateDevice = computed(() => {
-      if (isMobile.value) {
-        return () => import('@/views/ADempiere/ProcessActivity/modeMobile')
-      }
-      return () => import('@/views/ADempiere/ProcessActivity/modeDesktop')
-    })
+  setup() {
+    // Product Group
+    const uuid = 'a521b2f6-fb40-11e8-a479-7a0060f0aa01'
+    const metadata = standardMetadata.result
 
     return {
-      // computeds
-      templateDevice
+      WindowView,
+      metadata,
+      uuid
     }
   }
 })
 </script>
-
-<style lang="scss" scoped src="./processActivityStyle.scss">
-</style>
-<style>
-  .popover-scroll {
-    max-height: 200px !important;
-  }
-</style>
