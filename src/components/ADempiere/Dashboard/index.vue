@@ -134,7 +134,6 @@ export default {
   },
   methods: {
     sendMain(dashboard) {
-      console.log(dashboard)
       this.$store.dispatch('mainDashboard', dashboard)
       this.$forceUpdate()
     }
