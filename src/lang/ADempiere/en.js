@@ -564,7 +564,7 @@ export default {
         matchingPayments: 'MatchingPayments'
       },
       description: {
-        searchCriteria: 'Select a Business Partner to check the pending documents to be assigned',
+        searchCriteria: 'Select a Bank Account with bank information',
         importedMovements: 'You will be able to see the movements of the account statement. You must select at least one movement',
         systemPayments: 'You will be able to see the movements registered in ADempiere. You must select at least one transaction',
         matchingPayments: 'You will be able to see the movements with matching'

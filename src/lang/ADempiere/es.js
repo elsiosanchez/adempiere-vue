@@ -539,7 +539,7 @@ export default {
         matchingPayments: 'Pagos con Coincidencia'
       },
       description: {
-        searchCriteria: 'Seleccione un Socio de Negocio para verificar los documentos pendientes por asignar',
+        searchCriteria: 'Seleccione una Cuenta Bancaria con la información del banco',
         importedMovements: 'Podrá apreciar los movimientos del estado de cuenta. El cual debe seleccionar al menos un movimiento',
         systemPayments: 'Podrá apreciar los movimientos registrados en ADempiere. El cual debe seleccionar al menos un movimiento',
         matchingPayments: 'Podrá apreciar los movimientos con coincidencia'
