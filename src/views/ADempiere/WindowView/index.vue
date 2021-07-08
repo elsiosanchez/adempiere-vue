@@ -19,13 +19,13 @@
 <template>
   <div v-if="isLoaded" key="window-loaded" class="view-base">
     <el-container style="min-height: calc(100vh - 84px)">
-      <el-aside width="100%">
+      <el-aside style="width: 100%; margin-bottom: 0px; padding-right: 10px; padding-left: 10px;">
 
         <!-- // TODO: Add header window component for auxiliary menu and worflow status -->
 
         <component
           :is="renderWindowComponent"
-          :container-manager="containerManagerProp"
+          :container-manager="containerManagerWindow"
           :window-metadata="windowMetadata"
         />
       </el-aside>
@@ -61,12 +61,34 @@ export default defineComponent({
     },
     containerManager: {
       type: Object,
-      required: true
+      default: () => {}
     }
   },
 
   setup(props, { root }) {
-    const containerManagerProp = props.containerManager
+    let containerManagerWindow = {
+      actionPerformed: function(eventInfo) {
+        console.log('actionPerformed: ', eventInfo)
+        return new Promise()
+      },
+
+      seekRecord: function(eventInfo) {
+        console.log('seekRecord: ', eventInfo)
+        // return new Promise()
+      },
+
+      seekTab: function(eventInfo) {
+        console.log('seekTab: ', eventInfo)
+        return new Promise()
+      }
+    }
+    if (!root.isEmptyValue(props.containerManager)) {
+      containerManagerWindow = {
+        ...containerManagerWindow,
+        // overwirte methods
+        ...props.containerManager
+      }
+    }
 
     const isLoaded = ref(false)
     const windowMetadata = ref({})
@@ -102,11 +124,12 @@ export default defineComponent({
     })
 
     // load metadata and generate window
-    getWindow()
+    // getWindow()
+    setTimeout(getWindow, 1000)
 
     return {
       windowUuid,
-      containerManagerProp,
+      containerManagerWindow,
       windowMetadata,
       // computed
       renderWindowComponent,

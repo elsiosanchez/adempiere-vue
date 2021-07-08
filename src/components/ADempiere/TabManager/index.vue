@@ -17,13 +17,28 @@
 -->
 
 <template>
-  <el-tabs
-    v-model="currentTab"
-    type="border-card"
-    @tab-click="handleClick"
-  >
-    <template v-for="(tabAttributes, key) in tabsList">
+  <div>
+    <el-drawer
+      :title="tabsList[currentTab].name"
+      size="50%"
+      :visible.sync="isShowRecords"
+      with-header
+    >
+      <record-navigation
+        :parent-uuid="parentUuid"
+        :container-uuid="tabUuid"
+        :container-manager="containerManagerTab"
+        :current-tab="tabsList[currentTab]"
+      />
+    </el-drawer>
+
+    <el-tabs
+      v-model="currentTab"
+      type="border-card"
+      @tab-click="handleClick"
+    >
       <el-tab-pane
+        v-for="(tabAttributes, key) in tabsList"
         :key="key"
         :label="tabAttributes.name"
         :name="String(key)"
@@ -39,7 +54,16 @@
           :tab-uuid="tabAttributes.uuid"
           :table-name="tabAttributes.tableName"
           :tab-name="tabAttributes.name"
-        />
+        >
+          <el-button
+            v-if="currentTab == key"
+            slot="prefix"
+            type="text"
+            @click="isShowRecords = true"
+          >
+            <i class="el-icon-s-fold" style="font-size: 15px; color: black;" />
+          </el-button>
+        </lock-record>
 
         <panel-definition
           :parent-uuid="parentUuid"
@@ -48,23 +72,26 @@
           :panel-metadata="tabAttributes"
           :group-tab="tabAttributes.tabGroup"
         />
+
       </el-tab-pane>
-    </template>
-  </el-tabs>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
 import { defineComponent, computed, ref } from '@vue/composition-api'
 
-import PanelDefinition from '@/components/ADempiere/PanelDefinition'
 import LockRecord from '@/components/ADempiere/ContainerOptions/LockRecord'
+import PanelDefinition from '@/components/ADempiere/PanelDefinition'
+import RecordNavigation from '@/components/ADempiere/RecordNavigation'
 
 export default defineComponent({
   name: 'TabManager',
 
   components: {
+    LockRecord,
     PanelDefinition,
-    LockRecord
+    RecordNavigation
   },
 
   props: {
@@ -87,9 +114,10 @@ export default defineComponent({
     const tabNo = root.$route.query.tab || '0'
     const currentTab = ref(tabNo)
 
-    const tabUuid = ref(props.tabsList[0].uuid)
+    const tabUuid = ref(props.tabsList[tabNo].uuid)
 
     const tabStyle = computed(() => {
+      // height in card
       return {
         height: '75vh',
         overflow: 'auto'
@@ -107,6 +135,14 @@ export default defineComponent({
     const setCurrentTab = () => {
       // TODO: Add store current tab
     }
+
+    const containerManagerTab = computed(() => {
+      return {
+        ...props.containerManager,
+
+        vuexStore: () => 'dataManager'
+      }
+    })
 
     /**
      * @param {object} tabHTML DOM HTML the tab clicked
@@ -150,15 +186,25 @@ export default defineComponent({
 
     const getData = () => {
       // TODO: Add store get data from tab
+      root.$store.dispatch('dataManager/getEntitiesList', {
+        parentUuid: props.parentUuid,
+        containerUuid: tabUuid.value,
+        ...props.tabsList[currentTab.value]
+      })
     }
 
     getData()
 
     setTabNumber(currentTab.value)
 
+    const isShowRecords = ref(false)
+
     return {
+      isShowRecords,
+      tabUuid,
       currentTab,
       // computed
+      containerManagerTab,
       tabStyle,
       // meyhods
       handleClick,

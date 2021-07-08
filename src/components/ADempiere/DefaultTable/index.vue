@@ -25,7 +25,7 @@
       :row-key="keyColumn"
       reserve-selection
       highlight-current-row
-      :data="[]"
+      :data="recordsList"
       :element-loading-text="$t('notifications.loading')"
       element-loading-background="rgba(255, 255, 255, 0.8)"
       @row-click="handleRowClick"
@@ -95,22 +95,26 @@ export default defineComponent({
     containerUuid: {
       type: String,
       required: true
+    },
+    containerManager: {
+      type: Object,
+      required: true
+    },
+    panelMetadata: {
+      type: Object,
+      required: true
     }
   },
 
   setup(props, { root }) {
-    const panelMetadata = computed(() => {
-      return root.$store.getters.getPanel(props.containerUuid)
-    })
-
     const keyColumn = computed(() => {
-      if (panelMetadata.value) {
-        return panelMetadata.value.keyColumn
+      if (props.panelMetadata) {
+        return props.panelMetadata.keyColumn
       }
     })
 
     const fieldsList = computed(() => {
-      const panel = panelMetadata.value
+      const panel = props.panelMetadata
       if (panel && panel.fieldsList) {
         return panel.fieldsList
       }
@@ -118,27 +122,10 @@ export default defineComponent({
     })
 
     const handleRowClick = (row, column, event) => {
-      // this.currentTable = this.recordsData.findIndex(item => item.UUID === row.UUID)
-      // if (this.uuidCurrentRecordSelected !== row.UUID) {
-      //   this.uuidCurrentRecordSelected = row.UUID
-      //   // disabled rollback when change route
-      //   // root.$store.dispatch('setDataLog', {})
-      // }
-      const tableName = panelMetadata.value.tableName
-      // TODO: Replace with general dispatch to set current record
-      root.$router.push({
-        name: root.$route.name,
-        query: {
-          ...root.$route.query,
-          action: row.UUID
-        },
-        params: {
-          ...root.$router.params,
-          tableName,
-          recordId: row[`${tableName}_ID`]
-        }
-      }, () => {})
-      // root.$store.commit('setCurrentRecord', row)
+      props.containerManager.seekRecord({
+        row,
+        tableName: props.panelMetadata.tableName
+      })
     }
 
     const headerLabel = (field) => {
@@ -163,10 +150,24 @@ export default defineComponent({
       return
     }
 
+    // namespace to vuex store module
+    const vuexStore = props.containerManager.vuexStore()
+
+    // get records list
+    const recordsList = computed(() => {
+      const data = root.$store.getters[vuexStore + '/getContainerData']({
+        containerUuid: props.containerUuid
+      })
+      if (data && data.recordsList) {
+        return data.recordsList
+      }
+      return []
+    })
+
     return {
       // computeds
+      recordsList,
       keyColumn,
-      panelMetadata,
       fieldsList,
       // methods
       headerLabel,
