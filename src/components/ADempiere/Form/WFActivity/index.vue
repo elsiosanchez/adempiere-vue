@@ -118,7 +118,7 @@ export default {
     },
     activityList() {
       const list = this.$store.getters.getActivity
-      if (list) {
+      if (!this.isEmptyValue(list)) {
         return list
       }
       return []
@@ -139,7 +139,7 @@ export default {
       this.$refs.WFActivity.setCurrentRow(activity)
     },
     handleCurrentChange(activity) {
-      this.$store.dispatch('selectedActivity', { activity })
+      this.$store.dispatch('selectedActivity', activity)
     },
     action() {
       const message = this.$store.getters.getValueOfField({
