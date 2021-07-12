@@ -69,8 +69,8 @@
       </el-card>
     </div>
     <div :class="styleFooter">
-      <el-button type="primary" icon="el-icon-check" style="float: right;" @click="next" />
-      <el-button v-show="active > 0" type="danger" icon="el-icon-close" style="float: right;margin-right: 10px;" @click="prev" />
+      <el-button type="primary" :icon="active === 3 ? 'el-icon-check' : 'el-icon-right'" style="float: right;" @click="next" />
+      <el-button v-show="active > 0" type="danger" icon="el-icon-back" style="float: right;margin-right: 10px;" @click="prev" />
     </div>
   </div>
 </template>
