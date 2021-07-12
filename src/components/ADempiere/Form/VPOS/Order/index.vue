@@ -54,43 +54,11 @@
             </el-col>
             <el-col :span="5" :style="styleTab">
               <el-form-item>
-                <el-popover
-                  v-model="visible"
-                  placement="right"
-                >
-                  <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-                    <el-form-item :label="$t('form.pos.tableProduct.pin')">
-                      <el-input
-                        v-model="pin"
-                        type="password"
-                        :placeholder="$t('form.pos.tableProduct.pin')"
-                        clearable
-                      />
-                    </el-form-item>
-                  </el-form>
-                  <span style="float: right;">
-                    <el-button
-                      type="danger"
-                      icon="el-icon-close"
-                      @click="closePin"
-                    />
-                    <el-button
-                      type="primary"
-                      icon="el-icon-check"
-                      @click="openPin(pin)"
-                    />
-                  </span>
-                  <el-button slot="reference" type="text">
-                    <field
-                      :key="fieldsList[2].columnName"
-                      :metadata-field="{
-                        ...fieldsList[2],
-                        isReadOnly: validatePin
-                      }"
-                      :v-model="fieldsList[2].value"
-                    />
-                  </el-button>
-                </el-popover>
+                <field
+                  :key="fieldsList[2].columnName"
+                  :metadata-field="fieldsList[2]"
+                  :v-model="fieldsList[2].value"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px; margin-top: 3.%;' : 'padding: 0px; margin-top: 2.4%;'">
@@ -221,6 +189,30 @@
               </el-table-column>
             </el-table>
           </el-main>
+          <el-dialog :title="$t('form.pos.tableProduct.pin')" width="30%" :visible.sync="visible">
+            <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
+              <el-form-item :label="$t('form.pos.tableProduct.pin')">
+                <el-input
+                  v-model="pin"
+                  type="password"
+                  :placeholder="$t('form.pos.tableProduct.pin')"
+                  clearable
+                />
+              </el-form-item>
+            </el-form>
+            <span style="float: right;">
+              <el-button
+                type="danger"
+                icon="el-icon-close"
+                @click="closePin"
+              />
+              <el-button
+                type="primary"
+                icon="el-icon-check"
+                @click="openPin(pin)"
+              />
+            </span>
+          </el-dialog>
           <el-footer :class="classOrderFooter">
             <div class="keypad">
               <span id="toolPoint">
@@ -412,6 +404,7 @@
 <script>
 import formMixin from '@/components/ADempiere/Form/formMixin.js'
 import orderLineMixin from './orderLineMixin.js'
+import posMixin from '@/components/ADempiere/Form/VPOS/posMixin.js'
 import fieldsListOrder from './fieldsListOrder.js'
 import BusinessPartner from '@/components/ADempiere/Form/VPOS/BusinessPartner'
 import fieldLine from '@/components/ADempiere/Form/VPOS/Order/line/index'
@@ -423,7 +416,6 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
-import { validatePin } from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
   name: 'Order',
@@ -435,16 +427,14 @@ export default {
   },
   mixins: [
     formMixin,
-    orderLineMixin
+    orderLineMixin,
+    posMixin
   ],
   data() {
     return {
       fieldsList: fieldsListOrder,
       seeConversion: false,
-      showFieldLine: false,
-      pin: '',
-      validatePin: true,
-      visible: false
+      showFieldLine: false
     }
   },
   computed: {
@@ -625,8 +615,8 @@ export default {
       return list
     },
     currentWarehouse() {
-      if (!this.isEmptyValue(this.$store.getters['user/getWarehouse'])) {
-        return this.$store.getters['user/getWarehouse']
+      if (!this.isEmptyValue(this.$store.getters.posAttributes.currentPointOfSales.warehouse)) {
+        return this.$store.getters.getcurrentWarehousePos
       }
       return {}
     },
@@ -656,32 +646,6 @@ export default {
     formatDate,
     formatPrice,
     formatQuantity,
-    openPin(pin) {
-      validatePin({
-        posUuid: this.currentPointOfSales.uuid,
-        pin
-      })
-        .then(response => {
-          this.validatePin = false
-          this.pin = ''
-          this.visible = false
-        })
-        .catch(error => {
-          console.error(error.message)
-          this.$message({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
-          this.pin = ''
-        })
-        .finally(() => {
-          this.closePing()
-        })
-    },
-    closePin() {
-      this.visible = false
-    },
     closeConvertion() {
       this.seeConversion = false
     },
@@ -757,10 +721,20 @@ export default {
       this.newOrder()
     },
     changeWarehouse(warehouse) {
-      this.$store.commit('setCurrentWarehouse', warehouse)
+      this.attributePin = {
+        ...warehouse,
+        action: 'changeWarehouse',
+        type: 'actionPos'
+      }
+      this.visible = true
     },
     changePriceList(priceList) {
-      this.$store.commit('setCurrentPriceList', priceList)
+      this.attributePin = {
+        ...priceList,
+        action: 'changePriceList',
+        type: 'actionPos'
+      }
+      this.visible = true
     },
     arrowTop() {
       if (this.currentTable > 0) {

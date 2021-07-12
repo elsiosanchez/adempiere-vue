@@ -48,8 +48,7 @@ export default [
       handleFocusGained: true,
       handleActionPerformed: true,
       handleContentSelection: true,
-      handleActionKeyPerformed: true,
-      isReadOnly: true
+      handleActionKeyPerformed: true
     }
   }
   // {
