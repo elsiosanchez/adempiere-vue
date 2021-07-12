@@ -54,16 +54,43 @@
             </el-col>
             <el-col :span="5" :style="styleTab">
               <el-form-item>
-                <template
-                  v-for="(field) in fieldsList"
+                <el-popover
+                  v-model="visible"
+                  placement="right"
                 >
-                  <field
-                    v-if="field.columnName === 'C_DocTypeTarget_ID'"
-                    :key="field.columnName"
-                    :metadata-field="field"
-                    :v-model="field.value"
-                  />
-                </template>
+                  <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
+                    <el-form-item :label="$t('form.pos.tableProduct.pin')">
+                      <el-input
+                        v-model="pin"
+                        type="password"
+                        :placeholder="$t('form.pos.tableProduct.pin')"
+                        clearable
+                      />
+                    </el-form-item>
+                  </el-form>
+                  <span style="float: right;">
+                    <el-button
+                      type="danger"
+                      icon="el-icon-close"
+                      @click="closePin"
+                    />
+                    <el-button
+                      type="primary"
+                      icon="el-icon-check"
+                      @click="openPin(pin)"
+                    />
+                  </span>
+                  <el-button slot="reference" type="text">
+                    <field
+                      :key="fieldsList[2].columnName"
+                      :metadata-field="{
+                        ...fieldsList[2],
+                        isReadOnly: validatePin
+                      }"
+                      :v-model="fieldsList[2].value"
+                    />
+                  </el-button>
+                </el-popover>
               </el-form-item>
             </el-col>
             <el-col :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px; margin-top: 3.%;' : 'padding: 0px; margin-top: 2.4%;'">
@@ -396,6 +423,7 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
+import { validatePin } from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
   name: 'Order',
@@ -413,7 +441,10 @@ export default {
     return {
       fieldsList: fieldsListOrder,
       seeConversion: false,
-      showFieldLine: false
+      showFieldLine: false,
+      pin: '',
+      validatePin: true,
+      visible: false
     }
   },
   computed: {
@@ -611,6 +642,9 @@ export default {
       if (value > 0) {
         this.convertedAmount()
       }
+    },
+    currentOrder(value) {
+      this.validatePin = true
     }
   },
   mounted() {
@@ -622,6 +656,32 @@ export default {
     formatDate,
     formatPrice,
     formatQuantity,
+    openPin(pin) {
+      validatePin({
+        posUuid: this.currentPointOfSales.uuid,
+        pin
+      })
+        .then(response => {
+          this.validatePin = false
+          this.pin = ''
+          this.visible = false
+        })
+        .catch(error => {
+          console.error(error.message)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+          this.pin = ''
+        })
+        .finally(() => {
+          this.closePing()
+        })
+    },
+    closePin() {
+      this.visible = false
+    },
     closeConvertion() {
       this.seeConversion = false
     },
