@@ -105,20 +105,22 @@
               @current-change="handleCurrentLineChange"
               @shortkey.native="shortcutKeyMethod"
             >
-              <el-table-column
-                v-for="(valueOrder, item, key) in orderLineDefinition"
-                :key="key"
-                :column-key="valueOrder.columnName"
-                :label="valueOrder.label"
-                :width="!valueOrder.isNumeric ? valueOrder.size : valueOrder.size"
-                :align="valueOrder.isNumeric ? 'right' : 'left'"
-              >
-                <template slot-scope="scope">
-                  <span>
-                    {{ displayValue(scope.row, valueOrder) }}
-                  </span>
-                </template>
-              </el-table-column>
+              <template v-for="(valueOrder, item, key) in orderLineDefinition">
+                <el-table-column
+                  v-if="(valueOrder.columnName === 'ConvertedAmount' && !isEmptyValue(currentPointOfSales.displayCurrency)) || valueOrder.columnName !== 'ConvertedAmount'"
+                  :key="key"
+                  :column-key="valueOrder.columnName"
+                  :label="valueOrder.label"
+                  :width="!valueOrder.isNumeric ? valueOrder.size : valueOrder.size"
+                  :align="valueOrder.isNumeric ? 'right' : 'left'"
+                >
+                  <template slot-scope="scope">
+                    <span>
+                      {{ displayValue(scope.row, valueOrder) }}
+                    </span>
+                  </template>
+                </el-table-column>
+              </template>
               <el-table-column
                 :label="$t('form.pos.tableProduct.options')"
                 width="180"
@@ -602,6 +604,13 @@ export default {
         return this.$store.getters.posAttributes.currentPointOfSales.warehousesList
       }
       return []
+    }
+  },
+  watch: {
+    numberOfLines(value) {
+      if (value > 0) {
+        this.convertedAmount()
+      }
     }
   },
   mounted() {

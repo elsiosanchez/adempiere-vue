@@ -24,24 +24,11 @@ export default [
     columnName: 'PayAmt',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 0,
       handleContentSelection: true,
       handleActionPerformed: true,
       size: 24,
       isNumericField: true,
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  // Currency
-  {
-    tableName: 'C_Order',
-    columnName: 'C_Currency_ID',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 24,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      validationCode: 'C_Currency.C_Currency_ID = 100 OR C_Currency.C_Currency_ID = 50001',
       isActiveLogics: true,
       isMandatory: true
     }
@@ -54,10 +41,26 @@ export default [
     isFromDictionary: true,
     overwriteDefinition: {
       defaultValue: 'X',
+      sequence: 1,
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
       size: 24,
+      isActiveLogics: true,
+      isMandatory: true
+    }
+  },
+  // Currency
+  {
+    tableName: 'C_Order',
+    columnName: 'C_Currency_ID',
+    isFromDictionary: true,
+    overwriteDefinition: {
+      size: 24,
+      sequence: 2,
+      handleActionKeyPerformed: true,
+      handleActionPerformed: true,
+      validationCode: 'C_Currency.C_Currency_ID = 100 OR C_Currency.C_Currency_ID = 50001',
       isActiveLogics: true,
       isMandatory: true
     }
@@ -68,10 +71,11 @@ export default [
     columnName: 'C_Bank_ID',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 3,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       handleContentSelection: true,
-      displayLogic: `@TenderType@=='D'`,
+      displayLogic: `@TenderType@<>'X'`,
       size: 24,
       isActiveLogics: true,
       isMandatory: true
@@ -83,6 +87,7 @@ export default [
     elementColumnName: 'DateTrx',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 4,
       handleFocusGained: true,
       handleFocusLost: true,
       handleKeyPressed: true,
@@ -102,6 +107,7 @@ export default [
     columnName: 'ReferenceNo',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 5,
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
@@ -118,6 +124,7 @@ export default [
     columnName: 'CreditCardType',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 6,
       defaultValue: 'M',
       handleActionKeyPerformed: true,
       handleContentSelection: true,
@@ -135,6 +142,7 @@ export default [
     columnName: 'CreditCardNumber',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 7,
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
@@ -151,6 +159,7 @@ export default [
     columnName: 'AccountNo',
     isFromDictionary: true,
     overwriteDefinition: {
+      sequence: 8,
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
