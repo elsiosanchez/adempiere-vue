@@ -918,19 +918,6 @@ export default {
       if (!this.isEmptyValue(currency) && this.isEmptyValue(convert) && currency.uuid !== this.currentPointOfSales.currentPriceList.currency.uuid) {
         this.amountConvert(currency)
       }
-      // const findCoventionList = this.convertionList.find(convertion => {
-      //   if (!this.isEmptyValue(convertion.currencyTo.iSOCode) && convertion.currencyTo.iSOCode === value) {
-      //     return convertion
-      //   }
-      // })
-      // if (!this.isEmptyValue(currency) && this.isEmptyValue(findCoventionList) && (value !== this.pointOfSalesCurrency.iSOCode)) {
-      //   this.$store.dispatch('searchConversion', {
-      //     conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-      //     currencyFromUuid: this.pointOfSalesCurrency.uuid,
-      //     conversionDate: this.formatDate(new Date()),
-      //     currencyToUuid: currency.uuid
-      //   })
-      // }
     }
   }
 }
