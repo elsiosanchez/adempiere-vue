@@ -18,17 +18,13 @@
 
 <template>
   <el-container class="record-navigation">
-    <el-scrollbar>
-
-      <!-- records in table -->
-      <default-table
-        :parent-uuid="parentUuid"
-        :container-uuid="containerUuid"
-        :container-manager="recordNavigationManager"
-        :panel-metadata="panelMetadata"
-      />
-
-    </el-scrollbar>
+    <!-- records in table -->
+    <default-table
+      :parent-uuid="parentUuid"
+      :container-uuid="containerUuid"
+      :container-manager="recordNavigationManager"
+      :panel-metadata="panelMetadata"
+    />
   </el-container>
 </template>
 
@@ -125,5 +121,6 @@ export default defineComponent({
 .record-navigation {
   background-color: #fff;
   height: 100%;
+  display: contents;
 }
 </style>
