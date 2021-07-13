@@ -189,17 +189,16 @@
               </el-table-column>
             </el-table>
           </el-main>
-          <el-dialog :title="$t('form.pos.tableProduct.pin')" width="30%" :visible.sync="visible">
-            <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-              <el-form-item :label="$t('form.pos.tableProduct.pin')">
-                <el-input
-                  v-model="pin"
-                  type="password"
-                  :placeholder="$t('form.pos.tableProduct.pin')"
-                  clearable
-                />
-              </el-form-item>
-            </el-form>
+          <el-dialog ref="dialog" :title="$t('form.pos.tableProduct.pin')" width="30%" :visible.sync="visible">
+            <el-input
+              id="pin"
+              ref="pin"
+              v-model="pin"
+              :autofocus="true"
+              type="password"
+              :placeholder="$t('form.pos.tableProduct.pin')"
+              :focus="true"
+            />
             <span style="float: right;">
               <el-button
                 type="danger"
@@ -639,6 +638,13 @@ export default {
     },
     currentOrder(value) {
       this.validatePin = true
+    },
+    visible(value) {
+      if (value && !this.isEmptyValue(this.$refs)) {
+        setTimeout(() => {
+          this.focusPin()
+        }, 500)
+      }
     }
   },
   mounted() {
@@ -650,6 +656,10 @@ export default {
     formatDate,
     formatPrice,
     formatQuantity,
+    focusPin() {
+      console.log(this.$refs)
+      this.$refs.pin.focus()
+    },
     openPin(pin) {
       validatePin({
         posUuid: this.currentPointOfSales.uuid,

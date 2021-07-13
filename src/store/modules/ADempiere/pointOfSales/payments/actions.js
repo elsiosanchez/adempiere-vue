@@ -292,26 +292,4 @@ export default {
     })
     commit('setCurrencyDisplaye', displaycurrency)
   }
-  // convertionPayment({ commit }, {
-  //   conversionTypeUuid,
-  //   currencyFromUuid,
-  //   currencyToUuid
-  // }) {
-  //   requestGetConversionRate({
-  //     conversionTypeUuid,
-  //     currencyFromUuid,
-  //     currencyToUuid
-  //   })
-  //     .then(response => {
-  //       commit('setConvertionPayment', response)
-  //     })
-  //     .catch(error => {
-  //       console.warn(`ConvertionPayment: ${error.message}. Code: ${error.code}.`)
-  //       showMessage({
-  //         type: 'error',
-  //         message: error.message,
-  //         showClose: true
-  //       })
-  //     })
-  // }
 }
