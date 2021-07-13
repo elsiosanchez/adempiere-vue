@@ -199,25 +199,24 @@ export default defineComponent({
       }
       return []
     })
-
     const recordsWithFilter = computed(() => {
       if (!root.isEmptyValue(valueToSearch.value)) {
         return recordsList.value.filter(row => {
-          const value = selectionColumns.value.some(columnName => {
-            if (!root.isEmptyValue(row[columnName])) {
-              const labelRow = row[columnName].toString()
-              const search = valueToSearch.value.toLowerCase()
-              if (labelRow.includes(valueToSearch.value) || row[columnName] === search) {
-                return columnName
-              }
+          return selectionColumns.value.some(columnName => {
+            const value = !root.isEmptyValue(row[columnName]) ? row[columnName].toString() : ''
+            const search = valueToSearch.value
+            if (value) {
+              return value
+                .trim()
+                .toLowerCase()
+                .includes(search
+                  .trim()
+                  .toLowerCase()
+                )
             }
           })
-          if (value) {
-            return row
-          }
         })
       }
-
       return recordsList.value
     })
 
