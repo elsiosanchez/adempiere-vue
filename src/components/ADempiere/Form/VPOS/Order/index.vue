@@ -416,6 +416,7 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
+import { validatePin } from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
   name: 'Order',
@@ -434,7 +435,10 @@ export default {
     return {
       fieldsList: fieldsListOrder,
       seeConversion: false,
-      showFieldLine: false
+      showFieldLine: false,
+      pin: '',
+      validatePin: true,
+      visible: false
     }
   },
   computed: {
@@ -646,6 +650,32 @@ export default {
     formatDate,
     formatPrice,
     formatQuantity,
+    openPin(pin) {
+      validatePin({
+        posUuid: this.currentPointOfSales.uuid,
+        pin
+      })
+        .then(response => {
+          this.validatePin = false
+          this.pin = ''
+          this.visible = false
+        })
+        .catch(error => {
+          console.error(error.message)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+          this.pin = ''
+        })
+        .finally(() => {
+          this.closePing()
+        })
+    },
+    closePin() {
+      this.visible = false
+    },
     closeConvertion() {
       this.seeConversion = false
     },
