@@ -32,8 +32,9 @@
 
     <el-table
       ref="multipleTable"
-      style="width: 100%"
+      style="width: 100%;height: 93% !important;"
       border
+      height="90% !important"
       :row-key="keyColumn"
       reserve-selection
       highlight-current-row
@@ -198,26 +199,24 @@ export default defineComponent({
       }
       return []
     })
-
     const recordsWithFilter = computed(() => {
       if (!root.isEmptyValue(valueToSearch.value)) {
         return recordsList.value.filter(row => {
           return selectionColumns.value.some(columnName => {
-            const value = row[columnName]
+            const value = !root.isEmptyValue(row[columnName]) ? row[columnName].toString() : ''
+            const search = valueToSearch.value
             if (value) {
               return value
                 .trim()
                 .toLowerCase()
-                .includes(
-                  valueToSearch.value
-                    .trim()
-                    .toLowerCase()
+                .includes(search
+                  .trim()
+                  .toLowerCase()
                 )
             }
           })
         })
       }
-
       return recordsList.value
     })
 
@@ -241,6 +240,8 @@ export default defineComponent({
 <style lang="scss">
 .default-table {
   padding: 0px !important;
+  display: contents;
+  height: 50% !important;
   overflow: hidden;
 
   .input-search {
