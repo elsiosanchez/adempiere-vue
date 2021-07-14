@@ -54,17 +54,15 @@
             </el-col>
             <el-col :span="5" :style="styleTab">
               <el-form-item>
-                <template slot="label">
-                  <icon class="el-icon-document" /> Tipo de Documento
-                </template>
+                <template slot="label" />
                 <el-dropdown
-                  v-if="!isEmptyValue(currentWarehouse)"
+                  v-if="!isEmptyValue(currentDocumentType)"
                   trigger="click"
-                  style="padding-top: 0px;font-size: 14px;color: black;"
+                  style="padding-top: 10%;font-size: 15px;color: black;"
                   @command="changeDocumentType"
                 >
                   <span>
-                    <icon class="el-icon-connection" />
+                    <icon class="el-icon-document" />
                     <b style="cursor: pointer"> {{ currentDocumentType.name }} </b>
                   </span>
                   <el-dropdown-menu slot="dropdown">
