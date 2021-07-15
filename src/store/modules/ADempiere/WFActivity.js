@@ -1,6 +1,6 @@
 import {
-  listActivity
-} from '@/api/ADempiere/form/wf-activity.js'
+  workflowActivities
+} from '@/api/ADempiere/workflow.js'
 import { showMessage } from '@/utils/ADempiere/notification.js'
 
 const activity = {
@@ -19,14 +19,13 @@ export default {
     }
   },
   actions: {
-    serverListActivity({ commit }, {
-      formUuid
-    }) {
-      listActivity({
-        formUuid
+    serverListActivity({ commit, getters, rootGetters }) {
+      workflowActivities({
+        userUuid: rootGetters['user/getUserUuid']
       })
-        .then(listActivityResponse => {
-          commit('setActivity', listActivityResponse)
+        .then(response => {
+          const { listWorkflowActivities } = response
+          commit('setActivity', listWorkflowActivities)
         })
         .catch(error => {
           console.warn(`serverListActivity: ${error.message}. Code: ${error.code}.`)

@@ -19,54 +19,6 @@
 import language from '@/lang'
 
 export default [
-  {
-    elementColumnName: 'AD_WF_Node_ID',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      handleFocusGained: true,
-      handleFocusLost: true,
-      handleKeyPressed: true,
-      handleKeyReleased: true,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      size: 24,
-      sequence: 1,
-      isActiveLogics: true,
-      isMandatory: true,
-      isReadOnly: true
-    }
-  },
-  {
-    elementColumnName: 'Description',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      handleKeyPressed: true,
-      handleKeyReleased: true,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      size: 24,
-      sequence: 2,
-      isReadOnly: true
-    }
-  },
-  // Help
-  {
-    elementColumnName: 'Help',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      handleFocusGained: true,
-      handleFocusLost: true,
-      handleKeyPressed: true,
-      handleKeyReleased: true,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      size: 24,
-      sequence: 3,
-      isActiveLogics: true,
-      isMandatory: true,
-      isReadOnly: true
-    }
-  },
   // History
   {
     elementColumnName: 'History',
