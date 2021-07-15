@@ -57,7 +57,7 @@
         v-if="!isEmptyValue(node)"
         :transitions="nodeTransitions"
         :states="node"
-        :state-semantics="stateSemantics"
+        :state-semantics="currentNode"
         @state-click="onLabelClicked(node, $event)"
       />
     </el-main>
@@ -76,7 +76,7 @@
             </el-row>
           </el-form-item>
         </el-form>
-        <el-button type="primary" icon="el-icon-check" style="float: right;" :disabled="isEmptyValue(currentActivity)" @click="action" />
+        <el-button type="primary" icon="el-icon-check" style="float: right;" :disabled="isEmptyValue(currentActivity)" />
       </el-card>
     </el-footer>
   </el-container>
@@ -116,6 +116,10 @@ export default {
       leftContextualMenu: 0,
       infoNode: {},
       show: false,
+      currentNode: [{
+        classname: 'delete',
+        id: ''
+      }],
       orderLineDefinition: [
         {
           columnName: 'priority',
@@ -142,16 +146,6 @@ export default {
         return 'show-title-footer'
       }
       return 'footer'
-    },
-    // Highlight Current Node
-    stateSemantics() {
-      if (this.isEmptyValue(this.activityList)) {
-        return {}
-      }
-      return [{
-        classname: 'delete',
-        id: this.activityList.node.uuid
-      }]
     },
     activityList() {
       const list = this.$store.getters.getActivity
@@ -201,8 +195,15 @@ export default {
       this.show = true
     },
     listWorkflow(activity) {
-      if (activity.workflow.workflow_nodes.length > 2) {
-        const listNodes = activity.workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
+      // Highlight Current Node
+      if (!this.isEmptyValue(activity.node.uuid)) {
+        this.currentNode = [{
+          classname: 'delete',
+          id: activity.node.uuid
+        }]
+      }
+      const listNodes = activity.workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
+      if (!this.isEmptyValue(listNodes)) {
         this.node = listNodes.map((workflow, key) => {
           return {
             ...workflow,
