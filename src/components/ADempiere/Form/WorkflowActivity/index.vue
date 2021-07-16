@@ -15,29 +15,33 @@
 -->
 <template>
   <el-container style="height: 100% !important;">
-    <el-header class="header">
-      <el-tabs type="border-card">
-        <el-tab-pane :label="$t('form.activity.title')">
-          <el-table
-            ref="WorkflowActivity"
-            v-loading="isEmptyValue(activityList)"
-            :data="activityList"
-            highlight-current-row
-            style="width: 100%"
-            border
-            @current-change="handleCurrentChange"
-          >
-            <el-table-column
-              v-for="(valueOrder) in orderLineDefinition"
-              :key="valueOrder.columnName"
-              :column-key="valueOrder.columnName"
-              :label="valueOrder.name"
-              :align="valueOrder.isNumeric ? 'right' : 'left'"
-              :prop="valueOrder.columnName"
-            />
-          </el-table>
-        </el-tab-pane>
-      </el-tabs>
+    <el-header class="header" :style="!collapse ? 'height: 35% !important;' : 'height: 10%!important'">
+      <el-card :style="!collapse ? 'height: 100% !important;' : 'height: auto'">
+        <div slot="header">
+          <span> {{ $t('form.activity.title') }} </span>
+          <el-button style="float: right; padding: 3px 0" type="text" :icon="collapse ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="collapse = !collapse" />
+        </div>
+        <el-table
+          v-show="!collapse"
+          ref="WorkflowActivity"
+          v-loading="isEmptyValue(activityList)"
+          :data="activityList"
+          highlight-current-row
+          style="width: 100%;height: 85% !important;"
+          border
+          height="90% !important"
+          @current-change="handleCurrentChange"
+        >
+          <el-table-column
+            v-for="(valueOrder) in orderLineDefinition"
+            :key="valueOrder.columnName"
+            :column-key="valueOrder.columnName"
+            :label="valueOrder.name"
+            :align="valueOrder.isNumeric ? 'right' : 'left'"
+            :prop="valueOrder.columnName"
+          />
+        </el-table>
+      </el-card>
     </el-header>
     <el-main class="main">
       <transition name="el-zoom-in-center">
@@ -49,17 +53,36 @@
             <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-close" @click="show = !show" />
           </div>
           <div class="text item" style="padding: 20px">
-            <b> {{ $t('table.ProcessActivity.Description') }}: </b> {{ infoNode.description }}
+            <el-timeline class="info">
+              <el-timeline-item :timestamp="currentWorkflow.created" placement="top">
+                <el-card style="padding: 20px!important;">
+                  <b> Usuario: </b> {{ currentWorkflow.user_name }} <br>
+                  <b> {{ $t('table.ProcessActivity.Description') }}: </b> {{ infoNode.description }}
+                </el-card>
+              </el-timeline-item>
+            </el-timeline>
           </div>
         </el-card>
       </transition>
       <workflow-chart
-        v-if="!isEmptyValue(node)"
-        :transitions="nodeTransitions"
+        v-if="!isEmptyValue(node) && !isEmptyValue(currentWorkflow)"
+        :transitions="listWorkflowTransition"
         :states="node"
         :state-semantics="currentNode"
         @state-click="onLabelClicked(node, $event)"
       />
+      <el-scrollbar v-if="!isEmptyValue(currentWorkflow)" wrap-class="scroll-child">
+        <el-timeline class="info">
+          <el-timeline-item
+            v-for="(nodes, key) in currentWorkflow.workflow_process.workflow_events"
+            :key="key"
+            :timestamp="translateDate(nodes.log_date)"
+            placement="top"
+          >
+            <b>  {{ nodes.node_name }} </b> {{ nodes.text_message }}
+          </el-timeline-item>
+        </el-timeline>
+      </el-scrollbar>
     </el-main>
     <el-footer :class="styleFooter">
       <el-card shadow="hover" class="search">
@@ -110,21 +133,24 @@ export default {
   data() {
     return {
       fieldsList,
-      nodeTransitions: [],
       node: [],
+      transitions: [],
       topContextualMenu: 0,
       leftContextualMenu: 0,
       infoNode: {},
       show: false,
+      collapse: false,
       currentNode: [{
         classname: 'delete',
         id: ''
       }],
+      currentWorkflow: {},
+      listWorkflowTransition: [],
       orderLineDefinition: [
         {
-          columnName: 'priority',
-          name: this.$t('form.activity.table.priority'),
-          isNumeric: true
+          columnName: 'workflow.name',
+          name: 'Nombre',
+          isNumeric: false
         },
         {
           columnName: 'node.name',
@@ -132,8 +158,8 @@ export default {
           isNumeric: false
         },
         {
-          columnName: 'Summary',
-          name: this.$t('table.ProcessActivity.Summary'),
+          columnName: 'node.description',
+          name: 'Descripcion',
           isNumeric: false
         }
       ]
@@ -196,32 +222,69 @@ export default {
     },
     listWorkflow(activity) {
       // Highlight Current Node
+      this.currentWorkflow = activity
+      this.transitions = []
       if (!this.isEmptyValue(activity.node.uuid)) {
         this.currentNode = [{
           classname: 'delete',
           id: activity.node.uuid
         }]
       }
-      const listNodes = activity.workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
-      if (!this.isEmptyValue(listNodes)) {
-        this.node = listNodes.map((workflow, key) => {
+      const nodes = activity.workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
+      this.listNodeTransitions(nodes)
+      if (!this.isEmptyValue(nodes)) {
+        this.node = nodes.map((workflow, key) => {
           return {
             ...workflow,
+            transitions: workflow.transitions,
             id: workflow.uuid,
             key,
             label: workflow.name
           }
         })
-        this.nodeTransitions = this.node.map((node, index) => {
-          return {
-            id: index,
-            target: node.transitions[node.transitions.length].node_next_uuid,
-            source: node.uuid
-          }
-        })
       } else {
         this.node = []
       }
+    },
+    listNodeTransitions(nodes) {
+      nodes.forEach(element => {
+        const uuid = element.uuid
+        const id = element.value
+        if (!this.isEmptyValue(element.transitions)) {
+          element.transitions.forEach((nextNode, key) => {
+            if (!this.isEmptyValue(nextNode.node_next_uuid)) {
+              if (this.isEmptyValue(nextNode.description)) {
+                this.transitions.push({
+                  id: id + key,
+                  target: uuid,
+                  source: nextNode.node_next_uuid
+                })
+              } else {
+                this.transitions.push({
+                  id: id + key,
+                  label: nextNode.description,
+                  target: uuid,
+                  source: nextNode.node_next_uuid
+                })
+              }
+            }
+          })
+        }
+      })
+      const blon = nodes.map(item => {
+        return {
+          uuid: item.uuid
+        }
+      })
+      this.listWorkflowTransition = this.transitions.filter(data => {
+        const verificar = blon.find(mode => mode.uuid === data.source)
+        if (!this.isEmptyValue(verificar)) {
+          return data
+        }
+      })
+    },
+    translateDate(value) {
+      return this.$d(new Date(value), 'long', this.language)
     }
   }
 }
@@ -239,11 +302,10 @@ export default {
     overflow: auto;
   }
   .header {
-    padding-bottom: 0px;
+    padding-bottom: 2%;
     padding-top: 1.5%;
     box-sizing: border-box;
     flex-shrink: 0;
-    height: 20% !important;
     padding-left: 1%;
     padding-right: 1%;
   }
@@ -271,6 +333,12 @@ export default {
   }
 </style>
 <style scoped>
+.info {
+  margin: 0px;
+  font-size: 14px;
+  list-style: none;
+  padding: 0px;
+}
 .vue-workflow-chart-state {
     background-color: #fff;
     padding: 20px;
@@ -292,6 +360,16 @@ export default {
   }
 </style>
 <style lang='scss'>
+.el-card {
+  border-radius: 4px;
+  border: 1px solid #e6ebf5;
+  background-color: #FFFFFF;
+  overflow: hidden;
+  color: #303133;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  display: block;
+}
 @import '~vue-workflow-chart/dist/vue-workflow-chart.css';
 .vue-workflow-chart-state-delete {
   color: white;
