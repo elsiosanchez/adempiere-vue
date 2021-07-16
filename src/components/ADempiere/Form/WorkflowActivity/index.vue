@@ -19,7 +19,7 @@
       <el-tabs type="border-card">
         <el-tab-pane :label="$t('form.activity.title')">
           <el-table
-            ref="WFActivity"
+            ref="WorkflowActivity"
             v-loading="isEmptyValue(activityList)"
             :data="activityList"
             highlight-current-row
@@ -88,7 +88,7 @@ import fieldsList from './fieldsList.js'
 import WorkflowChart from 'vue-workflow-chart'
 
 export default {
-  name: 'WFActivity',
+  name: 'WorkflowActivity',
   components: {
     WorkflowChart
   },
@@ -167,7 +167,7 @@ export default {
   methods: {
     setCurrent() {
       const activity = this.activityList.find(activity => activity.node === this.currentActivity.node)
-      this.$refs.WFActivity.setCurrentRow(activity)
+      this.$refs.WorkflowActivity.setCurrentRow(activity)
     },
     handleCurrentChange(activity) {
       this.listWorkflow(activity)

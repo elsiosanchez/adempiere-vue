@@ -55,7 +55,7 @@ export default {
           form = import('@/components/ADempiere/Form/ProductInfo')
           break
         case 'WFActivity':
-          form = import('@/components/ADempiere/Form/WFActivity')
+          form = import('@/components/ADempiere/Form/WorkflowActivity')
           break
         case 'VPOS':
           form = import('@/components/ADempiere/Form/VPOS')
