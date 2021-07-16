@@ -30,10 +30,10 @@
             :key="key"
             :prop="item"
           >
-            <template slot="header">
+            <template slot="header" slot-scope="scope">
               <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
-                  {{ displaye(item, search, key) }} <i class="el-icon-arrow-down el-icon--right" />
+                  {{ scope.column.filterPlacement }} {{ displaye(item, search, key) }} <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -70,9 +70,14 @@
         </el-table>
       </carousel>
     </el-main>
+    <div style="width: 2%;position: fixed;right: 0;top: 50%;z-index: 2;">
+      <el-button v-show="active !== (step.length - 1)" type="primary" :icon="active === 3 ? 'el-icon-check' : 'el-icon-right'" circle @click="next" />
+    </div>
+    <div style="position: fixed;top: 50%;z-index: 2;">
+      <el-button v-show="active > 0" type="primary" icon="el-icon-back" circle @click="prev" />
+    </div>
     <el-footer :class="styleFooter">
-      <el-button type="primary" :icon="active === 3 ? 'el-icon-check' : 'el-icon-right'" style="float: right;" @click="next" />
-      <el-button v-show="active > 0" type="danger" icon="el-icon-back" style="float: right;margin-right: 10px;" @click="prev" />
+      <el-button v-show="active === (step.length - 1)" type="primary" icon="el-icon-check" style="float: right;" />
     </el-footer>
   </el-container>
 </template>
