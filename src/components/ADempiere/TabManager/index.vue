@@ -17,25 +17,23 @@
 -->
 
 <template>
-  <div>
-    <el-drawer
-      :title="tabsList[currentTab].name"
-      class="record-navigation-drawer"
-      size="50%"
-      :visible.sync="isShowRecords"
-      with-header
+  <div style="height: 100% !important;">
+    <external-container
+      v-if="isShowRecords"
+      :label="tabsList[currentTab].name"
     >
       <record-navigation
+        style="height: 100% !important;"
         :parent-uuid="parentUuid"
         :container-uuid="tabUuid"
         :container-manager="containerManagerTab"
         :current-tab="tabsList[currentTab]"
       />
-    </el-drawer>
-
+    </external-container>
     <el-tabs
       v-model="currentTab"
       type="border-card"
+      style="height: 100% !important;"
       @tab-click="handleClick"
     >
       <el-tab-pane
@@ -60,7 +58,7 @@
             v-if="currentTab == key"
             slot="prefix"
             type="text"
-            @click="isShowRecords = true"
+            @click="openContainer"
           >
             <i class="el-icon-s-fold" style="font-size: 15px; color: black;" />
           </el-button>
@@ -85,6 +83,7 @@ import { defineComponent, computed, ref } from '@vue/composition-api'
 import LockRecord from '@/components/ADempiere/ContainerOptions/LockRecord'
 import PanelDefinition from '@/components/ADempiere/PanelDefinition'
 import RecordNavigation from '@/components/ADempiere/RecordNavigation'
+import ExternalContainer from '@/components/ADempiere/ExternalContainer'
 
 export default defineComponent({
   name: 'TabManager',
@@ -92,7 +91,8 @@ export default defineComponent({
   components: {
     LockRecord,
     PanelDefinition,
-    RecordNavigation
+    RecordNavigation,
+    ExternalContainer
   },
 
   props: {
@@ -124,7 +124,9 @@ export default defineComponent({
         overflow: 'auto'
       }
     })
-
+    const isShowRecords = computed(() => {
+      return root.$store.getters.getExternalContainer
+    })
     const isCreateNew = computed(() => {
       return Boolean(root.$route.query.action === 'create-new')
     })
@@ -212,22 +214,23 @@ export default defineComponent({
         }
       })
     }
-
+    const openContainer = () => {
+      root.$store.commit('setExternalContainer', true)
+    }
     getData()
 
     setTabNumber(currentTab.value)
 
-    const isShowRecords = ref(false)
-
     return {
-      isShowRecords,
       tabUuid,
       currentTab,
       // computed
       containerManagerTab,
+      isShowRecords,
       tabStyle,
       // meyhods
       handleClick,
+      openContainer,
       isDisabledTab
     }
   }

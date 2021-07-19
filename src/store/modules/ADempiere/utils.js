@@ -30,7 +30,8 @@ const initStateUtils = {
   parametersProcessPos: [],
   updateOrder: false,
   updatePayment: false,
-  createBusinessPartner: false
+  createBusinessPartner: false,
+  showContainer: false
 }
 
 export default {
@@ -105,6 +106,9 @@ export default {
     },
     popoverCreateBusinessPartner(state, createBusinessPartner) {
       state.createBusinessPartner = createBusinessPartner
+    },
+    setExternalContainer(state, show) {
+      state.showContainer = show
     }
   },
   actions: {
@@ -249,6 +253,9 @@ export default {
     },
     getPopoverCreateBusinessParnet: (state) => {
       return state.createBusinessPartner
+    },
+    getExternalContainer: (state) => {
+      return state.showContainer
     }
   }
 }
