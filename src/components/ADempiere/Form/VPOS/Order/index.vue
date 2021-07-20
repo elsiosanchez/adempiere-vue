@@ -54,16 +54,27 @@
             </el-col>
             <el-col :span="5" :style="styleTab">
               <el-form-item>
-                <template
-                  v-for="(field) in fieldsList"
+                <template slot="label" />
+                <el-dropdown
+                  v-if="!isEmptyValue(currentDocumentType)"
+                  trigger="click"
+                  style="padding-top: 10%;font-size: 15px;color: black;"
+                  @command="changeDocumentType"
                 >
-                  <field
-                    v-if="field.columnName === 'C_DocTypeTarget_ID'"
-                    :key="field.columnName"
-                    :metadata-field="field"
-                    :v-model="field.value"
-                  />
-                </template>
+                  <span>
+                    <icon class="el-icon-document" />
+                    <b style="cursor: pointer"> {{ currentDocumentType.name }} </b>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-for="item in listDocumentTypes"
+                      :key="item.uuid"
+                      :command="item"
+                    >
+                      {{ item.name }}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </el-form-item>
             </el-col>
             <el-col :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px; margin-top: 3.%;' : 'padding: 0px; margin-top: 2.4%;'">
@@ -105,20 +116,22 @@
               @current-change="handleCurrentLineChange"
               @shortkey.native="shortcutKeyMethod"
             >
-              <el-table-column
-                v-for="(valueOrder, item, key) in orderLineDefinition"
-                :key="key"
-                :column-key="valueOrder.columnName"
-                :label="valueOrder.label"
-                :width="!valueOrder.isNumeric ? valueOrder.size : valueOrder.size"
-                :align="valueOrder.isNumeric ? 'right' : 'left'"
-              >
-                <template slot-scope="scope">
-                  <span>
-                    {{ displayValue(scope.row, valueOrder) }}
-                  </span>
-                </template>
-              </el-table-column>
+              <template v-for="(valueOrder, item, key) in orderLineDefinition">
+                <el-table-column
+                  v-if="(valueOrder.columnName === 'ConvertedAmount' && !isEmptyValue(currentPointOfSales.displayCurrency)) || valueOrder.columnName !== 'ConvertedAmount'"
+                  :key="key"
+                  :column-key="valueOrder.columnName"
+                  :label="valueOrder.label"
+                  :width="!valueOrder.isNumeric ? valueOrder.size : valueOrder.size"
+                  :align="valueOrder.isNumeric ? 'right' : 'left'"
+                >
+                  <template slot-scope="scope">
+                    <span>
+                      {{ displayValue(scope.row, valueOrder) }}
+                    </span>
+                  </template>
+                </el-table-column>
+              </template>
               <el-table-column
                 :label="$t('form.pos.tableProduct.options')"
                 width="180"
@@ -192,6 +205,29 @@
               </el-table-column>
             </el-table>
           </el-main>
+          <el-dialog ref="dialog" :title="$t('form.pos.tableProduct.pin')" width="30%" :visible.sync="visible">
+            <el-input
+              id="pin"
+              ref="pin"
+              v-model="pin"
+              :autofocus="true"
+              type="password"
+              :placeholder="$t('form.pos.tableProduct.pin')"
+              :focus="true"
+            />
+            <span style="float: right;">
+              <el-button
+                type="danger"
+                icon="el-icon-close"
+                @click="closePin"
+              />
+              <el-button
+                type="primary"
+                icon="el-icon-check"
+                @click="openPin(pin)"
+              />
+            </span>
+          </el-dialog>
           <el-footer :class="classOrderFooter">
             <div class="keypad">
               <span id="toolPoint">
@@ -242,7 +278,7 @@
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-for="item in listWarehouse"
+                      v-for="item in listWarehouses"
                       :key="item.uuid"
                       :command="item"
                     >
@@ -383,6 +419,7 @@
 <script>
 import formMixin from '@/components/ADempiere/Form/formMixin.js'
 import orderLineMixin from './orderLineMixin.js'
+import posMixin from '@/components/ADempiere/Form/VPOS/posMixin.js'
 import fieldsListOrder from './fieldsListOrder.js'
 import BusinessPartner from '@/components/ADempiere/Form/VPOS/BusinessPartner'
 import fieldLine from '@/components/ADempiere/Form/VPOS/Order/line/index'
@@ -394,6 +431,7 @@ import {
   formatPrice,
   formatQuantity
 } from '@/utils/ADempiere/valueFormat.js'
+import { validatePin } from '@/api/ADempiere/form/point-of-sales.js'
 
 export default {
   name: 'Order',
@@ -405,13 +443,17 @@ export default {
   },
   mixins: [
     formMixin,
-    orderLineMixin
+    orderLineMixin,
+    posMixin
   ],
   data() {
     return {
       fieldsList: fieldsListOrder,
       seeConversion: false,
-      showFieldLine: false
+      showFieldLine: false,
+      pin: '',
+      validatePin: true,
+      visible: false
     }
   },
   computed: {
@@ -547,7 +589,6 @@ export default {
     currentOrder() {
       if (this.isEmptyValue(this.currentPointOfSales)) {
         return {
-          documentType: {},
           documentStatus: {
             value: ''
           },
@@ -592,16 +633,45 @@ export default {
       return list
     },
     currentWarehouse() {
-      if (!this.isEmptyValue(this.$store.getters['user/getWarehouse'])) {
-        return this.$store.getters['user/getWarehouse']
+      if (!this.isEmptyValue(this.$store.getters.posAttributes.currentPointOfSales.warehouse)) {
+        return this.$store.getters.getCurrentWarehousePos
       }
       return {}
     },
-    listWarehouse() {
+    currentDocumentType() {
+      if (!this.isEmptyValue(this.$store.getters.posAttributes.currentPointOfSales.documentType)) {
+        return this.$store.getters.getCurrentDocumentTypePos
+      }
+      return {}
+    },
+    listWarehouses() {
       if (!this.isEmptyValue(this.$store.getters.posAttributes.currentPointOfSales.warehousesList)) {
         return this.$store.getters.posAttributes.currentPointOfSales.warehousesList
       }
       return []
+    },
+    listDocumentTypes() {
+      if (!this.isEmptyValue(this.$store.getters.posAttributes.currentPointOfSales.documentTypesList)) {
+        return this.$store.getters.posAttributes.currentPointOfSales.documentTypesList
+      }
+      return []
+    }
+  },
+  watch: {
+    numberOfLines(value) {
+      if (value > 0) {
+        this.convertedAmount()
+      }
+    },
+    currentOrder(value) {
+      this.validatePin = true
+    },
+    visible(value) {
+      if (value && !this.isEmptyValue(this.$refs)) {
+        setTimeout(() => {
+          this.focusPin()
+        }, 500)
+      }
     }
   },
   mounted() {
@@ -613,6 +683,36 @@ export default {
     formatDate,
     formatPrice,
     formatQuantity,
+    focusPin() {
+      console.log(this.$refs)
+      this.$refs.pin.focus()
+    },
+    openPin(pin) {
+      validatePin({
+        posUuid: this.currentPointOfSales.uuid,
+        pin
+      })
+        .then(response => {
+          this.validatePin = false
+          this.pin = ''
+          this.visible = false
+        })
+        .catch(error => {
+          console.error(error.message)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+          this.pin = ''
+        })
+        .finally(() => {
+          this.closePing()
+        })
+    },
+    closePin() {
+      this.visible = false
+    },
     closeConvertion() {
       this.seeConversion = false
     },
@@ -688,10 +788,28 @@ export default {
       this.newOrder()
     },
     changeWarehouse(warehouse) {
-      this.$store.commit('setCurrentWarehouse', warehouse)
+      this.attributePin = {
+        ...warehouse,
+        action: 'changeWarehouse',
+        type: 'actionPos'
+      }
+      this.visible = true
+    },
+    changeDocumentType(documentType) {
+      this.attributePin = {
+        ...documentType,
+        action: 'changeDocumentType',
+        type: 'actionPos'
+      }
+      this.visible = true
     },
     changePriceList(priceList) {
-      this.$store.commit('setCurrentPriceList', priceList)
+      this.attributePin = {
+        ...priceList,
+        action: 'changePriceList',
+        type: 'actionPos'
+      }
+      this.visible = true
     },
     arrowTop() {
       if (this.currentTable > 0) {

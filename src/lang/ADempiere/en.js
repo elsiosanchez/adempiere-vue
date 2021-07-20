@@ -556,6 +556,25 @@ export default {
       toolsPoint: {
         title: 'Point of Sale Tools'
       }
+    },
+    activity: {
+      title: 'Your Workflow Activities',
+      filtersSearch: {
+        history: 'History records',
+        forward: 'Re-send'
+      },
+      table: {
+        priority: 'Priority',
+        node: 'Node'
+      },
+      workflow: {
+        title: 'Workflow',
+        description: 'Workflow life cycle diagram. The highlighted Node is the one currently awaiting verification.'
+      },
+      workflowLogs: {
+        title: 'Change Log',
+        description: 'Workflow timeline'
+      }
     }
   }
 }
