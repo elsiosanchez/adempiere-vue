@@ -24,13 +24,12 @@
       />
     </el-header>
     <el-main>
-      <workflow-chart
-        :style="size"
-        :transitions="transitions"
-        :states="nodoWorkflow"
-        :orientation="'horizontal'"
-        @state-click="onLabelClicked($event)"
-        @size-change="sizeChanged"
+      <workflow
+        v-if="!isEmptyValue(node)"
+        :node-transition-list="listWorkflowTransition"
+        :node-list="node"
+        :current-node="currentNode"
+        :workflow-logs="listProcessWorkflow"
       />
     </el-main>
   </el-container>
@@ -43,14 +42,14 @@
 // import MainPanel from '@/components/ADempiere/Panel'
 import TitleAndHelp from '@/components/ADempiere/TitleAndHelp'
 // import Epale from './epale'
-import WorkflowChart from 'vue-workflow-chart'
+import Workflow from '@/components/ADempiere/Workflow'
 
 export default {
   name: 'Workflow',
   components: {
   //   MainPanel,
   //   ContextMenu,
-    WorkflowChart,
+    Workflow,
     // Epale,
     TitleAndHelp
   },
@@ -66,9 +65,11 @@ export default {
         width: '20px',
         height: '2px'
       },
-      workflowMetadata: {
-        node: []
-      },
+      workflowMetadata: {},
+      node: [],
+      currentWorkflow: {},
+      listProcessWorkflow: [],
+      listWorkflowTransition: [],
       isLoadedMetadata: false,
       panelType: 'workflow'
     }
@@ -98,6 +99,7 @@ export default {
   methods: {
     workflow() {
       const workflow = this.getWorkflow
+      console.log({ workflow })
       if (workflow) {
         this.workflowMetadata = workflow
         this.isLoadedMetadata = true
@@ -107,11 +109,77 @@ export default {
           panelType: this.panelType,
           routeToDelete: this.$route
         }).then(workflowResponse => {
+          console.log({ workflowResponse })
           this.workflowMetadata = workflowResponse
+          this.listWorkflow(this.workflowMetadata)
         }).finally(() => {
           this.isLoadedMetadata = true
         })
       }
+    },
+    listWorkflow(activity) {
+      // Highlight Current Node
+      this.currentWorkflow = activity
+      this.listProcessWorkflow = !this.isEmptyValue(this.currentWorkflow.workflow_process) ? this.currentWorkflow.workflow_process.workflow_events.reverse() : []
+      this.transitions = []
+      if (!this.isEmptyValue(activity.node.uuid)) {
+        this.currentNode = [{
+          classname: 'delete',
+          id: activity.node.uuid
+        }]
+      }
+      const nodes = activity.workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
+      this.listNodeTransitions(nodes)
+      if (!this.isEmptyValue(nodes)) {
+        this.node = nodes.map((workflow, key) => {
+          return {
+            ...workflow,
+            transitions: workflow.transitions,
+            id: workflow.uuid,
+            key,
+            label: workflow.name
+          }
+        })
+      } else {
+        this.node = []
+      }
+    },
+    listNodeTransitions(nodes) {
+      nodes.forEach(element => {
+        const uuid = element.uuid
+        const id = element.value
+        if (!this.isEmptyValue(element.transitions)) {
+          element.transitions.forEach((nextNode, key) => {
+            if (!this.isEmptyValue(nextNode.node_next_uuid)) {
+              if (this.isEmptyValue(nextNode.description)) {
+                this.transitions.push({
+                  id: id + key,
+                  target: uuid,
+                  source: nextNode.node_next_uuid
+                })
+              } else {
+                this.transitions.push({
+                  id: id + key,
+                  label: nextNode.description,
+                  target: uuid,
+                  source: nextNode.node_next_uuid
+                })
+              }
+            }
+          })
+        }
+      })
+      const blon = nodes.map(item => {
+        return {
+          uuid: item.uuid
+        }
+      })
+      this.listWorkflowTransition = this.transitions.filter(data => {
+        const verificar = blon.find(mode => mode.uuid === data.source)
+        if (!this.isEmptyValue(verificar)) {
+          return data
+        }
+      })
     },
     onStateClick(id) {
       console.log(id)
