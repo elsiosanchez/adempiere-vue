@@ -55,9 +55,6 @@
 
 <script>
 import WorkflowChart from 'vue-workflow-chart'
-import { saveSvgAsPng } from 'save-svg-as-png'
-// import domtoimage from 'dom-to-image'
-// import { saveAs } from 'file-saver'
 
 export default {
   name: 'Workflow',
@@ -94,21 +91,7 @@ export default {
     }
   },
   methods: {
-    descargar() {
-      saveSvgAsPng(document.getElementById('Diagrama'), {}).then(uri => {
-      })
-    },
-    // epa() {
-    //   const node = document.getElementById('Diagrama')
-    //   domtoimage.toBlob(document.getElementById('Diagrama'))
-    //     .then((blob) => {
-    //       console.log(blob)
-    //       window.saveAs(blob, 'Diagrama')
-    //     })
-    // },
     onLabelClicked(type, id) {
-      // this.epa()
-      this.descargar()
       this.infoNode = type.find(node => node.id === id)
       const nodeLogs = this.workflowLogs.filter(node => node.node_uuid === this.infoNode.uuid)
       this.infoNode.nodeLogs = nodeLogs
