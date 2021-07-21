@@ -44,7 +44,7 @@
     </el-header>
     <el-main class="main">
       <el-container style="height: 100%;">
-        <el-aside v-if="!isEmptyValue(currentActivity)" id="workflow" width="100%" style="background: white;">
+        <el-aside v-if="!isEmptyValue(currentActivity)" id="workflow" width="70%" style="background: white;">
           <workflow
             v-if="!isEmptyValue(node) && !isEmptyValue(currentActivity)"
             :node-transition-list="listWorkflowTransition"

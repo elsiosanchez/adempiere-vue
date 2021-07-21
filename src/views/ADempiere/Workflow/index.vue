@@ -23,15 +23,23 @@
         :help="$route.meta.description"
       />
     </el-header>
-    <el-main>
+    <el-main v-if="isLoadedMetadata">
       <workflow
         v-if="!isEmptyValue(node)"
         :node-transition-list="listWorkflowTransition"
         :node-list="node"
         :current-node="currentNode"
-        :workflow-logs="listProcessWorkflow"
       />
     </el-main>
+    <div
+      v-else
+      key="form-loading"
+      v-loading="!isLoadedMetadata"
+      :element-loading-text="$t('notifications.loading')"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(255, 255, 255, 0.8)"
+      class="view-loading"
+    />
   </el-container>
 </template>
 
@@ -41,16 +49,13 @@
 // import ContextMenu from '@/components/ADempiere/ContextMenu'
 // import MainPanel from '@/components/ADempiere/Panel'
 import TitleAndHelp from '@/components/ADempiere/TitleAndHelp'
-// import Epale from './epale'
 import Workflow from '@/components/ADempiere/Workflow'
+import { getWorkflow } from '@/api/ADempiere/workflow.js'
 
 export default {
   name: 'Workflow',
   components: {
-  //   MainPanel,
-  //   ContextMenu,
     Workflow,
-    // Epale,
     TitleAndHelp
   },
   props: {
@@ -67,8 +72,6 @@ export default {
       },
       workflowMetadata: {},
       node: [],
-      currentWorkflow: {},
-      listProcessWorkflow: [],
       listWorkflowTransition: [],
       isLoadedMetadata: false,
       panelType: 'workflow'
@@ -94,12 +97,11 @@ export default {
     }
   },
   created() {
-    this.workflow()
+    this.gettWorkflow()
   },
   methods: {
-    workflow() {
+    gettWorkflow() {
       const workflow = this.getWorkflow
-      console.log({ workflow })
       if (workflow) {
         this.workflowMetadata = workflow
         this.isLoadedMetadata = true
@@ -109,26 +111,38 @@ export default {
           panelType: this.panelType,
           routeToDelete: this.$route
         }).then(workflowResponse => {
-          console.log({ workflowResponse })
           this.workflowMetadata = workflowResponse
           this.listWorkflow(this.workflowMetadata)
         }).finally(() => {
           this.isLoadedMetadata = true
         })
       }
+      this.serverWorkflow(this.workflowMetadata)
     },
-    listWorkflow(activity) {
+    serverWorkflow({ tableName }) {
+      if (this.isEmptyValue(tableName)) {
+        return ''
+      }
+      getWorkflow({
+        tableName
+      })
+        .then(response => {
+          this.listWorkflow(response.records)
+        })
+        .catch(error => {
+          console.warn(`serverWorkflow: ${error.message}. Code: ${error.code}.`)
+        })
+    },
+    listWorkflow(workflow) {
       // Highlight Current Node
-      this.currentWorkflow = activity
-      this.listProcessWorkflow = !this.isEmptyValue(this.currentWorkflow.workflow_process) ? this.currentWorkflow.workflow_process.workflow_events.reverse() : []
       this.transitions = []
-      if (!this.isEmptyValue(activity.node.uuid)) {
+      if (!this.isEmptyValue(workflow.node.uuid)) {
         this.currentNode = [{
           classname: 'delete',
-          id: activity.node.uuid
+          id: workflow.start_node.uuid
         }]
       }
-      const nodes = activity.workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
+      const nodes = workflow.workflow_nodes.filter(node => !this.isEmptyValue(node.uuid))
       this.listNodeTransitions(nodes)
       if (!this.isEmptyValue(nodes)) {
         this.node = nodes.map((workflow, key) => {
@@ -180,23 +194,6 @@ export default {
           return data
         }
       })
-    },
-    onStateClick(id) {
-      console.log(id)
-    },
-    onLabelClicked(id) {
-      const node = this.nodoWorkflow.find(node => node.id === id)
-      if (node) {
-        this.$router.push({
-          name: node.url
-        }, () => {})
-      }
-    },
-    sizeChanged(size) {
-      this.size = {
-        width: `${size.width}px`,
-        height: `${size.height}px`
-      }
     }
   }
 }
@@ -206,20 +203,4 @@ export default {
     height: 100%;
     width: 100%;
   }
-</style>
-<style lang='scss'>
-@import '~vue-workflow-chart/dist/vue-workflow-chart.css';
-
-.vue-workflow-chart-state-delete {
-  color: white;
-  background: red;
-}
-
-.vue-workflow-chart-transition-arrow-delete {
-  fill: red;
-}
-
-.vue-workflow-chart-transition-path-delete {
-  stroke: red;
-}
 </style>
